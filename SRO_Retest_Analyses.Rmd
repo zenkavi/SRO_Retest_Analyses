@@ -26,15 +26,8 @@ Load retest data
 retest_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_02-11-2017/variables_exhaustive.csv')
 ```
 
-Quick check to make sure there isn't anything weird with anonymization of retest data
-
+Function to process lookup table
 ```{r}
-last_lookup <- fromJSON('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_Data_NewApi/retest_worker_lookup.json')
-
-old_lookup1 <- fromJSON('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_Data_NewApi/old/worker_lookup_3.json')
-
-old_lookup2 <- fromJSON('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_Data_NewApi/old/worker_lookup_8.json')
-
 process_lookup <- function(lookup_json){
   lookup_json <- data.frame(unlist(lookup_json))
   lookup_json$sub_id <- as.character(row.names(lookup_json))
@@ -45,26 +38,15 @@ process_lookup <- function(lookup_json){
   lookup_json <- lookup_json %>% arrange(-complete, sub_id)
   return(lookup_json)
 }
-
-last_lookup <- process_lookup(last_lookup)
-old_lookup1 <- process_lookup(old_lookup1)
-old_lookup2 <- process_lookup(old_lookup2)
-
-old_lookup1[old_lookup1$complete == 1, 'worker_id'] == last_lookup[1:68, 'worker_id'] 
-old_lookup2[old_lookup2$complete == 1, 'worker_id'] == last_lookup[1:113, 'worker_id']
-
-rm(last_lookup, old_lookup1, old_lookup2)
 ```
 
-Extract retest participants
-```{r}
-test_worker_lookup <- fromJSON('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_Data_NewApi/worker_lookup.json')
+Extract retest participants from test data
 
-retest_worker_lookup <- fromJSON('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_Data_NewApi/retest_worker_lookup.json')
+```{r}
+test_worker_lookup <- fromJSON('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_02-11-2017/Local/worker_lookup.json')
 
 #Process full lookup tables for both datasets
 test_worker_lookup <- process_lookup(test_worker_lookup)
-retest_worker_lookup <- process_lookup(retest_worker_lookup)
 
 #Process sub_id columns in the data dataframes
 retest_data$X <- as.character(retest_data$X)
@@ -73,73 +55,80 @@ test_data$X <- as.character(test_data$X)
 names(retest_data)[1] <- 'sub_id'
 names(test_data)[1] <- 'sub_id'
 
-#Trim lookup tables to only include those we have data for
-retest_worker_lookup <- retest_worker_lookup[retest_worker_lookup$sub_id %in% retest_data$sub_id,]
-
+#Trim lookup table to only include those we have data for
 test_worker_lookup <- test_worker_lookup[test_worker_lookup$sub_id %in% test_data$sub_id,]
 
-#Are all retest workers in test data?
-retest_worker_lookup$worker_id %in% test_worker_lookup$worker_id
+#Replace worker_id's in retest_data with original sub_id's 
+correct_subids <- function(row, lookup_table){
+  sub_id = row$sub_id
+  if(sub_id %in% lookup_table$worker_id){
+    index = which(sub_id == lookup_table$worker_id)
+    sub_id = lookup_table$sub_id[index]
+    row$sub_id = sub_id
+  }
+  return(row)
+}
+
+retest_data <- retest_data %>%
+  group_by(sub_id) %>%
+  do(correct_subids(.,test_worker_lookup))
+
+#Are all retest subjects in test_data? No. 
+sum(retest_data$sub_id %in% test_data$sub_id) == nrow(retest_data)
+
+#Who is missing?
+retest_data$sub_id[which(retest_data$sub_id %in% test_data$sub_id == FALSE)]
 ```
 
-One retest participant is not in test data. Remove that subject from lookup table and from retest_data
+One retest participant is not in test data. Remove that subject from retest_data for now
 ```{r}
-retest_worker_lookup <- retest_worker_lookup[retest_worker_lookup$worker_id %in% test_worker_lookup$worker_id,]
+retest_data <- retest_data[retest_data$sub_id %in% test_data$sub_id,]
 
-retest_data <- retest_data[retest_data$sub_id %in% retest_worker_lookup$sub_id,]
+retest_data
 ```
 
-Id match df
+Extract test data for retest subjects
 ```{r}
-id_match_df <- merge(retest_worker_lookup, test_worker_lookup, by='worker_id', all.x=T)
+retest_subs_test_data <- test_data[test_data$sub_id %in% retest_data$sub_id,]
 
-id_match_df <- id_match_df %>%
-  select(-complete.x, -complete.y) %>%
-  rename(retest_sub_id = sub_id.x, test_sub_id = sub_id.y) %>%
-  arrange(retest_sub_id)
+rest_subs_test_data <- test_data[test_data$sub_id %in% retest_data$sub_id == FALSE,]
 
-sub_id_lookup <- id_match_df %>% select(-worker_id)
-write.csv(sub_id_lookup, 'sub_id_lookup.csv')
-rm(sub_id_lookup)
-```
+#Arrange datasets of same size by sub_id
+retest_data = retest_data %>% arrange(sub_id)
+retest_subs_test_data = retest_subs_test_data %>% arrange(sub_id)
 
-Extract test data for retest subjects, add worker_id column to both datasets and arrange by worker_id, check if the rows match
-```{r}
-test_data <- merge(id_match_df, test_data, by.x='test_sub_id', by.y='sub_id', all.x=T)
-retest_data <- merge(id_match_df, retest_data, by.x='retest_sub_id', by.y='sub_id', all.x=T)
-test_data <- test_data %>% arrange(worker_id)
-retest_data <- retest_data %>% arrange(worker_id)
-test_data$worker_id == retest_data$worker_id
+#CHECK IF EVERYTHING IS ORDERED RIGHT
+retest_subs_test_data$sub_id == retest_data$sub_id
 ```
 
 Drop columns from original data that are not in retest data
 
-Retest data columns that are not in the original data:
+Are there any columns in retest data columns that are not in the original data: No.
 
 ```{r}
-names(retest_data)[names(retest_data) %in% names(test_data) == FALSE]
+names(retest_data)[names(retest_data) %in% names(retest_subs_test_data) == FALSE]
 ```
 
-Test data columns that are not in the retest data:
-(as expected; three by two is not added yet)
+Test data columns that are not in the retest data: Two stage hasn't been fixed yet.
+
 ```{r}
-names(test_data)[names(test_data) %in% names(retest_data) == FALSE]
+names(retest_subs_test_data)[names(retest_subs_test_data) %in% names(retest_data) == FALSE]
 ```
 
 Datasets with only matching columns
 
 ```{r}
-all_columns <- unique(c(names(test_data), names(retest_data)))
+all_columns <- unique(c(names(retest_data), names(retest_subs_test_data)))
 
 matching_columns <- c()
 for(i in 1:length(all_columns)){
-  if(all_columns[i] %in% names(test_data) & all_columns[i] %in% names(retest_data)){
+  if(all_columns[i] %in% names(retest_data) & all_columns[i] %in% names(retest_subs_test_data)){
     matching_columns <- c(matching_columns, all_columns[i])
   }
 }
 
-matching_retest_data <- retest_data[,matching_columns]
-matching_test_data <- test_data[,matching_columns]
+retest_data <- retest_data[,matching_columns]
+retest_subs_test_data <- retest_subs_test_data[,matching_columns]
 ```
 
 Get list of test retest correlations
@@ -180,7 +169,6 @@ ggplot(cor_df, aes(spearman))+
  
  - First data release email esp to ASU
  - Send the spreadsheet with meaningul variables + demographics
- - Fix the worker id's not sharing
  
  Rank order correlations
  Separately for tasks vs. surveys
