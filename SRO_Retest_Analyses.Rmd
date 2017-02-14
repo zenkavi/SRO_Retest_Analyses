@@ -1,0 +1,191 @@
+---
+title: 'Self Regulation Ontology Retest Data: Initial Exploration'
+output:
+  html_notebook: default
+  pdf_document: default
+---
+
+```{r, message=FALSE, warning=FALSE, include=FALSE}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(gridExtra)
+library(lme4)
+library(GGally)
+library(jsonlite)
+sem <- function(x) {sd(x) / sqrt(length(x))}
+```
+
+Load original data
+```{r}
+test_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_01-31-2017/variables_exhaustive.csv')
+```
+
+Load retest data
+```{r}
+retest_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_02-11-2017/variables_exhaustive.csv')
+```
+
+Quick check to make sure there isn't anything weird with anonymization of retest data
+
+```{r}
+last_lookup <- fromJSON('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_Data_NewApi/retest_worker_lookup.json')
+
+old_lookup1 <- fromJSON('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_Data_NewApi/old/worker_lookup_3.json')
+
+old_lookup2 <- fromJSON('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_Data_NewApi/old/worker_lookup_8.json')
+
+process_lookup <- function(lookup_json){
+  lookup_json <- data.frame(unlist(lookup_json))
+  lookup_json$sub_id <- as.character(row.names(lookup_json))
+  row.names(lookup_json) <- seq(1:nrow(lookup_json))
+  names(lookup_json)[1] <- 'worker_id'
+  lookup_json$worker_id <- as.character(lookup_json$worker_id)
+  lookup_json$complete <- ifelse(lookup_json$worker_id == lookup_json$sub_id, 0, 1)
+  lookup_json <- lookup_json %>% arrange(-complete, sub_id)
+  return(lookup_json)
+}
+
+last_lookup <- process_lookup(last_lookup)
+old_lookup1 <- process_lookup(old_lookup1)
+old_lookup2 <- process_lookup(old_lookup2)
+
+old_lookup1[old_lookup1$complete == 1, 'worker_id'] == last_lookup[1:68, 'worker_id'] 
+old_lookup2[old_lookup2$complete == 1, 'worker_id'] == last_lookup[1:113, 'worker_id']
+
+rm(last_lookup, old_lookup1, old_lookup2)
+```
+
+Extract retest participants
+```{r}
+test_worker_lookup <- fromJSON('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_Data_NewApi/worker_lookup.json')
+
+retest_worker_lookup <- fromJSON('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_Data_NewApi/retest_worker_lookup.json')
+
+#Process full lookup tables for both datasets
+test_worker_lookup <- process_lookup(test_worker_lookup)
+retest_worker_lookup <- process_lookup(retest_worker_lookup)
+
+#Process sub_id columns in the data dataframes
+retest_data$X <- as.character(retest_data$X)
+test_data$X <- as.character(test_data$X)
+
+names(retest_data)[1] <- 'sub_id'
+names(test_data)[1] <- 'sub_id'
+
+#Trim lookup tables to only include those we have data for
+retest_worker_lookup <- retest_worker_lookup[retest_worker_lookup$sub_id %in% retest_data$sub_id,]
+
+test_worker_lookup <- test_worker_lookup[test_worker_lookup$sub_id %in% test_data$sub_id,]
+
+#Are all retest workers in test data?
+retest_worker_lookup$worker_id %in% test_worker_lookup$worker_id
+```
+
+One retest participant is not in test data. Remove that subject from lookup table and from retest_data
+```{r}
+retest_worker_lookup <- retest_worker_lookup[retest_worker_lookup$worker_id %in% test_worker_lookup$worker_id,]
+
+retest_data <- retest_data[retest_data$sub_id %in% retest_worker_lookup$sub_id,]
+```
+
+Id match df
+```{r}
+id_match_df <- merge(retest_worker_lookup, test_worker_lookup, by='worker_id', all.x=T)
+
+id_match_df <- id_match_df %>%
+  select(-complete.x, -complete.y) %>%
+  rename(retest_sub_id = sub_id.x, test_sub_id = sub_id.y) %>%
+  arrange(retest_sub_id)
+
+sub_id_lookup <- id_match_df %>% select(-worker_id)
+write.csv(sub_id_lookup, 'sub_id_lookup.csv')
+rm(sub_id_lookup)
+```
+
+Extract test data for retest subjects, add worker_id column to both datasets and arrange by worker_id, check if the rows match
+```{r}
+test_data <- merge(id_match_df, test_data, by.x='test_sub_id', by.y='sub_id', all.x=T)
+retest_data <- merge(id_match_df, retest_data, by.x='retest_sub_id', by.y='sub_id', all.x=T)
+test_data <- test_data %>% arrange(worker_id)
+retest_data <- retest_data %>% arrange(worker_id)
+test_data$worker_id == retest_data$worker_id
+```
+
+Drop columns from original data that are not in retest data
+
+Retest data columns that are not in the original data:
+
+```{r}
+names(retest_data)[names(retest_data) %in% names(test_data) == FALSE]
+```
+
+Test data columns that are not in the retest data:
+(as expected; three by two is not added yet)
+```{r}
+names(test_data)[names(test_data) %in% names(retest_data) == FALSE]
+```
+
+Datasets with only matching columns
+
+```{r}
+all_columns <- unique(c(names(test_data), names(retest_data)))
+
+matching_columns <- c()
+for(i in 1:length(all_columns)){
+  if(all_columns[i] %in% names(test_data) & all_columns[i] %in% names(retest_data)){
+    matching_columns <- c(matching_columns, all_columns[i])
+  }
+}
+
+matching_retest_data <- retest_data[,matching_columns]
+matching_test_data <- test_data[,matching_columns]
+```
+
+Get list of test retest correlations
+
+TODO: write a nicer of getting rid of non numeric columns
+
+```{r}
+matching_dv_columns <- c()
+for(i in 1:length(matching_columns)){
+  if(is.numeric(matching_test_data[,matching_columns[i]]) & is.numeric(matching_test_data[,matching_columns[i]])){
+    matching_dv_columns <- c(matching_dv_columns, matching_columns[i])
+  }
+}
+
+cor_df <- data.frame(pearson = rep(NA, length(matching_dv_columns)), spearman = rep(NA, length(matching_dv_columns)))
+
+row.names(cor_df) <- matching_dv_columns
+
+for(i in 1:length(matching_dv_columns)){
+  cor_df[matching_dv_columns[i], 'pearson'] <- cor(matching_test_data[,matching_dv_columns[i]], matching_retest_data[,matching_dv_columns[i]], method = 'pearson', use = "pairwise.complete.obs")
+  cor_df[matching_dv_columns[i], 'spearman'] <- cor(matching_test_data[,matching_dv_columns[i]],matching_retest_data[,matching_dv_columns[i]], method = 'spearman', use = "pairwise.complete.obs")
+}
+
+write.csv(cor_df,'cor_df.csv')
+
+ggplot(cor_df, aes(pearson))+
+  geom_histogram()+
+  theme_bw()
+
+ggplot(cor_df, aes(spearman))+
+  geom_histogram()+
+  theme_bw()
+```
+ 
+ Distribution of each variable
+ 
+ Completion times/days
+ 
+ - First data release email esp to ASU
+ - Send the spreadsheet with meaningul variables + demographics
+ - Fix the worker id's not sharing
+ 
+ Rank order correlations
+ Separately for tasks vs. surveys
+ Mean reliabilities for different kinds of variables (e.g. drift rates and NDs; separately for EX and HDDM; subtraction vs basic variables - single vs. multiple)
+ Can you get the factor structure for the retest
+ step 1:Ttest on all measures of T1 for people w and without retest
+ step2 : efa on the people you don't have retest on and then predict how well this holds up for people w retest on t1 and on t2
+T1 comparison for people who came back vs didn't (of all that are invited)
