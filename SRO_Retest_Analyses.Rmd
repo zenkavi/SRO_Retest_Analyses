@@ -13,6 +13,10 @@ library(gridExtra)
 library(lme4)
 library(GGally)
 library(jsonlite)
+library(lavaan)
+library(semTools)
+library(psych)
+library(GPArotation)
 sem <- function(x) {sd(x) / sqrt(length(x))}
 options(digits = 4)
 ```
@@ -156,14 +160,14 @@ for(i in 1:length(matching_dv_columns)){
 }
 ```
 
-Distribution of Pearson correlations
+Distribution of all Pearson correlations
 ```{r}
 ggplot(cor_df, aes(pearson))+
   geom_histogram()+
   theme_bw()
 ```
 
-Distribution of spearman correlations
+Distribution of all Spearman correlations
 ```{r}
 ggplot(cor_df, aes(spearman))+
   geom_histogram()+
@@ -180,6 +184,7 @@ cor_df[grep('survey', cor_df$dv), 'task'] = 'survey'
 ```
 
 Distributions of correlations by task vs. survey
+Task reliability distributions looks alsmost bimodal. Should figure out whether the lower ones are specific tasks or if they are certain kinds of vars (e.g. certain ddm parameters)
 ```{r}
 cor_df %>%
   gather(key, value, -dv, -task) %>%
@@ -227,6 +232,83 @@ cor_df %>%
   summarise(mean_pearson = mean(pearson),
             mean_spearman = mean(spearman))
 ```
+
+Distribution of each variable
+```{r}
+#Function to check if the variables that went in to cor_df have normal distributions
+
+diff_from_normal <- function(col){
+  return(shapiro.test(col)$p.value < 0.05)
+}
+```
+
+Check distributions of retest data
+```{r}
+dist_retest_data <- as.data.frame(apply(retest_data[,matching_dv_columns], 2, diff_from_normal))
+names(dist_retest_data) <- c('not_normal')
+dist_retest_data$dv <- row.names(dist_retest_data)
+row.names(dist_retest_data) <- seq(1:nrow(dist_retest_data))
+dist_retest_data = dist_retest_data %>% select(dv, not_normal)
+```
+
+Check distributions of test data (for subjects who have retest data - restricting here since there are the subsets of data that went in to the correlation matrix)
+```{r}
+dist_retest_subs_test_data <- as.data.frame(apply(retest_subs_test_data[,matching_dv_columns], 2, diff_from_normal))
+names(dist_retest_subs_test_data) <- c('not_normal')
+dist_retest_subs_test_data$dv <- row.names(dist_retest_subs_test_data)
+row.names(dist_retest_subs_test_data) <- seq(1:nrow(dist_retest_subs_test_data))
+dist_retest_subs_test_data = dist_retest_subs_test_data %>% select(dv, not_normal)
+```
+
+What proportion is not normal?
+```{r}
+sum(dist_retest_data$not_normal)/nrow(dist_retest_data)
+```
+
+```{r}
+sum(dist_retest_subs_test_data$not_normal)/nrow(dist_retest_subs_test_data)
+```
+
+Are the same vars that are not normally distributed in the retest data not normal in test data as well?
+List of variables that have different distributions in the two time points (shown here is whether they are normally distributed in the retest data)
+A majority of them are drift diffusion parameters (but note that these vars are overrepresented to begin with).
+```{r}
+dist_retest_data[which(dist_retest_data$not_normal != dist_retest_subs_test_data$not_normal),]
+```
+
+Transform non normal vars
+Transform both retest and test data if not normally distributed in either. 
+Order of transformations tried: log and sqrt
+```{r}
+transform_dv_df = data.frame(dv = c(), transform = c(), not_normal = c())
+#check if normal
+diff_from_normal(retest_data[,2])
+diff_from_normal(log(retest_data[,2]))
+diff_from_normal(sqrt(retest_data[,2]))
+#if yes stop and record transformation = none
+#if transform: log
+#check if normal
+#if yes stop and record transformation = log
+#if no transform: sqrt
+
+
+```
+
+Drift diffusion variables: raw vars vs. EZ vs. hddm
+
+Mean reliabilities for different kinds of variables (e.g. drift rates and NDs; separately for EZ and HDDM; subtraction vs basic variables - single vs. multiple)
+```{r}
+```
+
+--------------------------------
+
+Can you get the factor structure for the retest
+step 1:Ttest on all measures of T1 for people w and without retest
+```{r}
+
+```
+
+step2 : efa on the people you don't have retest on and then predict how well this holds up for people w retest on t1 and on t2
 
 Data cleaning for efa
 ```{r}
@@ -303,7 +385,10 @@ for(i in 1:length(rest_subs_test_mngf)){
     rest_subs_test_mngf_z[,names(rest_subs_test_mngf)[i]] = scale(rest_subs_test_mngf[,i])
   }
 }
+
+rest_subs_test_mngf_z <- as.data.frame(rest_subs_test_mngf_z)
 ```
+
 
 Efa on subjects from original dataset withOUT retest data (using meaningful vars only)
 ```{r}
@@ -315,27 +400,20 @@ inspect(unrotated, "std")
 
 
 ```{r}
-library(psych)
-corMat <- cor(rest_subs_test_mngf_z)
-solution <- fa(r = corMat, nfactors = 2, rotate = "oblimin", fm = "pa")
+corMat <- rest_subs_test_mngf_z %>% select(-sub_id) %>% cor(.,use = 'complete.obs')
+
+solution <- fa(r = corMat, nfactors = 3, rotate = "oblimin", fm = "pa")
 ```
 
-Drift diffusion variables: raw vars vs. EZ vs. hddm
-
-Mean reliabilities for different kinds of variables (e.g. drift rates and NDs; separately for EZ and HDDM; subtraction vs basic variables - single vs. multiple)
 ```{r}
-cor_df$dv
+solution
 ```
 
-Distribution of each variable
  
 Completion times/days
  
  - First data release email esp to ASU
  - Send the spreadsheet with meaningul variables + demographics
  
- Can you get the factor structure for the retest
- step 1:Ttest on all measures of T1 for people w and without retest
- step2 : efa on the people you don't have retest on and then predict how well this holds up for people w retest on t1 and on t2
  
 T1 comparison for people who came back vs didn't (of all that are invited)
