@@ -14,6 +14,7 @@ library(lme4)
 library(GGally)
 library(jsonlite)
 sem <- function(x) {sd(x) / sqrt(length(x))}
+options(digits = 4)
 ```
 
 Load original data
@@ -136,9 +137,11 @@ Get list of test retest correlations
 TODO: write a nicer of getting rid of non numeric columns
 
 ```{r}
+retest_data <- as.data.frame(retest_data)
+retest_subs_test_data <- as.data.frame(retest_subs_test_data)
 matching_dv_columns <- c()
 for(i in 1:length(matching_columns)){
-  if(is.numeric(matching_test_data[,matching_columns[i]]) & is.numeric(matching_test_data[,matching_columns[i]])){
+  if(is.numeric(retest_data[,matching_columns[i]]) & is.numeric(retest_subs_test_data[,matching_columns[i]])){
     matching_dv_columns <- c(matching_dv_columns, matching_columns[i])
   }
 }
@@ -148,31 +151,97 @@ cor_df <- data.frame(pearson = rep(NA, length(matching_dv_columns)), spearman = 
 row.names(cor_df) <- matching_dv_columns
 
 for(i in 1:length(matching_dv_columns)){
-  cor_df[matching_dv_columns[i], 'pearson'] <- cor(matching_test_data[,matching_dv_columns[i]], matching_retest_data[,matching_dv_columns[i]], method = 'pearson', use = "pairwise.complete.obs")
-  cor_df[matching_dv_columns[i], 'spearman'] <- cor(matching_test_data[,matching_dv_columns[i]],matching_retest_data[,matching_dv_columns[i]], method = 'spearman', use = "pairwise.complete.obs")
+  cor_df[matching_dv_columns[i], 'pearson'] <- cor(retest_data[,matching_dv_columns[i]], retest_subs_test_data[,matching_dv_columns[i]], method = 'pearson', use = "pairwise.complete.obs")
+  cor_df[matching_dv_columns[i], 'spearman'] <- cor(retest_data[,matching_dv_columns[i]],retest_subs_test_data[,matching_dv_columns[i]], method = 'spearman', use = "pairwise.complete.obs")
 }
+```
 
-write.csv(cor_df,'cor_df.csv')
-
+Distribution of Pearson correlations
+```{r}
 ggplot(cor_df, aes(pearson))+
   geom_histogram()+
   theme_bw()
+```
 
+Distribution of spearman correlations
+```{r}
 ggplot(cor_df, aes(spearman))+
   geom_histogram()+
   theme_bw()
 ```
+
+Add column to tasks vs. surveys in correlation table
+
+```{r}
+cor_df$dv = row.names(cor_df)
+row.names(cor_df) = seq(1:nrow(cor_df))
+cor_df$task = 'task'
+cor_df[grep('survey', cor_df$dv), 'task'] = 'survey'
+```
+
+Distributions of correlations by task vs. survey
+```{r}
+cor_df %>%
+  gather(key, value, -dv, -task) %>%
+  ggplot(aes(value))+
+  geom_histogram()+
+  theme_bw()+
+  facet_wrap(key~task)
+```
+
+Rank order correlations
+For tasks
+```{r}
+cor_df %>%
+  filter(task == 'task') %>%
+  select(dv, spearman, pearson) %>%
+  arrange(-pearson, -spearman)
+```
+
+Mean reliability for surveys
+```{r}
+cor_df %>%
+  filter(task == 'task') %>%
+  select(dv, spearman, pearson) %>%
+  arrange(-pearson, -spearman) %>%
+  summarise(mean_pearson = mean(pearson),
+            mean_spearman = mean(spearman))
+```
+
+For surveys
+
+Note: Holt and Laury test-retest is pretty terrible. In previous data it was ~.35. Should check to see if there is a coding error there.
+```{r}
+cor_df %>%
+  filter(task == 'survey') %>%
+  select(dv, spearman, pearson) %>%
+  arrange(-pearson, -spearman)
+```
+
+Mean reliability for surveys
+```{r}
+cor_df %>%
+  filter(task == 'survey') %>%
+  select(dv, spearman, pearson) %>%
+  arrange(-pearson, -spearman) %>%
+  summarise(mean_pearson = mean(pearson),
+            mean_spearman = mean(spearman))
+```
+
+Drift diffusion variables: raw vars vs. EZ vs. hddm
+
+Mean reliabilities for different kinds of variables (e.g. drift rates and NDs; separately for EZ and HDDM; subtraction vs basic variables - single vs. multiple)
+```{r}
+cor_df$dv
+```
+
+Distribution of each variable
  
- Distribution of each variable
- 
- Completion times/days
+Completion times/days
  
  - First data release email esp to ASU
  - Send the spreadsheet with meaningul variables + demographics
  
- Rank order correlations
- Separately for tasks vs. surveys
- Mean reliabilities for different kinds of variables (e.g. drift rates and NDs; separately for EX and HDDM; subtraction vs basic variables - single vs. multiple)
  Can you get the factor structure for the retest
  step 1:Ttest on all measures of T1 for people w and without retest
  step2 : efa on the people you don't have retest on and then predict how well this holds up for people w retest on t1 and on t2
