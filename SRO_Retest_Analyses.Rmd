@@ -228,6 +228,98 @@ cor_df %>%
             mean_spearman = mean(spearman))
 ```
 
+Data cleaning for efa
+```{r}
+#read in only meaningful vars
+meaningful_var_test <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_01-31-2017/meaningful_variables_clean.csv')
+
+meaningful_var_retest <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_02-11-2017/meaningful_variables_clean.csv')
+
+#Process sub_id columns in the data dataframes
+meaningful_var_retest$X <- as.character(meaningful_var_retest$X)
+meaningful_var_test$X <- as.character(meaningful_var_test$X)
+
+names(meaningful_var_retest)[1] <- 'sub_id'
+names(meaningful_var_test)[1] <- 'sub_id'
+
+#Clean and subset dfs as before
+meaningful_var_retest <- meaningful_var_retest %>%
+  group_by(sub_id) %>%
+  do(correct_subids(.,test_worker_lookup))
+
+#Are all retest subjects in test_data? No. 
+sum(meaningful_var_retest$sub_id %in% meaningful_var_test$sub_id) == nrow(meaningful_var_retest)
+
+#Who is missing?
+meaningful_var_retest$sub_id[which(meaningful_var_retest$sub_id %in% meaningful_var_test$sub_id == FALSE)]
+
+#Remove sub w missing test data from retest data
+retest_data_mngf <- meaningful_var_retest[meaningful_var_retest$sub_id %in% meaningful_var_test$sub_id,]
+
+#Extract test data for subs w retest data
+retest_subs_test_mngf <- meaningful_var_test[meaningful_var_test$sub_id %in% meaningful_var_retest$sub_id,]
+
+#Extract test data for subs without retest data (efa df)
+rest_subs_test_mngf <- meaningful_var_test[meaningful_var_test$sub_id %in% meaningful_var_retest$sub_id == FALSE,]
+
+#Arrange datasets of same size by sub_id
+retest_data_mngf = retest_data_mngf %>% arrange(sub_id)
+retest_subs_test_mngf = retest_subs_test_mngf %>% arrange(sub_id)
+
+#CHECK IF EVERYTHING IS ORDERED RIGHT
+retest_subs_test_mngf$sub_id == retest_data_mngf$sub_id
+```
+
+Checking columns for efa:
+NEED TO RESOLVE SOME DIFFERENCES IN MEANINGFUL VARS BETWEEN THE TWO DATASETS
+```{r}
+#Check columns 
+names(retest_data_mngf)[names(retest_data_mngf) %in% names(retest_subs_test_mngf) == FALSE]
+
+names(retest_subs_test_mngf)[names(retest_subs_test_mngf) %in% names(retest_data_mngf) == FALSE]
+
+#Subset datasets with only matching columns
+all_columns_mngf <- unique(c(names(retest_data_mngf), names(retest_subs_test_mngf)))
+
+matching_columns_mngf <- c()
+for(i in 1:length(all_columns_mngf)){
+  if(all_columns_mngf[i] %in% names(retest_data_mngf) & all_columns_mngf[i] %in% names(retest_subs_test_mngf)){
+    matching_columns_mngf <- c(matching_columns_mngf, all_columns_mngf[i])
+  }
+}
+
+retest_data_mngf <- retest_data_mngf[,matching_columns_mngf]
+retest_subs_test_mngf <- retest_subs_test_mngf[,matching_columns_mngf]
+rest_subs_test_mngf <- rest_subs_test_mngf[,matching_columns_mngf]
+
+#standardize all vars going in to factor analysis
+rest_subs_test_mngf_z <- rest_subs_test_mngf
+
+for(i in 1:length(rest_subs_test_mngf)){
+  if(names(rest_subs_test_mngf)[i] == 'sub_id'){
+    rest_subs_test_mngf_z$sub_id = rest_subs_test_mngf$sub_id
+  }
+  else{
+    rest_subs_test_mngf_z[,names(rest_subs_test_mngf)[i]] = scale(rest_subs_test_mngf[,i])
+  }
+}
+```
+
+Efa on subjects from original dataset withOUT retest data (using meaningful vars only)
+```{r}
+unrotated <- efaUnrotate(rest_subs_test_mngf_z, nf=3, varList=names(rest_subs_test_mngf_z)[-1], estimator="mlr")
+
+summary(unrotated, std=TRUE)
+inspect(unrotated, "std")
+```
+
+
+```{r}
+library(psych)
+corMat <- cor(rest_subs_test_mngf_z)
+solution <- fa(r = corMat, nfactors = 2, rotate = "oblimin", fm = "pa")
+```
+
 Drift diffusion variables: raw vars vs. EZ vs. hddm
 
 Mean reliabilities for different kinds of variables (e.g. drift rates and NDs; separately for EZ and HDDM; subtraction vs basic variables - single vs. multiple)
@@ -245,4 +337,5 @@ Completion times/days
  Can you get the factor structure for the retest
  step 1:Ttest on all measures of T1 for people w and without retest
  step2 : efa on the people you don't have retest on and then predict how well this holds up for people w retest on t1 and on t2
+ 
 T1 comparison for people who came back vs didn't (of all that are invited)
