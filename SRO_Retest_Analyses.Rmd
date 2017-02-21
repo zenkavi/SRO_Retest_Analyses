@@ -77,11 +77,15 @@ correct_subids <- function(row, lookup_table){
 retest_data <- retest_data %>%
   group_by(sub_id) %>%
   do(correct_subids(.,test_worker_lookup))
+```
 
-#Are all retest subjects in test_data? No. 
+Are all retest subjects in test_data? No. 
+```{r}
 sum(retest_data$sub_id %in% test_data$sub_id) == nrow(retest_data)
+```
 
-#Who is missing?
+Who is missing?
+```{r}
 retest_data$sub_id[which(retest_data$sub_id %in% test_data$sub_id == FALSE)]
 ```
 
@@ -143,7 +147,9 @@ TODO: write a nicer of getting rid of non numeric columns
 ```{r}
 retest_data <- as.data.frame(retest_data)
 retest_subs_test_data <- as.data.frame(retest_subs_test_data)
+
 matching_dv_columns <- c()
+
 for(i in 1:length(matching_columns)){
   if(is.numeric(retest_data[,matching_columns[i]]) & is.numeric(retest_subs_test_data[,matching_columns[i]])){
     matching_dv_columns <- c(matching_dv_columns, matching_columns[i])
@@ -160,18 +166,14 @@ for(i in 1:length(matching_dv_columns)){
 }
 ```
 
-Distribution of all Pearson correlations
+Distribution of all Pearson and Spearman correlations
 ```{r}
-ggplot(cor_df, aes(pearson))+
+cor_df %>%
+  gather(key, value) %>%
+  ggplot(aes(value))+
   geom_histogram()+
-  theme_bw()
-```
-
-Distribution of all Spearman correlations
-```{r}
-ggplot(cor_df, aes(spearman))+
-  geom_histogram()+
-  theme_bw()
+  theme_bw()+
+  facet_wrap(~key)
 ```
 
 Add column to tasks vs. surveys in correlation table
@@ -184,7 +186,10 @@ cor_df[grep('survey', cor_df$dv), 'task'] = 'survey'
 ```
 
 Distributions of correlations by task vs. survey
-Task reliability distributions looks alsmost bimodal. Should figure out whether the lower ones are specific tasks or if they are certain kinds of vars (e.g. certain ddm parameters)
+
+Survey reliabilities are noticably higher than task reliabilities.
+
+Task reliability distributions looks alsmost bimodal. **Should figure out whether the lower ones are specific tasks or if they are certain kinds of vars (e.g. certain ddm parameters)**
 ```{r}
 cor_df %>%
   gather(key, value, -dv, -task) %>%
@@ -203,14 +208,15 @@ cor_df %>%
   arrange(-pearson, -spearman)
 ```
 
-Mean reliability for surveys
+Mean reliability for tasks
 ```{r}
 cor_df %>%
   filter(task == 'task') %>%
   select(dv, spearman, pearson) %>%
   arrange(-pearson, -spearman) %>%
   summarise(mean_pearson = mean(pearson),
-            mean_spearman = mean(spearman))
+            mean_spearman = mean(spearman),
+            num_vars = n())
 ```
 
 For surveys
@@ -230,68 +236,119 @@ cor_df %>%
   select(dv, spearman, pearson) %>%
   arrange(-pearson, -spearman) %>%
   summarise(mean_pearson = mean(pearson),
-            mean_spearman = mean(spearman))
+            mean_spearman = mean(spearman),
+            num_vars = n())
 ```
 
 Distribution of each variable
-```{r}
-#Function to check if the variables that went in to cor_df have normal distributions
 
+Check if the variables that went in to the correlation matrix have normal distributions since at least the Pearson correlations depend on this assumption. If not transform data columns in both retest and test data and calculate a new correlation df.
+
+Function to check if the variables that went in to cor_df have normal distributions
+```{r}
 diff_from_normal <- function(col){
   return(shapiro.test(col)$p.value < 0.05)
 }
 ```
 
 Check distributions of retest data
+
+The smaller meaningful vars have been somewhat cleaned. So far in this notebook we looked at all the vars in their rawest form.
+
+Create and organize new df where distribution of vars data is stored. First for retest data only; then for test data for subjects who have retest data - restricting here since these are the subsets of data that went in to the correlation matrix. Merge and cleanup
 ```{r}
 dist_retest_data <- as.data.frame(apply(retest_data[,matching_dv_columns], 2, diff_from_normal))
-names(dist_retest_data) <- c('not_normal')
+names(dist_retest_data) <- c('retest_not_normal')
 dist_retest_data$dv <- row.names(dist_retest_data)
 row.names(dist_retest_data) <- seq(1:nrow(dist_retest_data))
-dist_retest_data = dist_retest_data %>% select(dv, not_normal)
-```
+dist_retest_data = dist_retest_data %>% select(dv, retest_not_normal)
 
-Check distributions of test data (for subjects who have retest data - restricting here since there are the subsets of data that went in to the correlation matrix)
-```{r}
 dist_retest_subs_test_data <- as.data.frame(apply(retest_subs_test_data[,matching_dv_columns], 2, diff_from_normal))
-names(dist_retest_subs_test_data) <- c('not_normal')
+names(dist_retest_subs_test_data) <- c('test_not_normal')
 dist_retest_subs_test_data$dv <- row.names(dist_retest_subs_test_data)
 row.names(dist_retest_subs_test_data) <- seq(1:nrow(dist_retest_subs_test_data))
-dist_retest_subs_test_data = dist_retest_subs_test_data %>% select(dv, not_normal)
+dist_retest_subs_test_data = dist_retest_subs_test_data %>% select(dv, test_not_normal)
+
+dist_data <- merge(dist_retest_data, dist_retest_subs_test_data, by = 'dv')
+
+rm(dist_retest_data, dist_retest_subs_test_data)
+```
+
+Add whether dv's are tasks or survey to distribution dfs
+```{r}
+dist_data = cor_df %>%
+  select(dv, task) %>%
+  left_join(dist_data, by = 'dv')
 ```
 
 What proportion is not normal?
+A large proportion of the variables are not normal for data from both sources. Larger proportions of survey data are not normal compared to task data. 
 ```{r}
-sum(dist_retest_data$not_normal)/nrow(dist_retest_data)
-```
-
-```{r}
-sum(dist_retest_subs_test_data$not_normal)/nrow(dist_retest_subs_test_data)
+dist_data %>%
+  group_by(task) %>%
+  summarise(mean_retest_not_normal  = mean(retest_not_normal),
+            mean_test_not_normal = mean(test_not_normal))
 ```
 
 Are the same vars that are not normally distributed in the retest data not normal in test data as well?
 List of variables that have different distributions in the two time points (shown here is whether they are normally distributed in the retest data)
-A majority of them are drift diffusion parameters (but note that these vars are overrepresented to begin with).
+A majority of them are drift diffusion parameters (but note that these vars are overrepresented to begin with - more on them later).
 ```{r}
-dist_retest_data[which(dist_retest_data$not_normal != dist_retest_subs_test_data$not_normal),]
+dist_data %>%
+  filter(retest_not_normal != test_not_normal)
+```
+
+Apply the same cleaning procedure that was used for meaningful vars for all vars:
+```{r}
+transform_remove_skew = function(data, threshold = 1){
+}
 ```
 
 Transform non normal vars
 Transform both retest and test data if not normally distributed in either. 
 Order of transformations tried: log and sqrt
 ```{r}
-transform_dv_df = data.frame(dv = c(), transform = c(), not_normal = c())
+#Add columns to dist_data that will be updated
+dist_data = dist_data %>%
+  mutate(retest_transform = ifelse(retest_not_normal, NA, 'none'),
+         test_transform = ifelse(test_not_normal, NA, 'none'))
+
+get_transform <- function(data){
+  t_data = data
+  transform = 'none'
+  if(diff_from_normal(data) & !is.na(diff_from_normal(data))){
+    t_data = log1p(data)
+    transform = 'log1p'
+    if(diff_from_normal(t_data) & !is.na(diff_from_normal(t_data))){
+      t_data = sqrt(data)
+      transform = 'sqrt'
+      if(diff_from_normal(t_data) & !is.na(diff_from_normal(t_data))){
+        transform = 'failed'
+      }
+    }
+  }
+  return(transform)
+}
+
+for(i in 1:nrow(dist_data)){
+  if(is.na(dist_data$retest_transform[i])){
+    dist_data$retest_transform[i] = get_transform(retest_data[,dist_data$dv[i]])
+  }
+  if(is.na(dist_data$test_transform[i])){
+    dist_data$test_transform[i] = get_transform(retest_subs_test_data[,dist_data$dv[i]])
+  }
+}
+
+t_retest_data = retest_data
+t_retest_subs_test_data = retest_subs_test_data
+
+
 #check if normal
-diff_from_normal(retest_data[,2])
-diff_from_normal(log(retest_data[,2]))
-diff_from_normal(sqrt(retest_data[,2]))
 #if yes stop and record transformation = none
 #if transform: log
 #check if normal
 #if yes stop and record transformation = log
 #if no transform: sqrt
-
-
 ```
 
 Drift diffusion variables: raw vars vs. EZ vs. hddm
