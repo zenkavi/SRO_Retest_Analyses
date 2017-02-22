@@ -300,8 +300,65 @@ dist_data %>%
 
 Apply the same cleaning procedure that was used for meaningful vars for all vars:
 ```{r}
-transform_remove_skew = function(data, threshold = 1){
+"%w/o%" <- function(x, y) x[!x %in% y]
+
+transform_remove_skew = function(data, cols, threshold = 1){
+  
+  tmp = as.data.frame(apply(data[,columns],2,skew))
+  names(tmp) = c("skew")
+  tmp$dv = row.names(tmp)
+  tmp = tmp %>% 
+    filter(abs(skew)>threshold)
+  
+  skewed_variables = tmp$dv
+  skew_subset = data[, skewed_variables]
+  positive_subset = data[,tmp$dv[tmp$skew>0]]
+  negative_subset = data[,tmp$dv[tmp$skew<0]]
+  
+  # transform variables
+  # log transform for positive skew
+  positive_subset = log(positive_subset)
+  successful_transforms = as.data.frame(apply(positive_subset, 2, skew))
+  names(successful_transforms) = c('skew')
+  successful_transforms$dv = row.names(successful_transforms)
+  successful_transforms = successful_transforms %>% filter(abs(skew)<threshold)
+  successful_transforms = successful_transforms$dv
+  successful_transforms = positive_subset[,successful_transforms]
+  dropped_vars = names(positive_subset) %w/o% names(successful_transforms)
+  
+  # replace transformed variables
+  data = data[,-c(which(names(data) %in% names(positive_subset)))]
+  names(successful_transforms) = paste0(names(successful_transforms), '.logTr')
+  print.noquote(rep('*', 40))
+  print(paste0('Dropping', length(dropped_vars) ,'positively skewed data that could not be transformed successfully:')
+        
+        
+  print('\n'.join(dropped_vars))
+  print.noquote(rep('*', 40))
+  data = pd.concat([data, successful_transforms], axis = 1)
 }
+
+tmp = as.data.frame(apply(retest_data[, matching_dv_columns], 2, skew))
+names(tmp) = c('skew')
+tmp$dv = row.names(tmp)
+tmp = tmp %>%
+  filter(abs(skew)>1)
+positive_subset = retest_data[,tmp$dv[tmp$skew>0]]
+
+positive_subset = log(positive_subset)
+successful_transforms = as.data.frame(apply(positive_subset, 2, skew))
+names(successful_transforms) = c('skew')
+successful_transforms$dv = row.names(successful_transforms)
+successful_transforms = successful_transforms %>% filter(abs(skew)<1)
+successful_transforms = successful_transforms$dv
+successful_transforms = positive_subset[,successful_transforms]
+dropped_vars = names(positive_subset) %w/o% names(successful_transforms)
+
+tmp_retest_data = retest_data
+tmp_retest_data = tmp_retest_data[,-c(which(names(tmp_retest_data) %in% 
+                                              names(positive_subset)))]
+
+#transform_remove_skew(retest_data, matching_dv_columns)
 ```
 
 Transform non normal vars
