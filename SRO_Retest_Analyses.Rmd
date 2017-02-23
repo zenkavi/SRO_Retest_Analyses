@@ -2,8 +2,11 @@
 title: 'Self Regulation Ontology Retest Data: Initial Exploration'
 output:
   html_notebook: default
-  html_document: default
   pdf_document: default
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float: true
 ---
 
 ```{r, message=FALSE, warning=FALSE, include=FALSE}
@@ -21,6 +24,8 @@ library(GPArotation)
 sem <- function(x) {sd(x) / sqrt(length(x))}
 options(digits = 4)
 ```
+
+# Loading and matching test and retest datasets
 
 Load original data
 ```{r}
@@ -141,9 +146,11 @@ retest_data <- retest_data[,matching_columns]
 retest_subs_test_data <- retest_subs_test_data[,matching_columns]
 ```
 
-Get list of test retest correlations
+# Correlations of exhaustive variables
 
-TODO: write a nicer of getting rid of non numeric columns
+Get list of test retest correlations for all matching (numeric) columns in the test and retest data. Note two caveats:
+1. There are still some columns that weren't in both datasets (e.g. two stage)
+2. Unlike meaningful variables these variables are not (yet) rid of outliers or log transformed if skewed. This will be detailed below along with its problems.
 
 ```{r}
 retest_data <- as.data.frame(retest_data)
@@ -254,7 +261,9 @@ diff_from_normal <- function(col){
 
 Check distributions of retest data
 
-The smaller meaningful vars have been somewhat cleaned. So far in this notebook we looked at all the vars in their rawest form.
+The smaller meaningful vars dataframe have been somewhat cleaned. So far in this notebook we looked at all the vars in their rawest form. Here we'll first check the distributions of all the variables and then apply the same cleaning procedure that was used for the meaningful variables to all of them. 
+
+Note that I'm doing this for the sake of consistency for now. We might later decide that we would like to transform certain variables of interest in other ways to be able to include them in our analyses without violating the assumptions of those analyses. The current procedure checks the skewness of a column
 
 Create and organize new df where distribution of vars data is stored. First for retest data only; then for test data for subjects who have retest data - restricting here since these are the subsets of data that went in to the correlation matrix. Merge and cleanup
 ```{r}
@@ -301,9 +310,29 @@ dist_data %>%
 
 Apply the same cleaning procedure that was used for meaningful vars for all vars:
 ```{r}
+remove_outliers = function(data_column, quantile_range = 2.5){
+  
+  q_25 = quantile(data_column, na.rm=T)[2]
+  q_50 = quantile(data_column, na.rm=T)[3]
+  q_75 = quantile(data_column, na.rm=T)[4]
+  
+  lowlimit = q_50 - quantile_range*(q_75 - q_25)
+  highlimit = q_50 + quantile_range*(q_75 - q_25)
+  
+  data_column = ifelse(data_column<lowlimit, NA, ifelse(data_column>highlimit, NA, data_column))
+  
+  return(data_column)
+}
+
 "%w/o%" <- function(x, y) x[!x %in% y]
 
-transform_remove_skew = function(data, cols, threshold = 1){
+neg_log <- function(column){
+  col_max = max(column, na.rm=T)
+  column = col_max+1-column
+  return(log(column))
+}
+
+transform_remove_skew = function(data, columns, threshold = 1){
   
   tmp = as.data.frame(apply(data[,columns],2,skew))
   names(tmp) = c("skew")
@@ -331,83 +360,47 @@ transform_remove_skew = function(data, cols, threshold = 1){
   data = data[,-c(which(names(data) %in% names(positive_subset)))]
   names(successful_transforms) = paste0(names(successful_transforms), '.logTr')
   print.noquote(rep('*', 40))
-  print(paste0('Dropping', length(dropped_vars) ,'positively skewed data that could not be transformed successfully:')
-        
-        
-  print('\n'.join(dropped_vars))
+  print(paste0('Dropping ', length(dropped_vars) ,' positively skewed data that could not be transformed successfully:'))
+  print(dropped_vars)
   print.noquote(rep('*', 40))
-  data = pd.concat([data, successful_transforms], axis = 1)
+  data = cbind(data, successful_transforms)
+  
+  # reflected log transform for negative skew      
+  negative_subset = as.data.frame(apply(negative_subset, 2, neg_log))
+  successful_transforms = as.data.frame(apply(negative_subset, 2, skew))
+  names(successful_transforms) = c('skew')
+  successful_transforms$dv = row.names(successful_transforms)
+  successful_transforms = successful_transforms %>% filter(abs(skew)<1)
+  successful_transforms = successful_transforms$dv
+  successful_transforms = negative_subset[,successful_transforms]
+  dropped_vars = names(negative_subset) %w/o% names(successful_transforms)
+  
+  # replace transformed variables
+  data = data[,-c(which(names(data) %in% names(negative_subset)))]
+  names(successful_transforms) = paste0(names(successful_transforms), '.ReflogTr')
+  print.noquote(rep('*', 40))
+  print(paste0('Dropping ', length(dropped_vars) ,' negatively skewed data that could not be transformed successfully:'))
+  print(dropped_vars)
+  print.noquote(rep('*', 40))
+  data = cbind(data, successful_transforms)
+  
+  return(data)
 }
-
-tmp = as.data.frame(apply(retest_data[, matching_dv_columns], 2, skew))
-names(tmp) = c('skew')
-tmp$dv = row.names(tmp)
-tmp = tmp %>%
-  filter(abs(skew)>1)
-positive_subset = retest_data[,tmp$dv[tmp$skew>0]]
-
-positive_subset = log(positive_subset)
-successful_transforms = as.data.frame(apply(positive_subset, 2, skew))
-names(successful_transforms) = c('skew')
-successful_transforms$dv = row.names(successful_transforms)
-successful_transforms = successful_transforms %>% filter(abs(skew)<1)
-successful_transforms = successful_transforms$dv
-successful_transforms = positive_subset[,successful_transforms]
-dropped_vars = names(positive_subset) %w/o% names(successful_transforms)
-
-tmp_retest_data = retest_data
-tmp_retest_data = tmp_retest_data[,-c(which(names(tmp_retest_data) %in% 
-                                              names(positive_subset)))]
-
-#transform_remove_skew(retest_data, matching_dv_columns)
 ```
 
-Transform non normal vars
-Transform both retest and test data if not normally distributed in either. 
-Order of transformations tried: log and sqrt
 ```{r}
-#Add columns to dist_data that will be updated
-dist_data = dist_data %>%
-  mutate(retest_transform = ifelse(retest_not_normal, NA, 'none'),
-         test_transform = ifelse(test_not_normal, NA, 'none'))
-
-get_transform <- function(data){
-  t_data = data
-  transform = 'none'
-  if(diff_from_normal(data) & !is.na(diff_from_normal(data))){
-    t_data = log1p(data)
-    transform = 'log1p'
-    if(diff_from_normal(t_data) & !is.na(diff_from_normal(t_data))){
-      t_data = sqrt(data)
-      transform = 'sqrt'
-      if(diff_from_normal(t_data) & !is.na(diff_from_normal(t_data))){
-        transform = 'failed'
-      }
-    }
-  }
-  return(transform)
-}
-
-for(i in 1:nrow(dist_data)){
-  if(is.na(dist_data$retest_transform[i])){
-    dist_data$retest_transform[i] = get_transform(retest_data[,dist_data$dv[i]])
-  }
-  if(is.na(dist_data$test_transform[i])){
-    dist_data$test_transform[i] = get_transform(retest_subs_test_data[,dist_data$dv[i]])
-  }
-}
-
-t_retest_data = retest_data
-t_retest_subs_test_data = retest_subs_test_data
-
-
-#check if normal
-#if yes stop and record transformation = none
-#if transform: log
-#check if normal
-#if yes stop and record transformation = log
-#if no transform: sqrt
+clean_retest_data = as.data.frame(apply(retest_data[, matching_dv_columns], 2, remove_outliers))
+clean_retest_data = transform_remove_skew(clean_retest_data, matching_dv_columns)
 ```
+
+I'm not sure what is the right thing to do regarding the cleaning of the test data for the retest subjects. Should they be cleaned on the whole sample for the time they were collected on and then extracted (this should have an effect on outliers as well as transformations) or extracted and then cleaned. Here I am doing the latter but this seems to be resulting in more skewed variables.
+
+```{r}
+clean_retest_subs_test_data = as.data.frame(apply(retest_subs_test_data[, matching_dv_columns], 2, remove_outliers))
+clean_retest_subs_test_data = transform_remove_skew(retest_subs_test_data, matching_dv_columns)
+```
+
+But what about dropping different variables from the two dataframes
 
 Drift diffusion variables: raw vars vs. EZ vs. hddm
 
