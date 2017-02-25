@@ -1,12 +1,9 @@
 ---
 title: 'Self Regulation Ontology Retest Data: Initial Exploration'
 output:
-  html_notebook: default
-  pdf_document: default
   html_document:
-    toc: true
-    toc_depth: 2
-    toc_float: true
+    toc: yes
+    toc_float: yes
 ---
 
 ```{r, message=FALSE, warning=FALSE, include=FALSE}
@@ -419,7 +416,7 @@ step 1:Ttest on all measures of T1 for people w and without retest
 step2 : efa on the people you don't have retest on and then predict how well this holds up for people w retest on t1 and on t2
 
 Data cleaning for efa
-```{r}
+```{r eval=FALSE}
 #read in only meaningful vars
 meaningful_var_test <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_01-31-2017/meaningful_variables_clean.csv')
 
@@ -462,7 +459,7 @@ retest_subs_test_mngf$sub_id == retest_data_mngf$sub_id
 
 Checking columns for efa:
 NEED TO RESOLVE SOME DIFFERENCES IN MEANINGFUL VARS BETWEEN THE TWO DATASETS
-```{r}
+```{r eval=FALSE}
 #Check columns 
 names(retest_data_mngf)[names(retest_data_mngf) %in% names(retest_subs_test_mngf) == FALSE]
 
@@ -499,7 +496,7 @@ rest_subs_test_mngf_z <- as.data.frame(rest_subs_test_mngf_z)
 
 
 Efa on subjects from original dataset withOUT retest data (using meaningful vars only)
-```{r}
+```{r eval=FALSE}
 unrotated <- efaUnrotate(rest_subs_test_mngf_z, nf=3, varList=names(rest_subs_test_mngf_z)[-1], estimator="mlr")
 
 summary(unrotated, std=TRUE)
@@ -507,13 +504,13 @@ inspect(unrotated, "std")
 ```
 
 
-```{r}
+```{r eval = FALSE}
 corMat <- rest_subs_test_mngf_z %>% select(-sub_id) %>% cor(.,use = 'complete.obs')
 
 solution <- fa(r = corMat, nfactors = 3, rotate = "oblimin", fm = "pa")
 ```
 
-```{r}
+```{r eval = FALSE}
 solution
 ```
 
