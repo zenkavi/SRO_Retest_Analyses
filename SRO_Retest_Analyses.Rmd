@@ -22,14 +22,14 @@ sem <- function(x) {sd(x) / sqrt(length(x))}
 options(digits = 4)
 ```
 
-# Loading and matching test and retest datasets
+# Loading and matching datasets
 
-Load original data
+### Load original data
 ```{r}
 test_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_01-31-2017/variables_exhaustive.csv')
 ```
 
-Load retest data
+### Load retest data
 ```{r}
 retest_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_02-11-2017/variables_exhaustive.csv')
 ```
@@ -48,7 +48,7 @@ process_lookup <- function(lookup_json){
 }
 ```
 
-Extract retest participants from test data
+### Extract retest participants from test data
 
 ```{r}
 test_worker_lookup <- fromJSON('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_02-11-2017/Local/worker_lookup.json')
@@ -81,6 +81,8 @@ retest_data <- retest_data %>%
   group_by(sub_id) %>%
   do(correct_subids(.,test_worker_lookup))
 ```
+
+### Checks and matching issues
 
 Are all retest subjects in test_data? No. 
 ```{r}
@@ -145,9 +147,9 @@ retest_subs_test_data <- retest_subs_test_data[,matching_columns]
 
 # Correlations of exhaustive variables
 
-Get list of test retest correlations for all matching (numeric) columns in the test and retest data. Note two caveats:
-1. There are still some columns that weren't in both datasets (e.g. two stage)
-2. Unlike meaningful variables these variables are not (yet) rid of outliers or log transformed if skewed. This will be detailed below along with its problems.
+Get list of test retest correlations for all matching (numeric) columns in the test and retest data. Note two caveats:  
+**1. There are still some columns that weren't in both datasets listed above (e.g. two stage)**  
+**2. Unlike meaningful variables these variables are not (yet) rid of outliers or log transformed if skewed. This will be detailed below along with its problems.**
 
 ```{r}
 retest_data <- as.data.frame(retest_data)
@@ -190,7 +192,7 @@ cor_df$task = 'task'
 cor_df[grep('survey', cor_df$dv), 'task'] = 'survey'
 ```
 
-Distributions of correlations by task vs. survey
+## Distributions of correlations by task vs. survey
 
 Survey reliabilities are noticably higher than task reliabilities.
 
@@ -204,8 +206,17 @@ cor_df %>%
   facet_wrap(key~task)
 ```
 
-Rank order correlations
-For tasks
+```{r}
+cor_df %>%
+  group_by(task) %>%
+  summarise(mean_pearson = mean(pearson),
+            mean_spearman = mean(spearman),
+            num_vars = n())
+```
+
+### Rank order of correlations 
+
+#### For tasks
 ```{r}
 cor_df %>%
   filter(task == 'task') %>%
@@ -213,18 +224,7 @@ cor_df %>%
   arrange(-pearson, -spearman)
 ```
 
-Mean reliability for tasks
-```{r}
-cor_df %>%
-  filter(task == 'task') %>%
-  select(dv, spearman, pearson) %>%
-  arrange(-pearson, -spearman) %>%
-  summarise(mean_pearson = mean(pearson),
-            mean_spearman = mean(spearman),
-            num_vars = n())
-```
-
-For surveys
+#### For surveys
 
 Note: Holt and Laury test-retest is pretty terrible. In previous data it was ~.35. Should check to see if there is a coding error there.
 ```{r}
@@ -232,17 +232,6 @@ cor_df %>%
   filter(task == 'survey') %>%
   select(dv, spearman, pearson) %>%
   arrange(-pearson, -spearman)
-```
-
-Mean reliability for surveys
-```{r}
-cor_df %>%
-  filter(task == 'survey') %>%
-  select(dv, spearman, pearson) %>%
-  arrange(-pearson, -spearman) %>%
-  summarise(mean_pearson = mean(pearson),
-            mean_spearman = mean(spearman),
-            num_vars = n())
 ```
 
 Distribution of each variable
@@ -385,14 +374,14 @@ transform_remove_skew = function(data, columns, threshold = 1){
 }
 ```
 
-```{r}
+```{r warning=FALSE}
 clean_retest_data = as.data.frame(apply(retest_data[, matching_dv_columns], 2, remove_outliers))
 clean_retest_data = transform_remove_skew(clean_retest_data, matching_dv_columns)
 ```
 
 I'm not sure what is the right thing to do regarding the cleaning of the test data for the retest subjects. Should they be cleaned on the whole sample for the time they were collected on and then extracted (this should have an effect on outliers as well as transformations) or extracted and then cleaned. Here I am doing the latter but this seems to be resulting in more skewed variables.
 
-```{r}
+```{r warning=FALSE}
 clean_retest_subs_test_data = as.data.frame(apply(retest_subs_test_data[, matching_dv_columns], 2, remove_outliers))
 clean_retest_subs_test_data = transform_remove_skew(retest_subs_test_data, matching_dv_columns)
 ```
