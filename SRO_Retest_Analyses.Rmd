@@ -94,7 +94,7 @@ Who is missing?
 retest_data$sub_id[which(retest_data$sub_id %in% test_data$sub_id == FALSE)]
 ```
 
-One retest participant is not in test data. Remove that subject from retest_data for now
+One retest participant is not in test data. Remove that subject from retest_data. This participant should not have completed the retest battery to begin with because they had failed our previous criterion on number of properly completed trials. The first HIT I posted, however, had an issue with the qualifications and before I could terminate it a handful of subjects had accepted and begun the battery so we had to let them finish. So this subject has given us good data for the retest battery but worse data for the test battery.
 ```{r}
 retest_data <- retest_data[retest_data$sub_id %in% test_data$sub_id,]
 
@@ -174,7 +174,7 @@ for(i in 1:length(matching_dv_columns)){
 ```
 
 Distribution of all Pearson and Spearman correlations
-```{r}
+```{r warning=FALSE, message=FALSE}
 cor_df %>%
   gather(key, value) %>%
   ggplot(aes(value))+
@@ -197,7 +197,7 @@ cor_df[grep('survey', cor_df$dv), 'task'] = 'survey'
 Survey reliabilities are noticably higher than task reliabilities.
 
 Task reliability distributions looks alsmost bimodal. **Should figure out whether the lower ones are specific tasks or if they are certain kinds of vars (e.g. certain ddm parameters)**
-```{r}
+```{r warning=FALSE, message=FALSE}
 cor_df %>%
   gather(key, value, -dv, -task) %>%
   ggplot(aes(value))+
@@ -205,7 +205,7 @@ cor_df %>%
   theme_bw()+
   facet_wrap(key~task)
 ```
-
+Mean reliability and the number of variables for both the surveys and the tasks
 ```{r}
 cor_df %>%
   group_by(task) %>%
@@ -226,7 +226,7 @@ cor_df %>%
 
 #### For surveys
 
-Note: Holt and Laury test-retest is pretty terrible. In previous data it was ~.35. Should check to see if there is a coding error there.
+Note: Holt and Laury test-retest is pretty terrible. In previous data I have worked with it was ~.35. Should check to see if there is a coding error there.
 ```{r}
 cor_df %>%
   filter(task == 'survey') %>%
@@ -234,9 +234,13 @@ cor_df %>%
   arrange(-pearson, -spearman)
 ```
 
-Distribution of each variable
+## Distribution of each variable
 
-Check if the variables that went in to the correlation matrix have normal distributions since at least the Pearson correlations depend on this assumption. If not transform data columns in both retest and test data and calculate a new correlation df.
+The smaller meaningful_vars dataframe has been somewhat cleaned. So far in this notebook we looked at all the vars in their rawest form. Here we'll first check the distributions of all the variables and then apply the same cleaning procedure that was used for the meaningful variables to all of them. 
+
+Note that I'm doing this for the sake of consistency for now. We might later decide that we would like to transform certain variables of interest in other ways to be able to include them in our analyses without violating the assumptions of those analyses. The current procedure checks the skewness of a column first removes the outliers defined as greater than 2.5 IQR from median then variables with skewness >1 are log transformed.
+
+First I'll check if the variables that went in to the correlation matrix have normal distributions since at least the Pearson correlations depend on this assumption. Then everything will be cleaned the way meaningful variables was cleaned. There is a problem with this approach that I'm not sure how to deal with yet but this will be detailed below.
 
 Function to check if the variables that went in to cor_df have normal distributions
 ```{r}
@@ -245,13 +249,7 @@ diff_from_normal <- function(col){
 }
 ```
 
-Check distributions of retest data
-
-The smaller meaningful vars dataframe have been somewhat cleaned. So far in this notebook we looked at all the vars in their rawest form. Here we'll first check the distributions of all the variables and then apply the same cleaning procedure that was used for the meaningful variables to all of them. 
-
-Note that I'm doing this for the sake of consistency for now. We might later decide that we would like to transform certain variables of interest in other ways to be able to include them in our analyses without violating the assumptions of those analyses. The current procedure checks the skewness of a column
-
-Create and organize new df where distribution of vars data is stored. First for retest data only; then for test data for subjects who have retest data - restricting here since these are the subsets of data that went in to the correlation matrix. Merge and cleanup
+Create and organize new df where distribution of vars data is stored. First for retest data only; then for test data for subjects who have retest data - restricting here since these are the subsets of data that went in to the correlation matrix. Merge and cleanup.
 ```{r}
 dist_retest_data <- as.data.frame(apply(retest_data[,matching_dv_columns], 2, diff_from_normal))
 names(dist_retest_data) <- c('retest_not_normal')
@@ -277,7 +275,7 @@ dist_data = cor_df %>%
   left_join(dist_data, by = 'dv')
 ```
 
-What proportion is not normal?
+What proportion is not normal?  
 A large proportion of the variables are not normal for data from both sources. Larger proportions of survey data are not normal compared to task data. 
 ```{r}
 dist_data %>%
@@ -286,15 +284,15 @@ dist_data %>%
             mean_test_not_normal = mean(test_not_normal))
 ```
 
-Are the same vars that are not normally distributed in the retest data not normal in test data as well?
-List of variables that have different distributions in the two time points (shown here is whether they are normally distributed in the retest data)
+Are the same vars that are not normally distributed in the retest data not normal in test data as well?  
+List of variables that have different distributions in the two time points.
 A majority of them are drift diffusion parameters (but note that these vars are overrepresented to begin with - more on them later).
 ```{r}
 dist_data %>%
   filter(retest_not_normal != test_not_normal)
 ```
 
-Apply the same cleaning procedure that was used for meaningful vars for all vars:
+Apply the same cleaning procedure that was used for meaningful vars for all vars: 
 ```{r}
 remove_outliers = function(data_column, quantile_range = 2.5){
   
@@ -345,10 +343,10 @@ transform_remove_skew = function(data, columns, threshold = 1){
   # replace transformed variables
   data = data[,-c(which(names(data) %in% names(positive_subset)))]
   names(successful_transforms) = paste0(names(successful_transforms), '.logTr')
-  print.noquote(rep('*', 40))
-  print(paste0('Dropping ', length(dropped_vars) ,' positively skewed data that could not be transformed successfully:'))
-  print(dropped_vars)
-  print.noquote(rep('*', 40))
+  cat(rep('*', 40))
+  cat(paste0('Dropping ', length(dropped_vars) ,' positively skewed data that could not be transformed successfully:'))
+  cat(dropped_vars, sep = '\n')
+  cat(rep('*', 40))
   data = cbind(data, successful_transforms)
   
   # reflected log transform for negative skew      
@@ -364,29 +362,98 @@ transform_remove_skew = function(data, columns, threshold = 1){
   # replace transformed variables
   data = data[,-c(which(names(data) %in% names(negative_subset)))]
   names(successful_transforms) = paste0(names(successful_transforms), '.ReflogTr')
-  print.noquote(rep('*', 40))
-  print(paste0('Dropping ', length(dropped_vars) ,' negatively skewed data that could not be transformed successfully:'))
-  print(dropped_vars)
-  print.noquote(rep('*', 40))
+  cat(rep('*', 40))
+  cat(paste0('Dropping ', length(dropped_vars) ,' negatively skewed data that could not be transformed successfully:'))
+  cat(dropped_vars, sep = '\n')
+  cat(rep('*', 40))
   data = cbind(data, successful_transforms)
   
   return(data)
 }
 ```
 
+Clean retest data with these rules.
 ```{r warning=FALSE}
 clean_retest_data = as.data.frame(apply(retest_data[, matching_dv_columns], 2, remove_outliers))
 clean_retest_data = transform_remove_skew(clean_retest_data, matching_dv_columns)
 ```
 
-I'm not sure what is the right thing to do regarding the cleaning of the test data for the retest subjects. Should they be cleaned on the whole sample for the time they were collected on and then extracted (this should have an effect on outliers as well as transformations) or extracted and then cleaned. Here I am doing the latter but this seems to be resulting in more skewed variables.
+**I'm not sure what the right thing to do is regarding the cleaning of the test data for the retest subjects.** Should they be cleaned on the whole sample for the time they were collected on and then extracted (this should have an effect on outliers as well as transformations) or extracted and then cleaned. Here I am doing the latter but this seems to be resulting in more skewed variables for test data compared to the retest data so the later correlation matrix might not include all the variables we would like to look at.
 
 ```{r warning=FALSE}
 clean_retest_subs_test_data = as.data.frame(apply(retest_subs_test_data[, matching_dv_columns], 2, remove_outliers))
 clean_retest_subs_test_data = transform_remove_skew(retest_subs_test_data, matching_dv_columns)
 ```
 
-But what about dropping different variables from the two dataframes
+## Correlations on cleaned variables
+
+```{r}
+clean_all_columns <- unique(c(names(clean_retest_data), names(clean_retest_subs_test_data)))
+
+clean_matching_columns <- c()
+for(i in 1:length(clean_all_columns)){
+  if(clean_all_columns[i] %in% names(clean_retest_data) & clean_all_columns[i] %in% names(clean_retest_subs_test_data)){
+    clean_matching_columns <- c(clean_matching_columns, clean_all_columns[i])
+  }
+}
+
+clean_retest_data <- clean_retest_data[,clean_matching_columns]
+clean_retest_subs_test_data <- clean_retest_subs_test_data[,clean_matching_columns]
+
+clean_matching_dv_columns <- c()
+
+for(i in 1:length(clean_matching_columns)){
+  if(is.numeric(clean_retest_data[,clean_matching_columns[i]]) & is.numeric(clean_retest_subs_test_data[,clean_matching_columns[i]])){
+    clean_matching_dv_columns <- c(clean_matching_dv_columns, clean_matching_columns[i])
+  }
+}
+
+clean_cor_df <- data.frame(pearson = rep(NA, length(clean_matching_dv_columns)), spearman = rep(NA, length(clean_matching_dv_columns)))
+
+row.names(clean_cor_df) <- clean_matching_dv_columns
+
+for(i in 1:length(clean_matching_dv_columns)){
+  clean_cor_df[clean_matching_dv_columns[i], 'pearson'] <- cor(clean_retest_data[,clean_matching_dv_columns[i]], clean_retest_subs_test_data[,clean_matching_dv_columns[i]], method = 'pearson', use = "pairwise.complete.obs")
+  clean_cor_df[clean_matching_dv_columns[i], 'spearman'] <- cor(clean_retest_data[,clean_matching_dv_columns[i]],clean_retest_subs_test_data[,clean_matching_dv_columns[i]], method = 'spearman', use = "pairwise.complete.obs")
+}
+```
+
+```{r}
+clean_cor_df %>%
+  gather(key, value) %>%
+  ggplot(aes(value))+
+  geom_histogram()+
+  theme_bw()+
+  facet_wrap(~key)
+```
+
+```{r}
+clean_cor_df$dv = row.names(clean_cor_df)
+row.names(clean_cor_df) = seq(1:nrow(clean_cor_df))
+clean_cor_df$task = 'task'
+clean_cor_df[grep('survey', clean_cor_df$dv), 'task'] = 'survey'
+```
+
+```{r}
+clean_cor_df %>%
+  gather(key, value, -dv, -task) %>%
+  ggplot(aes(value))+
+  geom_histogram()+
+  theme_bw()+
+  facet_wrap(key~task)
+```
+
+This cleaning led to a slight change in the mean reliabilities but a lot of dropped variables.
+
+```{r}
+clean_cor_df %>%
+  group_by(task) %>%
+  summarise(mean_pearson = mean(pearson),
+            mean_spearman = mean(spearman),
+            num_vars = n())
+```
+
+--------------------------------
 
 Drift diffusion variables: raw vars vs. EZ vs. hddm
 
