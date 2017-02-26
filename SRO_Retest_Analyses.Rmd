@@ -1,9 +1,9 @@
 ---
 title: 'Self Regulation Ontology Retest Data: Initial Exploration'
 output:
-  html_document:
-    toc: yes
-    toc_float: yes
+html_document:
+toc: yes
+toc_float: yes
 ---
 
 ```{r, message=FALSE, warning=FALSE, include=FALSE}
@@ -275,7 +275,7 @@ dist_data = cor_df %>%
   left_join(dist_data, by = 'dv')
 ```
 
-What proportion is not normal?  
+**What proportion is not normal?**  
 A large proportion of the variables are not normal for data from both sources. Larger proportions of survey data are not normal compared to task data. 
 ```{r}
 dist_data %>%
@@ -284,7 +284,7 @@ dist_data %>%
             mean_test_not_normal = mean(test_not_normal))
 ```
 
-Are the same vars that are not normally distributed in the retest data not normal in test data as well?  
+**Are the same vars that are not normally distributed in the retest data not normal in test data as well?**  
 List of variables that have different distributions in the two time points.
 A majority of them are drift diffusion parameters (but note that these vars are overrepresented to begin with - more on them later).
 ```{r}
@@ -344,9 +344,12 @@ transform_remove_skew = function(data, columns, threshold = 1){
   data = data[,-c(which(names(data) %in% names(positive_subset)))]
   names(successful_transforms) = paste0(names(successful_transforms), '.logTr')
   cat(rep('*', 40))
+  cat('\n')
   cat(paste0('Dropping ', length(dropped_vars) ,' positively skewed data that could not be transformed successfully:'))
+  cat('\n')
   cat(dropped_vars, sep = '\n')
   cat(rep('*', 40))
+  cat('\n')
   data = cbind(data, successful_transforms)
   
   # reflected log transform for negative skew      
@@ -363,9 +366,12 @@ transform_remove_skew = function(data, columns, threshold = 1){
   data = data[,-c(which(names(data) %in% names(negative_subset)))]
   names(successful_transforms) = paste0(names(successful_transforms), '.ReflogTr')
   cat(rep('*', 40))
+  cat('\n')
   cat(paste0('Dropping ', length(dropped_vars) ,' negatively skewed data that could not be transformed successfully:'))
+  cat('\n')
   cat(dropped_vars, sep = '\n')
   cat(rep('*', 40))
+  cat('\n')
   data = cbind(data, successful_transforms)
   
   return(data)
@@ -378,7 +384,8 @@ clean_retest_data = as.data.frame(apply(retest_data[, matching_dv_columns], 2, r
 clean_retest_data = transform_remove_skew(clean_retest_data, matching_dv_columns)
 ```
 
-**I'm not sure what the right thing to do is regarding the cleaning of the test data for the retest subjects.** Should they be cleaned on the whole sample for the time they were collected on and then extracted (this should have an effect on outliers as well as transformations) or extracted and then cleaned. Here I am doing the latter but this seems to be resulting in more skewed variables for test data compared to the retest data so the later correlation matrix might not include all the variables we would like to look at.
+**I'm not sure what the right thing to do is regarding the cleaning of the test data for the retest subjects.**   
+Should they be cleaned on the whole sample for the time they were collected on and then extracted (this should have an effect on outliers as well as transformations) or extracted and then cleaned. Here I am doing the latter but this seems to be resulting in more skewed variables for test data compared to the retest data so the later correlation matrix might not include all the variables we would like to look at.
 
 ```{r warning=FALSE}
 clean_retest_subs_test_data = as.data.frame(apply(retest_subs_test_data[, matching_dv_columns], 2, remove_outliers))
@@ -387,6 +394,7 @@ clean_retest_subs_test_data = transform_remove_skew(retest_subs_test_data, match
 
 ## Correlations on cleaned variables
 
+Create the same list of correlations as before but this time on a smaller set of cleaned variables.
 ```{r}
 clean_all_columns <- unique(c(names(clean_retest_data), names(clean_retest_subs_test_data)))
 
@@ -416,33 +424,30 @@ for(i in 1:length(clean_matching_dv_columns)){
   clean_cor_df[clean_matching_dv_columns[i], 'pearson'] <- cor(clean_retest_data[,clean_matching_dv_columns[i]], clean_retest_subs_test_data[,clean_matching_dv_columns[i]], method = 'pearson', use = "pairwise.complete.obs")
   clean_cor_df[clean_matching_dv_columns[i], 'spearman'] <- cor(clean_retest_data[,clean_matching_dv_columns[i]],clean_retest_subs_test_data[,clean_matching_dv_columns[i]], method = 'spearman', use = "pairwise.complete.obs")
 }
-```
 
-```{r}
-clean_cor_df %>%
-  gather(key, value) %>%
-  ggplot(aes(value))+
-  geom_histogram()+
-  theme_bw()+
-  facet_wrap(~key)
-```
-
-```{r}
 clean_cor_df$dv = row.names(clean_cor_df)
 row.names(clean_cor_df) = seq(1:nrow(clean_cor_df))
 clean_cor_df$task = 'task'
 clean_cor_df[grep('survey', clean_cor_df$dv), 'task'] = 'survey'
 ```
 
-```{r}
-clean_cor_df %>%
+Let's look at the distributions again: The distributions don't look terribly different but there are noticably fewer variables post cleaning. 
+```{r warning=FALSE, message=FALSE}
+cor_df %>%
+  left_join(clean_cor_df, by='dv') %>%
+  select(-task.y)%>%
+  rename(pearson_preClean = pearson.x, spearman_preClean = spearman.x,
+         pearson_postClean = pearson.y, spearman_postClean = spearman.y,
+         task = task.x) %>%
   gather(key, value, -dv, -task) %>%
-  ggplot(aes(value))+
-  geom_histogram()+
+  separate(key, c('cor_type', 'clean_type'),sep = "_") %>%
+  ggplot(aes(x=value, fill=factor(clean_type, levels = c('preClean', 'postClean'),
+                                  labels = c('Before', 'After'))))+
+  geom_histogram(position='identity', alpha = 0.5)+
+  facet_wrap(cor_type~task)+
   theme_bw()+
-  facet_wrap(key~task)
+  theme(legend.title = element_blank())
 ```
-
 This cleaning led to a slight change in the mean reliabilities but a lot of dropped variables.
 
 ```{r}
@@ -453,9 +458,24 @@ clean_cor_df %>%
             num_vars = n())
 ```
 
---------------------------------
+**What changed most with cleaning?**    
+Difference in correlation pre and post correlation for the variables that survived cleaning.  
+Things that changed most seem to be RTs and parameter estimates.
 
-Drift diffusion variables: raw vars vs. EZ vs. hddm
+```{r}
+clean_cor_df %>%
+  left_join(cor_df, by='dv') %>%
+  mutate(pearson_diff = abs(pearson.y - pearson.x),
+         spearman_diff = abs(spearman.y - spearman.x)) %>%
+  select(dv, pearson_diff, spearman_diff) %>%
+  arrange(-pearson_diff, -spearman_diff)
+```
+
+# Different variable types
+
+## 
+
+## Drift diffusion variables: raw vars vs. EZ vs. hddm
 
 Mean reliabilities for different kinds of variables (e.g. drift rates and NDs; separately for EZ and HDDM; subtraction vs basic variables - single vs. multiple)
 ```{r}
@@ -570,11 +590,11 @@ solution <- fa(r = corMat, nfactors = 3, rotate = "oblimin", fm = "pa")
 solution
 ```
 
- 
+
 Completion times/days
- 
- - First data release email esp to ASU
- - Send the spreadsheet with meaningul variables + demographics
- 
- 
+
+- First data release email esp to ASU
+- Send the spreadsheet with meaningul variables + demographics
+
+
 T1 comparison for people who came back vs didn't (of all that are invited)
