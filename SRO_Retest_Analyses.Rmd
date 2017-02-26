@@ -18,7 +18,7 @@ library(lavaan)
 library(semTools)
 library(psych)
 library(GPArotation)
-sem <- function(x) {sd(x) / sqrt(length(x))}
+sem <- function(x) {sd(x, na.rm=T) / sqrt(length(x))}
 options(digits = 4)
 ```
 
@@ -471,13 +471,66 @@ clean_cor_df %>%
   arrange(-pearson_diff, -spearman_diff)
 ```
 
-# Different variable types
+# Different task variable types
 
-## 
+Mean reliabilities for different types of dependant variables
 
 ## Drift diffusion variables: raw vars vs. EZ vs. hddm
 
-Mean reliabilities for different kinds of variables (e.g. drift rates and NDs; separately for EZ and HDDM; subtraction vs basic variables - single vs. multiple)
+We should probably take a closer look at model fits instead but this could be a first step.  
+I'm not sure why there are so many more EZ variables than hddm variables.
+
+```{r message=FALSE, warning=FALSE, fig.height=12, fig.width=9}
+cor_df%>%
+  select(-pearson) %>%
+  filter(grepl('EZ|hddm|_rt|_acc', dv)) %>%
+  mutate(var_type = ifelse(grepl('EZ',dv), 'EZ', ifelse(grepl('hddm',dv), 'hddm', 'raw')),
+         var = ifelse(grepl('_rt', dv), 'rt', ifelse(grepl('_acc', dv), 'acc', ifelse(grepl('_non_decision', dv), 'non_decision', ifelse(grepl('_thresh', dv), 'thresh', ifelse(grepl('_drift', dv), 'drift', NA)))))) %>%
+  left_join(clean_cor_df[,c('spearman', 'dv')], by = 'dv') %>%
+  gather(clean_type, spearman, -dv, -var_type, -var, -task) %>%
+  mutate(clean_type = ifelse(clean_type == 'spearman.x','Before','After')) %>%
+  ggplot(aes(spearman, fill = clean_type))+
+  geom_histogram(position='stack', alpha = 0.5)+
+  theme_bw()+
+  facet_wrap(var_type~var)+
+  scale_fill_discrete(name = 'Clean type')
+  
+```
+
+Average reliabilities
+
+1. Cleaning doesn't seem to make a huge difference except for raw accuracies and hddm non_decision  
+2. There are many more EZ variabiles but the few hddm variables have slightly higher reliabilities  
+3. Raw accuracies seem to have the worst reliabilities on average while hddm parameters the highest  
+
+```{r}
+cor_df%>%
+  select(-pearson) %>%
+  filter(grepl('EZ|hddm|_rt|_acc', dv)) %>%
+  mutate(var_type = ifelse(grepl('EZ',dv), 'EZ', ifelse(grepl('hddm',dv), 'hddm', 'raw')),
+         var = ifelse(grepl('_rt', dv), 'rt', ifelse(grepl('_acc', dv), 'acc', ifelse(grepl('_non_decision', dv), 'non_decision', ifelse(grepl('_thresh', dv), 'thresh', ifelse(grepl('_drift', dv), 'drift', NA)))))) %>%
+  left_join(clean_cor_df[,c('spearman', 'dv')], by = 'dv') %>%
+  gather(clean_type, spearman, -dv, -var_type, -var, -task) %>%
+  mutate(clean_type = ifelse(clean_type == 'spearman.x','Before','After')) %>%
+  group_by(var_type, clean_type, var) %>%
+  summarise(mean_spearman = mean(spearman, na.rm=T),
+            sem_spear = sem(spearman),
+            num_vars = n())
+```
+
+## Model fits versus raw
+
+```{r}
+```
+
+
+## Subtraction vs. Basic
+
+```{r}
+```
+
+## Single vs. multiple
+
 ```{r}
 ```
 
