@@ -499,8 +499,8 @@ cor_df%>%
 
 Average reliabilities
 
-1. Cleaning doesn't seem to make a huge difference except for raw accuracies and hddm non_decision  
-2. There are many more EZ variabiles but the few hddm variables have slightly higher reliabilities  
+1. Cleaning doesn't seem to make a huge difference (at least for Spearman correlations) except for raw accuracies and hddm non_decision  
+2. There are many more EZ variabiles but the few hddm variables have slightly higher reliabilities (I'm not sure about the reason for the discrepancy between the number of variables)  
 3. Raw accuracies seem to have the worst reliabilities on average while hddm parameters the highest  
 
 ```{r}
@@ -515,7 +515,8 @@ cor_df%>%
   group_by(var_type, clean_type, var) %>%
   summarise(mean_spearman = mean(spearman, na.rm=T),
             sem_spear = sem(spearman),
-            num_vars = n())
+            num_vars = sum(ifelse(is.na(spearman)==FALSE,1,0))) %>%
+  arrange(var_type, -as.numeric(as.factor(clean_type)))
 ```
 
 ## Model fits versus raw
@@ -534,13 +535,52 @@ cor_df%>%
 ```{r}
 ```
 
---------------------------------
+# Replicating the factor structure
 
-Can you get the factor structure for the retest
-step 1:Ttest on all measures of T1 for people w and without retest
+## Confirm comparability of retest and rest sample
+
+First do a t-test on all measures of T1 for subjects with and without retest to confirm that these two samples do not differ from each other significantly
 ```{r}
+ttest_df = data.frame(t_stat = rep(NA, length(matching_dv_columns)),
+                      p_val = rep(NA, length(matching_dv_columns)))
 
+row.names(ttest_df) <- matching_dv_columns
+
+for(i in 1:length(matching_dv_columns)){
+  ttest_df[matching_dv_columns[i], 't_stat'] <- t.test(retest_subs_test_data[,matching_dv_columns[i]], rest_subs_test_data[,matching_dv_columns[i]])$statistic
+  
+  ttest_df[matching_dv_columns[i], 'p_val'] <- t.test(retest_subs_test_data[,matching_dv_columns[i]], rest_subs_test_data[,matching_dv_columns[i]])$p.value
+}
+
+ttest_df$dv = row.names(ttest_df)
+row.names(ttest_df) = seq(1:nrow(ttest_df))
+ttest_df$task = 'task'
+ttest_df[grep('survey', ttest_df$dv), 'task'] = 'survey'
 ```
+
+Distribution of t values
+
+```{r warning=FALSE, message=FALSE}
+ttest_df %>%
+  ggplot(aes(t_stat)) +
+  geom_histogram()+
+  theme_bw()+
+  facet_wrap(~task)
+```
+
+**Which variables are significantly different between the two samples (those with and without retest data for T1)?**
+
+A handful of variables. None of them are very strongly different though.
+
+```{r}
+ttest_df %>%
+  filter(p_val<0.05) %>%
+  select(dv, task, t_stat, p_val)
+```
+
+Do this again with cleaned data.
+
+## Efa and Cfa
 
 step2 : efa on the people you don't have retest on and then predict how well this holds up for people w retest on t1 and on t2
 
@@ -644,10 +684,8 @@ solution
 ```
 
 
-Completion times/days
+# Completion times/days
 
-- First data release email esp to ASU
-- Send the spreadsheet with meaningul variables + demographics
-
+# Invited vs. completed retest
 
 T1 comparison for people who came back vs didn't (of all that are invited)
