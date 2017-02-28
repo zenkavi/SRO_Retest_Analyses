@@ -766,10 +766,10 @@ Efa on subjects from original dataset withOUT retest data (using meaningful vars
 
 Trying to use `lavaan` first. It's not happy with me.
 ```{r}
-unrotated <- efaUnrotate(rest_subs_test_mngf_z, nf=3, varList=names(rest_subs_test_mngf_z)[-1], estimator="mlr")
+unrotated <- try(efaUnrotate(rest_subs_test_mngf_z, nf=3, varList=names(rest_subs_test_mngf_z)[-1], estimator="mlr"))
 
-summary(unrotated, std=TRUE)
-inspect(unrotated, "std")
+# summary(unrotated, std=TRUE)
+# inspect(unrotated, "std")
 ```
 
 Using the `psych` package I get some sort of solution but these are probably not valid given all the warnings.
