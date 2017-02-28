@@ -765,7 +765,7 @@ rest_subs_test_mngf_z <- as.data.frame(rest_subs_test_mngf_z)
 Efa on subjects from original dataset withOUT retest data (using meaningful vars only)  
 
 Trying to use `lavaan` first. It's not happy with me.
-```{r eval=FALSE}
+```{r}
 unrotated <- efaUnrotate(rest_subs_test_mngf_z, nf=3, varList=names(rest_subs_test_mngf_z)[-1], estimator="mlr")
 
 summary(unrotated, std=TRUE)
@@ -773,13 +773,13 @@ inspect(unrotated, "std")
 ```
 
 Using the `psych` package I get some sort of solution but these are probably not valid given all the warnings.
-```{r eval = FALSE}
+```{r}
 corMat <- rest_subs_test_mngf_z %>% select(-sub_id) %>% cor(.,use = 'complete.obs')
 
 solution <- fa(r = corMat, nfactors = 3, rotate = "oblimin", fm = "pa")
 ```
 
-```{r eval = FALSE}
+```{r}
 print(solution$loadings, sort=T)
 ```
 
