@@ -18,7 +18,9 @@ library(lavaan)
 library(semTools)
 library(psych)
 library(GPArotation)
+library(rmarkdown)
 sem <- function(x) {sd(x, na.rm=T) / sqrt(length(x))}
+render_this <- function(){rmarkdown::render('SRO_Retest_Analyses.Rmd', html_notebook(toc = T, toc_float = T))}
 options(digits = 4)
 ```
 
@@ -389,13 +391,14 @@ Should they be cleaned on the whole sample for the time they were collected on a
 
 ```{r warning=FALSE}
 clean_retest_subs_test_data = as.data.frame(apply(retest_subs_test_data[, matching_dv_columns], 2, remove_outliers))
-clean_retest_subs_test_data = transform_remove_skew(retest_subs_test_data, matching_dv_columns)
+clean_retest_subs_test_data = transform_remove_skew(clean_retest_subs_test_data, matching_dv_columns)
 ```
 
 ## Correlations on cleaned variables
 
 Create the same list of correlations as before but this time on a smaller set of cleaned variables.
-```{r}
+
+```{r warning=FALSE, message=FALSE}
 clean_all_columns <- unique(c(names(clean_retest_data), names(clean_retest_subs_test_data)))
 
 clean_matching_columns <- c()
@@ -405,8 +408,8 @@ for(i in 1:length(clean_all_columns)){
   }
 }
 
-clean_retest_data <- clean_retest_data[,clean_matching_columns]
-clean_retest_subs_test_data <- clean_retest_subs_test_data[,clean_matching_columns]
+# clean_retest_data <- clean_retest_data[,clean_matching_columns]
+# clean_retest_subs_test_data <- clean_retest_subs_test_data[,clean_matching_columns]
 
 clean_matching_dv_columns <- c()
 
@@ -421,14 +424,33 @@ clean_cor_df <- data.frame(pearson = rep(NA, length(clean_matching_dv_columns)),
 row.names(clean_cor_df) <- clean_matching_dv_columns
 
 for(i in 1:length(clean_matching_dv_columns)){
-  clean_cor_df[clean_matching_dv_columns[i], 'pearson'] <- cor(clean_retest_data[,clean_matching_dv_columns[i]], clean_retest_subs_test_data[,clean_matching_dv_columns[i]], method = 'pearson', use = "pairwise.complete.obs")
-  clean_cor_df[clean_matching_dv_columns[i], 'spearman'] <- cor(clean_retest_data[,clean_matching_dv_columns[i]],clean_retest_subs_test_data[,clean_matching_dv_columns[i]], method = 'spearman', use = "pairwise.complete.obs")
+ 
+  robustCor <- function(...) {
+    obj<-try(cor(...), silent=TRUE)
+    if (is(obj, "try-error")) return(NA) else return(obj)
+  }
+  
+  tmp_pearson = robustCor(clean_retest_data[,clean_matching_dv_columns[i]], clean_retest_subs_test_data[,clean_matching_dv_columns[i]], method = 'pearson', use = "pairwise.complete.obs")
+  
+  tmp_spearman = robustCor(clean_retest_data[,clean_matching_dv_columns[i]], clean_retest_subs_test_data[,clean_matching_dv_columns[i]], method = 'spearman', use = "pairwise.complete.obs")
+  
+  clean_cor_df[clean_matching_dv_columns[i], 'pearson'] <- tmp_pearson 
+  clean_cor_df[clean_matching_dv_columns[i], 'spearman'] <- tmp_spearman
+  
 }
 
 clean_cor_df$dv = row.names(clean_cor_df)
 row.names(clean_cor_df) = seq(1:nrow(clean_cor_df))
 clean_cor_df$task = 'task'
 clean_cor_df[grep('survey', clean_cor_df$dv), 'task'] = 'survey'
+```
+
+Correlations could not be calculated for the following variables due to lack of variance.
+
+```{r}
+clean_cor_df %>%
+  filter(is.na(pearson)) %>%
+  select(dv)
 ```
 
 Let's look at the distributions again: The distributions don't look terribly different but there are noticably fewer variables post cleaning. 
@@ -448,14 +470,14 @@ cor_df %>%
   theme_bw()+
   theme(legend.title = element_blank())
 ```
-This cleaning led to a slight change in the mean reliabilities but a lot of dropped variables.
 
+This cleaning led to a slight change in the mean reliabilities but a lot of dropped variables.
 ```{r}
 clean_cor_df %>%
   group_by(task) %>%
-  summarise(mean_pearson = mean(pearson),
-            mean_spearman = mean(spearman),
-            num_vars = n())
+  summarise(mean_pearson = mean(pearson, na.rm=T),
+            mean_spearman = mean(spearman, na.rm=T),
+            num_vars = sum(ifelse(is.na(pearson)==FALSE,1,0)))
 ```
 
 **What changed most with cleaning?**    
@@ -490,7 +512,7 @@ cor_df%>%
   gather(clean_type, spearman, -dv, -var_type, -var, -task) %>%
   mutate(clean_type = ifelse(clean_type == 'spearman.x','Before','After')) %>%
   ggplot(aes(spearman, fill = clean_type))+
-  geom_histogram(position='stack', alpha = 0.5)+
+  geom_histogram(position='identity', alpha = 0.5)+
   theme_bw()+
   facet_wrap(var_type~var)+
   scale_fill_discrete(name = 'Clean type')
@@ -519,21 +541,9 @@ cor_df%>%
   arrange(var_type, -as.numeric(as.factor(clean_type)))
 ```
 
-## Model fits versus raw
+## Other variable types
 
-```{r}
-```
-
-
-## Subtraction vs. Basic
-
-```{r}
-```
-
-## Single vs. multiple
-
-```{r}
-```
+I planned to look at differences between distributions of reliabilities for other variables types as well but I am not sure what these categories should be so I am deferring this for further discussions. My earlier notes suggested differences between other model parameters versus raw variables; subtraction versus basic variables; single versus multiple variables.I'm hoping we can come up with a more systematic definition that I can automatize or at least restrict to certain groups of variable instead of going through all 600+ variables and manually labeling them.
 
 # Replicating the factor structure
 
@@ -570,7 +580,7 @@ ttest_df %>%
 
 **Which variables are significantly different between the two samples (those with and without retest data for T1)?**
 
-A handful of variables. None of them are very strongly different though.
+43 variables. None of them are very strongly different though.
 
 ```{r}
 ttest_df %>%
@@ -578,11 +588,103 @@ ttest_df %>%
   select(dv, task, t_stat, p_val)
 ```
 
-Do this again with cleaned data.
+Do this again with cleaned data.  
+Clean the T1 data for the subsets first.  
+**Here again I'm not sure if I should clean before or after splitting. Before it seemed appropriate to clean subjects with retest data after separating them from the remaining subjects but here it might be better to clean first and then separate. But then it would differ from what was done for earlier anaylses and it seems like the kind of thing that should be kept consistent.**
+
+Clean T1 for subjects with retest data (doing it again because this df was subsetted before)
+
+```{r warning=FALSE}
+clean_retest_subs_test_data = as.data.frame(apply(retest_subs_test_data[, matching_dv_columns], 2, remove_outliers))
+clean_retest_subs_test_data = transform_remove_skew(clean_retest_subs_test_data, matching_dv_columns)
+```
+
+Clean T1 for rest of the subjects
+
+```{r warning=FALSE}
+clean_rest_subs_test_data = as.data.frame(apply(rest_subs_test_data[, matching_dv_columns], 2, remove_outliers))
+clean_rest_subs_test_data = transform_remove_skew(clean_rest_subs_test_data, matching_dv_columns)
+```
+
+Get numeric dv's from both cleaned datasets to compute t-tests on.
+```{r}
+clean_all_columns <- unique(c(names(clean_rest_subs_test_data), names(clean_retest_subs_test_data)))
+
+clean_matching_columns <- c()
+for(i in 1:length(clean_all_columns)){
+  if(clean_all_columns[i] %in% names(clean_rest_subs_test_data) & clean_all_columns[i] %in% names(clean_retest_subs_test_data)){
+    clean_matching_columns <- c(clean_matching_columns, clean_all_columns[i])
+  }
+}
+
+clean_matching_dv_columns <- c()
+
+for(i in 1:length(clean_matching_columns)){
+  if(is.numeric(clean_rest_subs_test_data[,clean_matching_columns[i]]) & is.numeric(clean_rest_subs_test_data[,clean_matching_columns[i]])){
+    clean_matching_dv_columns <- c(clean_matching_dv_columns, clean_matching_columns[i])
+  }
+}
+```
+
+Compute t-tests for cleaned variables.
+```{r}
+clean_ttest_df = data.frame(t_stat = rep(NA, length(clean_matching_dv_columns)),
+                      p_val = rep(NA, length(clean_matching_dv_columns)))
+
+row.names(clean_ttest_df) <- clean_matching_dv_columns
+
+for(i in 1:length(clean_matching_dv_columns)){
+ 
+  robustTTest <- function(...) {
+    obj<-try(t.test(...), silent=TRUE)
+    if (is(obj, "try-error")) return(obj = data.frame(statistic = NA, p.value=NA)) else return(obj)
+  }
+  
+  tmp = robustTTest(clean_retest_subs_test_data[,clean_matching_dv_columns[i]], clean_rest_subs_test_data[,clean_matching_dv_columns[i]])
+  
+  clean_ttest_df[clean_matching_dv_columns[i], 't_stat'] <- tmp$statistic 
+  clean_ttest_df[clean_matching_dv_columns[i], 'p_val'] <- tmp$p.value
+    }
+
+clean_ttest_df$dv = row.names(clean_ttest_df)
+row.names(clean_ttest_df) = seq(1:nrow(clean_ttest_df))
+clean_ttest_df$task = 'task'
+clean_ttest_df[grep('survey', clean_ttest_df$dv), 'task'] = 'survey'
+```
+
+Variables for which t-tests cannot be computed due to lack of variance.
+```{r}
+clean_ttest_df %>%
+  filter(is.na(t_stat)) %>%
+  select(dv)
+```
+
+Distribution of t-tests for the cleaned variables with sufficient variance
+```{r warning=FALSE, message=FALSE}
+clean_ttest_df %>%
+  filter(!is.na(t_stat)) %>%
+ggplot(aes(t_stat)) +
+  geom_histogram()+
+  theme_bw()+
+  facet_wrap(~task)
+```
+
+**Which variables are significantly different between the two samples on cleaned data (those with and without retest data for T1)?**
+
+More variables (that are thought to have been properly cleaned for these analyses) are significantly different between the two samples.   
+**Not sure what to do with this especially for the next set of analyses.**
+
+```{r}
+clean_ttest_df %>%
+  filter(!is.na(p_val) & p_val<0.05) %>%
+  select(dv, task, t_stat, p_val)
+```
 
 ## Efa and Cfa
 
-step2 : efa on the people you don't have retest on and then predict how well this holds up for people w retest on t1 and on t2
+Step 2: Efa on the people you don't have retest on and then predict how well this holds up for people w retest on t1 and on t2.  
+
+I'm restricting the factor analyses to the meaningful variables for now (instead of the 600+ exhaustive variables) to keep it manageable. I haven't consulted other factor analyses that have been done on the full dataset in doing this but will be happy to adjust as necessary.
 
 Data cleaning for efa
 ```{r eval=FALSE}
@@ -603,12 +705,6 @@ meaningful_var_retest <- meaningful_var_retest %>%
   group_by(sub_id) %>%
   do(correct_subids(.,test_worker_lookup))
 
-#Are all retest subjects in test_data? No. 
-sum(meaningful_var_retest$sub_id %in% meaningful_var_test$sub_id) == nrow(meaningful_var_retest)
-
-#Who is missing?
-meaningful_var_retest$sub_id[which(meaningful_var_retest$sub_id %in% meaningful_var_test$sub_id == FALSE)]
-
 #Remove sub w missing test data from retest data
 retest_data_mngf <- meaningful_var_retest[meaningful_var_retest$sub_id %in% meaningful_var_test$sub_id,]
 
@@ -627,13 +723,16 @@ retest_subs_test_mngf$sub_id == retest_data_mngf$sub_id
 ```
 
 Checking columns for efa:
-NEED TO RESOLVE SOME DIFFERENCES IN MEANINGFUL VARS BETWEEN THE TWO DATASETS
+There
 ```{r eval=FALSE}
 #Check columns 
 names(retest_data_mngf)[names(retest_data_mngf) %in% names(retest_subs_test_mngf) == FALSE]
 
 names(retest_subs_test_mngf)[names(retest_subs_test_mngf) %in% names(retest_data_mngf) == FALSE]
+```
 
+For now I'm just removing these variables but will have to do re-do them once I resolve why they weren't in both datasets to begin with (The answer will be a combination of not having run the most recent analysis script on some tasks and dropped variables as a result of cleaning)
+```{r}
 #Subset datasets with only matching columns
 all_columns_mngf <- unique(c(names(retest_data_mngf), names(retest_subs_test_mngf)))
 
@@ -663,8 +762,9 @@ for(i in 1:length(rest_subs_test_mngf)){
 rest_subs_test_mngf_z <- as.data.frame(rest_subs_test_mngf_z)
 ```
 
+Efa on subjects from original dataset withOUT retest data (using meaningful vars only)  
 
-Efa on subjects from original dataset withOUT retest data (using meaningful vars only)
+Trying to use `lavaan` first. It's not happy with me.
 ```{r eval=FALSE}
 unrotated <- efaUnrotate(rest_subs_test_mngf_z, nf=3, varList=names(rest_subs_test_mngf_z)[-1], estimator="mlr")
 
@@ -672,7 +772,7 @@ summary(unrotated, std=TRUE)
 inspect(unrotated, "std")
 ```
 
-
+Using the `psych` package I get some sort of solution but these are probably not valid given all the warnings.
 ```{r eval = FALSE}
 corMat <- rest_subs_test_mngf_z %>% select(-sub_id) %>% cor(.,use = 'complete.obs')
 
@@ -680,7 +780,7 @@ solution <- fa(r = corMat, nfactors = 3, rotate = "oblimin", fm = "pa")
 ```
 
 ```{r eval = FALSE}
-solution
+print(solution$loadings, sort=T)
 ```
 
 
