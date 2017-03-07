@@ -140,7 +140,7 @@ logTr_vars$var = gsub(".logTr|.ReflogTr", "", logTr_vars$var)
 retest_data = retest_data[, names(retest_data) %in% meaningful_vars]
 ```
 
-Clean columns subsetted from retest data the way they have been for test data 
+Clean columns subsetted from retest data the way they have been for test data   
 **Question: Should I be removing outliers from the retest data? Or keep them if they were within the ranges in the test data even if they aren't in the retest data**
 ````{r}
 #Function to remove outliers as they have been removed for the test data
@@ -454,7 +454,7 @@ Using the `psych` package I get some sort of solution but these are probably not
 ```{r}
 corMat <- rest_subs_test_mngf_z %>% cor(.,use = 'complete.obs')
 
-solution <- fa(r = corMat, nfactors = 3, rotate = "oblimin", fm = "pa")
+solution <- fa(r = corMat, nfactors = 7, rotate = "oblimin", fm = "pa")
 ```
 
 ```{r}
