@@ -403,7 +403,7 @@ ttest_df[grep('survey', ttest_df$dv), 'task'] = 'survey'
 ttest_df$p_val_fdr = p.adjust(ttest_df$p_val_raw, method='fdr')
 ```
 
-```{r echo=TRUE}
+```{r echo=FALSE}
 rm(i)
 ```
 
