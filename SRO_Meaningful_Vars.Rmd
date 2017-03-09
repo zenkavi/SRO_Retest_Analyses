@@ -460,3 +460,19 @@ solution <- fa(r = corMat, nfactors = 7, rotate = "oblimin", fm = "pa")
 ```{r}
 print(solution$loadings, sort=T)
 ```
+
+```{r}
+# Pricipal Components Analysis
+# entering raw data and extracting PCs 
+# from the correlation matrix 
+fit <- principal(rest_subs_test_mngf_z, nfactors=7, rotate="varimax")
+fit
+
+fit <- princomp(rest_subs_test_mngf_z, cor=TRUE)
+summary(fit) # print variance accounted for 
+loadings(fit) # pc loadings 
+plot(fit,type="lines") # scree plot 
+fit$scores # the principal components
+biplot(fit)
+```
+
