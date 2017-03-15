@@ -810,5 +810,5 @@ print(solution$loadings, sort=T)
 T1 comparison for people who came back vs didn't (of all that are invited)
 
 - Ignore Pearson for now and just focus on Spearman
-- Eventually want to get to interclass correlations (between versus within group variability - using anova)
+- Eventually want to get to intraclass correlations (between versus within group variability - using anova)
 - Clean everything on the whole sample and extract from that. Keep a record of everything that was transformed and whether it was normal at the end
