@@ -30,7 +30,7 @@ options(digits = 4)
 
 ## Loading and matching datasets
 
-Using the variables that were designated as meaningful before. This is not the smallest subset where certain variables are dropped because they are correlated with other variables and includes both accuracies as well as both kinds of DDM variables (EZ and HDDM). It will not include variables that were considered not of theoretical interest in the analyses of time 1 data. The variables that are not included will be listed for reference as well.
+This report uses the variables that were designated as "meaningful" before. This is not the smallest subset where certain variables are dropped because they are correlated with other variables (within a task) and includes both accuracies as well as both kinds of DDM variables (EZ and HDDM). It will not include variables that were considered not of theoretical interest in the analyses of time 1 data. The variables that are not included will be listed for reference as well.
 
 ### Load time 1 data
 ```{r}
@@ -45,7 +45,7 @@ test_data <- merge(test_data, test_data3)
 rm(test_data2, test_data3)
 ```
 
-For reference here are the variables that are not included because they were not of theoretical interest in factor structure analyses of this data so far.
+For reference here are the variables that are **not** included because they were not of theoretical interest in factor structure analyses of this data so far.
 
 ```{r}
 test_data2 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_01-31-2017/variables_exhaustive.csv')
@@ -59,7 +59,6 @@ names(df) = c('vars')
 
 df
 ```
-
 
 ```{r echo=FALSE}
 rm(test_data2, df)
@@ -95,9 +94,9 @@ retest_data <- retest_data[retest_data$sub_id %in% test_data$sub_id,]
 
 The cleaning functions here are translated from the python pipeline to mimick the same procedure.
 
-Our cleaning procedures includes two steps:  
+The cleaning procedures include two steps:  
 1. removing outliers for each variables where outliers are defined as those who are greater than 2.5 IQR from median  
-2. Log transforming variables with skew. In cleaning T1 data for the `meaningful_variables_clean.csv` variables for which skew could not be removed successfully were dropped. **This step is excluded here. Variables that are not successfully transformed will be noted but not dropped.**
+2. Log transforming variables with skew. In cleaning T1 data for the `meaningful_variables_clean.csv` variables for which skew could not be removed successfully were dropped. **This step is excluded here. Variables that are not successfully transformed will be listed but not dropped.**
 
 ```{r}
 remove_outliers = function(data_column, quantile_range = 2.5){
@@ -122,7 +121,7 @@ neg_log <- function(column){
   return(log(column))
 }
 
-transform_remove_skew = function(data, columns, threshold = 1){
+transform_remove_skew = function(data, columns, threshold = 1, drop=FALSE){
   
   tmp = as.data.frame(apply(data[,columns],2,skew))
   names(tmp) = c("skew")
@@ -148,15 +147,30 @@ transform_remove_skew = function(data, columns, threshold = 1){
   
   # replace transformed variables
   data = data[,-c(which(names(data) %in% names(positive_subset)))]
-  names(successful_transforms) = paste0(names(successful_transforms), '.logTr')
-  cat(rep('*', 40))
-  cat('\n')
-  cat(paste0('Dropping ', length(dropped_vars) ,' positively skewed data that could not be transformed successfully:'))
-  cat('\n')
-  cat(dropped_vars, sep = '\n')
-  cat(rep('*', 40))
-  cat('\n')
-  data = cbind(data, successful_transforms)
+  
+  if(drop == TRUE){
+    names(successful_transforms) = paste0(names(successful_transforms), '.logTr')
+    cat(rep('*', 40))
+    cat('\n')
+    cat(paste0('Dropping ', length(dropped_vars) ,' positively skewed data that could not be transformed successfully:'))
+    cat('\n')
+    cat(dropped_vars, sep = '\n')
+    cat(rep('*', 40))
+    cat('\n')
+    data = cbind(data, successful_transforms)
+  }
+  else{
+    names(positive_subset) = paste0(names(positive_subset), '.logTr')
+    cat(rep('*', 40))
+    cat('\n')
+    cat(paste0(length(dropped_vars) ,' positively skewed data could not be transformed successfully:'))
+    cat('\n')
+    cat(dropped_vars, sep = '\n')
+    cat(rep('*', 40))
+    cat('\n')
+    data = cbind(data, positive_subset)
+  }
+  
   
   # reflected log transform for negative skew      
   negative_subset = as.data.frame(apply(negative_subset, 2, neg_log))
@@ -170,23 +184,105 @@ transform_remove_skew = function(data, columns, threshold = 1){
   
   # replace transformed variables
   data = data[,-c(which(names(data) %in% names(negative_subset)))]
-  names(successful_transforms) = paste0(names(successful_transforms), '.ReflogTr')
-  cat(rep('*', 40))
-  cat('\n')
-  cat(paste0('Dropping ', length(dropped_vars) ,' negatively skewed data that could not be transformed successfully:'))
-  cat('\n')
-  cat(dropped_vars, sep = '\n')
-  cat(rep('*', 40))
-  cat('\n')
-  data = cbind(data, successful_transforms)
+  if(drop == TRUE){
+    names(successful_transforms) = paste0(names(successful_transforms), '.ReflogTr')
+    cat(rep('*', 40))
+    cat('\n')
+    cat(paste0('Dropping ', length(dropped_vars) ,' negatively skewed data that could not be transformed successfully:'))
+    cat('\n')
+    cat(dropped_vars, sep = '\n')
+    cat(rep('*', 40))
+    cat('\n')
+    data = cbind(data, successful_transforms)
+  }
+  else{
+    names(negative_subset) = paste0(names(negative_subset), '.ReflogTr')
+    cat(rep('*', 40))
+    cat('\n')
+    cat(paste0(length(dropped_vars) ,' negatively skewed data could not be transformed successfully:'))
+    cat('\n')
+    cat(dropped_vars, sep = '\n')
+    cat(rep('*', 40))
+    cat('\n')
+    data = cbind(data, negative_subset)
+  }
   
   return(data)
 }
 ```
 
+Clean test data on full sample without dropping any columns. Columns that are not transformed successfully are listed.
 
-------------------------------------------------------------------------
-Extract test data for retest subjects
+```{r}
+numeric_cols = c()
+
+for(i in 1:length(names(test_data))){
+  if(is.numeric(test_data[,i])){
+    numeric_cols <- c(numeric_cols, names(test_data)[i])
+  }
+}
+
+clean_test_data = cbind(sub_id = test_data$sub_id, as.data.frame(apply(test_data[, -which(names(retest_data) %in% c("sub_id"))], 2, remove_outliers)))
+
+clean_test_data = transform_remove_skew(clean_test_data, numeric_cols)
+```
+
+```{r echo=FALSE}
+rm(i)
+```
+
+### Clean t2 data
+
+Instead of applying the same functions applied to t1 data we check which variables are transformed in what way and transform the t2 data the same way.
+
+**Question: Should I be removing outliers from the retest data? Or keep them if they were within the ranges in the test data even if they aren't in the retest data. Right now I'm removing them depending on t2 distributions**
+
+```{r}
+#Remove outliers from retest data the way they have been from test data
+clean_retest_data = cbind(sub_id = retest_data$sub_id, as.data.frame(apply(retest_data[, -which(names(retest_data) %in% c("sub_id"))], 2, remove_outliers)))
+
+#Get list of transformed variables and the sign of their skew
+logTr_vars = data.frame(grep('logTr', names(clean_test_data), value=T))
+names(logTr_vars) = c('var')
+logTr_vars$sign = ifelse(grepl(".ReflogTr",logTr_vars$var), 'negative', 'positive')
+logTr_vars$var = gsub(".logTr|.ReflogTr", "", logTr_vars$var)
+
+#Transform necessary vars and rename those columns
+for(i in 1:length(names(clean_retest_data))){
+  tmp_col = names(clean_retest_data)[i]
+  if(tmp_col %in% logTr_vars$var){
+    sign = logTr_vars$sign[which(tmp_col == logTr_vars$var)]
+      if(sign == 'positive'){
+        clean_retest_data[,tmp_col] = log(clean_retest_data[,tmp_col])
+        names(clean_retest_data)[i] = paste0(tmp_col, '.logTr')
+      }
+      else if(sign == 'negative'){
+        clean_retest_data[,tmp_col] = neg_log(clean_retest_data[,tmp_col])
+        names(clean_retest_data)[i] = paste0(tmp_col, '.ReflogTr')
+      }
+    }
+}
+```
+
+```{r echo = FALSE}
+rm(i, sign, tmp_col)
+```
+
+Check transformations are correct
+```{r}
+retest_logTr_vars = data.frame(grep('logTr', names(clean_retest_data), value=T))
+names(retest_logTr_vars) = c('var')
+retest_logTr_vars$sign = ifelse(grepl(".ReflogTr",retest_logTr_vars$var), 'negative', 'positive')
+retest_logTr_vars$var = gsub(".logTr|.ReflogTr", "", logTr_vars$var)
+retest_logTr_vars == logTr_vars
+```
+
+
+```{r echo=F}
+rm(logTr_vars, retest_logTr_vars)
+```
+
+### Extract t-1 data for t-2 subjects
 ```{r}
 retest_subs_test_data <- test_data[test_data$sub_id %in% retest_data$sub_id,]
 
@@ -200,68 +296,6 @@ retest_subs_test_data = retest_subs_test_data %>% arrange(sub_id)
 retest_subs_test_data$sub_id == retest_data$sub_id
 ```
 
-Clean columns subsetted from retest data the way they have been for test data   
-**Question: Should I be removing outliers from the retest data? Or keep them if they were within the ranges in the test data even if they aren't in the retest data**
-````{r}
-#Function to remove outliers as they have been removed for the test data
-remove_outliers = function(data_column, quantile_range = 2.5){
-  
-  q_25 = quantile(data_column, na.rm=T)[2]
-  q_50 = quantile(data_column, na.rm=T)[3]
-  q_75 = quantile(data_column, na.rm=T)[4]
-  
-  lowlimit = q_50 - quantile_range*(q_75 - q_25)
-  highlimit = q_50 + quantile_range*(q_75 - q_25)
-  
-  data_column = ifelse(data_column<lowlimit, NA, ifelse(data_column>highlimit, NA, data_column))
-  
-  return(data_column)
-}
-
-#Function to transform the variables with negative skew
-neg_log <- function(column){
-  col_max = max(column, na.rm=T)
-  column = col_max+1-column
-  return(log(column))
-}
-
-#Remove outliers from retest data the way they have been from test data
-retest_data = cbind(sub_id = retest_data$sub_id, as.data.frame(apply(retest_data[, -which(names(retest_data) %in% c("sub_id"))], 2, remove_outliers)))
-
-#Transform necessary vars and rename those columns
-for(i in 1:length(names(retest_data))){
-  tmp_col = names(retest_data)[i]
-  if(tmp_col %in% logTr_vars$var){
-    sign = logTr_vars$sign[which(tmp_col == logTr_vars$var)]
-      if(sign == 'positive'){
-        retest_data[,tmp_col] = log(retest_data[,tmp_col])
-        names(retest_data)[i] = paste0(tmp_col, '.logTr')
-      }
-      else if(sign == 'negative'){
-        retest_data[,tmp_col] = neg_log(retest_data[,tmp_col])
-        names(retest_data)[i] = paste0(tmp_col, '.ReflogTr')
-      }
-    }
-}
-
-```
-
-```{r echo = FALSE}
-rm(i, sign, tmp_col)
-```
-
-Check transformations are correct
-```{r}
-retest_logTr_vars = data.frame(grep('logTr', names(retest_data), value=T))
-names(retest_logTr_vars) = c('var')
-retest_logTr_vars$sign = ifelse(grepl(".ReflogTr",retest_logTr_vars$var), 'negative', 'positive')
-retest_logTr_vars$var = gsub(".logTr|.ReflogTr", "", logTr_vars$var)
-retest_logTr_vars == logTr_vars
-```
-
-```{r echo=FALSE}
-rm(logTr_vars, retest_logTr_vars, meaningful_vars)
-```
 
 # Results
 
