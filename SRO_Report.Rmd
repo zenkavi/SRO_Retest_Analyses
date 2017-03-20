@@ -523,3 +523,12 @@ icc_df %>%
   geom_point()+
   theme_bw()
 ```
+
+### Relationship between ICC and $\eta^2$
+
+```{r}
+icc_df %>%
+  ggplot(aes(eta_sq, icc, col=task))+
+  geom_point()+
+  theme_bw()
+```
