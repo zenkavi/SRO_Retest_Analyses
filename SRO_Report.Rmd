@@ -116,6 +116,13 @@ remove_outliers = function(data_column, quantile_range = 2.5){
 
 "%w/o%" <- function(x, y) x[!x %in% y]
 
+pos_log <- function(column){
+  col_min = min(column, na.rm=T)
+  a = 1-col_min
+  column = column+a
+  return(log(column))
+}
+
 neg_log <- function(column){
   col_max = max(column, na.rm=T)
   column = col_max+1-column
@@ -137,7 +144,8 @@ transform_remove_skew = function(data, columns, threshold = 1, drop=FALSE){
   
   # transform variables
   # log transform for positive skew
-  positive_subset = log(positive_subset)
+  # positive_subset = log(positive_subset)
+  positive_subset = pos_log(positive_subset) #slight divergence from original code
   successful_transforms = as.data.frame(apply(positive_subset, 2, skew))
   names(successful_transforms) = c('skew')
   successful_transforms$dv = row.names(successful_transforms)
@@ -253,11 +261,6 @@ rm(i)
 
 Instead of applying the same functions applied to t1 data we check which variables are transformed in what way and transform the t2 data the same way. Again we are not removing outliers in the t2 or dropping variables if the skew is not removed successfully after transforming.
 
-```{r eval=FALSE, echo=FALSE}
-# Remove outliers from retest data the way they have been from test data
-clean_retest_data = cbind(sub_id = retest_data$sub_id, as.data.frame(apply(retest_data[, -which(names(retest_data) %in% c("sub_id"))], 2, remove_outliers)))
-```
-
 Get list of transformed variables and the sign of their skew
 ```{r}
 logTr_vars = data.frame(grep('logTr', names(clean_test_data), value=T))
@@ -276,7 +279,8 @@ for(i in 1:length(names(clean_retest_data))){
   if(tmp_col %in% logTr_vars$var){
     sign = logTr_vars$sign[which(tmp_col == logTr_vars$var)]
       if(sign == 'positive'){
-        clean_retest_data[,tmp_col] = log(clean_retest_data[,tmp_col])
+        # clean_retest_data[,tmp_col] = log(clean_retest_data[,tmp_col])
+        clean_retest_data[,tmp_col] = pos_log(clean_retest_data[,tmp_col])
         names(clean_retest_data)[which(names(clean_retest_data) == tmp_col)] = paste0(tmp_col, '.logTr')
         cat(paste0(tmp_col ,' was positively skewed and transformed.'))
         cat('\n')
@@ -475,13 +479,6 @@ for(i in 1:length(numeric_cols)){
   icc_df[numeric_cols[i], 'eta_sq'] <- get_eta(numeric_cols[i])
   icc_df[numeric_cols[i], 'sem'] <- get_sem(numeric_cols[i])
 }
-
-numeric_cols[293]
-raw_test_data[,"directed_forgetting.proactive_interference_acc"]
-match_t1_t2(numeric_cols[293])
-get_icc(numeric_cols[293])
-get_eta(numeric_cols[293])
-get_sem(numeric_cols[293])
 ```
 
 Add column to tasks vs. surveys in icc table
