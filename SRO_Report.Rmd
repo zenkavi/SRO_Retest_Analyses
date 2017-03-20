@@ -486,6 +486,9 @@ icc_df$dv = row.names(icc_df)
 row.names(icc_df) = seq(1:nrow(icc_df))
 icc_df$task = 'task'
 icc_df[grep('survey', icc_df$dv), 'task'] = 'survey'
+icc_df = icc_df %>%
+  select(dv, task, icc, eta_sq, sem)
+row.names(icc_df) = NULL
 icc_df
 ```
 
@@ -509,4 +512,14 @@ icc_df %>%
             median_eta_sq = median(eta_sq),
             median_sem = median(sem),
             num_vars = n())
+```
+
+### Relationship between ICC and Spearman
+
+```{r}
+icc_df %>%
+  left_join(cor_df[,c('spearman','dv')], by = 'dv') %>%
+  ggplot(aes(spearman, icc, col=task))+
+  geom_point()+
+  theme_bw()
 ```
