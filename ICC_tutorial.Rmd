@@ -1,0 +1,49 @@
+---
+title: "ICC tutorial"
+output: html_notebook
+---
+
+Based on [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9d379b79de4f767740.pdf)
+
+
+```{r}
+tmp = data.frame(time_1=c(146, 148, 170, 90, 157, 156, 176, 205),
+                 time_2=c(140, 152, 152, 99, 145, 153, 167, 218), 
+                 people=c(1,2,3,4,5,6,7,8))
+tmp = tmp %>% gather(key, value,-people)
+summary(aov(value ~ factor(key)+Error(factor(people)), tmp))
+(30)/(30+400)#eta squared
+sd(tmp$value)
+(2099-(30.2+57.1))/(2099 + ((2-1)*(30.2+57.1))) #ICC(1,1) ?
+(2099-(30.2+57.1))/(2099) #ICC(1,k)
+(2099-57.1)/(2099+ ((2-1)*57.1)+ ((2*(30.2-57.1))/8)) #ICC(2,1)
+(2099-57.1)/(2099+((2*(30.2-57.1))/8)) #ICC(2,k)
+(2099-57.1)/(2099+((2-1)*57.1)) #ICC(3,1)
+(2099-57.1)/(2099) #ICC(3,k)
+tmp = tmp %>% spread(key, value) %>% select(-people)
+# icc(tmp, model = 'twoway', type='agreement')
+ICC(tmp)
+```
+
+```{r}
+tmp = data.frame(time_1=c(166, 168, 160, 150, 147, 146, 156, 155),
+                 time_2=c(160, 172, 142, 159, 135, 143, 147, 168), 
+                 people=c(1,2,3,4,5,6,7,8))
+tmp = tmp %>% gather(key, value,-people)
+summary(aov(value ~ factor(key)+Error(factor(people)), tmp))
+tmp = tmp %>% spread(key, value) %>% select(-people)
+ICC(tmp)
+```
+
+```{r}
+tmp = data.frame(time_1=c(146, 148, 170, 90, 157, 156, 176, 205),
+                 time_2=c(161, 162, 189, 100, 175, 171, 195, 219), 
+                 people=c(1,2,3,4,5,6,7,8))
+tmp = tmp %>% gather(key, value,-people)
+summary(aov(value ~ factor(key)+Error(factor(people)), tmp))
+(961)/(961+33)#partial eta-squared
+(2275-5)/(2275+ ((2-1)*5)+ ((2*(961-5))/8)) #ICC(2,1)
+(2275-5)/(2275+((2*(961-5))/8)) #ICC(2,k)
+tmp = tmp %>% spread(key, value) %>% select(-people)
+ICC(tmp)
+```

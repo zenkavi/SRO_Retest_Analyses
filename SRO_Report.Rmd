@@ -77,16 +77,6 @@ retest_data <- merge(retest_data, retest_data3)
 rm(retest_data2, retest_data3)
 ```
 
-```{r}
-tst_mng_cln <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_01-31-2017/meaningful_variables_clean.csv')
-
-rtst_mng_cln <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_02-11-2017/meaningful_variables_clean.csv')
-
-names(rtst_mng_cln)[which(names(rtst_mng_cln) %in% names(tst_mng_cln) == FALSE)]
-
-names(tst_mng_cln)[which(names(tst_mng_cln) %in% names(rtst_mng_cln) == FALSE)]
-```
-
 Extract retest participants from test data
 
 ```{r}
@@ -427,50 +417,6 @@ cor_df %>%
 
 ## ICC for all cleaned meaningful variables
 
-
-```{r}
-library(psych)
-sf <- matrix(c(9,    2,   5,    8,
-6,    1,   3,    2,
-8,    4,   6,    8,
-7,    1,   2,    6,
-10,   5,   6,    9,
-6,   2,   4,    7),ncol=4,byrow=TRUE)
-colnames(sf) <- paste("J",1:4,sep="")
-rownames(sf) <- paste("S",1:6,sep="")
-sf
-ICC(sf)
-```
-
-```{r}
-library('irr')
-
-time1 <- c(0:10)
-time2 <- c(1:11)
-times <- cbind(time1,time2)
-rm(time1, time2)
-times
-```
-
-
-```{r}
-icc(times,model = "twoway",
-    type = "consistency",
-    unit = "single",
-    r0 = 0,
-    conf.level = 0.95)
-```
-
-```{r}
-#>>ICC=1 for consistency
-
-icc(times,model = "twoway",
-    type = "agreement",
-    unit = "single",
-    r0 = 0,
-    conf.level = 0.95)
-```
-
 ```{r}
 tmp = data.frame(persons=c(1,2,3,4,5,6),
                  rater1=c(9,6,8,7,10,6),
@@ -490,6 +436,7 @@ summary(aov(score ~ rater+Error(factor(persons)), tmp))
 match_t1_t2 <- function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 'sub_id'){
   df = merge(t1_df[,c(merge_var, dv_var)], t2_df[,c(merge_var, dv_var)], by = merge_var)
   df = df %>% 
+    na.omit()%>%
     gather(time, score, -sub_id) %>%
     separate(time, c("dv","drop","time"), sep="[.]") %>%
     select(-drop)%>%
@@ -497,17 +444,36 @@ match_t1_t2 <- function(dv_var, t1_df = test_data, t2_df = retest_data, merge_va
   return(df)
 }
 
-tmp = match_t1_t2("adaptive_n_back.mean_load")
+tmp = match_t1_t2("adaptive_n_back.mean_load") 
+summary(aov(score~Error(sub_id)+time,tmp))
+(0.692-((0.876*1+0.092*133)/134))/(0.692 + ((2-1)*((0.876*1+0.092*133)/134))) #ICC(1,1) ?
+(0.692-0.092)/(0.692+ ((2-1)*0.092)+ ((2*(0.876-0.092))/134)) #ICC(2,1)
+(0.692-0.092)/(0.692+((2-1)*0.092)) #ICC(3,1)
+(0.692-((0.876*1+0.092*133)/134))/(0.692) #ICC(1,k)
+(0.692-0.092)/(0.692+((2*(0.876-0.092))/134)) #ICC(2,k)
+(0.692-0.092)/(0.692) #ICC(3.k)
+sqrt((92.1+0.88+12.29)/133) #sd?
+sd(tmp$score) #sd?
+sqrt(0.092) #sem (smaller the better)
+tmp = tmp %>% spread(time, score) %>% select(-dv, -sub_id)
+ICC(tmp)
 
-summary(lmer(score ~ (1|sub_id)+factor(time),data=tmp))
-
-```
-
-```{r}
-summary(aov(score ~ factor(time) + Error(sub_id),tmp))
+tmp = match_t1_t2("bis_bas_survey.BIS") 
+summary(aov(score~Error(sub_id)+time,tmp))
+# summary(aov(score~Error(sub_id/time)+time,tmp)) #same thing
+sqrt(0.0477)
+tmp = tmp %>% spread(time, score) %>% select(-dv, -sub_id)
+ICC(tmp)
 ```
 
 ----------------------------------------------------------------------------------------------------------------
+
+Based on Weir 2005 ICC(3,k) does not take in to account within subject differences between two time points (fixed effect/systematic error by time). Thus, it is well approximated by Pearson's r and subject to similar criticisms. So if you're going to use this you should at least that this effect is not significant for a measure.
+
+Conclusion based on Weir:
+get ICC(3,k)
+report effect size of time (p value and partial eta squared)
+get SEM (sqrt(MS_error))
 
 ```{r}
 icc_df <- data.frame(icc = rep(NA, length(numeric_cols)))
