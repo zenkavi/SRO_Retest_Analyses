@@ -251,12 +251,10 @@ rm(i)
 
 ### Clean t2 data
 
-Instead of applying the same functions applied to t1 data we check which variables are transformed in what way and transform the t2 data the same way.
+Instead of applying the same functions applied to t1 data we check which variables are transformed in what way and transform the t2 data the same way. Again we are not removing outliers in the t2 or dropping variables if the skew is not removed successfully after transforming.
 
-**Question: Should I be removing outliers from the retest data? Or keep them if they were within the ranges in the test data even if they aren't in the retest data. Right now I'm removing them depending on t2 distributions**
-
-Remove outliers from retest data the way they have been from test data
-```{r}
+```{r eval=FALSE, echo=FALSE}
+# Remove outliers from retest data the way they have been from test data
 clean_retest_data = cbind(sub_id = retest_data$sub_id, as.data.frame(apply(retest_data[, -which(names(retest_data) %in% c("sub_id"))], 2, remove_outliers)))
 ```
 
@@ -270,7 +268,9 @@ logTr_vars$var = gsub(".logTr|.ReflogTr", "", logTr_vars$var)
 
 Transform the t2 columns the same way t1 columns were transformed.
 
-```{r}
+```{r warning=FALSE}
+clean_retest_data = retest_data
+
 for(i in 1:length(names(clean_retest_data))){
   tmp_col = names(clean_retest_data)[i]
   if(tmp_col %in% logTr_vars$var){
@@ -475,6 +475,13 @@ for(i in 1:length(numeric_cols)){
   icc_df[numeric_cols[i], 'eta_sq'] <- get_eta(numeric_cols[i])
   icc_df[numeric_cols[i], 'sem'] <- get_sem(numeric_cols[i])
 }
+
+numeric_cols[293]
+raw_test_data[,"directed_forgetting.proactive_interference_acc"]
+match_t1_t2(numeric_cols[293])
+get_icc(numeric_cols[293])
+get_eta(numeric_cols[293])
+get_sem(numeric_cols[293])
 ```
 
 Add column to tasks vs. surveys in icc table
