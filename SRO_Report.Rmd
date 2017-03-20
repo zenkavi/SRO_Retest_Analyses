@@ -19,6 +19,7 @@ library(semTools)
 library(psych)
 library(GPArotation)
 library(rmarkdown)
+library(psych)
 sem <- function(x) {sd(x, na.rm=T) / sqrt(length(x))}
 render_this <- function(){rmarkdown::render('SRO_Report.Rmd', html_notebook(toc = T, toc_float = T))}
 options(digits = 4)
@@ -417,72 +418,94 @@ cor_df %>%
 
 ## ICC for all cleaned meaningful variables
 
-```{r}
-tmp = data.frame(persons=c(1,2,3,4,5,6),
-                 rater1=c(9,6,8,7,10,6),
-                 rater2=c(2,1,4,1,5,2),
-                 rater3=c(5,3,6,2,6,4),
-                 rater4=c(8,2,8,6,9,7))
-
-ICC(tmp%>%select(-persons))
-
-tmp = tmp %>% gather(rater,score,-persons)
-tmp
-summary(aov(score ~ rater+Error(factor(persons)), tmp))
-```
-
+Based on [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9d379b79de4f767740.pdf) ICC(3,k) does not take in to account within subject differences between two time points (i.e. the fixed effect of time/systematic error). Thus, it is well approximated by Pearson's r and subject to similar criticisms. [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9d379b79de4f767740.pdf) suggests reporting at least this effect size if one chooses to report with ICC(3,k). Based on his conclusions here I report:  
+- ICC(3,k): ranges between 0-1; the larger the better  
+- partial $\eta^2$ for time ($SS_{time}/SS_{within}$): effect size of time 
+- SEM ($sqrt(MS_{error})$): standard error of measurement; the smaller the better
 
 ```{r}
 match_t1_t2 <- function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 'sub_id'){
   df = merge(t1_df[,c(merge_var, dv_var)], t2_df[,c(merge_var, dv_var)], by = merge_var)
   df = df %>% 
     na.omit()%>%
-    gather(time, score, -sub_id) %>%
-    separate(time, c("dv","drop","time"), sep="[.]") %>%
-    select(-drop)%>%
-    mutate(time=ifelse(time=="x",1,2))
-  return(df)
+    gather(dv, score, -sub_id) %>%
+    mutate(time = ifelse(grepl('\\.x', dv), 1, ifelse(grepl('\\.y', dv), 2, NA))) %>%
+    separate(dv, c("dv", "drop"), sep='\\.([^.]*)$') %>%
+    select(-drop)
+   return(df)
 }
 
-tmp = match_t1_t2("adaptive_n_back.mean_load") 
-summary(aov(score~Error(sub_id)+time,tmp))
-(0.692-((0.876*1+0.092*133)/134))/(0.692 + ((2-1)*((0.876*1+0.092*133)/134))) #ICC(1,1) ?
-(0.692-0.092)/(0.692+ ((2-1)*0.092)+ ((2*(0.876-0.092))/134)) #ICC(2,1)
-(0.692-0.092)/(0.692+((2-1)*0.092)) #ICC(3,1)
-(0.692-((0.876*1+0.092*133)/134))/(0.692) #ICC(1,k)
-(0.692-0.092)/(0.692+((2*(0.876-0.092))/134)) #ICC(2,k)
-(0.692-0.092)/(0.692) #ICC(3.k)
-sqrt((92.1+0.88+12.29)/133) #sd?
-sd(tmp$score) #sd?
-sqrt(0.092) #sem (smaller the better)
-tmp = tmp %>% spread(time, score) %>% select(-dv, -sub_id)
-ICC(tmp)
+get_icc <- function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 'sub_id'){
+  df = match_t1_t2(dv_var, t1_df = t1_df, t2_df = t2_df, merge_var = merge_var)
+  df = df %>% spread(time, score) %>% select(-dv, -sub_id)
+  icc = ICC(df)
+  icc_3k = icc$results['Average_fixed_raters', 'ICC']
+  return(icc_3k)
+  }
 
-tmp = match_t1_t2("bis_bas_survey.BIS") 
-summary(aov(score~Error(sub_id)+time,tmp))
-# summary(aov(score~Error(sub_id/time)+time,tmp)) #same thing
-sqrt(0.0477)
-tmp = tmp %>% spread(time, score) %>% select(-dv, -sub_id)
-ICC(tmp)
+get_eta <- function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 'sub_id'){
+  df = match_t1_t2(dv_var, t1_df = t1_df, t2_df = t2_df, merge_var = merge_var)
+  mod = summary(aov(score~Error(sub_id)+time, df))
+  ss_time = as.data.frame(unlist(mod$`Error: Within`))['Sum Sq1',]
+  ss_error = as.data.frame(unlist(mod$`Error: Within`))['Sum Sq2',]
+  eta = ss_time/(ss_time+ss_error)
+  return(eta)
+  }
+
+get_sem <- function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 'sub_id'){
+  df = match_t1_t2(dv_var, t1_df = t1_df, t2_df = t2_df, merge_var = merge_var)
+  mod = summary(aov(score~Error(sub_id)+time, df))
+  ms_error = as.data.frame(unlist(mod$`Error: Within`))['Mean Sq2',]
+  sem = sqrt(ms_error)
+  return(sem)
+}
 ```
 
-----------------------------------------------------------------------------------------------------------------
-
-Based on Weir 2005 ICC(3,k) does not take in to account within subject differences between two time points (fixed effect/systematic error by time). Thus, it is well approximated by Pearson's r and subject to similar criticisms. So if you're going to use this you should at least that this effect is not significant for a measure.
-
-Conclusion based on Weir:
-get ICC(3,k)
-report effect size of time (p value and partial eta squared)
-get SEM (sqrt(MS_error))
 
 ```{r}
-icc_df <- data.frame(icc = rep(NA, length(numeric_cols)))
+icc_df <- data.frame(icc = rep(NA, length(numeric_cols)), 
+                     eta_sq = rep(NA, length(numeric_cols)),
+                     sem = rep(NA, length(numeric_cols)))
 
 row.names(icc_df) <- numeric_cols
 
 for(i in 1:length(numeric_cols)){
-  icc_df[numeric_cols[i], '...'] <- ...
+  icc_df[numeric_cols[i], 'icc'] <- get_icc(numeric_cols[i])
+  icc_df[numeric_cols[i], 'eta_sq'] <- get_eta(numeric_cols[i])
+  icc_df[numeric_cols[i], 'sem'] <- get_sem(numeric_cols[i])
 }
+```
+
+Add column to tasks vs. surveys in icc table
+
+```{r}
+icc_df$dv = row.names(icc_df)
+row.names(icc_df) = seq(1:nrow(icc_df))
+icc_df$task = 'task'
+icc_df[grep('survey', icc_df$dv), 'task'] = 'survey'
+icc_df
+```
+
+### Distributions of ICC's by task vs. survey
+
+Survey reliabilities are noticably higher than task reliabilities.
+```{r warning=FALSE, message=FALSE}
+icc_df %>%
+  gather(key,value,-dv, -task) %>%
+  ggplot(aes(value, fill=task))+
+  geom_histogram(position = 'stack', alpha=0.5)+
+  theme_bw()+
+  facet_wrap(~key,scales='free')
+```
+
+Median reliability and the number of variables for both the surveys and the tasks
+```{r}
+icc_df %>%
+  group_by(task) %>%
+  summarise(median_icc = median(icc),
+            median_eta_sq = median(eta_sq),
+            median_sem = median(sem),
+            num_vars = n())
 ```
 
 ----------------------------------------------------------------------------------------------------------------

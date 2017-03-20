@@ -5,6 +5,7 @@ output: html_notebook
 
 Based on [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9d379b79de4f767740.pdf)
 
+Dataset A
 
 ```{r}
 tmp = data.frame(time_1=c(146, 148, 170, 90, 157, 156, 176, 205),
@@ -25,6 +26,8 @@ tmp = tmp %>% spread(key, value) %>% select(-people)
 ICC(tmp)
 ```
 
+Dataset B
+
 ```{r}
 tmp = data.frame(time_1=c(166, 168, 160, 150, 147, 146, 156, 155),
                  time_2=c(160, 172, 142, 159, 135, 143, 147, 168), 
@@ -34,6 +37,8 @@ summary(aov(value ~ factor(key)+Error(factor(people)), tmp))
 tmp = tmp %>% spread(key, value) %>% select(-people)
 ICC(tmp)
 ```
+
+Dataset C
 
 ```{r}
 tmp = data.frame(time_1=c(146, 148, 170, 90, 157, 156, 176, 205),
