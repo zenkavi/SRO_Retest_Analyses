@@ -77,7 +77,7 @@ retest_data <- merge(retest_data, retest_data3)
 rm(retest_data2, retest_data3)
 ```
 
-Extract t2 participants with good t1 data: We only invited those with good data but due to a technical error a handful of subjects who weren't checked for data quality completed the battery as well. One of those subjects gave good t2 data but didn't have good t1 data and therefore is removed from further analyses.
+Extract t2 participants with good t1 data: We only invited those with good data but due to a technical error a handful of subjects who weren't checked for data quality completed the retest battery as well. One of those subjects gave good t2 data but didn't have good t1 data and therefore is removed from further analyses.
 
 ```{r}
 #Process sub_id columns in the data dataframes
@@ -95,9 +95,9 @@ retest_data <- retest_data[retest_data$sub_id %in% test_data$sub_id,]
 The cleaning functions here are translated from the python pipeline to mimick the same procedure that was applied to the `meaningful_variables` in creating `meaningful_variables_clean`.
 
 The original cleaning procedures include three steps:  
-1. Removing outliers for each variables where outliers are defined as those who are greater than 2.5 IQR from median. **This step is skipped here because removing outliers from either dataset could lead to an unnecessary increase in missing data. Since we are interested in how close two measures of the metric for a given subject are to each other instead of how close the measurements for all these metrics are to each other this seemed appropriate.**  
-2. Removing correlated variables *within* a task. In creating `meaningful_variables_clean` if variables for a given task correlated >.85 only one was kept. **This step is skipped here because we want to look at the reliability of as many variables as we can.**
-3. Log transforming variables with skew. In cleaning t1 data variables that had a skew > 1 were log transformed and those for which skew could not be removed successfully were dropped. **Here we transform all variables that have a skew>1 in t1 data but variables that are not successfully transformed will be listed but not dropped.**
+1. Removing outliers for each variable where outliers are defined as those who are greater than 2.5 IQR from median. **This step is skipped here because removing outliers from either dataset could lead to an unnecessary increase in missing data. Since we are interested in the average distance between two measures of a metric for a given subject instead of the distance between all these metrics this seemed appropriate.**  
+2. Removing correlated variables *within* a task. In creating `meaningful_variables_clean` if variables for a given task correlated >.85 only one was kept. **This step is skipped here because we want to look at the reliability of as many variables as we can.**  
+3. Log transforming variables with skew. In cleaning t1 data variables that had a |skew| > 1 were log transformed and those for which skew could not be removed successfully were dropped. **Here we transform all variables that have a |skew|>1 in t1 data but variables that are not successfully transformed will be listed and not dropped.**
 
 ```{r}
 remove_outliers = function(data_column, quantile_range = 2.5){
@@ -236,7 +236,7 @@ transform_remove_skew = function(data, columns, threshold = 1, drop=FALSE){
 }
 ```
 
-Clean test data on full sample without dropping any columns. Columns that are not transformed successfully are listed.
+Clean t1 data on full sample without dropping any columns. Columns that are not transformed successfully are listed.
 
 ```{r warning=FALSE}
 numeric_cols = c()
@@ -311,13 +311,12 @@ retest_logTr_vars == logTr_vars
 ```
 
 
-```{r echo=F}
+```{r echo=FALSE}
 rm(logTr_vars, retest_logTr_vars)
 ```
 
-Switch df names
-
 ```{r}
+# Switch df names
 raw_retest_data = retest_data
 raw_test_data = test_data
 test_data = clean_test_data
@@ -371,9 +370,8 @@ cor_df %>%
   ggtitle('Distribution of Spearman correlations for cleaned meaningful variables')
 ```
 
-Add column to tasks vs. surveys in correlation table
-
 ```{r}
+# Add column to tasks vs. surveys in correlation table
 cor_df$dv = row.names(cor_df)
 row.names(cor_df) = seq(1:nrow(cor_df))
 cor_df$task = 'task'
@@ -382,7 +380,7 @@ cor_df[grep('survey', cor_df$dv), 'task'] = 'survey'
 
 ### Distributions of correlations by task vs. survey
 
-Survey reliabilities are noticably higher than task reliabilities.
+Spearman correlations for surveys are noticably higher than task reliabilities.
 ```{r warning=FALSE, message=FALSE}
 cor_df %>%
   ggplot(aes(spearman))+
@@ -391,7 +389,7 @@ cor_df %>%
   facet_wrap(~task)
 ```
 
-Mean reliability and the number of variables for both the surveys and the tasks
+Mean Spearman correlation and the number of variables for both the surveys and the tasks
 ```{r}
 cor_df %>%
   group_by(task) %>%
@@ -412,7 +410,7 @@ cor_df %>%
 ##### For surveys
 
 - Demographics are excluded from this list of variables.  
-- Holt and Laury test-retest is the worst for *surveys*. But note that this is not a survey that has been studied extensively psychometrically like others. This is more similar to out tasks (one that is used more often by economists). In previous data I have worked retest reliablities for this task was ~.35 so the results here are in line with this.  
+- Holt and Laury test-retest is the worst for *surveys*. But note that this is not a survey that has been studied extensively psychometrically like others. This is more similar to our tasks (one that is used more often by economists). In previous data I have worked with retest reliablities for this task was ~.35 so the results here are in line with this.  
 - Otherwise the lowest survey reliabilities are 0.5.
 ```{r}
 cor_df %>%
@@ -423,10 +421,10 @@ cor_df %>%
 
 ## ICC for all cleaned meaningful variables
 
-Based on [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9d379b79de4f767740.pdf) ICC(3,k) does not take in to account within subject differences between two time points (i.e. the fixed effect of time/systematic error). Thus, it is well approximated by Pearson's r and subject to similar criticisms. [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9d379b79de4f767740.pdf) suggests reporting at least this effect size if one chooses to report with ICC(3,k). Based on his conclusions here I report:  
+Based on [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9d379b79de4f767740.pdf) ICC(3,k) does not take in to account within subject differences between two time points (i.e. the fixed effect of time/systematic error). Thus, it is well approximated by Pearson's r and subject to similar criticisms. [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9d379b79de4f767740.pdf) suggests reporting at least this systematic error effect size if one chooses to report with ICC(3,k). Based on his conclusions here I report:  
 - ICC(3,k): ranges between 0-1; the larger the better  
-- partial $\eta^2$ for time ($SS_{time}/SS_{within}$): effect size of time 
-- SEM ($sqrt(MS_{error})$): standard error of measurement; the smaller the better
+- partial $\eta^2$ for time ($SS_{time}/SS_{within}$): effect size of time   
+- SEM ($\sqrt(MS_{error})$): standard error of measurement; the smaller the better
 
 ```{r}
 match_t1_t2 <- function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 'sub_id'){
@@ -494,7 +492,7 @@ icc_df
 ### Distributions of ICC's by task vs. survey
 
 Survey reliabilities are noticably higher than task reliabilities.
-```{r warning=FALSE, message=FALSE}
+```{r warning=FALSE, message=FALSE, fig.width=10}
 icc_df %>%
   gather(key,value,-dv, -task) %>%
   ggplot(aes(value, fill=task))+
@@ -512,88 +510,3 @@ icc_df %>%
             median_sem = median(sem),
             num_vars = n())
 ```
-
-----------------------------------------------------------------------------------------------------------------
-
-## Different task variable types
-
-Mean reliabilities for different types of dependant variables
-
-### Drift diffusion variables: raw vars vs. EZ vs. hddm
-
-**DO THIS ON VARIABLES EXHAUSTIVE GETTING ALL RT AND ACC'S**
-
-```{r message=FALSE, warning=FALSE, fig.height=12, fig.width=9}
-cor_df%>%
-  filter(grepl('EZ|hddm|_rt|_acc', dv)) %>%
-  mutate(var_type = ifelse(grepl('EZ',dv), 'EZ', ifelse(grepl('hddm',dv), 'hddm', 'raw')),
-         var = ifelse(grepl('_rt', dv), 'rt', ifelse(grepl('_acc', dv), 'acc', ifelse(grepl('_non_decision', dv), 'non_decision', ifelse(grepl('_thresh', dv), 'thresh', ifelse(grepl('_drift', dv), 'drift', NA)))))) %>%
-  ggplot(aes(spearman))+
-  geom_histogram()+
-  theme_bw()+
-  facet_wrap(var_type~var)
-```
-
-```{r}
-cor_df%>%
-  filter(grepl('EZ|hddm|_rt|_acc', dv)) %>%
-  mutate(var_type = ifelse(grepl('EZ',dv), 'EZ', ifelse(grepl('hddm',dv), 'hddm', 'raw')),
-         var = ifelse(grepl('_rt', dv), 'rt', ifelse(grepl('_acc', dv), 'acc', ifelse(grepl('_non_decision', dv), 'non_decision', ifelse(grepl('_thresh', dv), 'thresh', ifelse(grepl('_drift', dv), 'drift', NA)))))) %>%
-  group_by(var_type, var) %>%
-  summarise(mean_spearman = mean(spearman, na.rm=T),
-            sem_spear = sem(spearman),
-            num_vars = sum(ifelse(is.na(spearman)==FALSE,1,0))) %>%
-  arrange(var_type)
-```
-
-## Replicating the factor structure
-
-### Confirm comparability of retest and rest sample
-
-First do a t-test on all measures of T1 for subjects with and without retest to confirm that these two samples do not differ from each other significantly (FDR corrected)
-```{r}
-ttest_df = data.frame(t_stat = rep(NA, length(matching_dv_columns)),
-                      p_val_raw = rep(NA, length(matching_dv_columns)))
-
-row.names(ttest_df) <- matching_dv_columns
-
-for(i in 1:length(matching_dv_columns)){
-  ttest_df[matching_dv_columns[i], 't_stat'] <- t.test(retest_subs_test_data[,matching_dv_columns[i]], rest_subs_test_data[,matching_dv_columns[i]])$statistic
-  
-  ttest_df[matching_dv_columns[i], 'p_val_raw'] <- t.test(retest_subs_test_data[,matching_dv_columns[i]], rest_subs_test_data[,matching_dv_columns[i]])$p.value
-}
-
-ttest_df$dv = row.names(ttest_df)
-row.names(ttest_df) = seq(1:nrow(ttest_df))
-ttest_df$task = 'task'
-ttest_df[grep('survey', ttest_df$dv), 'task'] = 'survey'
-
-#correct p-values 
-ttest_df$p_val_fdr = p.adjust(ttest_df$p_val_raw, method='fdr')
-```
-
-```{r echo=FALSE}
-rm(i)
-```
-
-Distribution of t statistics and p values
-
-```{r warning=FALSE, message=FALSE}
-ttest_df %>%
-  gather(key, value, -dv, -task) %>%
-  ggplot(aes(value)) +
-  geom_histogram()+
-  theme_bw()+
-  facet_wrap(key~task, scales='free')
-```
-
-**Which variables are significantly different between the two samples (those with and without retest data for T1)?**
-
-13 variables have raw p values <0.05 BUT FDR corrected p values for these are not <0.05.
-
-```{r}
-ttest_df %>%
-  filter(p_val_raw<0.05) %>%
-  select(dv, task, t_stat, p_val_raw, p_val_fdr)
-```
-
