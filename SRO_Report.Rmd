@@ -22,7 +22,6 @@ library(rmarkdown)
 library(psych)
 sem <- function(x) {sd(x, na.rm=T) / sqrt(length(x))}
 render_this <- function(){rmarkdown::render('SRO_Report.Rmd', html_notebook(toc = T, toc_float = T))}
-options(digits = 4)
 ```
 
 # Introduction
@@ -46,7 +45,7 @@ test_data <- merge(test_data, test_data3)
 rm(test_data2, test_data3)
 ```
 
-For reference here are the variables that are **not** included because they were not of theoretical interest in factor structure analyses of this data so far.
+For reference here are the variables that are **not** included in the analyses of the remainder of this report because they were not of theoretical interest in factor structure analyses of this data so far. These include drift diffusion and other model parameters for specific conditions within a task; survey variables that are not part of the dependant variables for that survey in the literature and demographics (these are saved for prediction analyses).
 
 ```{r}
 test_data2 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_01-31-2017/variables_exhaustive.csv')
@@ -78,7 +77,7 @@ retest_data <- merge(retest_data, retest_data3)
 rm(retest_data2, retest_data3)
 ```
 
-Extract retest participants from test data
+Extract t2 participants with good t1 data: We only invited those with good data but due to a technical error a handful of subjects who weren't checked for data quality completed the battery as well. One of those subjects gave good t2 data but didn't have good t1 data and therefore is removed from further analyses.
 
 ```{r}
 #Process sub_id columns in the data dataframes
@@ -93,11 +92,12 @@ retest_data <- retest_data[retest_data$sub_id %in% test_data$sub_id,]
 
 ### Clean t1 data
 
-The cleaning functions here are translated from the python pipeline to mimick the same procedure.
+The cleaning functions here are translated from the python pipeline to mimick the same procedure that was applied to the `meaningful_variables` in creating `meaningful_variables_clean`.
 
-The cleaning procedures include two steps:  
-1. removing outliers for each variables where outliers are defined as those who are greater than 2.5 IQR from median  
-2. Log transforming variables with skew. In cleaning T1 data for the `meaningful_variables_clean.csv` variables for which skew could not be removed successfully were dropped. **This step is excluded here. Variables that are not successfully transformed will be listed but not dropped.**
+The original cleaning procedures include three steps:  
+1. Removing outliers for each variables where outliers are defined as those who are greater than 2.5 IQR from median. **This step is skipped here because removing outliers from either dataset could lead to an unnecessary increase in missing data. Since we are interested in how close two measures of the metric for a given subject are to each other instead of how close the measurements for all these metrics are to each other this seemed appropriate.**  
+2. Removing correlated variables *within* a task. In creating `meaningful_variables_clean` if variables for a given task correlated >.85 only one was kept. **This step is skipped here because we want to look at the reliability of as many variables as we can.**
+3. Log transforming variables with skew. In cleaning t1 data variables that had a skew > 1 were log transformed and those for which skew could not be removed successfully were dropped. **Here we transform all variables that have a skew>1 in t1 data but variables that are not successfully transformed will be listed but not dropped.**
 
 ```{r}
 remove_outliers = function(data_column, quantile_range = 2.5){
@@ -230,7 +230,7 @@ transform_remove_skew = function(data, columns, threshold = 1, drop=FALSE){
 
 Clean test data on full sample without dropping any columns. Columns that are not transformed successfully are listed.
 
-```{r}
+```{r warning=FALSE}
 numeric_cols = c()
 
 for(i in 1:length(names(test_data))){
@@ -239,9 +239,10 @@ for(i in 1:length(names(test_data))){
   }
 }
 
-clean_test_data = cbind(sub_id = test_data$sub_id, as.data.frame(apply(test_data[, -which(names(test_data) %in% c("sub_id"))], 2, remove_outliers)))
+# clean_test_data = cbind(sub_id = test_data$sub_id, as.data.frame(apply(test_data[, -which(names(test_data) %in% c("sub_id"))], 2, remove_outliers)))
 
-clean_test_data = transform_remove_skew(clean_test_data, numeric_cols)
+# clean_test_data = transform_remove_skew(clean_test_data, numeric_cols)
+clean_test_data = transform_remove_skew(test_data, numeric_cols)
 ```
 
 ```{r echo=FALSE}
@@ -518,11 +519,6 @@ Mean reliabilities for different types of dependant variables
 
 **DO THIS ON VARIABLES EXHAUSTIVE GETTING ALL RT AND ACC'S**
 
-We should probably take a closer look at model fits instead but this could be a first step.  
-
-The cleaned meaningful variables do not seem to include neither the EZ estimates nor accuracies
-so analyses on this [here](https://htmlpreview.github.io/?https://github.com/zenkavi/SRO_Retest_Analyses/blob/master/SRO_Retest_Analyses.nb.html) are more informative. Otherwise just looking at this one might be tempted to conclude that rt's have higher reliabilities but clearly 
-
 ```{r message=FALSE, warning=FALSE, fig.height=12, fig.width=9}
 cor_df%>%
   filter(grepl('EZ|hddm|_rt|_acc', dv)) %>%
@@ -595,55 +591,5 @@ ttest_df %>%
 ttest_df %>%
   filter(p_val_raw<0.05) %>%
   select(dv, task, t_stat, p_val_raw, p_val_fdr)
-```
-
-### Efa and Cfa
-
-**DO ONLY ON SURVEY AND TASK DATA SEPARATELY**
-
-Efa on the people you don't have retest on and then predict how well this holds up for people w retest on t1 and on t2.  
-
-I haven't consulted other factor analyses that have been done on the full dataset in doing this but will be happy to adjust as necessary.
-
-```{r}
-retest_data_mngf <- retest_data[,matching_dv_columns]
-retest_subs_test_mngf <- retest_subs_test_data[,matching_dv_columns]
-rest_subs_test_mngf <- rest_subs_test_data[,matching_dv_columns]
-
-#standardize all vars going in to factor analysis
-rest_subs_test_mngf_z <- rest_subs_test_mngf
-
-for(i in 1:length(rest_subs_test_mngf)){
-    rest_subs_test_mngf_z[,names(rest_subs_test_mngf)[i]] = scale(rest_subs_test_mngf[,i])
-}
-
-rest_subs_test_mngf_z <- as.data.frame(rest_subs_test_mngf_z)
-```
-
-Efa on subjects from original dataset withOUT retest data (using meaningful vars only)  
-Using the `psych` package I get some sort of solution but these are probably not valid given all the warnings.
-```{r}
-corMat <- rest_subs_test_mngf_z %>% cor(.,use = 'complete.obs')
-
-solution <- fa(r = corMat, nfactors = 7, rotate = "oblimin", fm = "pa")
-```
-
-```{r}
-print(solution$loadings, sort=T)
-```
-
-```{r}
-# Pricipal Components Analysis
-# entering raw data and extracting PCs 
-# from the correlation matrix 
-fit <- principal(rest_subs_test_mngf_z, nfactors=7, rotate="varimax")
-fit
-
-fit <- princomp(rest_subs_test_mngf_z, cor=TRUE)
-summary(fit) # print variance accounted for 
-loadings(fit) # pc loadings 
-plot(fit,type="lines") # scree plot 
-fit$scores # the principal components
-biplot(fit)
 ```
 
