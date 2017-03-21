@@ -514,14 +514,78 @@ icc_df %>%
             num_vars = n())
 ```
 
+Sort tasks by icc. What's going on with the negative icc's?
+ICC(3,k) would be negative if the $MS_{error}$>$MS_{between}$
+
+Plot their data scatter plots.
+```{r, fig.height=12, fig.width=12}
+neg_icc_vars = icc_df %>%
+  arrange(icc) %>% 
+  filter(icc<0) %>%
+  select(dv)
+
+tmp = data.frame()
+
+for(i in 1:nrow(neg_icc_vars)){
+  tmp = rbind(tmp, match_t1_t2(neg_icc_vars$dv[i]))
+}
+rm(neg_icc_vars)
+
+tmp %>%
+  spread(time, score) %>%
+  ggplot(aes(`1`, `2`))+
+  geom_point()+
+  theme_bw()+
+  facet_wrap(~dv, scales='free')
+
+```
+
+Compare these plots to the variables with highest icc
+
+```{r fig.height=12, fig.width=12}
+high_icc_vars = icc_df %>%
+  arrange(-icc)  %>% 
+  filter(icc>0.92) %>%
+  select(dv)
+
+tmp = data.frame()
+
+for(i in 1:nrow(high_icc_vars)){
+  tmp = rbind(tmp, match_t1_t2(high_icc_vars$dv[i]))
+}
+rm(high_icc_vars)
+
+tmp %>%
+  spread(time, score) %>%
+  ggplot(aes(`1`, `2`))+
+  geom_point()+
+  theme_bw()+
+  facet_wrap(~dv, scales='free')
+
+```
+
+```{r echo=FALSE}
+rm(tmp)
+```
+
 ### Relationship between ICC and Spearman
+Mostly linear except for a bunch of tasks that have an icc ~ 0.
 
 ```{r}
 icc_df %>%
   left_join(cor_df[,c('spearman','dv')], by = 'dv') %>%
   ggplot(aes(spearman, icc, col=task))+
   geom_point()+
-  theme_bw()
+  theme_bw()+
+  theme(legend.title = element_blank())
+```
+
+What are the variables clustered around 0 ICC?
+
+```{r}
+icc_df %>%
+  filter(icc>(-0.1), icc<0.1) %>%
+  arrange(icc)
 ```
 
 ### Relationship between ICC and $\eta^2$
@@ -530,5 +594,15 @@ icc_df %>%
 icc_df %>%
   ggplot(aes(eta_sq, icc, col=task))+
   geom_point()+
-  theme_bw()
+  theme_bw()+
+  theme(legend.title = element_blank())
+```
+
+Which tasks show a systematic difference between t1 and t2?
+Are these the tasks where the ICC and Spearman imply different conclusions?
+
+```{r}
+icc_df %>%
+  select(dv, eta_sq) %>%
+  arrange(-eta_sq)
 ```
