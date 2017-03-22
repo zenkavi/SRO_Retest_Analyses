@@ -14,15 +14,13 @@ library(gridExtra)
 library(lme4)
 library(GGally)
 library(jsonlite)
-library(lavaan)
-library(semTools)
 library(psych)
-library(GPArotation)
 library(rmarkdown)
 library(psych)
 library(stringr)
+library(plotly)
 sem <- function(x) {sd(x, na.rm=T) / sqrt(length(x))}
-render_this <- function(){rmarkdown::render('SRO_Report.Rmd', html_notebook(toc = T, toc_float = T))}
+render_this <- function(){rmarkdown::render('SRO_Report.Rmd', output_dir = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Report', html_notebook(toc = T, toc_float = T))}
 ```
 
 # Introduction
@@ -362,15 +360,6 @@ for(i in 1:length(numeric_cols)){
 }
 ```
 
-Distribution of Spearman correlations
-```{r warning=FALSE, message=FALSE}
-cor_df %>%
-  ggplot(aes(spearman))+
-  geom_histogram()+
-  theme_bw()+
-  ggtitle('Distribution of Spearman correlations for cleaned meaningful variables')
-```
-
 ```{r}
 # Add column to tasks vs. surveys in correlation table
 cor_df$dv = row.names(cor_df)
@@ -383,11 +372,11 @@ cor_df[grep('survey', cor_df$dv), 'task'] = 'survey'
 
 Spearman correlations for surveys are noticably higher than task reliabilities.
 ```{r warning=FALSE, message=FALSE}
-cor_df %>%
-  ggplot(aes(spearman))+
-  geom_histogram()+
+ggplotly(cor_df %>%
+  ggplot(aes(spearman, fill=task, label=dv))+
+  geom_histogram(alpha=0.5, position='identity')+
   theme_bw()+
-  facet_wrap(~task)
+  theme(legend.title = element_blank()))
 ```
 
 Mean Spearman correlation and the number of variables for both the surveys and the tasks
@@ -500,7 +489,7 @@ Survey reliabilities are noticably higher than task reliabilities.
 icc_df %>%
   gather(key,value,-dv, -task) %>%
   ggplot(aes(value, fill=task))+
-  geom_histogram(position = 'stack', alpha=0.5)+
+  geom_histogram(position = 'identity', alpha=0.5)+
   theme_bw()+
   facet_wrap(~key,scales='free')
 ```
@@ -574,12 +563,13 @@ rm(tmp)
 Mostly linear except for a bunch of tasks that have an icc ~ 0.
 
 ```{r}
-icc_df %>%
-  left_join(cor_df[,c('spearman','dv')], by = 'dv') %>%
-  ggplot(aes(spearman, icc, col=task))+
-  geom_point()+
-  theme_bw()+
-  theme(legend.title = element_blank())
+ggplotly(icc_df %>%
+           left_join(cor_df[,c('spearman','dv')], by = 'dv') %>%
+           ggplot(aes(spearman, icc, col=task, label=dv, label2=eta_sq))+
+           geom_point()+
+           theme_bw()+
+           theme(legend.title = element_blank())+
+           geom_abline(intercept = 0, slope=1))
 ```
 
 What are the variables clustered around 0 ICC?
@@ -593,11 +583,11 @@ icc_df %>%
 ### Relationship between ICC and $\eta^2$
 
 ```{r}
-icc_df %>%
-  ggplot(aes(eta_sq, icc, col=task))+
+ggplotly(icc_df %>%
+  ggplot(aes(eta_sq, icc, col=task, label=dv))+
   geom_point()+
   theme_bw()+
-  theme(legend.title = element_blank())
+  theme(legend.title = element_blank()))
 ```
 
 Which tasks show a systematic difference between t1 and t2?
