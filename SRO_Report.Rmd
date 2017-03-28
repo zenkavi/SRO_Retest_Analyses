@@ -19,6 +19,7 @@ library(rmarkdown)
 library(psych)
 library(stringr)
 library(plotly)
+library(jsonlite)
 sem <- function(x) {sd(x, na.rm=T) / sqrt(length(x))}
 render_this <- function(){rmarkdown::render('SRO_Report.Rmd', output_dir = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Report', html_notebook(toc = T, toc_float = T))}
 ```
@@ -371,12 +372,60 @@ cor_df[grep('survey', cor_df$dv), 'task'] = 'survey'
 ### Distributions of correlations by task vs. survey
 
 Spearman correlations for surveys are noticably higher than task reliabilities.
+
+```{r echo=FALSE}
+get_labels = function(plot_df, ref_df, bin_col, group_col){
+  
+  plot_df$bin = as.numeric(factor(plot_df$x))
+  ref_df$bin = NA
+  
+  for(i in 1:nrow(ref_df)){
+    for(j in 1:nrow(plot_df)){
+      if(ref_df[i, bin_col] <= plot_df$xmax[j] & ref_df[i, bin_col]>=plot_df$xmin[j] & ref_df[i, group_col] == plot_df[j, group_col]){
+        ref_df$bin[i] <- plot_df$bin[j]
+      }
+    }
+  }
+  
+  ref_df = ref_df %>% 
+    group_by(bin, task) %>%
+    mutate(label=as.character(toJSON(unique(dv))))
+  
+  label_df = ref_df[!duplicated(ref_df[,c('label')]),c('task', 'bin', 'label')]
+  
+  out_df = left_join(plot_df,label_df, by= c("bin", "task"))
+  
+  return(out_df)
+}
+
+
+line_break <- function(cell){
+  out = paste(unlist(strsplit(gsub("\\]","",gsub("\\[","",cell)), ",")), sep="\n", collapse = "</br>")
+  return(out)
+}
+
+prettify_label = function(df){
+  for(i in 1:nrow(df)){
+    df$label[i] =line_break(df$label[i])
+  }
+  return(df)
+}
+```
+
 ```{r warning=FALSE, message=FALSE}
-ggplotly(cor_df %>%
-  ggplot(aes(spearman, fill=task, label=dv))+
-  geom_histogram(alpha=0.5, position='identity')+
-  theme_bw()+
-  theme(legend.title = element_blank()))
+ggplotly(ggplot_build(cor_df %>%
+                        ggplot(aes(spearman, fill=task)) +
+                        geom_histogram(position = 'identity', alpha=0.5))$data[[1]] %>%
+           mutate(task=ifelse(as.character(fill) == "#00BFC4", "task", "survey")) %>%
+           get_labels(.,cor_df, "spearman", "task") %>%
+           prettify_label(.) %>%
+           ggplot(aes(x,y, fill=task, label=label))+
+           geom_bar(stat='identity', position='identity', alpha=0.5)+
+           xlab('Spearman')+
+           ylab('Count')+
+           theme_bw(),
+         tooltip = 'label',
+         hoverinfo = 'text')
 ```
 
 Mean Spearman correlation and the number of variables for both the surveys and the tasks
