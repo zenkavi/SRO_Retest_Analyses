@@ -624,18 +624,43 @@ icc_df %>%
 
 So what variables show a non-negligible effect of time and in what direction?
 
-```{r warning=FALSE, message=FALSE}
-ggplot_build(icc_df %>%
+```{r warning=FALSE, message=FALSE, fig.height=72}
+time_effect_vars = ggplot_build(icc_df %>%
                ggplot(aes(eta_sq, fill=task)) +
                geom_histogram(position = 'identity', alpha=0.5))$data[[1]] %>%
   mutate(task=ifelse(as.character(fill) == "#00BFC4", "task", "survey")) %>%
   get_labels(.,icc_df, "eta_sq", "task") %>%
   prettify_label(.) %>%
-  filter(bin != 1 & bin !=2 & !is.na(label)) %>%
-  select(label)
- 
+  filter(bin != 1 & bin !=2 & label != "NA") %>%
+  select(label, task) %>%
+  separate(label,into=c(as.character(1:27)),sep = "</br>") %>%
+  gather(key, value, -task) %>%
+  select(value, task) %>%
+  na.omit()
 
-anyNA("NA") 
+time_effect_vars$value = gsub("\"", "", time_effect_vars$value)
+
+tmp = data.frame()
+
+for(i in 1:nrow(time_effect_vars)){
+  tmp = rbind(tmp, match_t1_t2(time_effect_vars$value[i]))
+}
+rm(time_effect_vars)
+
+tmp %>%
+  spread(time, score) %>%
+  # mutate(dv_wrap = str_wrap(dv, width = 30)) %>%
+  ggplot(aes(`1`, `2`))+
+  geom_point()+
+  theme_bw()+
+  facet_wrap(~dv, scales='free', labeller = label_wrap_gen())+
+  geom_abline(intercept = 0, slope=1)
+
+tmp
+
+tmp %>% 
+  outer_join(icc_df[,c("dv", "eta_sq"), by="dv"])
+
 ```
 
 ### Distributions of SEM's by task vs. survey
