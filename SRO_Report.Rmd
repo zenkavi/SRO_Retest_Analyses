@@ -21,7 +21,7 @@ library(stringr)
 library(plotly)
 library(jsonlite)
 sem <- function(x) {sd(x, na.rm=T) / sqrt(length(x))}
-render_this <- function(){rmarkdown::render('SRO_Report.Rmd', output_dir = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Report', html_notebook(toc = T, toc_float = T))}
+render_this <- function(){rmarkdown::render('SRO_Report.Rmd', output_dir = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Report', html_notebook(toc = T, toc_float = T, code_folding = 'hide'))}
 ```
 
 # Introduction
@@ -359,14 +359,21 @@ row.names(cor_df) <- numeric_cols
 for(i in 1:length(numeric_cols)){
   cor_df[numeric_cols[i], 'spearman'] <- cor(retest_data[,numeric_cols[i]],retest_subs_test_data[,numeric_cols[i]], method = 'spearman', use = "pairwise.complete.obs")
 }
-```
 
-```{r}
 # Add column to tasks vs. surveys in correlation table
 cor_df$dv = row.names(cor_df)
 row.names(cor_df) = seq(1:nrow(cor_df))
 cor_df$task = 'task'
 cor_df[grep('survey', cor_df$dv), 'task'] = 'survey'
+```
+
+
+Mean Spearman correlation and the number of variables for both the surveys and the tasks
+```{r}
+cor_df %>%
+  group_by(task) %>%
+  summarise(mean_spearman = mean(spearman),
+            num_vars = n())
 ```
 
 ### Distributions of correlations by task vs. survey
@@ -428,14 +435,6 @@ ggplotly(ggplot_build(cor_df %>%
          hoverinfo = 'text')
 ```
 
-Mean Spearman correlation and the number of variables for both the surveys and the tasks
-```{r}
-cor_df %>%
-  group_by(task) %>%
-  summarise(mean_spearman = mean(spearman),
-            num_vars = n())
-```
-
 #### Rank order of correlations 
 
 ##### For tasks
@@ -448,7 +447,7 @@ cor_df %>%
 
 ##### For surveys
 
-- Demographics are excluded from this list of variables.  
+- Demographics are excluded from this list of variables (because they are saved for predictive analyses).  
 - Holt and Laury test-retest is the worst for *surveys*. But note that this is not a survey that has been studied extensively psychometrically like others. This is more similar to our tasks (one that is used more often by economists). In previous data I have worked with retest reliablities for this task was ~.35 so the results here are in line with this.  
 - Otherwise the lowest survey reliabilities are 0.5.
 ```{r}
@@ -461,7 +460,7 @@ cor_df %>%
 ## ICC for all cleaned meaningful variables
 
 Based on [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9d379b79de4f767740.pdf) ICC(3,k) does not take in to account within subject differences between two time points (i.e. the fixed effect of time/systematic error). Thus, it is well approximated by Pearson's r and subject to similar criticisms. [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9d379b79de4f767740.pdf) suggests reporting at least this systematic error effect size if one chooses to report with ICC(3,k). Based on his conclusions here I report:  
-- ICC(3,k): ranges between 0-1; the larger the better  
+- ICC(3,k): As Dave clarified this ranges from 1 to -1/(number of repeated measures -1) so in our case this range would be [-1, 1]; larger values would mean that the two scores of a subject for a given measure are more similar to each other than they are to scores of other people  
 - partial $\eta^2$ for time ($SS_{time}/SS_{within}$): effect size of time   
 - SEM ($\sqrt(MS_{error})$): standard error of measurement; the smaller the better
 
@@ -503,8 +502,8 @@ get_sem <- function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 
 }
 ```
 
-
 ```{r}
+#Calculate ICC df
 icc_df <- data.frame(icc = rep(NA, length(numeric_cols)), 
                      eta_sq = rep(NA, length(numeric_cols)),
                      sem = rep(NA, length(numeric_cols)))
@@ -516,11 +515,7 @@ for(i in 1:length(numeric_cols)){
   icc_df[numeric_cols[i], 'eta_sq'] <- get_eta(numeric_cols[i])
   icc_df[numeric_cols[i], 'sem'] <- get_sem(numeric_cols[i])
 }
-```
 
-Add column to tasks vs. surveys in icc table
-
-```{r}
 icc_df$dv = row.names(icc_df)
 row.names(icc_df) = seq(1:nrow(icc_df))
 icc_df$task = 'task'
@@ -528,22 +523,12 @@ icc_df[grep('survey', icc_df$dv), 'task'] = 'survey'
 icc_df = icc_df %>%
   select(dv, task, icc, eta_sq, sem)
 row.names(icc_df) = NULL
-icc_df
 ```
 
-### Distributions of ICC's by task vs. survey
-
-Survey reliabilities are noticably higher than task reliabilities.
-```{r warning=FALSE, message=FALSE, fig.width=10}
-icc_df %>%
-  gather(key,value,-dv, -task) %>%
-  ggplot(aes(value, fill=task))+
-  geom_histogram(position = 'identity', alpha=0.5)+
-  theme_bw()+
-  facet_wrap(~key,scales='free')
-```
-
-Median reliability and the number of variables for both the surveys and the tasks
+Median reliability and the number of variables for both the surveys and the tasks:
+As implied by Spearman the ICC's are higher for surveys.  
+Systematic differences between the two measurements are higher for tasks than surveys (potentially indicating learning effects).  
+Unexpectedly, median standard error of measurement is higher for surveys but the distribution below suggests that this is a side effect of having too many task measures with very low SEMs.
 ```{r}
 icc_df %>%
   group_by(task) %>%
@@ -551,6 +536,128 @@ icc_df %>%
             median_eta_sq = median(eta_sq),
             median_sem = median(sem),
             num_vars = n())
+```
+
+### Distributions of ICC's by task vs. survey
+
+```{r warning=FALSE, message=FALSE}
+ggplotly(ggplot_build(icc_df %>%
+                        ggplot(aes(icc, fill=task)) +
+                        geom_histogram(position = 'identity', alpha=0.5))$data[[1]] %>%
+           mutate(task=ifelse(as.character(fill) == "#00BFC4", "task", "survey")) %>%
+           get_labels(.,icc_df, "icc", "task") %>%
+           prettify_label(.) %>%
+           ggplot(aes(x,y, fill=task, label=label))+
+           geom_bar(stat='identity', position='identity', alpha=0.5)+
+           xlab('ICC')+
+           ylab('Count')+
+           theme_bw(),
+         tooltip = 'label',
+         hoverinfo = 'text')
+```
+
+#### Rank order of ICCs
+
+###### For tasks
+
+```{r}
+icc_df %>%
+  filter(task == 'task') %>%
+  left_join(cor_df[,c('spearman','dv')], by = 'dv') %>%
+  arrange(-icc) %>%
+  select(dv, -task, icc, eta_sq, sem, spearman)
+```
+
+###### For surveys
+
+```{r}
+icc_df %>%
+  filter(task == 'survey') %>%
+  left_join(cor_df[,c('spearman','dv')], by = 'dv') %>%
+  arrange(-icc) %>%
+  select(dv, -task, icc, eta_sq, sem, spearman)
+```
+
+### Distributions of partial $\eta^2$ by task vs. survey
+
+Tooltip might not work well for this graph for the highest bar because the label is too large. But this bar indicates measures where the effect of time is very small anyway. We might want to pay closer attention to those not in this lowest bar since those are the variables where there is a non-negligible effect of time, indicating either a learning effect or other kind of systematic change that 
+
+```{r warning=FALSE, message=FALSE}
+ggplotly(ggplot_build(icc_df %>%
+                        ggplot(aes(eta_sq, fill=task)) +
+                        geom_histogram(position = 'identity', alpha=0.5))$data[[1]] %>%
+           mutate(task=ifelse(as.character(fill) == "#00BFC4", "task", "survey")) %>%
+           get_labels(.,icc_df, "eta_sq", "task") %>%
+           prettify_label(.) %>%
+           ggplot(aes(x,y, fill=task, label=label))+
+           geom_bar(stat='identity', position='identity', alpha=0.5)+
+           xlab('Partial Eta Squared')+
+           ylab('Count')+
+           theme_bw(),
+         tooltip = 'label',
+         hoverinfo = 'text')
+```
+
+#### Rank order of partial $\eta^2$
+
+###### For tasks
+
+```{r}
+icc_df %>%
+  filter(task == 'task') %>%
+  left_join(cor_df[,c('spearman','dv')], by = 'dv') %>%
+  arrange(-eta_sq) %>%
+  select(dv, -task, eta_sq, icc, sem, spearman)
+```
+
+###### For surveys
+
+```{r}
+icc_df %>%
+  filter(task == 'survey') %>%
+  left_join(cor_df[,c('spearman','dv')], by = 'dv') %>%
+  arrange(-eta_sq)%>%
+  select(dv, -task, eta_sq, icc, sem, spearman)
+```
+
+### Distributions of SEM's by task vs. survey
+
+```{r warning=FALSE, message=FALSE}
+ggplotly(ggplot_build(icc_df %>%
+                        ggplot(aes(sem, fill=task)) +
+                        geom_histogram(position = 'identity', alpha=0.5))$data[[1]] %>%
+           mutate(task=ifelse(as.character(fill) == "#00BFC4", "task", "survey")) %>%
+           get_labels(.,icc_df, "sem", "task") %>%
+           prettify_label(.) %>%
+           ggplot(aes(x,y, fill=task, label=label))+
+           geom_bar(stat='identity', position='identity', alpha=0.5)+
+           xlab('SEM')+
+           ylab('Count')+
+           theme_bw(),
+         tooltip = 'label',
+         hoverinfo = 'text')
+```
+
+#### Rank order of SEMs
+
+###### For tasks
+
+```{r}
+icc_df %>%
+  filter(task == 'task') %>%
+  left_join(cor_df[,c('spearman','dv')], by = 'dv') %>%
+  arrange(-sem) %>%
+  select(dv, -task,  sem, eta_sq, icc, spearman)
+```
+
+###### For surveys
+
+```{r}
+icc_df %>%
+  filter(task == 'survey') %>%
+  left_join(cor_df[,c('spearman','dv')], by = 'dv') %>%
+  arrange(-sem)%>%
+  select(dv, -task,  sem, eta_sq, icc, spearman)
 ```
 
 Sort tasks by icc. What's going on with the negative icc's?
@@ -647,3 +754,31 @@ icc_df %>%
   select(dv, eta_sq) %>%
   arrange(-eta_sq)
 ```
+
+Ties?
+
+The group of zero values for the ICC may be that the ICC is more of a measure of consistency than the Spearman/Pearson measures of rank order similarity.  Or it could be the ICC calculation is off in some way. It would be worth focusing on five of these unusual cases (where the ICC is zero but the Pearson/Spearman is large) and calculate the ICC using other formulas.  Generally the Spearman and Pearson differ when there are ties.
+
+```{r}
+ties_df <- data.frame(unique_entries = rep(NA, length(numeric_cols)), 
+                     transformed = rep(NA, length(numeric_cols)))
+
+row.names(ties_df) <- numeric_cols
+
+for(i in 1:length(numeric_cols)){
+  ties_df[numeric_cols[i], 'unique_entries'] <- get_unique(numeric_cols[i])
+  ties_df[numeric_cols[i], 'transformed'] <- get_transformed(numeric_cols[i])
+}
+
+icc_df %>%
+  left_join(cor_df[,c('spearman','dv')], by = 'dv') %>%
+  left_join(ties_df, by = 'dv')
+
+#Function to output: spearman, icc, number of unique values in column, whether it is log transformed
+
+#Gina seems right; these transformed variables have high Spearman but low ICC and they have few unique values (though this isn't )
+length(unique(retest_data$impulsive_venture_survey.impulsiveness.logTr))
+length(unique(retest_data$adaptive_n_back.mean_load.logTr))
+```
+
+# Completion dates
