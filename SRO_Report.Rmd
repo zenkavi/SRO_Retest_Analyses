@@ -66,11 +66,11 @@ rm(test_data2, df)
 
 ### Load time 2 data 
 ```{r}
-retest_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_02-11-2017/meaningful_variables.csv')
+retest_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-21-2017/meaningful_variables.csv')
 
-retest_data2 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_02-11-2017/meaningful_variables_noDDM.csv')
+retest_data2 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-21-2017/meaningful_variables_noDDM.csv')
 
-retest_data3 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_02-11-2017/meaningful_variables_EZ.csv')
+retest_data3 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-21-2017/meaningful_variables_EZ.csv')
 
 retest_data <- merge(retest_data, retest_data2)
 retest_data <- merge(retest_data, retest_data3)
@@ -622,9 +622,9 @@ icc_df %>%
 
 #### Effect of time
 
-So what variables show a non-negligible effect of time and in what direction?
+So what variables show a non-negligible effect of time and in what direction? (sorted by increasing partial $\eta^2$)
 
-```{r warning=FALSE, message=FALSE, fig.height=72}
+```{r warning=FALSE, message=FALSE}
 time_effect_vars = ggplot_build(icc_df %>%
                ggplot(aes(eta_sq, fill=task)) +
                geom_histogram(position = 'identity', alpha=0.5))$data[[1]] %>%
@@ -639,7 +639,12 @@ time_effect_vars = ggplot_build(icc_df %>%
   na.omit()
 
 time_effect_vars$value = gsub("\"", "", time_effect_vars$value)
+time_effect_vars
+```
 
+Here is a scatter plot of these variables but I'm not including it in the report for now because it is too large and because I want to get back to this once I refit the hddm's for retest participants only.
+
+```{r warning=FALSE, message=FALSE, fig.height=72, eval=FALSE}
 tmp = data.frame()
 
 for(i in 1:nrow(time_effect_vars)){
@@ -647,20 +652,19 @@ for(i in 1:nrow(time_effect_vars)){
 }
 rm(time_effect_vars)
 
-tmp %>%
+tmp = tmp %>%
+  inner_join(icc_df[,c("dv", "eta_sq")],by="dv") 
+
+tmp = tmp %>% 
+  mutate(dv = factor(dv, levels = unique(tmp$dv[order(tmp$eta_sq)])))
+
+ggplotly(tmp %>%
   spread(time, score) %>%
-  # mutate(dv_wrap = str_wrap(dv, width = 30)) %>%
   ggplot(aes(`1`, `2`))+
   geom_point()+
   theme_bw()+
   facet_wrap(~dv, scales='free', labeller = label_wrap_gen())+
-  geom_abline(intercept = 0, slope=1)
-
-tmp
-
-tmp %>% 
-  outer_join(icc_df[,c("dv", "eta_sq"), by="dv"])
-
+  geom_abline(intercept = 0, slope=1))
 ```
 
 ### Distributions of SEM's by task vs. survey
@@ -711,7 +715,7 @@ neg_icc_vars = icc_df %>%
   select(dv)
 ```
 
-Some variables (`r neg_icc_vars$dv`) have <0 ICC's. This would be the case if the $MS_{error}$>$MS_{between}$. That is, ICC would be negative if the ...
+Some variables (`r neg_icc_vars$dv`) have <0 ICC's. This would be the case if the $MS_{error}$>$MS_{between}$. 
 
 Plot data for measures with negative ICC.  
 x-axis is time 1 data and y-axis is time 2 data. The scatter plots show that the scores for measures with negative ICC's have no relationship across time points.
@@ -801,11 +805,12 @@ icc_df %>%
   arrange(-eta_sq)
 ```
 
-Ties?
 
-"The group of zero values for the ICC may be that the ICC is more of a measure of consistency than the Spearman/Pearson measures of rank order similarity.  Or it could be the ICC calculation is off in some way. It would be worth focusing on five of these unusual cases (where the ICC is zero but the Pearson/Spearman is large) and calculate the ICC using other formulas.  Generally the Spearman and Pearson differ when there are ties.""
+```{r echo=FALSE, eval=FALSE}
+# Ties?
+# 
+# "The group of zero values for the ICC may be that the ICC is more of a measure of consistency than the Spearman/Pearson measures of rank order similarity.  Or it could be the ICC calculation is off in some way. It would be worth focusing on five of these unusual cases (where the ICC is zero but the Pearson/Spearman is large) and calculate the ICC using other formulas.  Generally the Spearman and Pearson differ when there are ties.""
 
-```{r}
 ties_df <- data.frame(unique_entries = rep(NA, length(numeric_cols)), 
                      transformed = rep(NA, length(numeric_cols)))
 
@@ -826,15 +831,3 @@ icc_df %>%
 length(unique(retest_data$impulsive_venture_survey.impulsiveness.logTr))
 length(unique(retest_data$adaptive_n_back.mean_load.logTr))
 ```
-
-# Completion dates
-
-Is a subject more/less consistent depending on how much time has passed in between?
-
-How do you aggregate all this information to decide on what is a good measure?
-
-Do any of these quantifications of reliability relate to number of items (e.g. surveys with fewer items are more or less reliable - easier to remember or noisier?)
-
---------------------
-One reason why it's difficult to get a sense of what is going on in this paper other than just saying that questionnaires have higher reliability than tasks is because there are too many measures. While a discussion on why some measures are more reliable than others might help with this and in building readers' intuitions about better ways to measure these constructs the paper might have a larger impact andbe eeasier to digest with more of an organizational structure, parsing these variables. 
-On the one hand this could be a little contrary to our general theory blind approach to these measures but on the other hand it could also help us reinforce the terminology we are converging on with the analyses of the factor structure of these data. Because at the end of the day this paper would be most useful if it can make prescriptive recommendations on which tasks to use and reduce the utilitization of non-reliable measures.
