@@ -805,6 +805,81 @@ icc_df %>%
   arrange(-eta_sq)
 ```
 
+## Reliability by measure types
+
+The results presented so far aim to be comprehensive but are difficult to parse through and get a clear sense of what is going on (other than a general impression that surveys tend to have higher reliabilities than tasks). In this and the following section we try to deal with this in two ways to make the results more digestable with two kinds of categorizations. 
+
+In this section we label the measures based on the putative cognitive process they are intended to measure. For tasks this is mainly informed by Patrick's expertise/cognitive atlas and for surveys it is planned to be informed by the factor/IRT analyses. We aim to make contact with the literature to make the results more accesible to readers who have experience with our tasks but do not want to   
+a. take away from the novelty of the main papers coming out of this project outlining the factor structure that this data unveils   
+b. necessarily make prescriptive recommendations or theoretical arguments on why certain measures of certain processes are more reliable than others.
+
+### Tasks
+
+```{r echo=FALSE}
+measure_labels <- read.csv('/Users/zeynepenkavi/Downloads/retest_measure_labels.csv')
+
+trim <- function (x) gsub("^\\s+|\\s+$", "", x)
+```
+
+```{r warning=FALSE, message=FALSE}
+measure_labels %>%
+  mutate(dv = as.character(dv)) %>%
+  filter(task == 'task') %>%
+  select(-measure_description, -notes, -variable_type, -task) %>%
+  left_join(icc_df[,c("dv", "icc")], by='dv') %>%
+  left_join(cor_df[,c("dv", "spearman")], by='dv') %>%
+  separate(measure_type, c("label_1", "label_2", "label_3"), sep = ",") %>%
+  gather(key, value, -dv, -icc, -spearman) %>%
+  arrange(dv) %>%
+  drop_na() %>%
+  ggplot(aes(icc))+
+  geom_histogram(position = 'identity', alpha=0.5)+
+  theme_bw()+
+  facet_wrap(~value)
+```
+
+### Surveys
+
+To be filled with factor labels after processing either ASU factor analyses or Russ' MIRT.
+
+## Reliability by variable types
+
+In this section we label the measures based on the procedure behind the creation of a variable. This moves further away from the literature and thinking about our measures in terms of specific tasks, surveys or cognitive processes and is a more novel way of presenting our data. 
+
+Potentially prescriptive recommendations coming out of this section would intend to build intuitions about different treatments to data that have higher reliabilities especially when researchers plan on making their own tasks and collecting different kinds of measures.
+ 
+### Tasks
+
+```{r warning=FALSE, message=FALSE}
+measure_labels %>%
+  mutate(dv = as.character(dv)) %>%
+  filter(task == 'task') %>%
+  select(-measure_description, -notes, -measure_type, -task) %>%
+  left_join(icc_df[,c("dv", "icc")], by='dv') %>%
+  left_join(cor_df[,c("dv", "spearman")], by='dv') %>%
+  separate(variable_type, c("label_1", "label_2", "label_3"), sep = ",") %>%
+  gather(key, value, -dv, -icc, -spearman) %>%
+  mutate(value = trim(value)) %>%
+  arrange(dv) %>%
+  drop_na() %>%
+  ggplot(aes(icc))+
+  geom_histogram(position = 'identity', alpha=0.5)+
+  theme_bw()+
+  facet_wrap(~value)
+```
+
+#### DDM parameters
+
+##### Difference versus all trials
+
+#### Raw versus model fit
+
+#### Condition versus all
+
+### Surveys
+
+Would this be a cmoparison of factor reliability versus item reliability?
+
 
 ```{r echo=FALSE, eval=FALSE}
 # Ties?
