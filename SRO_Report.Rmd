@@ -832,6 +832,8 @@ measure_labels %>%
   gather(key, value, -dv, -icc, -spearman) %>%
   arrange(dv) %>%
   drop_na() %>%
+  mutate(value = trim(value)) %>%
+  filter(dv %in% c("dot_pattern_expectancy.bias", "go_nogo.bias") == FALSE)%>%
   ggplot(aes(icc))+
   geom_histogram(position = 'identity', alpha=0.5)+
   theme_bw()+
