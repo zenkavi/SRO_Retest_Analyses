@@ -453,6 +453,7 @@ cor_df %>%
 Spearman correlations for surveys are noticably higher than task reliabilities.
 
 ```{r echo=FALSE}
+#Convenience functions to make prettier interactive histograms
 get_labels = function(plot_df, ref_df, bin_col, group_col){
   
   plot_df$bin = as.numeric(factor(plot_df$x))
@@ -537,7 +538,7 @@ Based on [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9
 - SEM ($\sqrt(MS_{error})$): standard error of measurement; the smaller the better
 
 ```{r}
-match_t1_t2 <- function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 'sub_id'){
+match_t1_t2 <- function(dv_var, t1_df = retest_subs_test_data, t2_df = retest_data, merge_var = 'sub_id'){
   df = merge(t1_df[,c(merge_var, dv_var)], t2_df[,c(merge_var, dv_var)], by = merge_var)
   df = df %>% 
     na.omit()%>%
@@ -548,7 +549,7 @@ match_t1_t2 <- function(dv_var, t1_df = test_data, t2_df = retest_data, merge_va
    return(df)
 }
 
-get_icc <- function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 'sub_id'){
+get_icc <- function(dv_var, t1_df = retest_subs_test_data, t2_df = retest_data, merge_var = 'sub_id'){
   df = match_t1_t2(dv_var, t1_df = t1_df, t2_df = t2_df, merge_var = merge_var)
   df = df %>% spread(time, score) %>% select(-dv, -sub_id)
   icc = ICC(df)
@@ -556,7 +557,7 @@ get_icc <- function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 
   return(icc_3k)
   }
 
-get_eta <- function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 'sub_id'){
+get_eta <- function(dv_var, t1_df = retest_subs_test_data, t2_df = retest_data, merge_var = 'sub_id'){
   df = match_t1_t2(dv_var, t1_df = t1_df, t2_df = t2_df, merge_var = merge_var)
   mod = summary(aov(score~Error(sub_id)+time, df))
   ss_time = as.data.frame(unlist(mod$`Error: Within`))['Sum Sq1',]
@@ -565,7 +566,7 @@ get_eta <- function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 
   return(eta)
   }
 
-get_sem <- function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 'sub_id'){
+get_sem <- function(dv_var, t1_df = retest_subs_test_data, t2_df = retest_data, merge_var = 'sub_id'){
   df = match_t1_t2(dv_var, t1_df = t1_df, t2_df = t2_df, merge_var = merge_var)
   mod = summary(aov(score~Error(sub_id)+time, df))
   ms_error = as.data.frame(unlist(mod$`Error: Within`))['Mean Sq2',]
