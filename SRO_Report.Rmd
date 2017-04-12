@@ -338,6 +338,78 @@ retest_subs_test_data = retest_subs_test_data %>% arrange(sub_id)
 as.character(retest_subs_test_data$sub_id) == as.character(retest_data$sub_id)
 ```
 
+### Replace HDDM parameters in t1 data
+
+Since HDDM parameters depend on the sample on which they are fit we refit the model on t1 data for the subjects that have t2 data. Here we replace the HDDM parameters in the current t1 dataset with these refitted values and transform them as they would have been transformed for the full sample to mimick the procedure we applied to rest of the t2 data. 
+
+Transform hddm refits as they had been transformed for the full sample t1 data.
+```{r}
+hddm_refits <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-21-2017/hddm_refits_exhaustive.csv')
+
+hddm_refits$X <- as.character(hddm_refits$X)
+
+names(hddm_refits)[1] <- 'sub_id'
+
+hddm_logTr_vars = data.frame(grep('(?=.*hddm)(?=.*logTr)', names(retest_subs_test_data), value=T, perl=T))
+names(hddm_logTr_vars) = c('var')
+hddm_logTr_vars$sign = ifelse(grepl(".ReflogTr",hddm_logTr_vars$var), 'negative', 'positive')
+hddm_logTr_vars$var = gsub(".logTr|.ReflogTr", "", hddm_logTr_vars$var)
+
+transformed_hddm_refits = hddm_refits
+
+for(i in 1:length(names(transformed_hddm_refits))){
+  tmp_col = names(transformed_hddm_refits)[i]
+  if(tmp_col %in% hddm_logTr_vars$var){
+    sign = hddm_logTr_vars$sign[which(tmp_col == hddm_logTr_vars$var)]
+      if(sign == 'positive'){
+        # clean_retest_data[,tmp_col] = log(clean_retest_data[,tmp_col])
+        transformed_hddm_refits[,tmp_col] = pos_log(transformed_hddm_refits[,tmp_col])
+        names(transformed_hddm_refits)[which(names(transformed_hddm_refits) == tmp_col)] = paste0(tmp_col, '.logTr')
+        cat(paste0(tmp_col ,' was positively skewed and transformed.'))
+        cat('\n')
+      }
+      else if(sign == 'negative'){
+        transformed_hddm_refits[,tmp_col] = neg_log(transformed_hddm_refits[,tmp_col])
+        names(transformed_hddm_refits)[which(names(transformed_hddm_refits) == tmp_col)] = paste0(tmp_col, '.ReflogTr')
+        cat(paste0(tmp_col ,' was negatively skewed and transformed.'))
+        cat('\n')
+      }
+    }
+}
+```
+
+Check if transformation of hddm refits worked
+```{r}
+transform_hddm_logTr_vars = data.frame(grep('logTr', names(transformed_hddm_refits), value=T))
+names(transform_hddm_logTr_vars) = c('var')
+transform_hddm_logTr_vars$sign = ifelse(grepl(".ReflogTr",transform_hddm_logTr_vars$var), 'negative', 'positive')
+transform_hddm_logTr_vars$var = gsub(".logTr|.ReflogTr", "", transform_hddm_logTr_vars$var)
+transform_hddm_logTr_vars = transform_hddm_logTr_vars %>% arrange(var)
+hddm_logTr_vars = hddm_logTr_vars %>% arrange(var)
+transform_hddm_logTr_vars == hddm_logTr_vars
+```
+
+Replace t1 hddm parameters for retest subjects
+
+```{r}
+replace_hddm_vars = data.frame(grep('(?=.*hddm)(?=.*logTr)', names(retest_subs_test_data), value=T, perl=T))
+names(replace_hddm_vars) = c('var')
+
+hddm_fix_retest_subs_test_data = retest_subs_test_data
+
+for(i in 1:length(names(hddm_fix_retest_subs_test_data))){
+  if(names(hddm_fix_retest_subs_test_data)[i] %in% replace_hddm_vars$var){
+    hddm_fix_retest_subs_test_data[,names(hddm_fix_retest_subs_test_data)[i]] <- transformed_hddm_refits[,names(hddm_fix_retest_subs_test_data)[i]]
+  }
+}
+
+retest_subs_test_data <- hddm_fix_retest_subs_test_data
+```
+
+```{r}
+rm(hddm_refits, transformed_hddm_refits, hddm_logTr_vars, transform_hddm_logTr_vars, replace_hddm_vars, hddm_fix_retest_subs_test_data)
+```
+
 # Results
 
 ## Correlations for all cleaned meaningful variables
