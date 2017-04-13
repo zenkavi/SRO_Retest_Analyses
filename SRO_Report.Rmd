@@ -882,11 +882,15 @@ icc_df %>%
 
 The results presented so far aim to be comprehensive but are difficult to parse through and get a clear sense of what is going on (other than a general impression that surveys tend to have higher reliabilities than tasks). In this and the following section we try to deal with this in two ways to make the results more digestable with two kinds of categorizations. 
 
-In this section we label the measures based on the putative cognitive process they are intended to measure. For tasks this is mainly informed by Patrick's expertise/cognitive atlas and for surveys it is planned to be informed by the factor/IRT analyses. We aim to make contact with the literature to make the results more accesible to readers who have experience with our tasks but do not want to   
-a. take away from the novelty of the main papers coming out of this project outlining the factor structure that this data unveils   
-b. necessarily make prescriptive recommendations or theoretical arguments on why certain measures of certain processes are more reliable than others.
-
 ### Tasks
+
+We aim to make contact with the literature to make the results more accesible to readers who have experience with our tasks but do not want to   
+a. take away from the novelty of the main papers coming out of this project outlining the factor structure that this data unveils   
+b. necessarily make prescriptive recommendations or theoretical arguments on why certain measures of certain processes are more reliable than others.  
+
+With this in mind we reduce the list of over 270 task measures to a list of one per task by averaging only the raw measures from all the trials in a task. We chose to reduce the information in this manner to avoid any bias stemming from differential amount of interest and procedures applied to certain tasks over others (e.g. a task can have over 10 measures because it has multiple conditions and we have chosen to fit DDM's for specific conditions while another might only have 2 due to our relative inexperience and lack of interest in it). We check whether the number of trials in a task has a significant effect on these average reliabilities of raw measures as well. 
+
+We plan to supplement/potentially replace this with an additional labeling procedure intending to capture the underlying putative cognitive processes but are deferring this until at least for another week. This exercise might not even prove helpful but at least a per task summary seemed a reasonable first pass.  
 
 ```{r echo=FALSE}
 measure_labels <- read.csv('/Users/zeynepenkavi/Downloads/retest_measure_labels.csv')
@@ -894,7 +898,30 @@ measure_labels <- read.csv('/Users/zeynepenkavi/Downloads/retest_measure_labels.
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 ```
 
+Summarize all raw per task
+
 ```{r warning=FALSE, message=FALSE}
+measure_labels %>%
+  mutate(dv = as.character(dv)) %>%
+  filter(task == 'task') %>%
+  select(-measure_description, -notes, -measure_type, -task) %>%
+  left_join(icc_df[,c("dv", "icc")], by='dv') %>%
+  left_join(cor_df[,c("dv", "spearman")], by='dv') %>%
+  separate(variable_type, c("label_1", "label_2", "label_3"), sep = ",") %>%
+  gather(key, value, -dv, -icc, -spearman, -num_all_trials) %>%
+  arrange(dv) %>%
+  drop_na() %>%
+  mutate(value = trim(value))
+```
+
+Does number of items in a trial have a significant effect on the average reliability of raw measures from a task?
+
+```{r}
+summary(lm(icc ~ num_all_trials))
+```
+
+```{r warning=FALSE, message=FALSE, eval=FALSE}
+#Plot of distribution of icc's faceted by putative measure
 measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(task == 'task') %>%
