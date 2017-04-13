@@ -981,7 +981,7 @@ Potentially prescriptive recommendations coming out of this section would intend
  
 ### Tasks
 
-```{r warning=FALSE, message=FALSE}
+```{r warning=FALSE, message=FALSE, eval=FALSE}
 measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(task == 'task') %>%
@@ -1009,7 +1009,7 @@ measure_labels %>%
 
 ### Surveys
 
-Would this be a cmoparison of factor reliability versus item reliability?
+Would this be a comparison of factor reliability versus item reliability?
 
 
 ```{r echo=FALSE, eval=FALSE}
