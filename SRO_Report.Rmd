@@ -898,26 +898,55 @@ measure_labels <- read.csv('/Users/zeynepenkavi/Downloads/retest_measure_labels.
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 ```
 
-Summarize all raw per task
+We filter out the DDM parameters and measures for specific contrasts. Note that this does leave some tasks with measures that are model fits and/or for specific conditions (because at least the current datasets do not include measures that are based on all the trials **and** are raw though I could dive in to variables_exhaustive for such measures). Here's the order of tasks by mean reliability sorted for ICC and then Spearman's $\rho$.
 
 ```{r warning=FALSE, message=FALSE}
-measure_labels %>%
+tmp = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(task == 'task') %>%
   select(-measure_description, -notes, -measure_type, -task) %>%
   left_join(icc_df[,c("dv", "icc")], by='dv') %>%
   left_join(cor_df[,c("dv", "spearman")], by='dv') %>%
   separate(variable_type, c("label_1", "label_2", "label_3"), sep = ",") %>%
-  gather(key, value, -dv, -icc, -spearman, -num_all_trials) %>%
-  arrange(dv) %>%
-  drop_na() %>%
-  mutate(value = trim(value))
+  mutate(label_1 = trim(label_1),
+         label_2=trim(label_2),
+         label_3=trim(label_3))%>%
+  filter(label_1 %in% c('difference', 'EZ', 'hddm') ==FALSE & label_2 %in% c('difference', 'EZ', 'hddm') == FALSE) %>%
+  separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
+  select(-extra_1, -extra_2) %>%
+  group_by(task_name) %>%
+  summarise(mean_icc = mean(icc),
+            mean_spearman = mean(spearman),
+            num_measures = n(),
+            num_trials = unique(num_all_trials)) %>%
+  arrange(-mean_icc, -mean_spearman)
+
+tmp
 ```
 
-Does number of items in a trial have a significant effect on the average reliability of raw measures from a task?
+Does number of items in a task have a significant effect on the average ICC of (mostly) raw measures for all trials from a task? No.
 
-```{r}
-summary(lm(icc ~ num_all_trials))
+```{r warning=FALSE, message=FALSE}
+summary(lm(mean_icc ~ num_trials, data = tmp))
+```
+
+Does number of items in a task have a significant effect on the average Spearman $\rho$ of (mostly) raw measures for all trials from a task? No.
+
+```{r warning=FALSE, message=FALSE}
+summary(lm(mean_spearman ~ num_trials, data = tmp))
+```
+
+Does number of measures that went in to this reliability estimate have a significant effect on the average ICC of (mostly) raw measures for all trials from a task? No.
+
+```{r warning=FALSE, message=FALSE}
+summary(lm(mean_icc ~ num_measures, data = tmp))
+```
+
+Does number of measures that went in to this reliability estimate have a significant effect on the average ICC of (mostly) raw measures for all trials from a task?  
+The regression suggests that the more measures that went in to the averaging of Spearman's $\rho$'s the lower the mean Spearman $\rho$ for that task. This might suggest that this way of summarizing data might not be a good idea in general or at least that we shouldn't do it for the Spearman correlations.
+
+```{r warning=FALSE, message=FALSE}
+summary(lm(mean_spearman ~ num_measures, data = tmp))
 ```
 
 ```{r warning=FALSE, message=FALSE, eval=FALSE}
