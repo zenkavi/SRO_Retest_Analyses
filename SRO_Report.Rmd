@@ -904,7 +904,7 @@ We filter out the DDM parameters and measures for specific contrasts. Note that 
 tmp = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(task == 'task') %>%
-  select(-measure_description, -notes, -measure_type, -task) %>%
+  select(-measure_description, -notes, -measure_type, -task, -ddm_task) %>%
   left_join(icc_df[,c("dv", "icc")], by='dv') %>%
   left_join(cor_df[,c("dv", "spearman")], by='dv') %>%
   separate(variable_type, c("label_1", "label_2", "label_3"), sep = ",") %>%
@@ -981,31 +981,50 @@ Potentially prescriptive recommendations coming out of this section would intend
  
 ### Tasks
 
-```{r warning=FALSE, message=FALSE, eval=FALSE}
-measure_labels %>%
+#### DDM parameters
+
+```{r warning=FALSE, message=FALSE}
+tmp = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(task == 'task') %>%
   select(-measure_description, -notes, -measure_type, -task) %>%
   left_join(icc_df[,c("dv", "icc")], by='dv') %>%
   left_join(cor_df[,c("dv", "spearman")], by='dv') %>%
   separate(variable_type, c("label_1", "label_2", "label_3"), sep = ",") %>%
-  gather(key, value, -dv, -icc, -spearman) %>%
-  mutate(value = trim(value)) %>%
-  arrange(dv) %>%
-  drop_na() %>%
-  ggplot(aes(icc))+
-  geom_histogram(position = 'identity', alpha=0.5)+
-  theme_bw()+
-  facet_wrap(~value)
+  mutate(label_1 = trim(label_1),
+         label_2=trim(label_2),
+         label_3=trim(label_3))%>%
+  filter(ddm_task == 1) %>%
+  separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.', remove=FALSE) %>%
+  select(-extra_1, -extra_2) %>%
+  drop_na()
 ```
 
-#### DDM parameters
+In addition to raw response time and accuracy measures we get from certain tasks we have also chosen to fit drift diffusion models to them. The tasks we have chosen to fit these models are: `unique(tmp$task_name)`. This list does not include all cognitive tasks in the battery.
 
-##### Difference versus all trials
+Table of median reliabilities for the two kinds of DDM models' (hddm and EZ) parameters compared to raw response times and accuracies depending on whether they were fit to all data or whether they are contrast of two conditions sorted by mean ICC and mean Spearman's $\rho$.
 
-#### Raw versus model fit
+```{r warning=FALSE, message=FALSE}
+tmp %>%
+  group_by(label_1,label_2, label_3) %>%
+  summarise(mean_icc = mean(icc),
+            mean_spearman = mean(spearman),
+            n_vars = n()) %>%
+  arrange(-mean_icc, -mean_spearman)
+```
 
-#### Condition versus all
+This is what the distributions of look like
+
+```{r warning=FALSE, message=FALSE}
+tmp %>%
+  select(dv, icc, spearman, label_1, label_2, label_3) %>%
+  gather(key, value, -dv, -label_1, -label_2, -label_3) %>%
+  ggplot(aes(value, color=label_2, fill=label_3))+
+  geom_histogram(position='identity', alpha = 0.5)+
+  theme_bw()+
+  facet_wrap(key~label_1)+
+  labs(color="Model", fill="Parameter")
+```
 
 ### Surveys
 
