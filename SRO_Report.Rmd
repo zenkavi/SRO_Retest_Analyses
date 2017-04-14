@@ -26,7 +26,13 @@ render_this <- function(){rmarkdown::render('SRO_Report.Rmd', output_dir = '/Use
 
 # Introduction
 
+## Tasks
+
+## Surveys
+
 # Methods
+
+## Data collection
 
 ## Loading and matching datasets
 
@@ -461,19 +467,19 @@ get_labels = function(plot_df, ref_df, bin_col, group_col){
   
   for(i in 1:nrow(ref_df)){
     for(j in 1:nrow(plot_df)){
-      if(ref_df[i, bin_col] <= plot_df$xmax[j] & ref_df[i, bin_col]>=plot_df$xmin[j] & ref_df[i, group_col] == plot_df[j, group_col]){
+      if(ref_df[i, bin_col] <= plot_df$xmax[j] & ref_df[i, bin_col]>=plot_df$xmin[j] & all(ref_df[i, group_col] == plot_df[j, group_col])){
         ref_df$bin[i] <- plot_df$bin[j]
       }
     }
   }
   
   ref_df = ref_df %>% 
-    group_by(bin, task) %>%
+    group_by_("bin", group_col) %>%
     mutate(label=as.character(toJSON(unique(dv))))
   
-  label_df = ref_df[!duplicated(ref_df[,c('label')]),c('task', 'bin', 'label')]
+  label_df = ref_df[!duplicated(ref_df[,c('label')]),c(group_col, 'bin', 'label')]
   
-  out_df = left_join(plot_df,label_df, by= c("bin", "task"))
+  out_df = left_join(plot_df,label_df, by= c("bin", group_col))
   
   return(out_df)
 }
@@ -885,8 +891,8 @@ The results presented so far aim to be comprehensive but are difficult to parse 
 ### Tasks
 
 We aim to make contact with the literature to make the results more accesible to readers who have experience with our tasks but do not want to   
-a. take away from the novelty of the main papers coming out of this project outlining the factor structure that this data unveils   
-b. necessarily make prescriptive recommendations or theoretical arguments on why certain measures of certain processes are more reliable than others.  
+1. take away from the novelty of the main papers coming out of this project outlining the factor structure that this data unveils   
+2. necessarily make prescriptive recommendations or theoretical arguments on why certain measures of certain processes are more reliable than others.  
 
 With this in mind we reduce the list of over 270 task measures to a list of one per task by averaging only the raw measures from all the trials in a task. We chose to reduce the information in this manner to avoid any bias stemming from differential amount of interest and procedures applied to certain tasks over others (e.g. a task can have over 10 measures because it has multiple conditions and we have chosen to fit DDM's for specific conditions while another might only have 2 due to our relative inexperience and lack of interest in it). We check whether the number of trials in a task has a significant effect on these average reliabilities of raw measures as well. 
 
@@ -985,7 +991,7 @@ In addition to raw response time and accuracy measures we get from certain tasks
 Table of median reliabilities for the two kinds of DDM models' (hddm and EZ) parameters compared to raw response times and accuracies depending on whether they were fit to all data or whether they are contrast of two conditions sorted by mean ICC and mean Spearman's $\rho$.
 
 - All parameters that were fit to all trials compared to contrasts have higher relialibilities.   
-- Raw variables are not the variables with highest reliabilities overall.  
+- Raw variables are not the variables with highest ICC's overall. Raw response times do, however, have the highest Spearman's $\rho$'s on average. 
 - 2 of 3 hddm parameters also have higher mean reliabilities than EZ parameter estimates.  
 
 ```{r warning=FALSE, message=FALSE}
@@ -1000,16 +1006,38 @@ tmp %>%
 This is what the distributions of look like
 
 ```{r warning=FALSE, message=FALSE}
-tmp %>%
+tmp = tmp %>%
   select(dv, icc, spearman, label_1, label_2, label_3) %>%
-  gather(key, value, -dv, -label_1, -label_2, -label_3) %>%
-  ggplot(aes(value, color=label_2, fill=label_3))+
+  gather(key, value, -dv, -label_1, -label_2, -label_3) 
+
+tmp %>% ggplot(aes(value, color=label_2, fill=label_3))+
   geom_histogram(position='identity', alpha = 0.5)+
   theme_bw()+
   facet_wrap(key~label_1)+
   labs(color="Model", fill="Parameter")
 ```
 
+```{r message=FALSE, echo=FALSE, eval=FALSE}
+#attempt to make the above interactive. didn't really work
+ggplotly(ggplot_build(tmp %>%
+                        ggplot(aes(value, color=label_2, fill=label_3))+
+                        geom_histogram(position='identity', alpha = 0.5)+
+                        theme_bw()+
+                        facet_wrap(key~label_1)+
+                        labs(color="Model", fill="Parameter"))$data[[1]] %>%
+           mutate(key = ifelse(PANEL %in%  c(1,2), "icc", "spearman"),
+                  label_1 = ifelse(PANEL %in%  c(1,3), "all", "difference"),
+                  label_2 = ifelse(colour == "#F8766D", "EZ", ifelse(colour == "#00BA38", "hddm", "raw")),
+                  label_3 = ifelse(fill == "#A3A500", "drift rate", ifelse(fill == "#00BF7D", "non-decision", ifelse(fill == "#E76BF3", "threshold", ifelse(fill == "#F8766D", "accuracy", "rt"))))) %>%
+           get_labels(.,tmp, "value", c("label_1", "label_2", "label_3", "key")) %>%
+           prettify_label(.) %>%
+           ggplot(aes(x, y, fill = label_3, color=label_2, label=label))+
+           geom_bar(stat='identity',position='identity', alpha=0.5)+
+           facet_wrap(key~label_1)+
+           theme_bw(),
+         tooltip = 'label',
+         hoverinfo = 'text')
+```
 ### Surveys
 
 Would this be a comparison of factor reliability versus item reliability?
