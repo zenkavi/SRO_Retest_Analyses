@@ -949,26 +949,6 @@ The regression suggests that the more measures that went in to the averaging of 
 summary(lm(mean_spearman ~ num_measures, data = tmp))
 ```
 
-```{r warning=FALSE, message=FALSE, eval=FALSE}
-#Plot of distribution of icc's faceted by putative measure
-measure_labels %>%
-  mutate(dv = as.character(dv)) %>%
-  filter(task == 'task') %>%
-  select(-measure_description, -notes, -variable_type, -task) %>%
-  left_join(icc_df[,c("dv", "icc")], by='dv') %>%
-  left_join(cor_df[,c("dv", "spearman")], by='dv') %>%
-  separate(measure_type, c("label_1", "label_2", "label_3"), sep = ",") %>%
-  gather(key, value, -dv, -icc, -spearman) %>%
-  arrange(dv) %>%
-  drop_na() %>%
-  mutate(value = trim(value)) %>%
-  filter(dv %in% c("dot_pattern_expectancy.bias", "go_nogo.bias") == FALSE)%>%
-  ggplot(aes(icc))+
-  geom_histogram(position = 'identity', alpha=0.5)+
-  theme_bw()+
-  facet_wrap(~value)
-```
-
 ### Surveys
 
 To be filled with factor labels after processing either ASU factor analyses or Russ' MIRT.
@@ -1004,6 +984,10 @@ In addition to raw response time and accuracy measures we get from certain tasks
 
 Table of median reliabilities for the two kinds of DDM models' (hddm and EZ) parameters compared to raw response times and accuracies depending on whether they were fit to all data or whether they are contrast of two conditions sorted by mean ICC and mean Spearman's $\rho$.
 
+- All parameters that were fit to all trials compared to contrasts have higher relialibilities.   
+- Raw variables are not the variables with highest reliabilities overall.  
+- 2 of 3 hddm parameters also have higher mean reliabilities than EZ parameter estimates.  
+
 ```{r warning=FALSE, message=FALSE}
 tmp %>%
   group_by(label_1,label_2, label_3) %>%
@@ -1029,7 +1013,6 @@ tmp %>%
 ### Surveys
 
 Would this be a comparison of factor reliability versus item reliability?
-
 
 ```{r echo=FALSE, eval=FALSE}
 # Ties?
