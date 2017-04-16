@@ -544,15 +544,22 @@ Based on [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9
 - SEM ($\sqrt(MS_{error})$): standard error of measurement; the smaller the better
 
 ```{r}
-match_t1_t2 <- function(dv_var, t1_df = retest_subs_test_data, t2_df = retest_data, merge_var = 'sub_id'){
+match_t1_t2 <- function(dv_var, t1_df = retest_subs_test_data, t2_df = retest_data, merge_var = 'sub_id', format = "long"){
   df = merge(t1_df[,c(merge_var, dv_var)], t2_df[,c(merge_var, dv_var)], by = merge_var)
+  
   df = df %>% 
     na.omit()%>%
     gather(dv, score, -sub_id) %>%
     mutate(time = ifelse(grepl('\\.x', dv), 1, ifelse(grepl('\\.y', dv), 2, NA))) %>%
     separate(dv, c("dv", "drop"), sep='\\.([^.]*)$') %>%
     select(-drop)
-   return(df)
+  
+  
+  if(format == 'wide'){
+    df = df%>% spread(time, score) 
+  }
+  
+  return(df)
 }
 
 get_icc <- function(dv_var, t1_df = retest_subs_test_data, t2_df = retest_data, merge_var = 'sub_id'){
@@ -1041,6 +1048,79 @@ ggplotly(ggplot_build(tmp %>%
 ### Surveys
 
 Would this be a comparison of factor reliability versus item reliability?
+
+## Completion times
+
+Do people differ in how much their scores change depending on how many days it has been since they completed the initial battery?  
+
+Make data frame with standardized difference between two scores for each measure for each subject.
+
+```{r}
+t1_2_difference = data.frame()
+
+for(i in 1:length(numeric_cols)){
+  tmp = match_t1_t2(numeric_cols[i],format='wide')
+  tmp = tmp %>% 
+    mutate(difference = scale(`2` - `1`))
+  t1_2_difference = rbind(t1_2_difference, tmp)
+}
+
+str(as.data.frame(t1_2_difference$difference))
+```
+
+Add completion dates to this data frame.
+
+```{r}
+disc_comp_date = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-21-2017/Local/discovery_completion_dates.csv', header=FALSE)
+val_comp_date = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-21-2017/Local/validation_completion_dates.csv', header=FALSE)
+test_comp_date = rbind(disc_comp_date, val_comp_date)
+rm(disc_comp_date, val_comp_date)
+retest_comp_date = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-21-2017/Local/retest_completion_dates.csv', header=FALSE)
+comp_dates = merge(retest_comp_date, test_comp_date, by="V1")
+names(comp_dates) <- c("sub_id", "retest_comp", "test_comp")
+comp_dates$retest_comp = as.Date(comp_dates$retest_comp)
+comp_dates$test_comp = as.Date(comp_dates$test_comp)
+comp_dates$days_btw = with(comp_dates, retest_comp-test_comp)
+
+t1_2_difference = merge(t1_2_difference, comp_dates[,c('sub_id', 'days_btw')], by='sub_id')
+```
+
+The effect of number of days in between in the full model you'd want (potentially even including the interaction between the fixed effects)
+
+```{r eval = FALSE}
+mod = lmer(difference ~ dv + days_btw + (1|sub_id), data = t1_2_difference)
+
+mod_fixed = as.data.frame(fixef(mod))
+mod_fixed["days_btw",]
+```
+
+Does average standardized difference change with number of days between completion?
+
+```{r}
+tmp = t1_2_difference %>%
+  group_by(sub_id) %>%
+  summarise(mean_diff = mean(difference, na.rm=T),
+            days_btw = unique(days_btw))
+
+length(unique(tmp$mean_diff))
+str(as.data.frame(t1_2_difference$difference))
+
+tmp %>%
+  ggplot(aes(days_btw, mean_diff))+
+  geom_point()+
+  theme_bw()
+```
+
+
+Box plots showing the distribution of difference scores for each task
+
+```{r}
+t1_2_difference %>%
+  ggplot(aes(dv, difference))+
+  geom_boxplot()+
+  theme_bw()+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
 
 ```{r echo=FALSE, eval=FALSE}
 # Ties?
