@@ -413,7 +413,7 @@ retest_subs_test_data <- hddm_fix_retest_subs_test_data
 ```
 
 ```{r}
-rm(hddm_refits, transformed_hddm_refits, hddm_logTr_vars, transform_hddm_logTr_vars, replace_hddm_vars, hddm_fix_retest_subs_test_data)
+rm(hddm_refits, transformed_hddm_refits, hddm_logTr_vars, transform_hddm_logTr_vars, replace_hddm_vars, hddm_fix_retest_subs_test_data, sign, i)
 ```
 
 # Results
@@ -612,8 +612,8 @@ row.names(icc_df) = NULL
 ```
 
 Median reliability and the number of variables for both the surveys and the tasks:
-As implied by Spearman the ICC's are higher for surveys.  
-Systematic differences between the two measurements are higher for tasks than surveys (potentially indicating learning effects).  
+As seen with Spearman $\rho$'s as well the ICC's are higher for surveys.  
+Systematic differences between the two measurements ($\eta^2$) are higher for tasks than surveys (potentially indicating learning effects?).  
 Unexpectedly, median standard error of measurement is higher for surveys but the distribution below suggests that this is a side effect of having too many task measures with very low SEMs.
 ```{r}
 icc_df %>%
@@ -1055,7 +1055,7 @@ Do people differ in how much their scores change depending on how many days it h
 
 Make data frame with standardized difference between two scores for each measure for each subject.
 
-```{r}
+```{r warning=FALSE}
 t1_2_difference = data.frame()
 
 for(i in 1:length(numeric_cols)){
@@ -1065,12 +1065,16 @@ for(i in 1:length(numeric_cols)){
   t1_2_difference = rbind(t1_2_difference, tmp)
 }
 
-str(as.data.frame(t1_2_difference$difference))
+t1_2_difference$difference = as.data.frame(t1_2_difference$difference)$V1
+```
+
+```{r echo=FALSE}
+rm(tmp, i)
 ```
 
 Add completion dates to this data frame.
 
-```{r}
+```{r warning=FALSE}
 disc_comp_date = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-21-2017/Local/discovery_completion_dates.csv', header=FALSE)
 val_comp_date = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-21-2017/Local/validation_completion_dates.csv', header=FALSE)
 test_comp_date = rbind(disc_comp_date, val_comp_date)
@@ -1083,6 +1087,7 @@ comp_dates$test_comp = as.Date(comp_dates$test_comp)
 comp_dates$days_btw = with(comp_dates, retest_comp-test_comp)
 
 t1_2_difference = merge(t1_2_difference, comp_dates[,c('sub_id', 'days_btw')], by='sub_id')
+str(t1_2_difference)
 ```
 
 The effect of number of days in between in the full model you'd want (potentially even including the interaction between the fixed effects)
@@ -1096,25 +1101,25 @@ mod_fixed["days_btw",]
 
 Does average standardized difference change with number of days between completion?
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 tmp = t1_2_difference %>%
   group_by(sub_id) %>%
   summarise(mean_diff = mean(difference, na.rm=T),
             days_btw = unique(days_btw))
 
-length(unique(tmp$mean_diff))
-str(as.data.frame(t1_2_difference$difference))
-
-tmp %>%
+ggplotly(tmp %>%
   ggplot(aes(days_btw, mean_diff))+
   geom_point()+
-  theme_bw()
+  theme_bw()+
+  xlab("Days between completion")+
+  ylab("Mean standardized difference between two time points")+
+  geom_smooth(method="lm"))
 ```
 
 
 Box plots showing the distribution of difference scores for each task
 
-```{r}
+```{r fig.width=20}
 t1_2_difference %>%
   ggplot(aes(dv, difference))+
   geom_boxplot()+
