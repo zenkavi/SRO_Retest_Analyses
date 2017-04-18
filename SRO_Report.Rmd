@@ -728,30 +728,7 @@ time_effect_vars$value = gsub("\"", "", time_effect_vars$value)
 time_effect_vars
 ```
 
-Here is a scatter plot of these variables but I'm not including it in the report for now because it is too large and because I want to get back to this once I refit the hddm's for retest participants only.
-
-```{r warning=FALSE, message=FALSE, fig.height=72, eval=FALSE}
-tmp = data.frame()
-
-for(i in 1:nrow(time_effect_vars)){
-  tmp = rbind(tmp, match_t1_t2(time_effect_vars$value[i]))
-}
-rm(time_effect_vars)
-
-tmp = tmp %>%
-  inner_join(icc_df[,c("dv", "eta_sq")],by="dv") 
-
-tmp = tmp %>% 
-  mutate(dv = factor(dv, levels = unique(tmp$dv[order(tmp$eta_sq)])))
-
-ggplotly(tmp %>%
-  spread(time, score) %>%
-  ggplot(aes(`1`, `2`))+
-  geom_point()+
-  theme_bw()+
-  facet_wrap(~dv, scales='free', labeller = label_wrap_gen())+
-  geom_abline(intercept = 0, slope=1))
-```
+Box plots showing the distributions of difference scores between the measurements at two time points for each measure can be found under the [Completion times](#diff_plot) section.
 
 ### Distributions of SEM's by task vs. survey
 
@@ -1053,7 +1030,7 @@ Would this be a comparison of factor reliability versus item reliability?
 
 Do people differ in how much their scores change depending on how many days it has been since they completed the initial battery?  
 
-Make data frame with standardized difference between two scores for each measure for each subject.
+Make data frame with difference between two scores for each measure for each subject. Since the scores for different measures are on different scales for comparability the difference scores are scaled (i.e. divided by their root mean square) but not centered so a value of 0 for the difference scores would indicate a lack of a difference between the scores of a subject.
 
 ```{r warning=FALSE}
 t1_2_difference = data.frame()
@@ -1067,7 +1044,6 @@ for(i in 1:length(numeric_cols)){
 }
 
 t1_2_difference$difference = as.data.frame(t1_2_difference$difference)$V1
-str(t1_2_difference)
 ```
 
 ```{r echo=FALSE}
@@ -1095,16 +1071,15 @@ t1_2_difference = merge(t1_2_difference, comp_dates[,c('sub_id', 'days_btw')], b
 rm(test_comp_date, retest_comp_date, comp_dates)
 ```
 
-The effect of number of days in between in the full model you'd want (potentially even including the interaction between the fixed effects)
+The effect of number of days in between in the full model where the difference scores are regressed on a fixed effect for measure and days between the two scores and random intercepts for each subject (*Should this model include the interaction between the fixed effects?*). Since there are over 300 measures the output of the full model is not presented here. Instead below are the coefficient for the fixed effect of days between completion times and its t value.
 
-```{r eval = FALSE}
+```{r}
 mod = lmer(difference ~ dv + days_btw + (1|sub_id), data = t1_2_difference)
 
-mod_fixed = as.data.frame(fixef(mod))
-mod_fixed["days_btw",]
+data.frame(estimate=coef(summary(mod))["days_btw","Estimate"], tval=coef(summary(mod))["days_btw","t value"])
 ```
 
-Does average standardized difference change with number of days between completion?
+For visualization purposes I summarized the difference scores per person by looking at the average difference and plot that against the number of days between completion.
 
 ```{r warning=FALSE, message=FALSE}
 tmp = t1_2_difference %>%
@@ -1121,13 +1096,13 @@ ggplotly(tmp %>%
   geom_smooth(method="lm"))
 ```
 
-To confirm the slope of this line is not significant. That is, there doesn't seem to be a systematic difference between the two measurements depending on the number of days between the two measurements.
+To confirm: the slope of this line is not significant. That is, there doesn't seem to be a systematic difference between the two measurements depending on the number of days between the two measurements.
 
 ```{r warning=FALSE, message=FALSE}
 summary(lm(mean_diff ~ days_btw, data=tmp))
 ```
 
-
+<a id="diff_plot"></a>
 For reference here are the box plots showing the distribution of difference scores for each task.
 
 ```{r warning=FALSE, message=FALSE, fig.height=36}
