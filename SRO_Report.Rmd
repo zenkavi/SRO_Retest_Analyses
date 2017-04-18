@@ -1087,7 +1087,6 @@ comp_dates$test_comp = as.Date(comp_dates$test_comp)
 comp_dates$days_btw = with(comp_dates, retest_comp-test_comp)
 
 t1_2_difference = merge(t1_2_difference, comp_dates[,c('sub_id', 'days_btw')], by='sub_id')
-str(t1_2_difference)
 ```
 
 The effect of number of days in between in the full model you'd want (potentially even including the interaction between the fixed effects)
@@ -1116,15 +1115,24 @@ ggplotly(tmp %>%
   geom_smooth(method="lm"))
 ```
 
+To confirm the slope of this line is not significant. That is, there doesn't seem to be a systematic difference between the two measurements depending on the number of days between the two measurements.
 
-Box plots showing the distribution of difference scores for each task
+```{r warning=FALSE, message=FALSE}
+summary(lm(mean_diff ~ days_btw, data=tmp))
+```
 
-```{r fig.width=20}
-t1_2_difference %>%
-  ggplot(aes(dv, difference))+
-  geom_boxplot()+
-  theme_bw()+
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+For reference here are the box plots showing the distribution of difference scores for each task.
+
+```{r warning=FALSE, message=FALSE, fig.height=36}
+ggplotly(t1_2_difference %>%
+           ggplot(aes(dv, difference, label=dv))+
+           geom_boxplot()+
+           theme_bw()+
+           coord_flip()+
+           xlab("")+
+           ylab("Standardized difference")
+)
 ```
 
 ```{r echo=FALSE, eval=FALSE}
