@@ -45,7 +45,7 @@ worker_counts = as.data.frame(unlist(worker_counts))
 names(worker_counts) = "task_count"
 ```
 
-In total `r sum(workers$Retest_worker)` participants were invited, `r nrow(worker_counts)` began the battery, `sum(worker_counts$task_count >= 62)` completed the battery and 150 provided data that passed qc for both time points. Our target sample size was determined in advance of data collection and data collection continued until this number of participants with data that survived qc was reached.
+In total `r sum(workers$Retest_worker)` participants were invited, `r nrow(worker_counts)` began the battery, `r sum(worker_counts$task_count >= 62)` completed the battery and 150 provided data that passed qc for both time points. Our target sample size was determined in advance of data collection and data collection continued until this number of participants with data that survived qc was reached.
 
 ```{r warning=FALSE, message=FALSE}
 disc_comp_date = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-21-2017/Local/discovery_completion_dates.csv', header=FALSE)
@@ -918,11 +918,12 @@ We plan to supplement/potentially replace this with an additional labeling proce
 
 ```{r echo=FALSE}
 measure_labels <- read.csv('/Users/zeynepenkavi/Downloads/retest_measure_labels.csv')
+measure_labels = measure_labels %>% select(-Patrick_hates)
 
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 ```
 
-We filter out the DDM parameters and measures for specific contrasts. Note that this does leave some tasks with measures that are model fits and/or for specific conditions (because at least the current datasets do not include measures that are based on all the trials **and** are raw though I could dive in to variables_exhaustive for such measures). Here's the order of tasks by mean reliability sorted for ICC and then Spearman's $\rho$.
+We filter out the DDM parameters and measures for specific contrasts. Note that this does leave some tasks with measures that are model fits and/or for specific conditions (because at least the current datasets do not include measures that are based on all the trials **and** are raw though I could dive in to variables_exhaustive for such measures. For example the average relialibility for Kirby is based on three discount rates for specific conditions.). Here's the order of tasks by mean reliability sorted for ICC and then Spearman's $\rho$.
 
 ```{r warning=FALSE, message=FALSE}
 tmp = measure_labels %>%
@@ -971,6 +972,60 @@ The regression suggests that the more measures that went in to the averaging of 
 
 ```{r warning=FALSE, message=FALSE}
 summary(lm(mean_spearman ~ num_measures, data = tmp))
+```
+
+In addition to average relilibilities for each task we can look at relilibities of measures organized by the putative cognitive process they are intended to measure. Note however that these labels are not determined in a data driven manner.
+
+```{r warning=FALSE, message=FALSE}
+measure_labels %>%
+  mutate(dv = as.character(dv)) %>%
+  filter(task == 'task') %>%
+  select(-measure_description, -notes, -variable_type, -task, -ddm_task) %>%
+  left_join(icc_df[,c("dv", "icc")], by='dv') %>%
+  left_join(cor_df[,c("dv", "spearman")], by='dv') %>%
+  group_by(measure_type) %>%
+  summarise(mean_icc = mean(icc),
+            mean_spearman = mean(spearman),
+            num_measures = n()) %>%
+  arrange(-mean_icc, -mean_spearman)
+```
+
+Here is what the distributions look like. Thoughts:
+- Alerting: This labels consists only of ANT alerting contrast (no cue - double cue trials). 4/6 are drift diffusion parameters.    
+- Cue encoding: This label consists only of three by two task switch cost contrast (stay (where cue and task remains the same) - switch (where task is the same but cue changes) trials). Again most are drift diffusion parameters.  
+- Delay discounting: This label consists of the discount rates for the Bickel titrator (3), Kirby items (3) and discount titrate (model fit to random set of stimuli). **Does the discrepancy between ICC and Spearman for these measures, given the specific interest in these tasks in the literature warrant a more detailed look in to these?**
+- Information use: This label includes Columbia Card Task (both versions) and information sampling task.
+- Inhibition: This label includes go no-go, motor selective stop signal, stimulus selective stop signal and regular stop signal (excluding specific constrasts).
+- Intelligence: This label includes ravens and tower of london.
+- Learning: This label includes ART, CCT, two stage decision, dietary decision task, hierarchical rule task, information sampling task, probabilistic selection task, shift task, two stage task.  
+- Neutral writing: This label consists only of the writing task.  
+- Orienting: This labels consists only of ANT orienting contrast (center - spatial cue trials). 4/6 are drift diffusion parameters. 
+- Positive writing: This label consists only of the writing task.  
+- Proactive control: This labels consists of one DPX contrast (AY - BY trials), motor selective stop signal and regular stop signal. 
+- Reactive control: This labels consists of one DPX contrast (BX - BY trials) and motor selective stop signal.  
+- Resisting proactive interference: This label consists of one contrast in directed forgetting and recent probes tasks (negative (where the stimulus to respond to is in forgetting set) and control (where the stimulus to respond to is new) trials).  
+- Response conflict: This label consists of ANT conflict contrast (congruent-incongruent), DPX, local global conflict contrast, shape matching, simon, stroop.  
+- Response selection: This label consists of choice reaction time task.
+- Risk Taking: This label consists of ART and CCT.
+- Selective attention: This label consists of local global task and ANT (all trials).
+- Set shifting: This label consists of local global, PRT and three by two.  
+- Speed: This label consists of raw response times in information sampling task, simple reaction time, tower of london.  
+- Working memory: This label consists of adaptive n back, digit span, directed forgetting, keep track, recent probes, spatial span.
+
+```{r warning=FALSE, message=FALSE}
+measure_labels %>%
+  mutate(dv = as.character(dv)) %>%
+  filter(task == 'task') %>%
+  select(-measure_description, -notes, -variable_type, -task, -ddm_task) %>%
+  left_join(icc_df[,c("dv", "icc")], by='dv') %>%
+  left_join(cor_df[,c("dv", "spearman")], by='dv') %>%
+  select(measure_type, icc, spearman) %>%
+  gather(key, value, -measure_type) %>%
+  ggplot(aes(value, fill=key))+
+  geom_histogram(position='identity', alpha=0.5)+
+  theme_bw()+
+  facet_wrap(~measure_type)+
+  theme(legend.title = element_blank())
 ```
 
 ### Surveys
@@ -1136,30 +1191,4 @@ ggplotly(t1_2_difference %>%
            xlab("")+
            ylab("Standardized difference")+
            coord_flip())
-```
-
-```{r echo=FALSE, eval=FALSE}
-# Ties?
-# 
-# "The group of zero values for the ICC may be that the ICC is more of a measure of consistency than the Spearman/Pearson measures of rank order similarity.  Or it could be the ICC calculation is off in some way. It would be worth focusing on five of these unusual cases (where the ICC is zero but the Pearson/Spearman is large) and calculate the ICC using other formulas.  Generally the Spearman and Pearson differ when there are ties.""
-
-ties_df <- data.frame(unique_entries = rep(NA, length(numeric_cols)), 
-                     transformed = rep(NA, length(numeric_cols)))
-
-row.names(ties_df) <- numeric_cols
-
-for(i in 1:length(numeric_cols)){
-  ties_df[numeric_cols[i], 'unique_entries'] <- get_unique(numeric_cols[i])
-  ties_df[numeric_cols[i], 'transformed'] <- get_transformed(numeric_cols[i])
-}
-
-icc_df %>%
-  left_join(cor_df[,c('spearman','dv')], by = 'dv') %>%
-  left_join(ties_df, by = 'dv')
-
-#Function to output: spearman, icc, number of unique values in column, whether it is log transformed
-
-#Gina seems right; these transformed variables have high Spearman but low ICC and they have few unique values (though this isn't )
-length(unique(retest_data$impulsive_venture_survey.impulsiveness.logTr))
-length(unique(retest_data$adaptive_n_back.mean_load.logTr))
 ```
