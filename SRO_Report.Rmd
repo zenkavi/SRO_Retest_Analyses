@@ -893,15 +893,6 @@ ggplotly(icc_df %>%
   theme(legend.title = element_blank()))
 ```
 
-Which tasks show a systematic difference between t1 and t2?
-Are these the tasks where the ICC and Spearman imply different conclusions?
-
-```{r}
-icc_df %>%
-  select(dv, eta_sq) %>%
-  arrange(-eta_sq)
-```
-
 ## Reliability by measure types
 
 The results presented so far aim to be comprehensive but are difficult to parse through and get a clear sense of what is going on (other than a general impression that surveys tend to have higher reliabilities than tasks). In this and the following section we try to deal with this in two ways to make the results more digestable with two kinds of categorizations. 
@@ -990,29 +981,29 @@ measure_labels %>%
   arrange(-mean_icc, -mean_spearman)
 ```
 
-Here is what the distributions look like. Thoughts:
+Here is what the distributions look like.  
 - Alerting: This labels consists only of ANT alerting contrast (no cue - double cue trials). 4/6 are drift diffusion parameters.    
 - Cue encoding: This label consists only of three by two task switch cost contrast (stay (where cue and task remains the same) - switch (where task is the same but cue changes) trials). Again most are drift diffusion parameters.  
-- Delay discounting: This label consists of the discount rates for the Bickel titrator (3), Kirby items (3) and discount titrate (model fit to random set of stimuli). **Does the discrepancy between ICC and Spearman for these measures, given the specific interest in these tasks in the literature warrant a more detailed look in to these?**
-- Information use: This label includes Columbia Card Task (both versions) and information sampling task.
-- Inhibition: This label includes go no-go, motor selective stop signal, stimulus selective stop signal and regular stop signal (excluding specific constrasts).
-- Intelligence: This label includes ravens and tower of london.
-- Learning: This label includes ART, CCT, two stage decision, dietary decision task, hierarchical rule task, information sampling task, probabilistic selection task, shift task, two stage task.  
+- Delay discounting: This label consists of the discount rates for the Bickel titrator (3), Kirby items (3) and discount titrate (model fit to random set of stimuli). **Does the discrepancy between ICC and Spearman for these measures, given the specific interest in these tasks in the literature warrant a more detailed look in to these?**  
+- Information use: This label includes Columbia Card Task (both versions) and information sampling task.  
+- Inhibition: This label includes go no-go, motor selective stop signal, stimulus selective stop signal and regular stop signal (excluding specific constrasts).  
+- Intelligence: This label includes ravens and tower of london.  
+- Learning: This label includes ART, CCT, two stage decision, dietary decision task, hierarchical rule task, information sampling task, probabilistic selection task, shift task, two stage task.   
 - Neutral writing: This label consists only of the writing task.  
 - Orienting: This labels consists only of ANT orienting contrast (center - spatial cue trials). 4/6 are drift diffusion parameters. 
 - Positive writing: This label consists only of the writing task.  
-- Proactive control: This labels consists of one DPX contrast (AY - BY trials), motor selective stop signal and regular stop signal. 
+- Proactive control: This labels consists of one DPX contrast (AY - BY trials), motor selective stop signal and regular stop signal.   
 - Reactive control: This labels consists of one DPX contrast (BX - BY trials) and motor selective stop signal.  
 - Resisting proactive interference: This label consists of one contrast in directed forgetting and recent probes tasks (negative (where the stimulus to respond to is in forgetting set) and control (where the stimulus to respond to is new) trials).  
 - Response conflict: This label consists of ANT conflict contrast (congruent-incongruent), DPX, local global conflict contrast, shape matching, simon, stroop.  
-- Response selection: This label consists of choice reaction time task.
+- Response selection: This label consists of choice reaction time task.  
 - Risk Taking: This label consists of ART and CCT.
-- Selective attention: This label consists of local global task and ANT (all trials).
-- Set shifting: This label consists of local global, PRT and three by two.  
+- Selective attention: This label consists of local global task and ANT (all trials).  
+- Set shifting: This label consists of local global, PRT and three by two.    
 - Speed: This label consists of raw response times in information sampling task, simple reaction time, tower of london.  
 - Working memory: This label consists of adaptive n back, digit span, directed forgetting, keep track, recent probes, spatial span.
 
-```{r warning=FALSE, message=FALSE}
+```{r warning=FALSE, message=FALSE, fig.width=12}
 measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(task == 'task') %>%
@@ -1030,7 +1021,7 @@ measure_labels %>%
 
 ### Surveys
 
-To be filled with factor labels after processing either ASU factor analyses or Russ' MIRT.
+To be filled with factor labels after processing either ASU factor analyses or Russ' MIRT?
 
 ## Reliability by variable types
 
