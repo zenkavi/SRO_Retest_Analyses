@@ -1003,7 +1003,7 @@ Here is what the distributions look like.
 - Speed: This label consists of raw response times in information sampling task, simple reaction time, tower of london.  
 - Working memory: This label consists of adaptive n back, digit span, directed forgetting, keep track, recent probes, spatial span.
 
-```{r warning=FALSE, message=FALSE, fig.width=12}
+```{r warning=FALSE, message=FALSE, fig.width=12, fig.height=10}
 measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(task == 'task') %>%
@@ -1074,11 +1074,11 @@ tmp = tmp %>%
   select(dv, icc, spearman, label_1, label_2, label_3) %>%
   gather(key, value, -dv, -label_1, -label_2, -label_3) 
 
-tmp %>% ggplot(aes(value, color=label_2, fill=label_3))+
-  geom_histogram(position='identity', alpha = 0.5)+
+tmp %>% ggplot(aes(label_2, value, fill=label_3))+
+  geom_boxplot()+
   theme_bw()+
   facet_wrap(key~label_1)+
-  labs(color="Model", fill="Parameter")
+  labs(fill="Parameter")
 ```
 
 ```{r message=FALSE, echo=FALSE, eval=FALSE}
