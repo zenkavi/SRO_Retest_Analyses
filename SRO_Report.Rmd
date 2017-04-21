@@ -1175,11 +1175,12 @@ summary(lm(mean_diff ~ days_btw, data=tmp))
 For reference here are the box plots showing the distribution of difference scores for each task.
 
 ```{r warning=FALSE, message=FALSE, fig.height=36}
-ggplotly(t1_2_difference %>%
-           ggplot(aes(dv, difference, label=dv))+
+t1_2_difference %>%
+           ggplot(aes(reorder(dv, difference, FUN=median), difference))+
+           geom_hline(yintercept = 0,color='red',size=1)+
            geom_boxplot()+
            theme_bw()+
            xlab("")+
            ylab("Standardized difference")+
-           coord_flip())
+           coord_flip()
 ```
