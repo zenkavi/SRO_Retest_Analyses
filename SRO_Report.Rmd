@@ -98,7 +98,7 @@ names(test_data2)[1] <- 'sub_id'
 df <- data.frame(names(test_data2)[which(names(test_data2) %in% names(test_data) == FALSE)])
 names(df) = c('vars')
 
-df
+datatable(df)
 ```
 
 ```{r echo=FALSE}
@@ -483,10 +483,10 @@ cor_df[grep('survey', cor_df$dv), 'task'] = 'survey'
 
 Mean Spearman correlation and the number of variables for both the surveys and the tasks
 ```{r}
-cor_df %>%
+datatable(cor_df %>%
   group_by(task) %>%
   summarise(mean_spearman = mean(spearman),
-            num_vars = n())
+            num_vars = n()))
 ```
 
 ### Distributions of correlations by task vs. survey
@@ -565,10 +565,10 @@ datatable(cor_df %>%
 - Holt and Laury test-retest is the worst for *surveys*. But note that this is not a survey that has been studied extensively psychometrically like others. This is more similar to our tasks (one that is used more often by economists). In previous data I have worked with retest reliablities for this task was ~.35 so the results here are in line with this.  
 - Otherwise the lowest survey reliabilities are 0.5.
 ```{r}
-cor_df %>%
+datatable(cor_df %>%
   filter(task == 'survey') %>%
   select(dv, spearman) %>%
-  arrange(-spearman)
+  arrange(-spearman))
 ```
 
 ## ICC for all cleaned meaningful variables
@@ -666,12 +666,36 @@ As seen with Spearman $\rho$'s as well the ICC's are higher for surveys.
 Systematic differences between the two measurements ($\eta^2$) are higher for tasks than surveys (potentially indicating learning effects?).  
 Unexpectedly, median standard error of measurement is higher for surveys but the distribution below suggests that this is a side effect of having too many task measures with very low SEMs.
 ```{r}
-icc_df %>%
+datatable(icc_df %>%
   group_by(task) %>%
   summarise(median_icc = median(icc),
             median_eta_sq = median(eta_sq),
             median_sem = median(sem),
-            num_vars = n())
+            num_vars = n()))
+```
+
+#### Rank order of ICCs, partial $\eta^2$ and SEM
+
+Note that these tables can be sorted for any of the columns.
+
+###### For tasks
+
+```{r}
+datatable(icc_df %>%
+  filter(task == 'task') %>%
+  left_join(cor_df[,c('spearman','dv')], by = 'dv') %>%
+  arrange(-icc) %>%
+  select(dv, -task, icc, eta_sq, sem, spearman))
+```
+
+###### For surveys
+
+```{r}
+datatable(icc_df %>%
+  filter(task == 'survey') %>%
+  left_join(cor_df[,c('spearman','dv')], by = 'dv') %>%
+  arrange(-icc) %>%
+  select(dv, -task, icc, eta_sq, sem, spearman))
 ```
 
 ### Distributions of ICC's by task vs. survey
@@ -690,28 +714,6 @@ ggplotly(ggplot_build(icc_df %>%
            theme_bw(),
          tooltip = 'label',
          hoverinfo = 'text')
-```
-
-#### Rank order of ICCs
-
-###### For tasks
-
-```{r}
-icc_df %>%
-  filter(task == 'task') %>%
-  left_join(cor_df[,c('spearman','dv')], by = 'dv') %>%
-  arrange(-icc) %>%
-  select(dv, -task, icc, eta_sq, sem, spearman)
-```
-
-###### For surveys
-
-```{r}
-icc_df %>%
-  filter(task == 'survey') %>%
-  left_join(cor_df[,c('spearman','dv')], by = 'dv') %>%
-  arrange(-icc) %>%
-  select(dv, -task, icc, eta_sq, sem, spearman)
 ```
 
 ### Distributions of partial $\eta^2$ by task vs. survey
@@ -734,28 +736,6 @@ ggplotly(ggplot_build(icc_df %>%
          hoverinfo = 'text')
 ```
 
-#### Rank order of partial $\eta^2$
-
-###### For tasks
-
-```{r}
-icc_df %>%
-  filter(task == 'task') %>%
-  left_join(cor_df[,c('spearman','dv')], by = 'dv') %>%
-  arrange(-eta_sq) %>%
-  select(dv, -task, eta_sq, icc, sem, spearman)
-```
-
-###### For surveys
-
-```{r}
-icc_df %>%
-  filter(task == 'survey') %>%
-  left_join(cor_df[,c('spearman','dv')], by = 'dv') %>%
-  arrange(-eta_sq)%>%
-  select(dv, -task, eta_sq, icc, sem, spearman)
-```
-
 #### Effect of time
 
 So what variables show a non-negligible effect of time and in what direction? (sorted by increasing partial $\eta^2$)
@@ -775,7 +755,7 @@ time_effect_vars = ggplot_build(icc_df %>%
   na.omit()
 
 time_effect_vars$value = gsub("\"", "", time_effect_vars$value)
-time_effect_vars
+datatable(time_effect_vars)
 ```
 
 Box plots showing the distributions of difference scores between the measurements at two time points for each measure can be found under the [Completion times](#diff_plot) section.
@@ -796,28 +776,6 @@ ggplotly(ggplot_build(icc_df %>%
            theme_bw(),
          tooltip = 'label',
          hoverinfo = 'text')
-```
-
-#### Rank order of SEMs
-
-###### For tasks
-
-```{r}
-icc_df %>%
-  filter(task == 'task') %>%
-  left_join(cor_df[,c('spearman','dv')], by = 'dv') %>%
-  arrange(-sem) %>%
-  select(dv, -task,  sem, eta_sq, icc, spearman)
-```
-
-###### For surveys
-
-```{r}
-icc_df %>%
-  filter(task == 'survey') %>%
-  left_join(cor_df[,c('spearman','dv')], by = 'dv') %>%
-  arrange(-sem)%>%
-  select(dv, -task,  sem, eta_sq, icc, spearman)
 ```
 
 ### Negative icc's?
@@ -894,9 +852,9 @@ ggplotly(icc_df %>%
 What are the variables clustered around 0 ICC?
 
 ```{r}
-icc_df %>%
+datatable(icc_df %>%
   filter(icc>(-0.1), icc<0.1) %>%
-  arrange(icc)
+  arrange(icc))
 ```
 
 ### Relationship between ICC and $\eta^2$
@@ -953,7 +911,7 @@ tmp = measure_labels %>%
             num_trials = unique(num_all_trials)) %>%
   arrange(-mean_icc, -mean_spearman)
 
-tmp
+datatable(tmp)
 ```
 
 Does number of items in a task have a significant effect on the average ICC of (mostly) raw measures for all trials from a task? No.
@@ -984,7 +942,7 @@ summary(lm(mean_spearman ~ num_measures, data = tmp))
 In addition to average relilibilities for each task we can look at relilibities of measures organized by the putative cognitive process they are intended to measure. Note however that these labels are not determined in a data driven manner.
 
 ```{r warning=FALSE, message=FALSE}
-measure_labels %>%
+datatable(measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(task == 'task') %>%
   select(-measure_description, -notes, -variable_type, -task, -ddm_task) %>%
@@ -994,7 +952,7 @@ measure_labels %>%
   summarise(mean_icc = mean(icc),
             mean_spearman = mean(spearman),
             num_measures = n()) %>%
-  arrange(-mean_icc, -mean_spearman)
+  arrange(-mean_icc, -mean_spearman))
 ```
 
 Here is what the distributions look like.  
@@ -1075,15 +1033,15 @@ Table of median reliabilities for the two kinds of DDM models' (hddm and EZ) par
 - 2 of 3 hddm parameters also have higher mean reliabilities than EZ parameter estimates.  
 
 ```{r warning=FALSE, message=FALSE}
-tmp %>%
+datatable(tmp %>%
   group_by(label_1,label_2, label_3) %>%
   summarise(mean_icc = mean(icc),
             mean_spearman = mean(spearman),
             n_vars = n()) %>%
-  arrange(-mean_icc, -mean_spearman)
+  arrange(-mean_icc, -mean_spearman))
 ```
 
-This is what the distributions of look like
+This is what the distributions of look like. Note that there is one box in the difference columns for HDDM because this model only allows this to be different across conditions.
 
 ```{r warning=FALSE, message=FALSE}
 tmp = tmp %>%
@@ -1204,7 +1162,7 @@ t1_2_difference %>%
 
 Bootstrapping
 
-```{r}
+```{r eval=FALSE, echo=FALSE}
 sample_workers = function(N = 150, repl= TRUE, df=retest_data, worker_col = "sub_id"){
   return(sample(df[,worker_col], N, replace = repl))
 }
