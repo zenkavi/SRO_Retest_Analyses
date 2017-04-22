@@ -20,6 +20,7 @@ library(psych)
 library(stringr)
 library(plotly)
 library(jsonlite)
+library(DT)
 sem <- function(x) {sd(x, na.rm=T) / sqrt(length(x))}
 render_this <- function(){rmarkdown::render('SRO_Report.Rmd', output_dir = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Report', html_notebook(toc = T, toc_float = T, code_folding = 'hide'))}
 ```
@@ -552,10 +553,10 @@ ggplotly(ggplot_build(cor_df %>%
 
 ##### For tasks
 ```{r}
-cor_df %>%
+datatable(cor_df %>%
   filter(task == 'task') %>%
   select(dv, spearman) %>%
-  arrange(-spearman)
+  arrange(-spearman))
 ```
 
 ##### For surveys
