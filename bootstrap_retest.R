@@ -124,7 +124,7 @@ bootstrap_relialibility = function(metric = c('icc', 'spearman', 'eta_sq', 'sem'
 }
 
 #save output
-output_df = plyr::rdply(1000, bootstrap_relialibility(dv_var = dv_name))
+output_df = plyr::rdply(2, bootstrap_relialibility(dv_var = dv_name))
 
-write.csv(output_df, paste0(output_dir, output_df, '.csv'))
+write.csv(output_df, paste0(output_dir, "_", dv_name, '_output.csv'))
 
