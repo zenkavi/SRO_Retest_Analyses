@@ -552,66 +552,52 @@ get_sem <- function(dv_var, t1_df = retest_subs_test_data, t2_df = retest_data, 
 ```
 
 ```{r}
-cor_df <- data.frame(spearman = rep(NA, length(numeric_cols)))
-
-row.names(cor_df) <- numeric_cols
-
-for(i in 1:length(numeric_cols)){
-  cor_df[numeric_cols[i], 'spearman'] <- get_spearman(numeric_cols[i]) 
-}
-
-#Calculate ICC df
-icc_df <- data.frame(icc = rep(NA, length(numeric_cols)), 
+rel_df <- data.frame(spearman = rep(NA, length(numeric_cols)),
+                     icc = rep(NA, length(numeric_cols)), 
                      eta_sq = rep(NA, length(numeric_cols)),
                      sem = rep(NA, length(numeric_cols)))
 
-row.names(icc_df) <- numeric_cols
+row.names(rel_df) <- numeric_cols
 
 for(i in 1:length(numeric_cols)){
-  icc_df[numeric_cols[i], 'icc'] <- get_icc(numeric_cols[i])
-  icc_df[numeric_cols[i], 'eta_sq'] <- get_eta(numeric_cols[i])
-  icc_df[numeric_cols[i], 'sem'] <- get_sem(numeric_cols[i])
+  rel_df[numeric_cols[i], 'spearman'] <- get_spearman(numeric_cols[i]) 
+  rel_df[numeric_cols[i], 'icc'] <- get_icc(numeric_cols[i])
+  rel_df[numeric_cols[i], 'eta_sq'] <- get_eta(numeric_cols[i])
+  rel_df[numeric_cols[i], 'sem'] <- get_sem(numeric_cols[i])
 }
 
-icc_df$dv = row.names(icc_df)
-row.names(icc_df) = seq(1:nrow(icc_df))
-icc_df$task = 'task'
-icc_df[grep('survey', icc_df$dv), 'task'] = 'survey'
-icc_df = icc_df %>%
-  select(dv, task, icc, eta_sq, sem)
-row.names(icc_df) = NULL
+rel_df$dv = row.names(rel_df)
+row.names(rel_df) = seq(1:nrow(rel_df))
+rel_df$task = 'task'
+rel_df[grep('survey', rel_df$dv), 'task'] = 'survey'
+rel_df = rel_df %>%
+  select(dv, task, spearman, icc, eta_sq, sem)
+# row.names(rel_df) = NULL
 
-# Add column to tasks vs. surveys in correlation table
-cor_df$dv = row.names(cor_df)
-row.names(cor_df) = seq(1:nrow(cor_df))
-cor_df$task = 'task'
-cor_df[grep('survey', cor_df$dv), 'task'] = 'survey'
 ```
 
 Average reliability metrics and the number of variables for both the surveys and the tasks
 Both Spearman $\rho$'s as well the ICC's are higher for surveys.  
 Systematic differences between the two measurements ($\eta^2$) are higher for tasks than surveys (potentially indicating learning effects?).  
 Unexpectedly, median standard error of measurement is higher for surveys but the distribution below suggests that this is a side effect of having too many task measures with very low SEMs.
-```{r}
-datatable(rel_df %>%
+```{r warning=FALSE, message=FALSE}
+rel_df %>%
   group_by(task) %>%
   summarise(median_spearman = median(spearman),
             median_icc = median(icc),
             median_eta_sq = median(eta_sq),
             median_sem = median(sem),
-            num_vars = n()))
+            num_vars = n())
 ```
 
-*Rank orders for tasks*
+*Rank orders for reliabilities*
 
-```{r}
+**ADD FILTER TO DATA TABLE FOR THIS DISPLAY INSTEAD OF MAKING TWO SEPARATE TABLES**
 
-```
-
-*Rank order for surveys:*
 - Demographics are excluded from this list of variables (because they are saved for predictive analyses).  
 - Holt and Laury test-retest is the worst for *surveys*. But note that this is not a survey that has been studied extensively psychometrically like others. This is more similar to our tasks (one that is used more often by economists). In previous data I have worked with retest reliablities for this task was ~.35 so the results here are in line with this.  
 - Otherwise the lowest survey reliabilities are 0.5.
+
 ```{r}
 
 ```
@@ -627,7 +613,8 @@ get_labels = function(plot_df, ref_df, bin_col, group_col){
   
   for(i in 1:nrow(ref_df)){
     for(j in 1:nrow(plot_df)){
-      if(ref_df[i, bin_col] <= plot_df$xmax[j] & ref_df[i, bin_col]>=plot_df$xmin[j] & all(ref_df[i, group_col] == plot_df[j, group_col])){
+      # if(ref_df[i, bin_col] <= plot_df$xmax[j] & ref_df[i, bin_col]>=plot_df$xmin[j] & all(ref_df[i, group_col] == plot_df[j, group_col])){
+      if(ref_df[i, bin_col] <= plot_df$xmax[j] & ref_df[i, bin_col]>=plot_df$xmin[j] & ref_df[i, group_col] == plot_df[j, group_col]){
         ref_df$bin[i] <- plot_df$bin[j]
       }
     }
@@ -661,11 +648,11 @@ prettify_label = function(df){
 #### Spearman
 
 ```{r warning=FALSE, message=FALSE}
-ggplotly(ggplot_build(cor_df %>%
+ggplotly(ggplot_build(rel_df %>%
                         ggplot(aes(spearman, fill=task)) +
                         geom_histogram(position = 'identity', alpha=0.5))$data[[1]] %>%
            mutate(task=ifelse(as.character(fill) == "#00BFC4", "task", "survey")) %>%
-           get_labels(.,cor_df, "spearman", "task") %>%
+           get_labels(.,rel_df, "spearman", "task") %>%
            prettify_label(.) %>%
            ggplot(aes(x,y, fill=task, label=label))+
            geom_bar(stat='identity', position='identity', alpha=0.5)+
@@ -679,11 +666,11 @@ ggplotly(ggplot_build(cor_df %>%
 ### ICC
 
 ```{r warning=FALSE, message=FALSE}
-ggplotly(ggplot_build(icc_df %>%
+ggplotly(ggplot_build(rel_df %>%
                         ggplot(aes(icc, fill=task)) +
                         geom_histogram(position = 'identity', alpha=0.5))$data[[1]] %>%
            mutate(task=ifelse(as.character(fill) == "#00BFC4", "task", "survey")) %>%
-           get_labels(.,icc_df, "icc", "task") %>%
+           get_labels(.,rel_df, "icc", "task") %>%
            prettify_label(.) %>%
            ggplot(aes(x,y, fill=task, label=label))+
            geom_bar(stat='identity', position='identity', alpha=0.5)+
@@ -699,11 +686,11 @@ ggplotly(ggplot_build(icc_df %>%
 Tooltip might not work well for this graph for the highest bar because the label is too large. But this bar indicates measures where the effect of time is very small anyway. We might want to pay closer attention to those not in this lowest bar since those are the variables where there is a non-negligible effect of time, indicating either a learning effect or other kind of systematic change that we did not hypothesize to observe with any of these measures.
 
 ```{r warning=FALSE, message=FALSE}
-ggplotly(ggplot_build(icc_df %>%
+ggplotly(ggplot_build(rel_df %>%
                         ggplot(aes(eta_sq, fill=task)) +
                         geom_histogram(position = 'identity', alpha=0.5))$data[[1]] %>%
            mutate(task=ifelse(as.character(fill) == "#00BFC4", "task", "survey")) %>%
-           get_labels(.,icc_df, "eta_sq", "task") %>%
+           get_labels(.,rel_df, "eta_sq", "task") %>%
            prettify_label(.) %>%
            ggplot(aes(x,y, fill=task, label=label))+
            geom_bar(stat='identity', position='identity', alpha=0.5)+
@@ -719,11 +706,11 @@ ggplotly(ggplot_build(icc_df %>%
 So what variables show a non-negligible effect of time and in what direction? (sorted by increasing partial $\eta^2$)
 
 ```{r warning=FALSE, message=FALSE}
-time_effect_vars = ggplot_build(icc_df %>%
+time_effect_vars = ggplot_build(rel_df %>%
                ggplot(aes(eta_sq, fill=task)) +
                geom_histogram(position = 'identity', alpha=0.5))$data[[1]] %>%
   mutate(task=ifelse(as.character(fill) == "#00BFC4", "task", "survey")) %>%
-  get_labels(.,icc_df, "eta_sq", "task") %>%
+  get_labels(.,rel_df, "eta_sq", "task") %>%
   prettify_label(.) %>%
   filter(bin != 1 & bin !=2 & label != "NA") %>%
   select(label, task) %>%
@@ -741,11 +728,11 @@ Box plots showing the distributions of difference scores between the measurement
 ### SEM
 
 ```{r warning=FALSE, message=FALSE}
-ggplotly(ggplot_build(icc_df %>%
+ggplotly(ggplot_build(rel_df %>%
                         ggplot(aes(sem, fill=task)) +
                         geom_histogram(position = 'identity', alpha=0.5))$data[[1]] %>%
            mutate(task=ifelse(as.character(fill) == "#00BFC4", "task", "survey")) %>%
-           get_labels(.,icc_df, "sem", "task") %>%
+           get_labels(.,rel_df, "sem", "task") %>%
            prettify_label(.) %>%
            ggplot(aes(x,y, fill=task, label=label))+
            geom_bar(stat='identity', position='identity', alpha=0.5)+
@@ -758,7 +745,7 @@ ggplotly(ggplot_build(icc_df %>%
 
 ### Negative icc's?
 ```{r}
-neg_icc_vars = icc_df %>%
+neg_icc_vars = rel_df %>%
   arrange(icc) %>% 
   filter(icc<0) %>%
   select(dv)
@@ -789,7 +776,7 @@ tmp %>%
 This point is clarified further by compare these scatter plots to those of variables with highest ICC. These variables have strong and clear positive linear relationships.
 
 ```{r fig.height=12, fig.width=12}
-high_icc_vars = icc_df %>%
+high_icc_vars = rel_df %>%
   arrange(-icc)  %>% 
   filter(icc>0.92) %>%
   select(dv)
@@ -818,8 +805,7 @@ rm(tmp)
 These two measures give mostly similar answers regarding the reliabilities of the measures except for 
 
 ```{r}
-ggplotly(icc_df %>%
-           left_join(cor_df[,c('spearman','dv')], by = 'dv') %>%
+ggplotly(rel_df %>%
            ggplot(aes(spearman, icc, col=task, label=dv, label2=eta_sq))+
            geom_point()+
            theme_bw()+
@@ -830,7 +816,7 @@ ggplotly(icc_df %>%
 What are the variables clustered around 0 ICC?
 
 ```{r}
-datatable(icc_df %>%
+datatable(rel_df %>%
   filter(icc>(-0.1), icc<0.1) %>%
   arrange(icc))
 ```
@@ -838,7 +824,7 @@ datatable(icc_df %>%
 ### Relationship between ICC and $\eta^2$
 
 ```{r}
-ggplotly(icc_df %>%
+ggplotly(rel_df %>%
   ggplot(aes(eta_sq, icc, col=task, label=dv))+
   geom_point()+
   theme_bw()+
@@ -873,8 +859,7 @@ tmp = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(task == 'task') %>%
   select(-measure_description, -notes, -measure_type, -task, -ddm_task) %>%
-  left_join(icc_df[,c("dv", "icc")], by='dv') %>%
-  left_join(cor_df[,c("dv", "spearman")], by='dv') %>%
+  left_join(rel_df[,c("dv", "spearman","icc")], by='dv') %>%
   separate(variable_type, c("label_1", "label_2", "label_3"), sep = ",") %>%
   mutate(label_1 = trim(label_1),
          label_2=trim(label_2),
@@ -883,11 +868,11 @@ tmp = measure_labels %>%
   separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
   select(-extra_1, -extra_2) %>%
   group_by(task_name) %>%
-  summarise(mean_icc = mean(icc),
-            mean_spearman = mean(spearman),
+  summarise(median_icc = median(icc),
+            median_spearman = median(spearman),
             num_measures = n(),
             num_trials = unique(num_all_trials)) %>%
-  arrange(-mean_icc, -mean_spearman)
+  arrange(-median_icc, -median_spearman)
 
 datatable(tmp)
 ```
@@ -895,26 +880,26 @@ datatable(tmp)
 Does number of items in a task have a significant effect on the average ICC of (mostly) raw measures for all trials from a task? No.
 
 ```{r warning=FALSE, message=FALSE}
-summary(lm(mean_icc ~ num_trials, data = tmp))
+summary(lm(median_icc ~ num_trials, data = tmp))
 ```
 
 Does number of items in a task have a significant effect on the average Spearman $\rho$ of (mostly) raw measures for all trials from a task? No.
 
 ```{r warning=FALSE, message=FALSE}
-summary(lm(mean_spearman ~ num_trials, data = tmp))
+summary(lm(median_spearman ~ num_trials, data = tmp))
 ```
 
 Does number of measures that went in to this reliability estimate have a significant effect on the average ICC of (mostly) raw measures for all trials from a task? No.
 
 ```{r warning=FALSE, message=FALSE}
-summary(lm(mean_icc ~ num_measures, data = tmp))
+summary(lm(median_icc ~ num_measures, data = tmp))
 ```
 
 Does number of measures that went in to this reliability estimate have a significant effect on the average ICC of (mostly) raw measures for all trials from a task?  
 The regression suggests that the more measures that went in to the averaging of Spearman's $\rho$'s the lower the mean Spearman $\rho$ for that task. This might suggest that this way of summarizing data might not be a good idea in general or at least that we shouldn't do it for the Spearman correlations.
 
 ```{r warning=FALSE, message=FALSE}
-summary(lm(mean_spearman ~ num_measures, data = tmp))
+summary(lm(median_spearman ~ num_measures, data = tmp))
 ```
 
 In addition to average relilibilities for each task we can look at relilibities of measures organized by the putative cognitive process they are intended to measure. Note however that these labels are not determined in a data driven manner.
@@ -924,13 +909,12 @@ datatable(measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(task == 'task') %>%
   select(-measure_description, -notes, -variable_type, -task, -ddm_task) %>%
-  left_join(icc_df[,c("dv", "icc")], by='dv') %>%
-  left_join(cor_df[,c("dv", "spearman")], by='dv') %>%
+  left_join(rel_df[,c("dv", "spearman","icc")], by='dv') %>%
   group_by(measure_type) %>%
-  summarise(mean_icc = mean(icc),
-            mean_spearman = mean(spearman),
+  summarise(median_icc = median(icc),
+            median_spearman = median(spearman),
             num_measures = n()) %>%
-  arrange(-mean_icc, -mean_spearman))
+  arrange(-median_icc, -median_spearman))
 ```
 
 Here is what the distributions look like.  
@@ -960,8 +944,7 @@ measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(task == 'task') %>%
   select(-measure_description, -notes, -variable_type, -task, -ddm_task) %>%
-  left_join(icc_df[,c("dv", "icc")], by='dv') %>%
-  left_join(cor_df[,c("dv", "spearman")], by='dv') %>%
+  left_join(rel_df[,c("dv", "spearman","icc")], by='dv') %>%
   select(measure_type, icc, spearman) %>%
   gather(key, value, -measure_type) %>%
   ggplot(aes(value, fill=key))+
@@ -990,8 +973,7 @@ tmp = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(task == 'task') %>%
   select(-measure_description, -notes, -measure_type, -task) %>%
-  left_join(icc_df[,c("dv", "icc")], by='dv') %>%
-  left_join(cor_df[,c("dv", "spearman")], by='dv') %>%
+  left_join(rel_df[,c("dv", "spearman","icc")], by='dv') %>%
   separate(variable_type, c("label_1", "label_2", "label_3"), sep = ",") %>%
   mutate(label_1 = trim(label_1),
          label_2=trim(label_2),
@@ -1013,10 +995,10 @@ Table of median reliabilities for the two kinds of DDM models' (hddm and EZ) par
 ```{r warning=FALSE, message=FALSE}
 datatable(tmp %>%
   group_by(label_1,label_2, label_3) %>%
-  summarise(mean_icc = mean(icc),
-            mean_spearman = mean(spearman),
+  summarise(median_icc = median(icc),
+            median_spearman = median(spearman),
             n_vars = n()) %>%
-  arrange(-mean_icc, -mean_spearman))
+  arrange(-median_icc, -median_spearman))
 ```
 
 This is what the distributions of look like. Note that there is one box in the difference columns for HDDM because this model only allows this to be different across conditions.
