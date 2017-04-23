@@ -1148,6 +1148,10 @@ bootstrap_relialibility = function(metric = c('icc', 'spearman', 'eta_sq', 'sem'
   return(out_df)
 }
 
-bootstrap_relialibility(dv_var = numeric_cols[1])
+as.data.frame(numeric_cols) %>%
+  mutate(index = 1:n()) %>%
+  group_by(index) %>%
+  # rowwise()%>% #this works too but the output is nicer the other way
+  do(plyr::rdply(2, bootstrap_relialibility(dv_var = as.character(.$numeric_cols), metric = c("icc", "spearman"))))
 
 ```
