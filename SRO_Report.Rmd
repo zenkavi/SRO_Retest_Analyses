@@ -1125,7 +1125,7 @@ t1_2_difference %>%
 
 Bootstrapping
 
-```{r eval=FALSE, echo=FALSE}
+```{r}
 sample_workers = function(N = 150, repl= TRUE, df=retest_data, worker_col = "sub_id"){
   return(sample(df[,worker_col], N, replace = repl))
 }
@@ -1147,7 +1147,10 @@ bootstrap_relialibility = function(metric = c('icc', 'spearman', 'eta_sq', 'sem'
   }
   return(out_df)
 }
+```
 
+Bootstrapping everything at once locally would take around four hours.
+```{r eval=FALSE}
 as.data.frame(numeric_cols) %>%
   mutate(index = 1:n()) %>%
   group_by(index) %>%
