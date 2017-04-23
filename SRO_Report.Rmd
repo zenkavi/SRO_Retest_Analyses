@@ -592,14 +592,13 @@ rel_df %>%
 
 *Rank orders for reliabilities*
 
-**ADD FILTER TO DATA TABLE FOR THIS DISPLAY INSTEAD OF MAKING TWO SEPARATE TABLES**
-
+- Note that this table can be sorted by different metrics, filtered for specific values for each column and is searchable.  
 - Demographics are excluded from this list of variables (because they are saved for predictive analyses).  
 - Holt and Laury test-retest is the worst for *surveys*. But note that this is not a survey that has been studied extensively psychometrically like others. This is more similar to our tasks (one that is used more often by economists). In previous data I have worked with retest reliablities for this task was ~.35 so the results here are in line with this.  
 - Otherwise the lowest survey reliabilities are 0.5.
 
 ```{r}
-
+datatable(rel_df, filter = 'top')
 ```
 
 ### Histograms of reliability metrics
