@@ -23,7 +23,7 @@ library(jsonlite)
 library(DT)
 sem <- function(x) {sd(x, na.rm=T) / sqrt(length(x))}
 render_this <- function(){rmarkdown::render('SRO_Report.Rmd', output_dir = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Report', html_notebook(toc = T, toc_float = T, code_folding = 'hide'))}
-options(digits = 4)
+options(scipen = 1, digits = 4)
 ```
 
 # Introduction
@@ -589,7 +589,9 @@ rel_df %>%
             median_icc = median(icc),
             median_eta_sq = median(eta_sq),
             median_sem = median(sem),
-            num_vars = n())
+            num_vars = n()) %>%
+  datatable() %>%
+  formatRound(columns=c('median_spearman', 'median_icc', 'median_eta_sq', 'median_sem'), digits=3)
 ```
 
 *Rank orders for reliabilities*
@@ -600,7 +602,9 @@ rel_df %>%
 - Otherwise the lowest survey reliabilities are 0.5.
 
 ```{r}
-datatable(rel_df, filter = 'top')
+rel_df %>%
+  datatable(filter='top') %>%
+  formatRound(columns=c('spearman', 'icc', 'eta_sq', 'sem'), digits=3)
 ```
 
 ### Histograms of reliability metrics
@@ -817,9 +821,11 @@ ggplotly(rel_df %>%
 What are the variables clustered around 0 ICC?
 
 ```{r}
-datatable(rel_df %>%
+rel_df %>%
   filter(icc>(-0.1), icc<0.1) %>%
-  arrange(icc))
+  arrange(icc) %>%
+  datatable() %>%
+  formatRound(columns=c('spearman', 'icc', 'eta_sq', 'sem'), digits=3)
 ```
 
 ### Relationship between ICC and $\eta^2$
@@ -875,7 +881,9 @@ tmp = measure_labels %>%
             num_trials = unique(num_all_trials)) %>%
   arrange(-median_icc, -median_spearman)
 
-datatable(tmp)
+tmp %>%
+  datatable() %>%
+  formatRound(columns=c('median_spearman', 'median_icc'), digits=3)
 ```
 
 Does number of items in a task have a significant effect on the average ICC of (mostly) raw measures for all trials from a task? No.
@@ -906,7 +914,7 @@ summary(lm(median_spearman ~ num_measures, data = tmp))
 In addition to average relilibilities for each task we can look at relilibities of measures organized by the putative cognitive process they are intended to measure. Note however that these labels are not determined in a data driven manner.
 
 ```{r warning=FALSE, message=FALSE}
-datatable(measure_labels %>%
+measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(task == 'task') %>%
   select(-measure_description, -notes, -variable_type, -task, -ddm_task) %>%
@@ -915,7 +923,9 @@ datatable(measure_labels %>%
   summarise(median_icc = median(icc),
             median_spearman = median(spearman),
             num_measures = n()) %>%
-  arrange(-median_icc, -median_spearman))
+  arrange(-median_icc, -median_spearman) %>%
+  datatable() %>%
+  formatRound(columns=c('median_spearman', 'median_icc'), digits=3)
 ```
 
 Here is what the distributions look like.  
@@ -994,12 +1004,14 @@ Table of median reliabilities for the two kinds of DDM models' (hddm and EZ) par
 - 2 of 3 hddm parameters also have higher mean reliabilities than EZ parameter estimates.  
 
 ```{r warning=FALSE, message=FALSE}
-datatable(tmp %>%
+tmp %>%
   group_by(label_1,label_2, label_3) %>%
   summarise(median_icc = median(icc),
             median_spearman = median(spearman),
             n_vars = n()) %>%
-  arrange(-median_icc, -median_spearman))
+  arrange(-median_icc, -median_spearman) %>%
+  datatable() %>%
+  formatRound(columns=c('median_spearman', 'median_icc'), digits=3)
 ```
 
 This is what the distributions of look like. Note that there is one box in the difference columns for HDDM because this model only allows this to be different across conditions.
@@ -1168,7 +1180,9 @@ raw_rel_df %>%
             median_icc = median(icc),
             median_eta_sq = median(eta_sq),
             median_sem = median(sem),
-            num_vars = n())
+            num_vars = n()) %>%
+  datatable() %>%
+  formatRound(columns=c('median_spearman', 'median_icc', 'median_eta_sq', 'median_sem'), digits=3)
 ```
 
 Plots of change in reliability depending on transformation
