@@ -23,6 +23,7 @@ library(jsonlite)
 library(DT)
 sem <- function(x) {sd(x, na.rm=T) / sqrt(length(x))}
 render_this <- function(){rmarkdown::render('SRO_Report.Rmd', output_dir = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Report', html_notebook(toc = T, toc_float = T, code_folding = 'hide'))}
+options(digits = 4)
 ```
 
 # Introduction
@@ -186,7 +187,8 @@ transform_remove_skew = function(data, columns, threshold = 1, drop=FALSE){
   # transform variables
   # log transform for positive skew
   # positive_subset = log(positive_subset)
-  positive_subset = pos_log(positive_subset) #slight divergence from original code
+  # positive_subset = pos_log(positive_subset) #slight divergence from original code
+  positive_subset = as.data.frame(apply(positive_subset, 2, pos_log))
   successful_transforms = as.data.frame(apply(positive_subset, 2, skew))
   names(successful_transforms) = c('skew')
   successful_transforms$dv = row.names(successful_transforms)
@@ -644,7 +646,7 @@ prettify_label = function(df){
 }
 ```
 
-#### Spearman
+### Spearman
 
 ```{r warning=FALSE, message=FALSE}
 ggplotly(ggplot_build(rel_df %>%
@@ -888,14 +890,14 @@ Does number of items in a task have a significant effect on the average Spearman
 summary(lm(median_spearman ~ num_trials, data = tmp))
 ```
 
-Does number of measures that went in to this reliability estimate have a significant effect on the average ICC of (mostly) raw measures for all trials from a task? No.
+Does number of measures that went in to this reliability estimate have a significant effect on the average ICC of (mostly) raw measures for all trials from a task? It seems the more measures that goes in to summarizing overall reliability for a task the worse it gets. This would make sense if these variables are intended to measure different things and some are less reliable than others.
 
 ```{r warning=FALSE, message=FALSE}
 summary(lm(median_icc ~ num_measures, data = tmp))
 ```
 
 Does number of measures that went in to this reliability estimate have a significant effect on the average ICC of (mostly) raw measures for all trials from a task?  
-The regression suggests that the more measures that went in to the averaging of Spearman's $\rho$'s the lower the mean Spearman $\rho$ for that task. This might suggest that this way of summarizing data might not be a good idea in general or at least that we shouldn't do it for the Spearman correlations.
+The same is true for Spearman's correlations as well.
 
 ```{r warning=FALSE, message=FALSE}
 summary(lm(median_spearman ~ num_measures, data = tmp))
@@ -925,14 +927,14 @@ Here is what the distributions look like.
 - Intelligence: This label includes ravens and tower of london.  
 - Learning: This label includes ART, CCT, two stage decision, dietary decision task, hierarchical rule task, information sampling task, probabilistic selection task, shift task, two stage task.   
 - Neutral writing: This label consists only of the writing task.  
-- Orienting: This labels consists only of ANT orienting contrast (center - spatial cue trials). 4/6 are drift diffusion parameters. 
+- Orienting: This labels consists only of ANT orienting contrast (center - spatial cue trials). 4/6 are drift diffusion parameters.   
 - Positive writing: This label consists only of the writing task.  
 - Proactive control: This labels consists of one DPX contrast (AY - BY trials), motor selective stop signal and regular stop signal.   
 - Reactive control: This labels consists of one DPX contrast (BX - BY trials) and motor selective stop signal.  
 - Resisting proactive interference: This label consists of one contrast in directed forgetting and recent probes tasks (negative (where the stimulus to respond to is in forgetting set) and control (where the stimulus to respond to is new) trials).  
 - Response conflict: This label consists of ANT conflict contrast (congruent-incongruent), DPX, local global conflict contrast, shape matching, simon, stroop.  
 - Response selection: This label consists of choice reaction time task.  
-- Risk Taking: This label consists of ART and CCT.
+- Risk Taking: This label consists of ART and CCT.  
 - Selective attention: This label consists of local global task and ANT (all trials).  
 - Set shifting: This label consists of local global, PRT and three by two.    
 - Speed: This label consists of raw response times in information sampling task, simple reaction time, tower of london.  
@@ -1123,9 +1125,86 @@ t1_2_difference %>%
 ```
 
 
-Bootstrapping
+## Transformation effects
 
 ```{r}
+raw_retest_subs_test_data = raw_test_data[raw_test_data$sub_id %in% raw_retest_data$sub_id,]
+
+raw_numeric_cols = c()
+
+for(i in 1:length(names(raw_test_data))){
+  if(is.numeric(raw_test_data[,i])){
+    raw_numeric_cols <- c(raw_numeric_cols, names(raw_test_data)[i])
+  }
+}
+
+raw_rel_df <- data.frame(spearman = rep(NA, length(raw_numeric_cols)),
+                     icc = rep(NA, length(raw_numeric_cols)), 
+                     eta_sq = rep(NA, length(raw_numeric_cols)),
+                     sem = rep(NA, length(raw_numeric_cols)))
+
+row.names(raw_rel_df) <- raw_numeric_cols
+
+for(i in 1:length(raw_numeric_cols)){
+  raw_rel_df[raw_numeric_cols[i], 'spearman'] <- get_spearman(raw_numeric_cols[i], t1_df = raw_retest_subs_test_data, t2_df = raw_retest_data) 
+  raw_rel_df[raw_numeric_cols[i], 'icc'] <- get_icc(raw_numeric_cols[i], t1_df = raw_retest_subs_test_data, t2_df = raw_retest_data)
+  raw_rel_df[raw_numeric_cols[i], 'eta_sq'] <- get_eta(raw_numeric_cols[i], t1_df = raw_retest_subs_test_data, t2_df = raw_retest_data)
+  raw_rel_df[raw_numeric_cols[i], 'sem'] <- get_sem(raw_numeric_cols[i], t1_df = raw_retest_subs_test_data, t2_df = raw_retest_data)
+}
+
+raw_rel_df$dv = row.names(raw_rel_df)
+row.names(raw_rel_df) = seq(1:nrow(raw_rel_df))
+raw_rel_df$task = 'task'
+raw_rel_df[grep('survey', raw_rel_df$dv), 'task'] = 'survey'
+raw_rel_df = raw_rel_df %>%
+  select(dv, task, spearman, icc, eta_sq, sem)
+```
+
+
+```{r warning=FALSE, message=FALSE}
+raw_rel_df %>%
+  group_by(task) %>%
+  summarise(median_spearman = median(spearman),
+            median_icc = median(icc),
+            median_eta_sq = median(eta_sq),
+            median_sem = median(sem),
+            num_vars = n())
+```
+
+Plots of change in reliability depending on transformation
+
+```{r}
+ggplotly(rel_df %>%
+  mutate(dv = gsub(".logTr", "", dv)) %>%
+  mutate(dv = gsub(".Re", "", dv)) %>%
+  left_join(raw_rel_df, by = 'dv') %>%
+  ggplot(aes(spearman.x, spearman.y, color = task.x, label=dv))+
+  geom_point()+
+  geom_abline(intercept = 0, slope=1)+
+  theme_bw()+
+  theme(legend.title = element_blank())+
+  xlab("Spearman at t1")+
+  ylab("Spearman at t2"))
+```
+
+```{r}
+ggplotly(rel_df %>%
+  mutate(dv = gsub(".logTr", "", dv)) %>%
+  mutate(dv = gsub(".Re", "", dv)) %>%
+  left_join(raw_rel_df, by = 'dv') %>%
+  ggplot(aes(icc.x, icc.y, color = task.x, label=dv))+
+  geom_point()+
+  geom_abline(intercept = 0, slope=1)+
+  theme_bw()+
+  theme(legend.title = element_blank())+
+  xlab("ICC at t1")+
+  ylab("ICC at t2"))
+```
+
+------------------------------------------------------------------------
+Bootstrapping
+
+```{r eval=FALSE}
 sample_workers = function(N = 150, repl= TRUE, df=retest_data, worker_col = "sub_id"){
   return(sample(df[,worker_col], N, replace = repl))
 }
@@ -1149,7 +1228,7 @@ bootstrap_relialibility = function(metric = c('icc', 'spearman', 'eta_sq', 'sem'
 }
 ```
 
-Bootstrapping everything at once locally would take around four hours.
+Bootstrapping everything at once in this way locally would take around four hours.
 ```{r eval=FALSE}
 as.data.frame(numeric_cols) %>%
   mutate(index = 1:n()) %>%
