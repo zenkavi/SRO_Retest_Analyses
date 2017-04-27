@@ -2,21 +2,24 @@
 args = commandArgs(trailingOnly=TRUE)
 
 #Usage:
-#Rscript --vanilla bootstrap_retest.R data_dir out_dir dv_name
+#Rscript --vanilla bootstrap_retest.R data_dir out_dir n dv_name
 
 #test if all arguments are supplied
 # test if there is at least one argument: if not, return an error
 if (length(args)<3) {
-  stop("Arguments are missing. Usage: Rscript --vanilla bootstrap_retest.R data_dir out_dir dv_name", call.=FALSE)
+  stop("Arguments are missing. Usage: Rscript --vanilla bootstrap_retest.R data_dir out_dir n dv_name", call.=FALSE)
 } 
 
-args[1] = data_dir
-args[2] = output_dir
-args[3] = dv_name
+data_dir <- args[1] 
+output_dir <- args[2]
+n <- as.numeric(args[3])
+dv_name <- args[4]
 
 #load packages
 library(dplyr)
 library(tidyr)
+library(psych)
+
 
 #load data
 retest_subs_test_data <- read.csv(paste0(data_dir, 'retest_subs_test_data.csv'))
@@ -25,41 +28,41 @@ retest_data <- read.csv(paste0(data_dir, 'retest_data.csv'))
 #bootstrap 1000 times
 
 match_t1_t2 <- function(dv_var, t1_df = retest_subs_test_data, t2_df = retest_data, merge_var = 'sub_id', format = "long", sample = 'full', sample_vec){
-  
+
   if(sample == 'full'){
-    df = merge(t1_df[,c(merge_var, dv_var)], t2_df[,c(merge_var, dv_var)], by = merge_var) 
+    df = merge(t1_df[,c(merge_var, dv_var)], t2_df[,c(merge_var, dv_var)], by = merge_var)
   }
   else{
     df = merge(t1_df[t1_df[,merge_var] %in% sample_vec, c(merge_var, dv_var)], t2_df[t2_df[,merge_var] %in% sample_vec, c(merge_var, dv_var)],
                by=merge_var)
   }
-  
-  df = df %>% 
+
+  df = df %>%
     na.omit()%>%
     gather(dv, score, -sub_id) %>%
     mutate(time = ifelse(grepl('\\.x', dv), 1, ifelse(grepl('\\.y', dv), 2, NA))) %>%
     separate(dv, c("dv", "drop"), sep='\\.([^.]*)$') %>%
     select(-drop)
-  
-  
+
+
   if(format == 'wide'){
-    df = df%>% spread(time, score) 
+    df = df%>% spread(time, score)
   }
-  
+
   return(df)
 }
 
 get_spearman = function(dv_var, t1_df = retest_subs_test_data, t2_df = retest_data, merge_var = 'sub_id', sample='full', sample_vec){
-  
+
   if(sample=='full'){
     df = match_t1_t2(dv_var, t1_df = t1_df, t2_df = t2_df, merge_var = merge_var, format='wide')
   }
   else if(sample=='bootstrap'){
     df = match_t1_t2(dv_var, t1_df = t1_df, t2_df = t2_df, merge_var = merge_var, format='wide', sample='bootstrap', sample_vec = sample_vec)
   }
-  
+
   rho = cor(df$`1`, df$`2`, method='spearman')
-  
+
   return(rho)
 }
 
@@ -70,7 +73,7 @@ get_icc <- function(dv_var, t1_df = retest_subs_test_data, t2_df = retest_data, 
   else if(sample=='bootstrap'){
     df = match_t1_t2(dv_var, t1_df = t1_df, t2_df = t2_df, merge_var = merge_var, format='wide', sample='bootstrap', sample_vec = sample_vec)
   }
-  
+
   df = df %>% select(-dv, -sub_id)
   icc = ICC(df)
   icc_3k = icc$results['Average_fixed_raters', 'ICC']
@@ -84,7 +87,7 @@ get_eta <- function(dv_var, t1_df = retest_subs_test_data, t2_df = retest_data, 
   else if(sample=='bootstrap'){
     df = match_t1_t2(dv_var, t1_df = t1_df, t2_df = t2_df, merge_var = merge_var, sample='bootstrap', sample_vec = sample_vec)
   }
-  
+
   mod = summary(aov(score~Error(sub_id)+time, df))
   ss_time = as.data.frame(unlist(mod$`Error: Within`))['Sum Sq1',]
   ss_error = as.data.frame(unlist(mod$`Error: Within`))['Sum Sq2',]
@@ -103,6 +106,10 @@ get_sem <- function(dv_var, t1_df = retest_subs_test_data, t2_df = retest_data, 
   ms_error = as.data.frame(unlist(mod$`Error: Within`))['Mean Sq2',]
   sem = sqrt(ms_error)
   return(sem)
+}
+
+sample_workers = function(N = 150, repl= TRUE, df=retest_data, worker_col = "sub_id"){
+  return(sample(df[,worker_col], N, replace = repl))
 }
 
 bootstrap_relialibility = function(metric = c('icc', 'spearman', 'eta_sq', 'sem'), dv_var){
@@ -124,7 +131,7 @@ bootstrap_relialibility = function(metric = c('icc', 'spearman', 'eta_sq', 'sem'
 }
 
 #save output
-output_df = plyr::rdply(2, bootstrap_relialibility(dv_var = dv_name))
+output_df = plyr::rdply(n, bootstrap_relialibility(dv_var = dv_name))
 
-write.csv(output_df, paste0(output_dir, "_", dv_name, '_output.csv'))
+write.csv(output_df, paste0(output_dir, dv_name, '_output.csv'))
 
