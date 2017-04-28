@@ -1197,8 +1197,8 @@ ggplotly(rel_df %>%
   geom_abline(intercept = 0, slope=1)+
   theme_bw()+
   theme(legend.title = element_blank())+
-  xlab("Spearman at t1")+
-  ylab("Spearman at t2"))
+  xlab("Spearman with transformation")+
+  ylab("Spearman witouth transformation"))
 ```
 
 ```{r}
@@ -1211,14 +1211,13 @@ ggplotly(rel_df %>%
   geom_abline(intercept = 0, slope=1)+
   theme_bw()+
   theme(legend.title = element_blank())+
-  xlab("ICC at t1")+
-  ylab("ICC at t2"))
+  xlab("ICC with transformation")+
+  ylab("ICC without transformation"))
 ```
 
-------------------------------------------------------------------------
-Bootstrapping
+## Bootstrapping
 
-```{r eval=FALSE}
+```{r eval=FALSE, echo=FALSE}
 sample_workers = function(N = 150, repl= TRUE, df=retest_data, worker_col = "sub_id"){
   return(sample(df[,worker_col], N, replace = repl))
 }
@@ -1240,10 +1239,8 @@ bootstrap_relialibility = function(metric = c('icc', 'spearman', 'eta_sq', 'sem'
   }
   return(out_df)
 }
-```
 
-Bootstrapping everything at once in this way locally would take around four hours.
-```{r eval=FALSE}
+# Bootstrapping everything at once in this way locally would take around four hours.
 non_hddm_numeric_cols=numeric_cols[-grep("hddm", numeric_cols)]
 
 boot_df = as.data.frame(non_hddm_numeric_cols) %>%
@@ -1252,4 +1249,39 @@ boot_df = as.data.frame(non_hddm_numeric_cols) %>%
   do(plyr::rdply(10, bootstrap_relialibility(dv_var = as.character(.$non_hddm_numeric_cols))))
 
 boot_df
+```
+
+Summarized bootstrapped reliabilities
+
+```{r}
+boot_df <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/bootstrap_merged.csv')
+
+
+boot_df = boot_df %>%
+  drop_na() %>%
+  mutate(icc = as.numeric(as.character(icc)),
+         spearman = as.numeric(as.character(spearman)),
+         eta_sq = as.numeric(as.character(eta_sq)),
+         sem = as.numeric(as.character(sem))) 
+
+boot_df %>%
+  group_by(dv) %>%
+  summarise(icc_median = quantile(icc, probs = 0.5),
+            icc_2.5 = quantile(icc, probs = 0.025),
+            icc_97.5 = quantile(icc, probs = 0.975),
+            spearman_median = quantile(spearman, probs = 0.5),
+            spearman_2.5 = quantile(spearman, probs = 0.025),
+            spearman_97.5 = quantile(spearman, probs = 0.975)) %>%
+  datatable() %>%
+  formatRound(columns=c('icc_median', 'icc_2.5', 'icc_97.5', 'spearman_median', 'spearman_2.5', 'spearman_97.5'), digits=3)
+```
+
+```{r fig.height=36}
+ boot_df %>%
+  mutate(task = ifelse(grepl("survey",dv), "survey","task")) %>%
+  ggplot(aes(reorder(dv, icc, FUN=var), icc, fill = task))+
+  geom_boxplot()+
+  geom_point(data = rel_df, aes(x=dv, y = icc, color = "yellow"))+
+  theme_bw()+
+  coord_flip()
 ```
