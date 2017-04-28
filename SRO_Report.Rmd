@@ -1281,7 +1281,8 @@ boot_df %>%
   mutate(task = ifelse(grepl("survey",dv), "survey","task")) %>%
   ggplot(aes(reorder(dv, icc, FUN=var), icc, fill = task))+
   geom_boxplot()+
-  geom_point(data = rel_df, aes(x=dv, y = icc, color = "yellow"))+
+  geom_point(data = rel_df, aes(x=dv, y = icc),  color = "yellow")+
   theme_bw()+
+  theme(legend.title = element_blank())+
   coord_flip()
 ```
