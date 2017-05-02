@@ -1,0 +1,62 @@
+---
+title: 'Closer look at DDM parameter estimates'
+output:
+github_document:
+toc: yes
+toc_float: yes
+---
+
+```{r, message=FALSE, warning=FALSE, include=FALSE}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(gridExtra)
+library(lme4)
+library(GGally)
+library(jsonlite)
+library(psych)
+library(rmarkdown)
+library(psych)
+library(stringr)
+library(plotly)
+library(jsonlite)
+library(DT)
+sem <- function(x) {sd(x, na.rm=T) / sqrt(length(x))}
+render_this <- function(){rmarkdown::render('DDM_Report.Rmd', output_dir = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Report', html_notebook(toc = T, toc_float = T, code_folding = 'hide'))}
+options(scipen = 1, digits = 4)
+```
+
+How much do hddm parameters change when fitting to whole vs partial sample
+
+Summary of absolute difference in parameter estimates
+
+```{r}
+pre_correction <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/retest_subs_test_data_preddm_correction.csv')
+post_correction <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/retest_subs_test_data.csv')
+
+hddm_cols = grep('hddm', names(pre_correction), value =T)
+
+pre_correction = pre_correction[,c("sub_id", hddm_cols)]
+post_correction = post_correction[,c("sub_id", hddm_cols)]
+
+pre_correction = pre_correction %>% mutate(pre_post = "pre")
+post_correction = post_correction %>% mutate(pre_post = "post")
+
+all_hddm = rbind(pre_correction, post_correction)
+
+all_hddm %>%
+  gather(key, value, -sub_id, -pre_post) %>%
+  arrange(sub_id) %>%
+  spread(pre_post, value) %>%
+  mutate(abs_diff = pre-post) %>%
+  group_by(key) %>%
+  summarise(mean_abs_diff = mean(abs_diff, na.rm=T),
+            median_abs_diff = median(abs_diff, na.rm=T),
+            min_abs_diff = min(abs_diff, na.rm=T),
+            max_abs_diff = max(abs_diff, na.rm=T),
+            sd_abs_diff = sd(abs_diff, na.rm=T))
+```
+
+How to reliabilities change w sample size (refit from 50 to 150) both for EZ and hddm (gives a prescriptive recommendation on which method to use depending on sample size)
+
+Turn off h of ddm and see if it makes a difference

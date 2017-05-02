@@ -32,7 +32,7 @@ options(scipen = 1, digits = 4)
 
 ## Data collection
 
-This sample consists of data for 150 subjects of the original sample of 522 that has completed the initial battery of 37 cognitive tasks, 23 surveys and 3 surveys on demographics. Details of the original sample as well as quality control (qc) procedures are described elsewhere. Invited participants were chosen randomly and only subsets of them were invited for a given batch (instead of opening the battery to all qualified subjects) with the intention to avoid a potential oversampling and bias towards high self regulators.
+This sample consists of data for 150 subjects of the original sample of 522 that has completed the initial battery of 37 cognitive tasks, 23 surveys and 3 surveys on demographics. Details of the original sample as well as quality control (qc) procedures are described elsewhere. Invited participants were chosen randomly and only subsets of them were invited for a given batch (instead of opening the battery to all qualified subjects) with the intention to avoid a potential oversampling and bias towards "high self regulators".
 
 ```{r warning=FALSE, message=FALSE}
 workers = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-21-2017/Local/User_717570_workers.csv')
@@ -1276,13 +1276,17 @@ boot_df %>%
   formatRound(columns=c('icc_median', 'icc_2.5', 'icc_97.5', 'spearman_median', 'spearman_2.5', 'spearman_97.5'), digits=3)
 ```
 
+Distributions of bootstrapped reliabilities. Yellow points are where our point estimates fall from the retest sample. Surveys are filled in red but can't be seen because the variance around their bootstrapped ICC's is very low.
+
 ```{r fig.height=36}
  boot_df %>%
   mutate(task = ifelse(grepl("survey",dv), "survey","task")) %>%
   ggplot(aes(reorder(dv, icc, FUN=var), icc, fill = task))+
   geom_boxplot()+
+  geom_hline(yintercept = 0,color='red',size=1)+
   geom_point(data = rel_df, aes(x=dv, y = icc),  color = "yellow")+
   theme_bw()+
   theme(legend.title = element_blank())+
+  xlab("")+
   coord_flip()
 ```
