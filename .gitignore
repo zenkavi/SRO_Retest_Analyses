@@ -6,4 +6,6 @@ SRO_Retest_Analyses.Rproj
 retest_data.csv
 retest_subs_test_data.csv
 retest_subs_test_data_preddm_correction.csv
+raw_retest_data.csv
+raw_retest_subs_test_data_preddm_correction.csv
 bootstrap_merged.csv

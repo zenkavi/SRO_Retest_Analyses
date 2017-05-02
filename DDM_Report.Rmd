@@ -28,7 +28,9 @@ options(scipen = 1, digits = 4)
 
 How much do hddm parameters change when fitting to whole vs partial sample
 
-Summary of absolute difference in parameter estimates
+Summary of absolute difference in parameter estimates.
+
+**GO ON SHERLOCK AND CHECK IF YOU INDEED FIT IT TO THE RETEST SAMPLE ONLY**
 
 ```{r}
 pre_correction <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/retest_subs_test_data_preddm_correction.csv')
@@ -54,9 +56,65 @@ all_hddm %>%
             median_abs_diff = median(abs_diff, na.rm=T),
             min_abs_diff = min(abs_diff, na.rm=T),
             max_abs_diff = max(abs_diff, na.rm=T),
-            sd_abs_diff = sd(abs_diff, na.rm=T))
+            sem_abs_diff = sem(abs_diff)) %>%
+  ggplot(aes(reorder(key, mean_abs_diff), mean_abs_diff))+
+  geom_point()+
+  geom_errorbar(aes(ymin = mean_abs_diff-sem_abs_diff, ymax = mean_abs_diff+sem_abs_diff), position=position_dodge(0.9), width = 0.25)+
+  theme_bw()+
+  geom_hline(yintercept=0, linetype='dashed', color='red')+
+  ylab("Mean absolute difference after refit")+
+  xlab("")+
+  coord_flip()
 ```
 
-How to reliabilities change w sample size (refit from 50 to 150) both for EZ and hddm (gives a prescriptive recommendation on which method to use depending on sample size)
+Are the variables we see the changes on different due to transformation?
+
+```{r}
+raw_pre_correction <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/raw_retest_subs_test_data_preddm_correction.csv')
+
+replace_hddm_vars = data.frame(grep('hddm', names(raw_pre_correction), value=T, perl=T))
+names(replace_hddm_vars) = c('var')
+
+raw_pre_correction = raw_pre_correction[,c("sub_id", as.character(replace_hddm_vars$var))]
+
+hddm_fix_retest_subs_test_data = raw_pre_correction
+
+raw_hddm_refits <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-21-2017/hddm_refits_exhaustive.csv')
+
+for(i in 1:length(names(hddm_fix_retest_subs_test_data))){
+  if(names(hddm_fix_retest_subs_test_data)[i] %in% replace_hddm_vars$var){
+    hddm_fix_retest_subs_test_data[,names(hddm_fix_retest_subs_test_data)[i]] <- raw_hddm_refits[,names(hddm_fix_retest_subs_test_data)[i]]
+  }
+}
+
+raw_post_correction <- hddm_fix_retest_subs_test_data
+
+raw_pre_correction = raw_pre_correction %>% mutate(pre_post = "pre")
+raw_post_correction = raw_post_correction %>% mutate(pre_post = "post")
+
+raw_all_hddm = rbind(raw_pre_correction, raw_post_correction)
+
+raw_all_hddm %>%
+  gather(key, value, -sub_id, -pre_post) %>%
+  arrange(sub_id) %>%
+  spread(pre_post, value) %>%
+  mutate(abs_diff = pre-post) %>%
+  group_by(key) %>%
+  summarise(mean_abs_diff = mean(abs_diff, na.rm=T),
+            median_abs_diff = median(abs_diff, na.rm=T),
+            min_abs_diff = min(abs_diff, na.rm=T),
+            max_abs_diff = max(abs_diff, na.rm=T),
+            sem_abs_diff = sem(abs_diff)) %>%
+  ggplot(aes(reorder(key, mean_abs_diff), mean_abs_diff))+
+  geom_point()+
+  geom_errorbar(aes(ymin = mean_abs_diff-sem_abs_diff, ymax = mean_abs_diff+sem_abs_diff), position=position_dodge(0.9), width = 0.25)+
+  theme_bw()+
+  geom_hline(yintercept=0, linetype='dashed', color='red')+
+  ylab("Mean absolute difference after refit")+
+  xlab("")+
+  coord_flip()
+```
+
+How do reliabilities change w sample size (refit from 50 to 150) both for EZ and hddm (gives a prescriptive recommendation on which method to use depending on sample size)
 
 Turn off h of ddm and see if it makes a difference
