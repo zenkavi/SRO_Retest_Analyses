@@ -1222,8 +1222,8 @@ sample_workers = function(N = 150, repl= TRUE, df=retest_data, worker_col = "sub
   return(sample(df[,worker_col], N, replace = repl))
 }
 
-bootstrap_relialibility = function(metric = c('icc', 'spearman', 'eta_sq', 'sem'), dv_var){
-  tmp_sample = sample_workers()
+bootstrap_relialibility = function(metric = c('icc', 'spearman', 'eta_sq', 'sem'), dv_var, N=150){
+  tmp_sample = sample_workers(N)
   out_df = data.frame(dv = dv_var)
   if('icc' %in% metric){
     out_df$icc = get_icc(dv_var, sample = 'bootstrap', sample_vec = tmp_sample)
