@@ -30,8 +30,6 @@ How much do hddm parameters change when fitting to whole vs partial sample
 
 Summary of absolute difference in parameter estimates.
 
-**GO ON SHERLOCK AND CHECK IF YOU INDEED FIT IT TO THE RETEST SAMPLE ONLY**
-
 ```{r}
 pre_correction <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/retest_subs_test_data_preddm_correction.csv')
 post_correction <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/retest_subs_test_data.csv')

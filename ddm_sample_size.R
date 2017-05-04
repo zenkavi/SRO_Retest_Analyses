@@ -130,5 +130,9 @@ bootstrap_relialibility = function(metric = c('icc', 'spearman', 'eta_sq', 'sem'
 
 output_df = plyr::rdply(rep_times, bootstrap_relialibility(dv_var = dv_name, t1_df = raw_pre_correction, t2_df = raw_retest_data, N=sample_size))
 
+output_df = output_df %>%
+  mutate(N = sample_size,
+         rep = rep_times)
+
 write.csv(output_df, paste0(output_dir, dv_name, '_rep', rep_times, '_sampleN', sample_size, '_output.csv'))
 
