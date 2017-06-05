@@ -116,7 +116,10 @@ raw_all_hddm %>%
 How do reliabilities change w sample size (refit from 50 to 150) both for EZ and hddm (gives a prescriptive recommendation on which method to use depending on sample size)
 
 ```{r}
-raw_retest_data <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/raw_retest_data.csv')
+all_ddm_sample_size <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/all_ddm_sample_size_estimates.csv')
+
+all_ddm_sample_size  = all_ddm_sample_size %>%
+  drop_na()
 ```
 
 
