@@ -126,7 +126,12 @@ raw_all_hddm %>%
 How do reliabilities change w sample size (refit from 50 to 150) both for EZ and hddm (gives a prescriptive recommendation on which method to use depending on sample size)
 
 ```{r}
-all_ddm_sample_size_summary
+all_ddm_sample_size_summary = read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/all_ddm_sample_size_summary.csv')
+
+all_ddm_sample_size_summary %>%
+  ggplot(aes(icc_median, dv, color=factor(N)))+
+  geom_point()+
+  theme_bw()
 ```
 
 
