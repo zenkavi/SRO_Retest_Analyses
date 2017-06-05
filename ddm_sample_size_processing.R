@@ -24,6 +24,10 @@ all_ddm_sample_size = all_ddm_sample_size %>%
   drop_na()
 
 all_ddm_sample_size_summary = all_ddm_sample_size %>%
+  mutate(icc = as.numeric(as.character(icc)),
+         spearman = as.numeric(as.character(spearman)),
+         eta_sq = as.numeric(as.character(eta_sq)),
+         sem = as.numeric(as.character(sem))) %>%
   group_by(dv, N, rep) %>%
   summarise(icc_median = quantile(icc, probs = 0.5),
             icc_2.5 = quantile(icc, probs = 0.025),
