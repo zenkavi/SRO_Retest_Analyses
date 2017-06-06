@@ -1014,41 +1014,97 @@ tmp %>%
   formatRound(columns=c('median_spearman', 'median_icc'), digits=3)
 ```
 
-This is what the distributions of look like. Note that there is one box in the difference columns for HDDM because this model only allows this to be different across conditions.
-
-```{r warning=FALSE, message=FALSE}
-tmp = tmp %>%
-  select(dv, icc, spearman, label_1, label_2, label_3) %>%
-  gather(key, value, -dv, -label_1, -label_2, -label_3) 
-
-tmp %>% ggplot(aes(label_2, value, fill=label_3))+
-  geom_boxplot()+
-  theme_bw()+
-  facet_wrap(key~label_1)+
-  labs(fill="Parameter")
+```{r}
+tmp %>%
+  group_by(label_1,label_2, label_3) %>%
+  summarise(mean_icc = mean(icc),
+            mean_spearman = mean(spearman),
+            n_vars = n()) %>%
+  arrange(-mean_icc, -mean_spearman) %>%
+  datatable() %>%
+  formatRound(columns=c('mean_spearman', 'mean_icc'), digits=3)
 ```
 
-```{r message=FALSE, echo=FALSE, eval=FALSE}
-#attempt to make the above interactive. didn't really work
-ggplotly(ggplot_build(tmp %>%
-                        ggplot(aes(value, color=label_2, fill=label_3))+
-                        geom_histogram(position='identity', alpha = 0.5)+
-                        theme_bw()+
-                        facet_wrap(key~label_1)+
-                        labs(color="Model", fill="Parameter"))$data[[1]] %>%
-           mutate(key = ifelse(PANEL %in%  c(1,2), "icc", "spearman"),
-                  label_1 = ifelse(PANEL %in%  c(1,3), "all", "difference"),
-                  label_2 = ifelse(colour == "#F8766D", "EZ", ifelse(colour == "#00BA38", "hddm", "raw")),
-                  label_3 = ifelse(fill == "#A3A500", "drift rate", ifelse(fill == "#00BF7D", "non-decision", ifelse(fill == "#E76BF3", "threshold", ifelse(fill == "#F8766D", "accuracy", "rt"))))) %>%
-           get_labels(.,tmp, "value", c("label_1", "label_2", "label_3", "key")) %>%
-           prettify_label(.) %>%
-           ggplot(aes(x, y, fill = label_3, color=label_2, label=label))+
-           geom_bar(stat='identity',position='identity', alpha=0.5)+
-           facet_wrap(key~label_1)+
-           theme_bw(),
-         tooltip = 'label',
-         hoverinfo = 'text')
+Are these differences meaningful?
+
+```{r}
+summary(lm(icc ~ label_1,tmp))
 ```
+
+In the model below (after the model comparison the interactive one is significantly better) the baseline is difference accuracy.   
+
+Main effects: Compared to this overall accuracy has higher reliability and difference threshold has lower reliability. Other difference parameters do not differ from difference accuracy significantly.  
+
+Interactions: Drift rates, thresholds are higher for overall than difference; response times are marginally so.
+
+Conclusion: Overall parameter estimates are higher than difference estimates (except for non-decision time).
+
+```{r}
+summary(lm(icc ~ label_1*label_3,tmp))
+```
+
+Closer look at simple effects: 
+
+Are overall drift rates meaninfully higher than overall raw accuracies? Yes.
+
+```{r}
+tmp_simp = tmp %>%
+  filter(label_3 %in% c("drift rate", "accuracy"),
+         label_1 == 'overall')
+
+summary(lm(icc~label_3, tmp_simp))
+```
+
+Are overall drift rates meaninfully higher than overall raw response times? No, not worse either.
+
+```{r}
+tmp_simp = tmp %>%
+  filter(label_3 %in% c("drift rate", "rt"),
+         label_1 == 'overall')
+
+summary(lm(icc~label_3, tmp_simp))
+```
+
+Are overall thresholds meaninfully higher than overall raw accuracies? No, not worse either.
+
+```{r}
+tmp_simp = tmp %>%
+  filter(label_3 %in% c("threshold", "accuracy"),
+         label_1 == 'overall')
+
+summary(lm(icc~label_3, tmp_simp))
+```
+
+Are overall thresholds meaninfully higher than overall raw response times? No, they are worse.
+
+```{r}
+tmp_simp = tmp %>%
+  filter(label_3 %in% c("threshold", "rt"),
+         label_1 == 'overall')
+
+summary(lm(icc~label_3, tmp_simp))
+```
+
+Are overall non-decision times meaninfully higher than overall raw accuracies? No, not worse either.
+
+```{r}
+tmp_simp = tmp %>%
+  filter(label_3 %in% c("non-decision", "accuracy"),
+         label_1 == 'overall')
+
+summary(lm(icc~label_3, tmp_simp))
+```
+
+Are overall non-decision times meaninfully higher than overall raw response times? No, they are worse.
+
+```{r}
+tmp_simp = tmp %>%
+  filter(label_3 %in% c("non-decision", "rt"),
+         label_1 == 'overall')
+
+summary(lm(icc~label_3, tmp_simp))
+```
+
 ### Surveys
 
 Would this be a comparison of factor reliability versus item reliability?
@@ -1289,4 +1345,36 @@ Distributions of bootstrapped reliabilities. Yellow points are where our point e
   theme(legend.title = element_blank())+
   xlab("")+
   coord_flip()
+```
+
+Comparison of survey measures to cognitive task measures in the bootstrapped results. Multilevel model with random intercepts for each measure and fixed effect of survey versus cognitive measure. (Same result as seen in point estimates comparison).
+
+```{r}
+boot_df = boot_df %>%
+    mutate(task = ifelse(grepl("survey",dv), "survey","task"))
+
+summary(lmerTest::lmer(icc ~  task + (1|dv), boot_df))
+```
+
+Checking DDM results in the bootstrapped estimates. Same as before too.
+
+```{r warning=FALSE, message=FALSE}
+tmp = measure_labels %>%
+  mutate(dv = as.character(dv)) %>%
+  filter(task == 'task') %>%
+  select(-measure_description, -notes, -measure_type, -task) %>%
+  # left_join(rel_df[,c("dv", "spearman","icc")], by='dv') %>%
+  separate(variable_type, c("label_1", "label_2", "label_3"), sep = ",") %>%
+  mutate(label_1 = trim(label_1),
+         label_2=trim(label_2),
+         label_3=trim(label_3))%>%
+  filter(ddm_task == 1) %>%
+  separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.', remove=FALSE) %>%
+  select(-extra_1, -extra_2) %>%
+  drop_na() %>%
+  left_join(boot_df[,c("dv", "icc")], by = 'dv')
+```
+
+```{r}
+summary(lmerTest::lmer(icc ~ label_1*label_3 + (1|dv) ,tmp))
 ```
