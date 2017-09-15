@@ -23,19 +23,6 @@ Read data in
 fig_data <- read.csv('/Users/zeynepenkavi/Downloads/lit_review_figure.csv')
 ```
 
-Static plot
-
-```{r warning= FALSE, message =FALSE, fig.height=36}
-fig_data %>%
-  mutate(dv = factor(dv, levels = dv[order(task)]),
-         days_cutoff = ifelse(days < 60, days, 120),
-         days = paste(days, '; reference:', reference)) %>%
-ggplot(aes(x = dv, y = retest_reliability, label=days))+
-  geom_point(aes(color = task, size=sample_size, shape = type, alpha = days_cutoff))+
-  coord_flip()+
-  theme_bw()
-```
-
 Interactive plot
 
 ```{r warning=FALSE, message=FALSE, fig.height=36}
@@ -50,5 +37,19 @@ ggplot(aes(x = dv, y = retest_reliability, label=days))+
   theme(legend.position="none"),
 tooltip = c('sample_size', 'type', 'dv', 'retest_reliability', 'days')) %>%
   layout(showlegend=FALSE)
+```
+
+
+Static plot
+
+```{r warning= FALSE, message =FALSE, fig.height=36}
+fig_data %>%
+  mutate(dv = factor(dv, levels = dv[order(task)]),
+         days_cutoff = ifelse(days < 60, days, 120),
+         days = paste(days, '; reference:', reference)) %>%
+ggplot(aes(x = dv, y = retest_reliability, label=days))+
+  geom_point(aes(color = task, size=sample_size, shape = type, alpha = days_cutoff))+
+  coord_flip()+
+  theme_bw()
 ```
 
