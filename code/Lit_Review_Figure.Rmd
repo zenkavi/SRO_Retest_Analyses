@@ -1,6 +1,7 @@
 ---
-title: 'Lit Review Figure'
-output: html_document
+title: "Lit Review Figure"
+output:
+  html_document: default
 ---
 
 ```{r, message=FALSE, warning=FALSE, include=FALSE}
@@ -9,23 +10,19 @@ library(tidyr)
 library(ggplot2)
 library(gridExtra)
 library(GGally)
-library(rmarkdown)
 library(stringr)
 library(plotly)
-library(DT)
 sem <- function(x) {sd(x, na.rm=T) / sqrt(length(x))}
 options(scipen = 1, digits = 4)
 ```
 
-Read data in
-
-```{r}
+```{r echo=FALSE}
 fig_data <- read.csv('/Users/zeynepenkavi/Downloads/lit_review_figure.csv')
 ```
 
 Interactive plot
 
-```{r warning=FALSE, message=FALSE, fig.height=36}
+```{r warning=FALSE, message=FALSE, fig.height=36, echo=FALSE}
 ggplotly(fig_data %>%
   mutate(dv = factor(dv, levels = dv[order(task)]),
          days_cutoff = ifelse(days < 60, days, 120),
@@ -39,10 +36,9 @@ tooltip = c('sample_size', 'type', 'dv', 'retest_reliability', 'days')) %>%
   layout(showlegend=FALSE)
 ```
 
-
 Static plot
 
-```{r warning= FALSE, message =FALSE, fig.height=36}
+```{r warning= FALSE, message =FALSE, fig.height=36, echo=FALSE}
 fig_data %>%
   mutate(dv = factor(dv, levels = dv[order(task)]),
          days_cutoff = ifelse(days < 60, days, 120),
@@ -52,4 +48,3 @@ ggplot(aes(x = dv, y = retest_reliability, label=days))+
   coord_flip()+
   theme_bw()
 ```
-
