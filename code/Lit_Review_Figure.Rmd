@@ -1,9 +1,6 @@
 ---
 title: 'Lit Review Figure'
-output:
-github_document:
-toc: yes
-toc_float: yes
+output: html_document
 ---
 
 ```{r, message=FALSE, warning=FALSE, include=FALSE}
@@ -17,7 +14,6 @@ library(stringr)
 library(plotly)
 library(DT)
 sem <- function(x) {sd(x, na.rm=T) / sqrt(length(x))}
-render_this <- function(){rmarkdown::render('Lit_Review_Figure.Rmd', output_dir = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/', html_notebook(toc = T, toc_float = T, code_folding = 'hide'))}
 options(scipen = 1, digits = 4)
 ```
 
@@ -29,7 +25,7 @@ fig_data <- read.csv('/Users/zeynepenkavi/Downloads/lit_review_figure.csv')
 
 Static plot
 
-```{r warning= FALSE, message =FALSE}
+```{r warning= FALSE, message =FALSE, fig.height=36}
 fig_data %>%
   mutate(dv = factor(dv, levels = dv[order(task)]),
          days_cutoff = ifelse(days < 60, days, 120),
@@ -42,7 +38,7 @@ ggplot(aes(x = dv, y = retest_reliability, label=days))+
 
 Interactive plot
 
-```{r warning=FALSE, message=FALSE}
+```{r warning=FALSE, message=FALSE, fig.height=36}
 ggplotly(fig_data %>%
   mutate(dv = factor(dv, levels = dv[order(task)]),
          days_cutoff = ifelse(days < 60, days, 120),
