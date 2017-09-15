@@ -1,0 +1,58 @@
+---
+title: 'Lit Review Figure'
+output:
+github_document:
+toc: yes
+toc_float: yes
+---
+
+```{r, message=FALSE, warning=FALSE, include=FALSE}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(gridExtra)
+library(GGally)
+library(rmarkdown)
+library(stringr)
+library(plotly)
+library(DT)
+sem <- function(x) {sd(x, na.rm=T) / sqrt(length(x))}
+render_this <- function(){rmarkdown::render('Lit_Review_Figure.Rmd', output_dir = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/', html_notebook(toc = T, toc_float = T, code_folding = 'hide'))}
+options(scipen = 1, digits = 4)
+```
+
+Read data in
+
+```{r}
+fig_data <- read.csv('/Users/zeynepenkavi/Downloads/lit_review_figure.csv')
+```
+
+Static plot
+
+```{r warning= FALSE, message =FALSE}
+fig_data %>%
+  mutate(dv = factor(dv, levels = dv[order(task)]),
+         days_cutoff = ifelse(days < 60, days, 120),
+         days = paste(days, '; reference:', reference)) %>%
+ggplot(aes(x = dv, y = retest_reliability, label=days))+
+  geom_point(aes(color = task, size=sample_size, shape = type, alpha = days_cutoff))+
+  coord_flip()+
+  theme_bw()
+```
+
+Interactive plot
+
+```{r warning=FALSE, message=FALSE}
+ggplotly(fig_data %>%
+  mutate(dv = factor(dv, levels = dv[order(task)]),
+         days_cutoff = ifelse(days < 60, days, 120),
+         days = paste(days, '; reference:', reference)) %>%
+ggplot(aes(x = dv, y = retest_reliability, label=days))+
+  geom_point(aes(color = task, size=sample_size, shape = type, alpha = days_cutoff))+
+  coord_flip()+
+  theme_bw()+
+  theme(legend.position="none"),
+tooltip = c('sample_size', 'type', 'dv', 'retest_reliability', 'days')) %>%
+  layout(showlegend=FALSE)
+```
+
