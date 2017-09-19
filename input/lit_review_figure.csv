@@ -1,0 +1,611 @@
+dv,task,measure_description,retest_reliability,type,days,sample_size,reference,variable_type,ddm_task,num_all_trials
+adaptive_n_back.acc.ReflogTr,task,Proportion of correct responses (both hits and correct rejections) where correct is pressing one button over the other for a letter depending on the load,0.493,Pearson,7,70,Hockey and Geffen (2004),"overall, raw, accuracy",1,525
+adaptive_n_back.acc.ReflogTr,task,Proportion of correct responses (both hits and correct rejections) where correct is pressing one button over the other for a letter depending on the load,0.732,Pearson,7,70,Hockey and Geffen (2004),"overall, raw, accuracy",1,525
+adaptive_n_back.acc.ReflogTr,task,Proportion of correct responses (both hits and correct rejections) where correct is pressing one button over the other for a letter depending on the load,0.519,Pearson,7,70,Hockey and Geffen (2004),"overall, raw, accuracy",1,525
+adaptive_n_back.acc.ReflogTr,task,Proportion of correct responses (both hits and correct rejections) where correct is pressing one button over the other for a letter depending on the load,0.538,Pearson,7,70,Hockey and Geffen (2004),"overall, raw, accuracy",1,525
+adaptive_n_back.acc.ReflogTr,task,Proportion of correct responses (both hits and correct rejections) where correct is pressing one button over the other for a letter depending on the load,0.65,Pearson,18,105,Van Leeuwen et al. (2007),"overall, raw, accuracy",1,525
+adaptive_n_back.acc.ReflogTr,task,Proportion of correct responses (both hits and correct rejections) where correct is pressing one button over the other for a letter depending on the load,0.7,Pearson,18,105,Van Leeuwen et al. (2007),"overall, raw, accuracy",1,525
+adaptive_n_back.acc.ReflogTr,task,Proportion of correct responses (both hits and correct rejections) where correct is pressing one button over the other for a letter depending on the load,0.16,Pearson,18,29,Van Leeuwen et al. (2007),"overall, raw, accuracy",1,525
+adaptive_n_back.acc.ReflogTr,task,Proportion of correct responses (both hits and correct rejections) where correct is pressing one button over the other for a letter depending on the load,0.7,Pearson,18,29,Van Leeuwen et al. (2007),"overall, raw, accuracy",1,525
+adaptive_n_back.acc.ReflogTr,task,Proportion of correct responses (both hits and correct rejections) where correct is pressing one button over the other for a letter depending on the load,0.69,Pearson,28,112,Stueder-Luthi et al. (2012),"overall, raw, accuracy",1,525
+adaptive_n_back.avg_rt,task,Median response times for correct responses only,0.857,Pearson,7,70,Hockey and Geffen (2004),"overall, raw, rt",1,525
+adaptive_n_back.avg_rt,task,Median response times for correct responses only,0.787,Pearson,7,70,Hockey and Geffen (2004),"overall, raw, rt",1,525
+adaptive_n_back.avg_rt,task,Median response times for correct responses only,0.691,Pearson,7,70,Hockey and Geffen (2004),"overall, raw, rt",1,525
+adaptive_n_back.avg_rt,task,Median response times for correct responses only,0.806,Pearson,7,70,Hockey and Geffen (2004),"overall, raw, rt",1,525
+angling_risk_task_always_sunny.keep_adjusted_clicks,task,Average number of clicks for trials where blue fish was not caught in the condition where probability of loosing everything in the round increased with each click,0.62,Pearson,1,60,Lejuez et al. (2003),"condition, raw",0,60
+angling_risk_task_always_sunny.keep_adjusted_clicks,task,Average number of clicks for trials where blue fish was not caught in the condition where probability of loosing everything in the round increased with each click,0.82,Pearson,1,60,Lejuez et al. (2003),"condition, raw",0,60
+angling_risk_task_always_sunny.keep_adjusted_clicks,task,Average number of clicks for trials where blue fish was not caught in the condition where probability of loosing everything in the round increased with each click,0.79,Pearson,1,60,Lejuez et al. (2003),"condition, raw",0,60
+angling_risk_task_always_sunny.keep_adjusted_clicks,task,Average number of clicks for trials where blue fish was not caught in the condition where probability of loosing everything in the round increased with each click,0.66,Pearson,3,39,"White, Lejuez and de Wit (2008)","condition, raw",0,60
+angling_risk_task_always_sunny.keep_adjusted_clicks,task,Average number of clicks for trials where blue fish was not caught in the condition where probability of loosing everything in the round increased with each click,0.78,Pearson,3,39,"White, Lejuez and de Wit (2008)","condition, raw",0,60
+angling_risk_task_always_sunny.keep_adjusted_clicks,task,Average number of clicks for trials where blue fish was not caught in the condition where probability of loosing everything in the round increased with each click,0.75,Pearson,3,39,"White, Lejuez and de Wit (2008)","condition, raw",0,60
+angling_risk_task_always_sunny.keep_adjusted_clicks,task,Average number of clicks for trials where blue fish was not caught in the condition where probability of loosing everything in the round increased with each click,0.79,Pearson,9,119,Weafer et al. (2013),"condition, raw",0,60
+angling_risk_task_always_sunny.keep_adjusted_clicks,task,Average number of clicks for trials where blue fish was not caught in the condition where probability of loosing everything in the round increased with each click,0.39,Pearson,700,275,MacPherson et al. (2010),"condition, raw",0,60
+angling_risk_task_always_sunny.keep_adjusted_clicks,task,Average number of clicks for trials where blue fish was not caught in the condition where probability of loosing everything in the round increased with each click,0.67,Pearson,700,275,MacPherson et al. (2010),"condition, raw",0,60
+angling_risk_task_always_sunny.keep_adjusted_clicks,task,Average number of clicks for trials where blue fish was not caught in the condition where probability of loosing everything in the round increased with each click,0.49,Pearson,700,275,MacPherson et al. (2010),"condition, raw",0,60
+attention_network_task.alerting_rt,task,Difference in median response time between nocue and double cue trials,0.52,Pearson,40,1,Fan et al. (2002),"difference, raw, rt",1,192
+attention_network_task.alerting_rt,task,Difference in median response time between nocue and double cue trials,0.36,Pearson,104,1,Fan et al. (2001),"difference, raw, rt",1,192
+attention_network_task.alerting_rt,task,Difference in median response time between nocue and double cue trials,-0.02,Pearson,10,9,Ishigami and Klein (2010),"difference, raw, rt",1,192
+attention_network_task.alerting_rt,task,Difference in median response time between nocue and double cue trials,0.14,Pearson,7,68,"Habekost, Petersen and Vangkilde (2014)","difference, raw, rt",1,192
+attention_network_task.alerting_rt,task,Difference in median response time between nocue and double cue trials,0.35,Pearson,7,68,"Habekost, Petersen and Vangkilde (2014)","difference, raw, rt",1,192
+attention_network_task.avg_rt,task,Median response time for correct responses,0.87,Pearson,40,1,Fan et al. (2002),"overall, raw, rt",1,192
+attention_network_task.conflict_rt.logTr,task,Difference in median response time between incongruent and congruent flanker trials,0.72,Pearson,40,1,Fan et al. (2002),"difference, raw, rt",1,192
+attention_network_task.conflict_rt.logTr,task,Difference in median response time between incongruent and congruent flanker trials,0.81,Pearson,104,1,Fan et al. (2001),"difference, raw, rt",1,192
+attention_network_task.conflict_rt.logTr,task,Difference in median response time between incongruent and congruent flanker trials,0.86,Pearson,10,9,Ishigami and Klein (2010),"difference, raw, rt",1,192
+attention_network_task.conflict_rt.logTr,task,Difference in median response time between incongruent and congruent flanker trials,0.84,Pearson,7,68,"Habekost, Petersen and Vangkilde (2014)","difference, raw, rt",1,192
+attention_network_task.conflict_rt.logTr,task,Difference in median response time between incongruent and congruent flanker trials,0.74,Pearson,7,68,"Habekost, Petersen and Vangkilde (2014)","difference, raw, rt",1,192
+attention_network_task.congruent_rt,task,,0.858,Pearson,7,75,Paap and Sawi (2016),,,
+attention_network_task.global_rt,task,,0.856,Pearson,7,75,Paap and Sawi (2016),,,
+attention_network_task.in_con_diff_rt,task,,0.515,Pearson,7,75,Paap and Sawi (2016),,,
+attention_network_task.incongruent_rt,task,,0.879,Pearson,7,75,Paap and Sawi (2016),,,
+attention_network_task.neutral_rt,task,,0.642,Pearson,7,75,Paap and Sawi (2016),,,
+attention_network_task.orienting_rt,task,Difference in median response time between center and spatial cue trials,0.61,Pearson,1,40,Fan et al. (2002),"difference, raw, rt",1,192
+attention_network_task.orienting_rt,task,Difference in median response time between center and spatial cue trials,0.41,Pearson,1,104,Fan et al. (2001),"difference, raw, rt",1,192
+attention_network_task.orienting_rt,task,Difference in median response time between center and spatial cue trials,0.57,Pearson,10,9,Ishigami and Klein (2010),"difference, raw, rt",1,192
+attention_network_task.orienting_rt,task,Difference in median response time between center and spatial cue trials,0.58,Pearson,7,68,"Habekost, Petersen and Vangkilde (2014)","difference, raw, rt",1,192
+attention_network_task.orienting_rt,task,Difference in median response time between center and spatial cue trials,0.59,Pearson,7,68,"Habekost, Petersen and Vangkilde (2014)","difference, raw, rt",1,192
+bickel_titrator.auc_small,task,,0.67,Pearson,30,131,"Horan, Johnson and Green (2017)",,,
+bickel_titrator.auc_small,task,,0.86,Pearson,7,49,Smits et al. (2013),,,
+bickel_titrator.auc_small,task,,0.89,Pearson,9,112,Weafer et al. (2013),,,
+bickel_titrator.hyp_discount_rate_large.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $1 million. Estimated by fitting model to six decayed values for different delays,0.71,Pearson,7,30,"Baker, Johnson and Bickel (2003)","condition, fit",0,31
+bickel_titrator.hyp_discount_rate_large.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $1 million. Estimated by fitting model to six decayed values for different delays,0.9,Pearson,7,30,"Baker, Johnson and Bickel (2003)","condition, fit",0,31
+bickel_titrator.hyp_discount_rate_large.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $1 million. Estimated by fitting model to six decayed values for different delays,0.65,Pearson,7,30,"Johnson, Bickel and Baker (2007)","condition, fit",0,31
+bickel_titrator.hyp_discount_rate_medium.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $1000. Estimated by fitting model to six decayed values for different delays,0.78,Pearson,7,30,"Baker, Johnson and Bickel (2003)","condition, fit",0,31
+bickel_titrator.hyp_discount_rate_medium.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $1000. Estimated by fitting model to six decayed values for different delays,0.87,Pearson,7,30,"Baker, Johnson and Bickel (2003)","condition, fit",0,31
+bickel_titrator.hyp_discount_rate_medium.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $1000. Estimated by fitting model to six decayed values for different delays,0.718,Pearson,7,30,"Johnson, Bickel and Baker (2007)","condition, fit",0,31
+bickel_titrator.hyp_discount_rate_medium.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $1000. Estimated by fitting model to six decayed values for different delays,0.41,Pearson,28,37,De Wilde et al. (2013),"condition, fit",0,31
+bickel_titrator.hyp_discount_rate_medium.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $1000. Estimated by fitting model to six decayed values for different delays,0.68,Spearman,1,220,Yoon and Chapman (2016),"condition, fit",0,31
+bickel_titrator.hyp_discount_rate_small.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $10. Estimated by fitting model to six decayed values for different delays,0.77,Pearson,9,48,Hendrickson and Rasmussen (2013),"condition, fit",0,31
+bickel_titrator.hyp_discount_rate_small.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $10. Estimated by fitting model to six decayed values for different delays,0.939,Pearson,4,24,Richards et al. (1999),"condition, fit",0,31
+bickel_titrator.hyp_discount_rate_small.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $10. Estimated by fitting model to six decayed values for different delays,0.74,Pearson,7,30,"Baker, Johnson and Bickel (2003)","condition, fit",0,31
+bickel_titrator.hyp_discount_rate_small.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $10. Estimated by fitting model to six decayed values for different delays,0.82,Pearson,7,30,"Baker, Johnson and Bickel (2003)","condition, fit",0,31
+bickel_titrator.hyp_discount_rate_small.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $10. Estimated by fitting model to six decayed values for different delays,0.549,Pearson,7,30,"Johnson, Bickel and Baker (2007)","condition, fit",0,31
+bickel_titrator.hyp_discount_rate_small.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $10. Estimated by fitting model to six decayed values for different delays,0.43,Pearson,28,37,De Wilde et al. (2013),"condition, fit",0,31
+bickel_titrator.hyp_discount_rate_small.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $10. Estimated by fitting model to six decayed values for different delays,0.5,Pearson,28,37,De Wilde et al. (2013),"condition, fit",0,31
+bickel_titrator.medium_indiff_point_18month,task,,0.82,Spearman,7,46,Reed and Martens (2011),,,
+bickel_titrator.medium_indiff_point_1day,task,,0.68,Spearman,7,46,Reed and Martens (2011),,,
+bickel_titrator.medium_indiff_point_1month,task,,0.81,Spearman,7,46,Reed and Martens (2011),,,
+bickel_titrator.medium_indiff_point_2month,task,,0.81,Spearman,7,46,Reed and Martens (2011),,,
+bickel_titrator.medium_indiff_point_4year,task,,0.81,Spearman,7,46,Reed and Martens (2011),,,
+bickel_titrator.medium_indiff_point_5day,task,,0.86,Spearman,7,46,Reed and Martens (2011),,,
+bickel_titrator.medium_indiff_point_6month,task,,0.87,Spearman,7,46,Reed and Martens (2011),,,
+bickel_titrator.medium_indiff_point_9month,task,,0.9,Spearman,7,46,Reed and Martens (2011),,,
+choice_reaction_time.avg_rt.logTr,task,Median response time for correct responses,0.6,Pearson,21,55,Barrett et al. (1982),"overall, raw, rt",1,50
+choice_reaction_time.avg_rt.logTr,task,Median response time for correct responses,0.59,Pearson,1,16,Kennedy et al. (1989),"overall, raw, rt",1,50
+choice_reaction_time.avg_rt.logTr,task,Median response time for correct responses,0.94,Pearson,1,16,Kennedy et al. (1989),"overall, raw, rt",1,50
+choice_reaction_time.avg_rt.logTr,task,Median response time for correct responses,0.94,Pearson,1,16,Kennedy et al. (1989),"overall, raw, rt",1,50
+choice_reaction_time.avg_rt.logTr,task,Median response time for correct responses,0.71,Pearson,28,21,Williams et al. (2005),"overall, raw, rt",1,50
+choice_reaction_time.avg_rt.logTr,task,Median response time for correct responses,0.64,Pearson,1,20,"Deary, Liewald and Nissan (2011)","overall, raw, rt",1,50
+choice_reaction_time.avg_rt.logTr,task,Median response time for correct responses,0.83,Pearson,1,20,"Deary, Liewald and Nissan (2011)","overall, raw, rt",1,50
+choice_reaction_time.avg_rt.logTr,task,Median response time for correct responses,0.79,ICC,1,96,Jones et al. (2016),"overall, raw, rt",1,50
+choice_reaction_time.modal_mean_diff,task,Difference between modal and mean response time,0.38,Pearson,9,128,Weafer et al. (2013),,,
+dietary_decision.prop_healthy_choice,task,,0.42,Pearson,7,27,Vlaev et al. (2017),,,
+dietary_decision.prop_healthy_choice,task,,0.61,Pearson,7,27,Vlaev et al. (2017),,,
+dietary_decision.prop_healthy_choice,task,,0.54,Pearson,7,27,Vlaev et al. (2017),,,
+digit_span.forward_span,task,Average number of accurately recalled digits in order of appearance after dropping the first four trials,0.73,Pearson,90,145,"Baddeley, Gardner and Grantham-McGregor (1995)","condition, raw",0,14
+digit_span.forward_span,task,Average number of accurately recalled digits in order of appearance after dropping the first four trials,0.73,Pearson,7,43,Karpicke and Pisoni (2000),"condition, raw",0,14
+digit_span.forward_span,task,Average number of accurately recalled digits in order of appearance after dropping the first four trials,0.35,Pearson,14,25,Williams et al. (2000),"condition, raw",0,14
+digit_span.forward_span,task,Average number of accurately recalled digits in order of appearance after dropping the first four trials,0.67,Pearson,14,27,Williams et al. (2000),"condition, raw",0,14
+digit_span.forward_span,task,Average number of accurately recalled digits in order of appearance after dropping the first four trials,0.76,Pearson,7,45,Sternberg et al. (2002),"condition, raw",0,14
+digit_span.forward_span,task,Average number of accurately recalled digits in order of appearance after dropping the first four trials,0.85,Pearson,1,22,Gray (2003),"condition, raw",0,14
+digit_span.forward_span,task,Average number of accurately recalled digits in order of appearance after dropping the first four trials,0.87,Pearson,7,22,Gray (2003),"condition, raw",0,14
+digit_span.forward_span,task,Average number of accurately recalled digits in order of appearance after dropping the first four trials,0.48,Pearson,1,22,Gray (2003),"condition, raw",0,14
+digit_span.forward_span,task,Average number of accurately recalled digits in order of appearance after dropping the first four trials,0.57,Pearson,7,22,Gray (2003),"condition, raw",0,14
+digit_span.forward_span,task,Average number of accurately recalled digits in order of appearance after dropping the first four trials,0.81,Pearson,14,663,Alloway et al. (2004),"condition, raw",0,14
+digit_span.forward_span,task,Average number of accurately recalled digits in order of appearance after dropping the first four trials,0.5,Pearson,28,21,Williams et al. (2005),"condition, raw",0,14
+digit_span.forward_span,task,Average number of accurately recalled digits in order of appearance after dropping the first four trials,0.71,Spearman,510,59,"Tröster, Woods and Morgan (2007)","condition, raw",0,14
+digit_span.forward_span,task,Average number of accurately recalled digits in order of appearance after dropping the first four trials,0.84,Pearson,28,105,"Alloway, Gathercole and Pickering (2006)","condition, raw",0,14
+digit_span.forward_span,task,Average number of accurately recalled digits in order of appearance after dropping the first four trials,0.27,Pearson,360,473,Slade et al. (2008),"condition, raw",0,14
+digit_span.forward_span,task,Average number of accurately recalled digits in order of appearance after dropping the first four trials,0.32,Pearson,360,457,Slade et al. (2008),"condition, raw",0,14
+digit_span.forward_span,task,Average number of accurately recalled digits in order of appearance after dropping the first four trials,0.42,Pearson,360,437,Slade et al. (2008),"condition, raw",0,14
+digit_span.forward_span,task,Average number of accurately recalled digits in order of appearance after dropping the first four trials,0.54,Pearson,360,417,Slade et al. (2008),"condition, raw",0,14
+digit_span.reverse_span,task,Average number of accurately recalled digits in reverse order of appearance after dropping the first four trials,0.67,Pearson,90,145,"Baddeley, Gardner and Grantham-McGregor (1995)","condition, raw",0,14
+digit_span.reverse_span,task,Average number of accurately recalled digits in reverse order of appearance after dropping the first four trials,0.55,Pearson,14,25,Williams et al. (2000),"condition, raw",0,14
+digit_span.reverse_span,task,Average number of accurately recalled digits in reverse order of appearance after dropping the first four trials,0.78,Pearson,14,27,Williams et al. (2000),"condition, raw",0,14
+digit_span.reverse_span,task,Average number of accurately recalled digits in reverse order of appearance after dropping the first four trials,0.53,Pearson,14,663,Alloway et al. (2004),"condition, raw",0,14
+digit_span.reverse_span,task,Average number of accurately recalled digits in reverse order of appearance after dropping the first four trials,0.6,Pearson,28,21,Williams et al. (2005),"condition, raw",0,14
+digit_span.reverse_span,task,Average number of accurately recalled digits in reverse order of appearance after dropping the first four trials,0.67,Spearman,510,59,"Tröster, Woods and Morgan (2007)","condition, raw",0,14
+digit_span.reverse_span,task,Average number of accurately recalled digits in reverse order of appearance after dropping the first four trials,0.64,Pearson,28,105,"Alloway, Gathercole and Pickering (2006)","condition, raw",0,14
+digit_span.reverse_span,task,Average number of accurately recalled digits in reverse order of appearance after dropping the first four trials,0.37,Pearson,540,211,Ven et al. (2013),"condition, raw",0,14
+dot_pattern_expectancy.AX_errors,task,Errors in AX trials,0.71,ICC,23,38,"Jones, Sponheim and McDonald (2010)",,1,128
+dot_pattern_expectancy.AX_errors,task,Errors in AX trials,0.74,ICC,23,38,"Jones, Sponheim and McDonald (2010)",,1,128
+dot_pattern_expectancy.AX_rt,task,Mean RT for AX trials,0.66,ICC,23,38,"Jones, Sponheim and McDonald (2010)",,1,128
+dot_pattern_expectancy.AX_rt,task,Mean RT for AX trials,0.66,ICC,23,38,"Jones, Sponheim and McDonald (2010)",,1,128
+dot_pattern_expectancy.AY_errors,task,Errors in AY trials,0.39,ICC,23,38,"Jones, Sponheim and McDonald (2010)",,1,128
+dot_pattern_expectancy.AY_errors,task,Errors in AY trials,0.27,ICC,23,38,"Jones, Sponheim and McDonald (2010)",,1,128
+dot_pattern_expectancy.AY_rt,task,Mean RT for AY trials,0.63,ICC,23,38,"Jones, Sponheim and McDonald (2010)",,1,128
+dot_pattern_expectancy.AY_rt,task,Mean RT for AY trials,0.56,ICC,23,38,"Jones, Sponheim and McDonald (2010)",,1,128
+dot_pattern_expectancy.BX_error,task,Errors in BX trials,0.28,ICC,23,38,"Jones, Sponheim and McDonald (2010)",,1,128
+dot_pattern_expectancy.BX_error,task,Errors in BX trials,0.42,ICC,23,38,"Jones, Sponheim and McDonald (2010)",,1,128
+dot_pattern_expectancy.BX_rt,task,Mean RT for BX trials,0.34,ICC,23,38,"Jones, Sponheim and McDonald (2010)",,1,128
+dot_pattern_expectancy.BX_rt,task,Mean RT for BX trials,0.34,ICC,23,38,"Jones, Sponheim and McDonald (2010)",,1,128
+dot_pattern_expectancy.BY_error,task,Errors in BY trials,-0.06,ICC,23,38,"Jones, Sponheim and McDonald (2010)",,1,128
+dot_pattern_expectancy.BY_error,task,Errors in BY trials,-0.06,ICC,23,38,"Jones, Sponheim and McDonald (2010)",,1,128
+dot_pattern_expectancy.BY_rt,task,Mean RT for BY trials,0.54,ICC,23,38,"Jones, Sponheim and McDonald (2010)",,1,128
+dot_pattern_expectancy.BY_rt,task,Mean RT for BY trials,0.54,ICC,23,38,"Jones, Sponheim and McDonald (2010)",,1,128
+dot_pattern_expectancy.dprime,task,Difference between hit rate in AX trials and false alarm rate on BX trials,0.8,ICC,23,38,"Jones, Sponheim and McDonald (2010)","difference, raw",1,128
+dot_pattern_expectancy.dprime,task,Difference between hit rate in AX trials and false alarm rate on BX trials,0.77,ICC,23,38,"Jones, Sponheim and McDonald (2010)","difference, raw",1,128
+dot_pattern_expectancy.dprime,task,Difference between hit rate in AX trials and false alarm rate on BX trials,0.73,Pearson,7,86,Strauss et al. (2013),"difference, raw",1,128
+dot_pattern_expectancy.dprime,task,Difference between hit rate in AX trials and false alarm rate on BX trials,0.78,Pearson,14,86,Strauss et al. (2013),"difference, raw",1,128
+go_nogo.avg_rt,task,Mean response time (same as go RT?),0.88,Pearson,30,109,Kertzman et al. (2001),,,
+go_nogo.commission_errors,task,Nogo trials that subjects go in,0.64,Pearson,30,109,Kertzman et al. (2001),,,
+go_nogo.commission_errors,task,Nogo trials that subjects go in,0.65,Pearson,9,123,Weafer et al. (2013),,,
+go_nogo.commission_errors,task,Nogo trials that subjects go in,0.62,Pearson,7,66,Bender et al. (2016),,,
+go_nogo.commission_errors,task,Nogo trials that subjects go in,0.76,ICC,21,47,"Hedge, Powell and Sumner (2017)",,,
+go_nogo.commission_errors,task,Nogo trials that subjects go in,0.76,ICC,21,57,"Hedge, Powell and Sumner (2017)",,,
+go_nogo.commission_errors,task,Go false alarms where response is witheld when it shouldn't have been,0.252,ICC,1,96,Jones et al. (2016),,,
+go_nogo.commission_errors,task,Go false alarms where response is witheld when it shouldn't have been,0.548,ICC,1,96,Jones et al. (2016),,,
+go_nogo.go_rt,task,Mean RT for go trials,0.836,ICC,1,96,Jones et al. (2016),,,
+go_nogo.go_rt,task,Mean RT for go trials,0.847,ICC,1,96,Jones et al. (2016),,,
+go_nogo.go_rt,task,Mean RT for go trials,0.74,ICC,21,47,"Hedge, Powell and Sumner (2017)",,,
+go_nogo.go_rt,task,Mean RT for go trials,0.63,ICC,21,57,"Hedge, Powell and Sumner (2017)",,,
+go_nogo.omission_errors,task,Go false alarms where response is witheld when it shouldn't have been,0.69,ICC,21,47,"Hedge, Powell and Sumner (2017)",,,
+go_nogo.omission_errors,task,Go false alarms where response is witheld when it shouldn't have been,0.42,ICC,21,57,"Hedge, Powell and Sumner (2017)",,,
+holt_laury_survey.prob_weighing_curvature,task,,0.73,Spearman,50,53,Wölbert and Riedl (2013),,,
+holt_laury_survey.risk_aversion,task,,0.32,Spearman,37,29,Chung et al. (2017),,,
+holt_laury_survey.risk_aversion,task,,0.68,Spearman,37,31,Chung et al. (2017),,,
+holt_laury_survey.risk_aversion,task,,0.41,Spearman,37,47,Chung et al. (2017),,,
+holt_laury_survey.risk_aversion,task,,0.65,Spearman,37,65,Chung et al. (2017),,,
+holt_laury_survey.risk_aversion,task,,0.46,Pearson,100,97,Anderson et al. (2008),,,
+holt_laury_survey.risk_aversion,task,,0.58,Pearson,100,97,Anderson et al. (2008),,,
+holt_laury_survey.risk_aversion,task,,0.34,Pearson,100,97,Anderson et al. (2008),,,
+holt_laury_survey.risk_aversion,task,,0.43,Pearson,100,97,Anderson et al. (2008),,,
+holt_laury_survey.risky_choices,task,,0.258,Spearman,360,44,Lönnqvist et al. (2015),,,
+holt_laury_survey.risky_choices,task,,0.36,Spearman,37,29,Chung et al. (2017),,,
+holt_laury_survey.risky_choices,task,,0.62,Spearman,37,31,Chung et al. (2017),,,
+holt_laury_survey.risky_choices,task,,0.23,Spearman,37,47,Chung et al. (2017),,,
+holt_laury_survey.risky_choices,task,,0.51,Spearman,37,65,Chung et al. (2017),,,
+holt_laury_survey.value_func_curvature,task,,0.77,Spearman,50,53,Wölbert and Riedl (2013),,,
+information_sampling_task.Decreasing_Win_motivation,task,Average latency in opening each box in the condition where opening each additional box decreases the points that can be earned in that round following a correct guess of the color in majority,0.02,ICC,360,312,Grummitt et al.,"condition, raw, rt",0,20
+information_sampling_task.Decreasing_Win_opened_boxes,task,Number of boxes opened on average for all rounds in the decreasing win condition,0.53,ICC,360,312,Grummitt et al.,,,
+information_sampling_task.Fixed_Win_motivation,task,Average latency in opening each box in the condition where the points that can be earned is fixed in that round following a correct guess of the color in majority,0.55,ICC,360,312,Grummitt et al.,"condition,raw, rt",0,20
+information_sampling_task.Fixed_Win_opened_boxes,task,Number of boxes opened on average for all rounds in the fixed win condition,0.16,ICC,360,312,Grummitt et al.,,,
+keep_track.score,task,Proportion of items remembered correctly where correct means indicating the last item of a category in a given sequence of words,0.36,Pearson,540,211,Ven et al. (2013),"overall, raw",0,135
+kirby.exp_discount_rate_avg,task,,0.68,Spearman,49,53,Wölbert and Riedl (2013),,,
+kirby.exp_discount_rate_large,task,,0.61,Spearman,49,53,Wölbert and Riedl (2013),,,
+kirby.exp_discount_rate_medium,task,,0.68,Spearman,49,53,Wölbert and Riedl (2013),,,
+kirby.exp_discount_rate_small,task,,0.67,Spearman,49,53,Wölbert and Riedl (2013),,,
+kirby.hyp_discount_rate_avg,task,Hyperbolic discount rate for all items,0.77,Pearson,35,81,Kirby (2009),,,
+kirby.hyp_discount_rate_avg,task,Hyperbolic discount rate for all items,0.71,Pearson,360,37,Kirby (2009),,,
+kirby.hyp_discount_rate_avg,task,Hyperbolic discount rate for all items,0.73,Pearson,399,46,Kirby (2009),,,
+kirby.hyp_discount_rate_avg,task,Hyperbolic discount rate for all items,0.65,Spearman,1,220,Yoon and Chapman (2016),,,
+kirby.hyp_discount_rate_avg,task,Hyperbolic discount rate for all items,0.85,Pearson,1,93,Arfer Luhmann (2017),,,
+kirby.hyp_discount_rate_avg,task,Hyperbolic discount rate for all items,0.77,Pearson,30,93,Arfer Luhmann (2017),,,
+kirby.hyp_discount_rate_avg,task,Hyperbolic discount rate for all items,0.56,ICC,28,90,Black and Rosen (2011),,,
+kirby.hyp_discount_rate_large.logTr,task,Hyperbolic discount rate for set of 9 choices with large rewards,0.66,Pearson,35,81,Kirby (2009),"condition, fit",0,27
+kirby.hyp_discount_rate_large.logTr,task,Hyperbolic discount rate for set of 9 choices with large rewards,0.59,Pearson,360,37,Kirby (2009),"condition, fit",0,27
+kirby.hyp_discount_rate_large.logTr,task,Hyperbolic discount rate for set of 9 choices with large rewards,0.57,Pearson,399,46,Kirby (2009),"condition, fit",0,27
+kirby.hyp_discount_rate_medium.logTr,task,Hyperbolic discount rate for set of 9 choices with medium rewards,0.75,Pearson,35,81,Kirby (2009),"condition, fit",0,27
+kirby.hyp_discount_rate_medium.logTr,task,Hyperbolic discount rate for set of 9 choices with medium rewards,0.71,Pearson,360,37,Kirby (2009),"condition, fit",0,27
+kirby.hyp_discount_rate_medium.logTr,task,Hyperbolic discount rate for set of 9 choices with medium rewards,0.61,Pearson,399,46,Kirby (2009),"condition, fit",0,27
+kirby.hyp_discount_rate_small.logTr,task,Hyperbolic discount rate for set of 9 choices with small rewards,0.77,Pearson,35,81,Kirby (2009),"condition, fit",0,27
+kirby.hyp_discount_rate_small.logTr,task,Hyperbolic discount rate for set of 9 choices with small rewards,0.71,Pearson,360,37,Kirby (2009),"condition, fit",0,27
+kirby.hyp_discount_rate_small.logTr,task,Hyperbolic discount rate for set of 9 choices with small rewards,0.59,Pearson,399,46,Kirby (2009),"condition, fit",0,27
+local_global_letter.acc.ReflogTr,task,Proportion of correct choices (excluding no response trials) where correct choice means indicating the correct local or global letter depending on the color of the stimulus,0.17,Pearson,540,211,Ven et al. (2013),"overall, raw, accuracy",1,27
+local_global_letter.conflict_rt,task,Difference in median rt between incongruent and congruent trials (incongruent trials are those that have different local and global letters and congruent trials have the same),0.31,Pearson,9,55,Dale and Arnell (2013),"difference, raw, rt",1,27
+local_global_letter.conflict_rt,task,Difference in median rt between incongruent and congruent trials (incongruent trials are those that have different local and global letters and congruent trials have the same),0.27,Pearson,9,58,Dale and Arnell (2013),"difference, raw, rt",1,27
+local_global_letter.congruent_rt,task,Mean RT in congruent trials only,0.73,Pearson,9,55,Dale and Arnell (2013),,,
+local_global_letter.congruent_rt,task,Mean RT in congruent trials only,0.83,Pearson,9,58,Dale and Arnell (2013),,,
+local_global_letter.global_conflict_rt,task,Difference in incongruent and congruent RTs for global condition only,0,ICC,21,42,"Hedge, Powell and Sumner (2017)",,,
+local_global_letter.global_congruent_errors,task,Errors in congruents trials of global condition,0.6,ICC,21,42,"Hedge, Powell and Sumner (2017)",,,
+local_global_letter.global_congruent_rt,task,Mean RT in congruent trials of global condition only,0.63,ICC,21,42,"Hedge, Powell and Sumner (2017)",,,
+local_global_letter.global_error_cost,task,,0.17,ICC,21,42,"Hedge, Powell and Sumner (2017)",,,
+local_global_letter.global_incongruent_errors,task,Errors in incongruent trials of global condition only,0.71,ICC,21,42,"Hedge, Powell and Sumner (2017)",,,
+local_global_letter.global_incongruent_rt,task,Mean RT in incongruent trials of global condition only,0.7,ICC,21,42,"Hedge, Powell and Sumner (2017)",,,
+local_global_letter.incongruent_rt,task,Mean RT in incongruent trials only,0.66,Pearson,9,55,Dale and Arnell (2013),,,
+local_global_letter.incongruent_rt,task,Mean RT in incongruent trials only,0.66,Pearson,9,58,Dale and Arnell (2013),,,
+local_global_letter.local_conflict_rt,task,Difference in incongruent and congruent RTs for local condition only,0.14,ICC,21,42,"Hedge, Powell and Sumner (2017)",,,
+local_global_letter.local_congruent_errors,task,Errors in congruents trials of local condition,0.56,ICC,21,42,"Hedge, Powell and Sumner (2017)",,,
+local_global_letter.local_congruent_rt,task,Mean RT in congruent trials of local condition only,0.69,ICC,21,42,"Hedge, Powell and Sumner (2017)",,,
+local_global_letter.local_error_cost,task,,0.82,ICC,21,42,"Hedge, Powell and Sumner (2017)",,,
+local_global_letter.local_incongruent_errors,task,Errors in incongruent trials of local condition only,0.8,ICC,21,42,"Hedge, Powell and Sumner (2017)",,,
+local_global_letter.local_incongruent_rt,task,Mean RT in incongruent trials of local condition only,0.68,ICC,21,42,"Hedge, Powell and Sumner (2017)",,,
+probabilistic_selection.approach_trial_acc,task,Accuracy on approach trials only (those including the highest probability stimulus in the test phase),0.09,Pearson,50,90,"Baker, Stockwell and Holroyd (2013)",,,
+probabilistic_selection.approach_trial_rt,task,Mean rt on approach trials only (those including the highest probability stimulus in the test phase),0.269,Pearson,50,90,"Baker, Stockwell and Holroyd (2013)",,,
+probabilistic_selection.avoid_trial_acc,task,Accuracy on avoid trials only (those including the lowest probability stimulus in the test phase),-0.08,Pearson,50,90,"Baker, Stockwell and Holroyd (2013)",,,
+probabilistic_selection.avoid_trial_rt,task,Mean rt avoid trials only (those including the lowest probability stimulus in the test phase),0.257,Pearson,50,90,"Baker, Stockwell and Holroyd (2013)",,,
+psychological_refractory_period_two_choices.PRP_effect,task,Difference between RTs following the second cue between the short and long delay conditions,0.47,Pearson,7,66,Bender et al. (2016),,0,200
+recent_probes.acc.ReflogTr,task,Proportion of correct responses including hits and correct rejections (excluding no response trials) where correct means identifying whether the presented letter was in the memory set of six letter,0.39,Pearson,1,247,Caretta (1992),"overall, raw, accuracy",1,72
+recent_probes.acc.ReflogTr,task,Proportion of correct responses including hits and correct rejections (excluding no response trials) where correct means identifying whether the presented letter was in the memory set of six letter,0.417,ICC,1,65,Jones et al. (2016),"overall, raw, accuracy",1,72
+recent_probes.acc.ReflogTr,task,Proportion of correct responses including hits and correct rejections (excluding no response trials) where correct means identifying whether the presented letter was in the memory set of six letter,0.4,Pearson,21,55,Barrett et al. (1982),"overall, raw, accuracy",1,72
+recent_probes.avg_rt,task,Median response time for correct responses,0.88,Pearson,90,26,Smith and Langolf (1981),"overall, raw, rt",1,72
+recent_probes.avg_rt,task,Median response time for correct responses,0.79,Pearson,1,247,Caretta (1992),"overall, raw, rt",1,72
+recent_probes.avg_rt,task,Median response time for correct responses,0.51,Pearson,7,78,Roznowski and Smith (1993),"overall, raw, rt",1,72
+recent_probes.avg_rt,task,Median response time for correct responses,0.74,Pearson,7,78,Roznowski and Smith (1993),"overall, raw, rt",1,72
+recent_probes.avg_rt,task,Median response time for correct responses,0.71,Pearson,3600,217,Choudhury and Gorman (1999),"overall, raw, rt",1,72
+recent_probes.avg_rt,task,Median response time for correct responses,0.795,ICC,1,65,Jones et al. (2016),"overall, raw, rt",1,72
+shape_matching.priming_effect,task,,0.348,Pearson,15,86,DeSchepper and Treisman (1996),,1,280
+shape_matching.priming_effect,task,,0.508,Pearson,15,86,DeSchepper and Treisman (1996),,1,280
+shift_task.acc,task,Proportion of correct responses (excluding no response trials) where correct means choosing the shape with the feature that will be rewarded,0.34,Spearman,12,29,Ingram et al. (1999),"overall, raw, accuracy",0,410
+shift_task.conceptual_responses,task,,0.58,Pearson,360,87,"Paolo, Axelrod and Tröster (1996)",,,
+shift_task.conceptual_responses,task,,0.45,Spearman,12,29,Ingram et al. (1999),,,
+shift_task.conceptual_responses,task,,0.8,Pearson,462,66,Greve et al. (2012),,,
+shift_task.conceptual_responses,task,,0.81,Pearson,462,66,Greve et al. (2012),,,
+shift_task.fail_to_maintain_set,task,Failure to maintain set,0.13,Kendall's Tau,360,87,"Paolo, Axelrod and Tröster (1996)",,,
+shift_task.fail_to_maintain_set,task,Failure to maintain set,0.5,Spearman,12,29,Ingram et al. (1999),,,
+shift_task.fail_to_maintain_set,task,Failure to maintain set,0.31,Spearman,510,54,"Tröster, Woods and Morgan (2007)",,,
+shift_task.learning_to_learn,task,,0.12,Kendall's Tau,360,87,"Paolo, Axelrod and Tröster (1996)",,,
+shift_task.learning_to_learn,task,,0.61,Spearman,12,29,Ingram et al. (1999),,,
+shift_task.nonperseverative_errors,task,,0.55,Pearson,360,87,"Paolo, Axelrod and Tröster (1996)",,,
+shift_task.nonperseverative_errors,task,,0.8,Spearman,12,29,Ingram et al. (1999),,,
+shift_task.nonperseverative_errors,task,,0.39,Pearson,462,66,Greve et al. (2012),,,
+shift_task.nonperseverative_errors,task,,0.46,Pearson,462,66,Greve et al. (2012),,,
+shift_task.num_cat_achieved,task,Number of categories achieved,0.65,Kendall's Tau,360,87,"Paolo, Axelrod and Tröster (1996)",,,
+shift_task.num_cat_achieved,task,Number of categories achieved,0.7,Spearman,12,29,Ingram et al. (1999),,,
+shift_task.num_cat_achieved,task,Number of categories achieved,0.16,Pearson,30,90,Bird et al. (2004),,,
+shift_task.num_cat_achieved,task,Number of categories achieved,0.65,Pearson,56,41,Harvey et al. (2005),,,
+shift_task.num_cat_achieved,task,Number of categories achieved,0.67,Spearman,510,54,"Tröster, Woods and Morgan (2007)",,,
+shift_task.perseverative_errors,task,,0.93,ICC,720,17,Ozonoff (1995),,,
+shift_task.perseverative_errors,task,,0.94,ICC,720,17,Ozonoff (1995),,,
+shift_task.perseverative_errors,task,,0.65,Pearson,360,87,"Paolo, Axelrod and Tröster (1996)",,,
+shift_task.perseverative_errors,task,,0.83,Spearman,12,29,Ingram et al. (1999),,,
+shift_task.perseverative_errors,task,,0.67,Pearson,462,66,Greve et al. (2012),,,
+shift_task.perseverative_errors,task,,0.45,Pearson,462,66,Greve et al. (2012),,,
+shift_task.perseverative_errors,task,,0.38,Pearson,30,90,Bird et al. (2004),,,
+shift_task.perseverative_errors,task,,0.52,Pearson,56,41,Harvey et al. (2005),,,
+shift_task.perseverative_errors,task,,0.63,Spearman,510,54,"Tröster, Woods and Morgan (2007)",,,
+shift_task.perseverative_responses,task,,0.63,Pearson,360,87,"Paolo, Axelrod and Tröster (1996)",,,
+shift_task.perseverative_responses,task,,0.79,Spearman,12,29,Ingram et al. (1999),,,
+shift_task.perseverative_responses,task,,0.66,Pearson,462,66,Greve et al. (2012),,,
+shift_task.perseverative_responses,task,,0.49,Pearson,462,66,Greve et al. (2012),,,
+shift_task.perseverative_responses,task,,0.38,Pearson,360,57,Woods et al. (2006),,,
+shift_task.total_errors,task,,0.94,ICC,720,17,Ozonoff (1995),,,
+shift_task.total_errors,task,,0.79,Spearman,12,29,Ingram et al. (1999),,,
+shift_task.total_errors,task,,0.34,Pearson,30,90,Bird et al. (2004),,,
+shift_task.total_errors,task,,0.9,ICC,720,17,Ozonoff (1995),,,
+shift_task.total_errors,task,,0.66,Pearson,360,87,"Paolo, Axelrod and Tröster (1996)",,,
+shift_task.total_errors,task,,0.78,Pearson,462,66,Greve et al. (2012),,,
+shift_task.total_errors,task,,0.78,Pearson,462,66,Greve et al. (2012),,,
+shift_task.total_trials,task,,0.78,Spearman,12,29,Ingram et al. (1999),,,
+shift_task.total_trials,task,,0.37,Spearman,510,54,"Tröster, Woods and Morgan (2007)",,,
+shift_task.trial_pre_first_cat,task,Trials to complete first category,0.16,Kendall's Tau,360,87,"Paolo, Axelrod and Tröster (1996)",,,
+shift_task.trial_pre_first_cat,task,Trials to complete first category,0.44,Spearman,12,29,Ingram et al. (1999),,,
+simon.acc_congruent,task,,0.68,ICC,66.5,23,Wöstmann et al. (2013),,,
+simon.acc_incongruent,task,,0.85,ICC,66.5,23,Wöstmann et al. (2013),,,
+simon.acc.ReflogTr,task,Proportion of correct responses (excluding non-response trials) where correct means pressing the correct button for the correct color regardless of where it appears on the screen,0.15,Pearson,540,208,Ven et al. (2013),"overall, raw, accuracy",1,100
+simon.avg_rt_congruent,task,,0.94,ICC,66.5,23,Wöstmann et al. (2013),,,
+simon.avg_rt_congruent,task,,0.714,Pearson,7,75,Paap and Sawi (2016),,,
+simon.avg_rt_incongruent,task,,0.96,ICC,66.5,23,Wöstmann et al. (2013),,,
+simon.avg_rt_incongruent,task,,0.719,Pearson,7,75,Paap and Sawi (2016),,,
+simon.sd_rt_congruent,task,,0.9,ICC,66.5,23,Wöstmann et al. (2013),,,
+simon.sd_rt_incongruent,task,,0.81,ICC,66.5,23,Wöstmann et al. (2013),,,
+simon.simon_acc.ReflogTr,task,Difference in proportion of correct responses between incongruent (trials where response should be left and response is on right) and congruent trials (trials where the response should be left and the stimulus is on left),0.1,Pearson,7,37,De Jong et al. (2003),"difference, raw, accuracy",1,100
+simon.simon_acc.ReflogTr,task,Difference in proportion of correct responses between incongruent (trials where response should be left and response is on right) and congruent trials (trials where the response should be left and the stimulus is on left),0.77,ICC,66.5,23,Wöstmann et al. (2013),"difference, raw, accuracy",1,100
+simon.simon_acc.ReflogTr,task,Difference in proportion of correct responses between incongruent (trials where response should be left and response is on right) and congruent trials (trials where the response should be left and the stimulus is on left),0.62,Pearson,56,25,Linck and Weiss (2015),"difference, raw, accuracy",1,100
+simon.simon_rt,task,Difference in median response time in correct responses between incongruent (trials where response should be left and response is on right) and congruent trials (trials where the response should be left and the stimulus is on left),0.89,ICC,66.5,23,Wöstmann et al. (2013),"difference, raw, rt",1,100
+simon.simon_rt,task,Difference in median response time in correct responses between incongruent (trials where response should be left and response is on right) and congruent trials (trials where the response should be left and the stimulus is on left),0.428,Pearson,7,75,Paap and Sawi (2016),"difference, raw, rt",1,100
+simple_reaction_time.avg_rt.logTr,task,Median response time (excluding no response trials),0.73,Pearson,3600,217,Choudhury and Gorman (1999),"overall, raw, rt",0,150
+simple_reaction_time.avg_rt.logTr,task,Median response time (excluding no response trials),0.46,Pearson,1,103,Collie et al. (2003),"overall, raw, rt",0,150
+simple_reaction_time.avg_rt.logTr,task,Median response time (excluding no response trials),0.77,Pearson,1,103,Collie et al. (2003),"overall, raw, rt",0,150
+simple_reaction_time.avg_rt.logTr,task,Median response time (excluding no response trials),0.7,Pearson,14,175,Erlanger et al. (2003),"overall, raw, rt",0,150
+simple_reaction_time.avg_rt.logTr,task,Median response time (excluding no response trials),0.8,ICC,14,18,Lemay et al. (2004),"overall, raw, rt",0,150
+simple_reaction_time.avg_rt.logTr,task,Median response time (excluding no response trials),0.73,ICC,7,45,Falleti et al. (2007),"overall, raw, rt",0,150
+simple_reaction_time.avg_rt.logTr,task,Median response time (excluding no response trials),0.94,ICC,1,45,Falleti et al. (2007),"overall, raw, rt",0,150
+simple_reaction_time.avg_rt.logTr,task,Median response time (excluding no response trials),0.6,ICC,30,50,Cole et al. (2013),"overall, raw, rt",0,150
+simple_reaction_time.avg_rt.logTr,task,Median response time (excluding no response trials),0.4,ICC,30,50,Cole et al. (2013),"overall, raw, rt",0,150
+simple_reaction_time.avg_rt.logTr,task,Median response time (excluding no response trials),0.825,ICC,1,95,Jones et al. (2016),"overall, raw, rt",0,150
+spatial_span.forward_span,task,Average number of locations remembered in order of appearance after dropping the first four trials,0.7,Pearson,9,1122,Orsini (1994),"condition, raw, accuracy",0,14
+spatial_span.forward_span,task,Average number of locations remembered in order of appearance after dropping the first four trials,0.79,Pearson,9,1122,Orsini (1994),"condition, raw, accuracy",0,14
+spatial_span.forward_span,task,Average number of locations remembered in order of appearance after dropping the first four trials,0.6,Pearson,90,145,"Baddeley, Gardner and Grantham-McGregor (1995)","condition, raw, accuracy",0,14
+spatial_span.forward_span,task,Average number of locations remembered in order of appearance after dropping the first four trials,0.64,Pearson,30,162,Lowe and Rabbitt (1998),"condition, raw, accuracy",0,14
+spatial_span.forward_span,task,Average number of locations remembered in order of appearance after dropping the first four trials,0.7,Pearson,45,10,Cho et al. (2002),"condition, raw, accuracy",0,14
+spatial_span.forward_span,task,Average number of locations remembered in order of appearance after dropping the first four trials,0.45,Pearson,7,45,Sternberg et al. (2002),"condition, raw, accuracy",0,14
+spatial_span.forward_span,task,Average number of locations remembered in order of appearance after dropping the first four trials,0.85,Pearson,14,104,Saggino et al. (2004),"condition, raw, accuracy",0,14
+spatial_span.forward_span,task,Average number of locations remembered in order of appearance after dropping the first four trials,0.75,Pearson,14,99,Saggino et al. (2004),"condition, raw, accuracy",0,14
+spatial_span.forward_span,task,Average number of locations remembered in order of appearance after dropping the first four trials,0.59,Pearson,28,21,Williams et al. (2005),"condition, raw, accuracy",0,14
+spatial_span.forward_span,task,Average number of locations remembered in order of appearance after dropping the first four trials,0.51,ICC,30,64,Fisher et al. (2011),"condition, raw, accuracy",0,14
+spatial_span.forward_span,task,Average number of locations remembered in order of appearance after dropping the first four trials,0.72,Pearson,49,141,Lo et al. (2012),"condition, raw, accuracy",0,14
+spatial_span.forward_span,task,Average number of locations remembered in order of appearance after dropping the first four trials,0.7,Pearson,49,156,Lo et al. (2012),"condition, raw, accuracy",0,14
+spatial_span.forward_span,task,Average number of locations remembered in order of appearance after dropping the first four trials,0.64,Pearson,1080,200,Lo et al. (2012),"condition, raw, accuracy",0,14
+spatial_span.forward_span,task,Average number of locations remembered in order of appearance after dropping the first four trials,0.66,Pearson,1080,200,Lo et al. (2012),"condition, raw, accuracy",0,14
+stop_signal.avg_inhibition_prob,task,,0.79,Pearson,107,31,"Kindlon, Mezzacappa and Earls (1995)",,,
+stop_signal.avg_inhibition_prob,task,,0.52,ICC,14,18,Kunsti et al. (2001),,,
+stop_signal.avg_rt,task,,0.66,Pearson,107,31,"Kindlon, Mezzacappa and Earls (1995)",,,
+stop_signal.avg_rt,task,,0.35,ICC,14,18,Kunsti et al. (2001),,,
+stop_signal.avg_rt,task,,0.62,ICC,7,12,Soreni et al. (2009),,,
+stop_signal.avg_rt,task,,0.92,ICC,66,23,Wöstman et al. (2013),,,
+stop_signal.avg_rt,task,,0.42,ICC,360,312,Grummitt et al. ,,,
+stop_signal.avg_rt,task,,0.35,ICC,21,45,"Hedge, Powell and Sumner (2017)",,,
+stop_signal.avg_rt,task,,0.57,ICC,21,54,"Hedge, Powell and Sumner (2017)",,,
+stop_signal.commission_errors,task,,0.61,Pearson,107,31,"Kindlon, Mezzacappa and Earls (1995)",,,
+stop_signal.commission_errors,task,,0.22,ICC,14,18,Kunsti et al. (2001),,,
+stop_signal.inhibition_slope,task,,0.72,Pearson,107,31,"Kindlon, Mezzacappa and Earls (1995)",,,
+stop_signal.inhibition_slope,task,,0.29,ICC,14,18,Kunsti et al. (2001),,,
+stop_signal.omission_errors,task,,0.37,ICC,14,18,Kunsti et al. (2001),,,
+stop_signal.sd_rt,task,,0.64,ICC,14,18,Kunsti et al. (2001),,,
+stop_signal.sd_rt,task,,0.74,ICC,7,12,Soreni et al. (2009),,,
+stop_signal.SSRT,task,,0.11,ICC,14,18,Kunsti et al. (2001),,,
+stop_signal.SSRT,task,,0.72,ICC,7,12,Soreni et al. (2009),,,
+stop_signal.SSRT,task,,0.29,ICC,66,23,Wöstman et al. (2013),,,
+stop_signal.SSRT,task,,0.6,Pearson,7,66,Bender et al. (2016),,,
+stop_signal.SSRT,task,,0.47,ICC,21,45,"Hedge, Powell and Sumner (2017)",,,
+stop_signal.SSRT,task,,0.43,ICC,21,54,"Hedge, Powell and Sumner (2017)",,,
+stop_signal.SSRT,task,,0.36,ICC,21,45,"Hedge, Powell and Sumner (2017)",,,
+stop_signal.SSRT,task,,0.49,ICC,21,54,"Hedge, Powell and Sumner (2017)",,,
+stop_signal.stop_rt,task,,0.65,Pearson,9,121,Weafer et al. (2013),,,
+stop_signal.stop_rt,task,,0.92,ICC,66,23,Wöstman et al. (2013),,,
+stop_signal.stop_rt,task,,0.34,ICC,21,45,"Hedge, Powell and Sumner (2017)",,,
+stop_signal.stop_rt,task,,0.54,ICC,21,54,"Hedge, Powell and Sumner (2017)",,,
+stop_signal.successful_stops,task,,0.62,ICC,360,312,Grummitt et al. ,,,
+stop_signal.total_errors,task,,0.41,ICC,14,18,Kunsti et al. (2001),,,
+stroop.acc_cond_diff,task,word vs color accuracy difference,0.73,Pearson,107,27,"Kindlon, Mezzacappa and Earls (1995)",,,
+stroop.avg_rt,task,Median response time for correct responses,0.7,Pearson,28,21,Williams et al. (2005),"overall, raw, rt",1,96
+stroop.color_acc,task,,0.8,Pearson,107,27,"Kindlon, Mezzacappa and Earls (1995)",,,
+stroop.color_errors,task,,0.28,Pearson,107,27,"Kindlon, Mezzacappa and Earls (1995)",,,
+stroop.congruent_errors,task,,0.36,ICC,21,47,"Hedge, Powell and Sumner (2017)",,,
+stroop.congruent_errors,task,,0.42,ICC,21,56,"Hedge, Powell and Sumner (2017)",,,
+stroop.congruent_rt,task,,0.71,Pearson,7,28,Strauss et al. (2005),,,
+stroop.congruent_rt,task,,0.77,ICC,21,47,"Hedge, Powell and Sumner (2017)",,,
+stroop.congruent_rt,task,,0.72,ICC,21,56,"Hedge, Powell and Sumner (2017)",,,
+stroop.errors_cond_diff,task,word vs color errors difference,0.54,Pearson,107,27,"Kindlon, Mezzacappa and Earls (1995)",,,
+stroop.incongruent_errors,task,,0.62,ICC,21,47,"Hedge, Powell and Sumner (2017)",,,
+stroop.incongruent_errors,task,,0.39,ICC,21,56,"Hedge, Powell and Sumner (2017)",,,
+stroop.incongruent_rt,task,,0.79,Pearson,7,28,Strauss et al. (2005),,,
+stroop.incongruent_rt,task,,0.67,ICC,21,47,"Hedge, Powell and Sumner (2017)",,,
+stroop.incongruent_rt,task,,0.7,ICC,21,56,"Hedge, Powell and Sumner (2017)",,,
+stroop.neutral_errors,task,,0.45,ICC,21,47,"Hedge, Powell and Sumner (2017)",,,
+stroop.neutral_errors,task,,0.51,ICC,21,56,"Hedge, Powell and Sumner (2017)",,,
+stroop.neutral_rt,task,,0.74,ICC,21,47,"Hedge, Powell and Sumner (2017)",,,
+stroop.neutral_rt,task,,0.73,ICC,21,56,"Hedge, Powell and Sumner (2017)",,,
+stroop.stroop_acc.ReflogTr,task,Difference in proportion of correct responses between incongruent (where word color does not match the word) and congruent trials (where word color does match the word),0.67,Pearson,107,27,"Kindlon, Mezzacappa and Earls (1995)","difference, raw, accuracy",1,96
+stroop.stroop_acc.ReflogTr,task,Difference in proportion of correct responses between incongruent (where word color does not match the word) and congruent trials (where word color does match the word),0.81,ICC,180,26,Neyens and Aldenkamp (1997),"difference, raw, accuracy",1,96
+stroop.stroop_acc.ReflogTr,task,Difference in proportion of correct responses between incongruent (where word color does not match the word) and congruent trials (where word color does match the word),0.48,ICC,21,47,"Hedge, Powell and Sumner (2017)","difference, raw, accuracy",1,96
+stroop.stroop_acc.ReflogTr,task,Difference in proportion of correct responses between incongruent (where word color does not match the word) and congruent trials (where word color does match the word),0.44,ICC,21,56,"Hedge, Powell and Sumner (2017)","difference, raw, accuracy",1,96
+stroop.stroop_rt,task,Difference in median response times in correct trials between incongruent (where word color does not match the word) and congruent trials (where word color does match the word),0.68,Pearson,1,45,Siegrist (1997),"difference, raw, rt",1,96
+stroop.stroop_rt,task,Difference in median response times in correct trials between incongruent (where word color does not match the word) and congruent trials (where word color does match the word),0.46,Pearson,7,28,Strauss et al. (2005),"difference, raw, rt",1,96
+stroop.stroop_rt,task,Difference in median response times in correct trials between incongruent (where word color does not match the word) and congruent trials (where word color does match the word),0.6,ICC,21,47,"Hedge, Powell and Sumner (2017)","difference, raw, rt",1,96
+stroop.stroop_rt,task,Difference in median response times in correct trials between incongruent (where word color does not match the word) and congruent trials (where word color does match the word),0.66,ICC,21,56,"Hedge, Powell and Sumner (2017)","difference, raw, rt",1,96
+stroop.stroop_rt,task,Difference in median response times in correct trials between incongruent (where word color does not match the word) and congruent trials (where word color does match the word),0.57,Pearson,7,66,Bender et al. (2016),"difference, raw, rt",1,96
+stroop.word_acc,task,,0.88,Pearson,107,27,"Kindlon, Mezzacappa and Earls (1995)",,,
+stroop.word_errors,task,,0.25,Pearson,107,27,"Kindlon, Mezzacappa and Earls (1995)",,,
+tower_of_london.avg_move_time.logTr,task,Average time to take action on correct trials,0.475,ICC,7,27,Köstering et al. (2015),"overall, raw, rt",0,12
+tower_of_london.avg_move_time.logTr,task,Average time to take action on correct trials,0.3,ICC,14,19,Lemay et al. (2004),"overall, raw, rt",0,12
+tower_of_london.num_optimal_solutions,task,Total number of correct responses with optimal solutions,0.6,Pearson,30,162,Lowe and Rabbitt (1998),"overall, raw, accuracy",0,12
+tower_of_london.num_optimal_solutions,task,Total number of correct responses with optimal solutions,0.7,Pearson,42,34,"Schnirman, Welsh and Retzlaff (1998)","overall, raw, accuracy",0,12
+tower_of_london.num_optimal_solutions,task,Total number of correct responses with optimal solutions,0.66,ICC,3,48,Keefe et al. (2004),"overall, raw, accuracy",0,12
+tower_of_london.num_optimal_solutions,task,Total number of correct responses with optimal solutions,0.77,ICC,3,46,Keefe et al. (2004),"overall, raw, accuracy",0,12
+tower_of_london.num_optimal_solutions,task,Total number of correct responses with optimal solutions,0.83,ICC,3,18,Keefe et al. (2004),"overall, raw, accuracy",0,12
+tower_of_london.num_optimal_solutions,task,Total number of correct responses with optimal solutions,0.73,ICC,3,16,Keefe et al. (2004),"overall, raw, accuracy",0,12
+tower_of_london.num_optimal_solutions,task,Total number of correct responses with optimal solutions,0.72,Pearson,1,18,Kaneda et al. (2007),"overall, raw, accuracy",0,12
+tower_of_london.num_optimal_solutions,task,Total number of correct responses with optimal solutions,0.734,ICC,7,27,Köstering et al. (2015),"overall, raw, accuracy",0,12
+tower_of_london.num_optimal_solutions,task,Total number of correct responses with optimal solutions,0.33,ICC,14,19,Lemay et al. (2004),"overall, raw, accuracy",0,12
+tower_of_london.planning_time,task,Average time before taking first action,0.39,ICC,7,27,Köstering et al. (2015),"overall, raw, rt",0,12
+tower_of_london.planning_time,task,Average time before taking first action,0.83,ICC,14,19,Lemay et al. (2004),"overall, raw, rt",0,12
+bis_bas_survey.BAS_drive,survey,,0.66,Pearson,56,113,Carver and White (1994),,,
+bis_bas_survey.BAS_drive,survey,,0.46,Pearson,360,42,"Meyer, Johnson and Winters (2001)",,,
+bis_bas_survey.BAS_fun_seeking,survey,,0.69,Pearson,56,113,Carver and White (1994),,,
+bis_bas_survey.BAS_fun_seeking,survey,,0.49,Pearson,360,42,"Meyer, Johnson and Winters (2001)",,,
+bis_bas_survey.BAS_reward_responsiveness,survey,,0.59,Pearson,56,113,Carver and White (1994),,,
+bis_bas_survey.BAS_reward_responsiveness,survey,,0.44,Pearson,360,42,"Meyer, Johnson and Winters (2001)",,,
+bis_bas_survey.BAS_total,survey,,0.72,ICC,150,46,Sutton and Davidson (1997),,,
+bis_bas_survey.BAS_total,survey,,0.5,Pearson,360,42,"Meyer, Johnson and Winters (2001)",,,
+bis_bas_survey.BAS_total,survey,,0.86,ICC,7,23,Fliessbach et al. (2010),,,
+bis_bas_survey.BAS_total,survey,,0.82,Pearson,54,201,Alloy et al. (2012),,,
+bis_bas_survey.BAS_total,survey,,0.6,Pearson,264,201,Alloy et al. (2012),,,
+bis_bas_survey.BAS_total,survey,,0.58,Pearson,28,70,"Amiri, Behnezhad and Azad-Marzabadi (2017)",,,
+bis_bas_survey.BIS,survey,,0.66,Pearson,56,113,Carver and White (1994),,,
+bis_bas_survey.BIS,survey,,0.68,ICC,150,46,Sutton and Davidson (1997),,,
+bis_bas_survey.BIS,survey,,0.81,Pearson,360,42,"Meyer, Johnson and Winters (2001)",,,
+bis_bas_survey.BIS,survey,,0.7,Pearson,90,109,Li and Zanbarg (2007),,,
+bis_bas_survey.BIS,survey,,0.91,ICC,7,23,Fliessbach et al. (2010),,,
+bis_bas_survey.BIS,survey,,0.81,Pearson,54,201,Alloy et al. (2012),,,
+bis_bas_survey.BIS,survey,,0.7,Pearson,264,201,Alloy et al. (2012),,,
+bis_bas_survey.BIS,survey,,0.64,Pearson,28,70,"Amiri, Behnezhad and Azad-Marzabadi (2017)",,,
+bis11_survey.Attentional,survey,,0.78,ICC,120,34,Someya et al. (2001),,,
+bis11_survey.Attentional,survey,,0.63,ICC,14,32,Suris et al. (2007),,,
+bis11_survey.Attentional,survey,,0.62,ICC,14,31,Suris et al. (2007),,,
+bis11_survey.Attentional,survey,,0.58,ICC,14,34,Suris et al. (2007),,,
+bis11_survey.Attentional,survey,,0.61,Spearman,30,153,Stanford et al. (2009),,,
+bis11_survey.Attentional,survey,,0.86,Pearson,9,127,Weafer et al. (2013),,,
+bis11_survey.Motor.logTr,survey,,0.74,ICC,120,34,Someya et al. (2001),,,
+bis11_survey.Motor.logTr,survey,,0.43,ICC,14,32,Suris et al. (2007),,,
+bis11_survey.Motor.logTr,survey,,0.25,ICC,14,31,Suris et al. (2007),,,
+bis11_survey.Motor.logTr,survey,,0.57,ICC,14,34,Suris et al. (2007),,,
+bis11_survey.Motor.logTr,survey,,0.67,Spearman,30,153,Stanford et al. (2009),,,
+bis11_survey.Motor.logTr,survey,,0.88,Pearson,9,127,Weafer et al. (2013),,,
+bis11_survey.Nonplanning,survey,,0.84,ICC,120,34,Someya et al. (2001),,,
+bis11_survey.Nonplanning,survey,,0.72,ICC,14,32,Suris et al. (2007),,,
+bis11_survey.Nonplanning,survey,,0.73,ICC,14,31,Suris et al. (2007),,,
+bis11_survey.Nonplanning,survey,,0.77,ICC,14,34,Suris et al. (2007),,,
+bis11_survey.Nonplanning,survey,,0.72,Spearman,30,153,Stanford et al. (2009),,,
+bis11_survey.Nonplanning,survey,,0.85,Pearson,9,127,Weafer et al. (2013),,,
+bis11_survey.Total,survey,,0.71,ICC,120,34,Someya et al. (2001),,,
+bis11_survey.Total,survey,,0.89,Pearson,60,83,Fossati et al. (2001),,,
+bis11_survey.Total,survey,,0.77,ICC,14,32,Suris et al. (2007),,,
+bis11_survey.Total,survey,,0.78,ICC,14,31,Suris et al. (2007),,,
+bis11_survey.Total,survey,,0.8,ICC,14,34,Suris et al. (2007),,,
+bis11_survey.Total,survey,,0.83,Pearson,60,44,Gülec et al. (2008),,,
+bis11_survey.Total,survey,,0.83,Spearman,30,153,Stanford et al. (2009),,,
+bis11_survey.Total,survey,,0.92,Pearson,9,127,Weafer et al. (2013),,,
+brief_self_control_survey.self_control,survey,,0.87,Pearson,21,233,Tangney et al. (2004),,,
+brief_self_control_survey.self_control,survey,,0.75,Pearson,210,140,Duckworth and Seligman (2005),,,
+brief_self_control_survey.self_control,survey,,0.76,Pearson,210,164,Duckworth and Seligman (2005),,,
+dickman_survey.dysfunctional.logTr,survey,,0.73,Pearson,25,211,Brunas-Wagstaff et al. (1997),,,
+dickman_survey.dysfunctional.logTr,survey,,0.824,Spearman,360,11,Caci et al. (2003),,,
+dickman_survey.dysfunctional.logTr,survey,,0.528,Spearman,360,38,Caci et al. (2003),,,
+dickman_survey.dysfunctional.logTr,survey,,0.765,Pearson,30,107,Chico et al. (2003),,,
+dickman_survey.functional,survey,,0.58,Pearson,25,211,Brunas-Wagstaff et al. (1997),,,
+dickman_survey.functional,survey,,0.435,Spearman,360,11,Caci et al. (2003),,,
+dickman_survey.functional,survey,,0.695,Spearman,360,38,Caci et al. (2003),,,
+dickman_survey.functional,survey,,0.757,Pearson,30,107,Chico et al. (2003),,,
+dospert_rp_survey.ethical,survey,,0.67,Pearson,30,121,"Weber, Blais and Betz (2002)",,,
+dospert_rp_survey.financial,survey,,0.42,Pearson,30,121,"Weber, Blais and Betz (2002)",,,
+dospert_rp_survey.health_safety,survey,,0.62,Pearson,30,121,"Weber, Blais and Betz (2002)",,,
+dospert_rp_survey.recreational,survey,,0.56,Pearson,30,121,"Weber, Blais and Betz (2002)",,,
+dospert_rp_survey.social,survey,,0.47,Pearson,30,121,"Weber, Blais and Betz (2002)",,,
+dospert_rt_survey.ethical,survey,,0.72,Pearson,30,121,"Weber, Blais and Betz (2002)",,,
+dospert_rt_survey.ethical,survey,,0.6,Pearson,28,155,"Du, Li and Du (2014)",,,
+dospert_rt_survey.financial,survey,,0.44,Pearson,30,121,"Weber, Blais and Betz (2002)",,,
+dospert_rt_survey.health_safety,survey,,0.75,Pearson,30,121,"Weber, Blais and Betz (2002)",,,
+dospert_rt_survey.health_safety,survey,,0.7,Pearson,28,155,"Du, Li and Du (2014)",,,
+dospert_rt_survey.recreational,survey,,0.8,Pearson,30,121,"Weber, Blais and Betz (2002)",,,
+dospert_rt_survey.recreational,survey,,0.81,Pearson,28,155,"Du, Li and Du (2014)",,,
+dospert_rt_survey.social,survey,,0.58,Pearson,30,121,"Weber, Blais and Betz (2002)",,,
+dospert_rt_survey.social,survey,,0.7,Pearson,28,155,"Du, Li and Du (2014)",,,
+eating_survey.total,survey,,0.87,Pearson,14,126,Mostafavi et al. (2017),,,
+erq_survey.reappraisal,survey,,0.69,Pearson,90,791,Gross and John (2003),,,
+erq_survey.reappraisal,survey,,0.67,Pearson,60,182,"Balzarotti, John and Gross (2010)",,,
+erq_survey.reappraisal,survey,,0.37,ICC,360,692,Gullone and Taffe (2012),,,
+erq_survey.reappraisal,survey,,0.47,ICC,360,692,Gullone and Taffe (2012),,,
+erq_survey.reappraisal,survey,,0.64,Pearson,90,115,Cabello et al. (2013),,,
+erq_survey.reappraisal,survey,,0.74,Pearson,21,90,Eldeleklioglu and Eroglu (2015),,,
+erq_survey.reappraisal,survey,,0.77,Pearson,35,150,Hasani (2017),,,
+erq_survey.suppression,survey,,0.69,Pearson,90,791,Gross and John (2003),,,
+erq_survey.suppression,survey,,0.71,Pearson,60,182,"Balzarotti, John and Gross (2010)",,,
+erq_survey.suppression,survey,,0.4,ICC,360,692,Gullone and Taffe (2012),,,
+erq_survey.suppression,survey,,0.63,ICC,360,692,Gullone and Taffe (2012),,,
+erq_survey.suppression,survey,,0.66,Pearson,90,115,Cabello et al. (2013),,,
+erq_survey.suppression,survey,,0.72,Pearson,21,90,Eldeleklioglu and Eroglu (2015),,,
+erq_survey.suppression,survey,,0.68,Pearson,35,150,Hasani (2017),,,
+five_facet_mindfulness_survey.act_with_awareness,survey,,0.657,ICC,14,30,Isenberg (2009),,,
+five_facet_mindfulness_survey.act_with_awareness,survey,,0.436,Pearson,30,81,"Deng, Rodriguez and Xia (2011)",,,
+five_facet_mindfulness_survey.act_with_awareness,survey,,0.72,Pearson,56,21,Heeren et al. (2011),,,
+five_facet_mindfulness_survey.act_with_awareness,survey,,0.79,Pearson,600,41,Petrocchi and Ottaviani (2016),,,
+five_facet_mindfulness_survey.describe,survey,,0.82,ICC,14,30,Isenberg (2009),,,
+five_facet_mindfulness_survey.describe,survey,,0.699,Pearson,30,81,"Deng, Rodriguez and Xia (2011)",,,
+five_facet_mindfulness_survey.describe,survey,,0.73,Pearson,56,21,Heeren et al. (2011),,,
+five_facet_mindfulness_survey.describe,survey,,0.66,Pearson,600,41,Petrocchi and Ottaviani (2016),,,
+five_facet_mindfulness_survey.nonjudge,survey,,0.757,ICC,14,30,Isenberg (2009),,,
+five_facet_mindfulness_survey.nonjudge,survey,,0.611,Pearson,30,81,"Deng, Rodriguez and Xia (2011)",,,
+five_facet_mindfulness_survey.nonjudge,survey,,0.41,Pearson,56,21,Heeren et al. (2011),,,
+five_facet_mindfulness_survey.nonjudge,survey,,0.58,Pearson,600,41,Petrocchi and Ottaviani (2016),,,
+five_facet_mindfulness_survey.nonreact,survey,,0.776,ICC,14,30,Isenberg (2009),,,
+five_facet_mindfulness_survey.nonreact,survey,,0.512,Pearson,30,81,"Deng, Rodriguez and Xia (2011)",,,
+five_facet_mindfulness_survey.nonreact,survey,,0.64,Pearson,56,21,Heeren et al. (2011),,,
+five_facet_mindfulness_survey.nonreact,survey,,0.59,Pearson,600,41,Petrocchi and Ottaviani (2016),,,
+five_facet_mindfulness_survey.observe,survey,,0.863,ICC,14,30,Isenberg (2009),,,
+five_facet_mindfulness_survey.observe,survey,,0.741,Pearson,30,81,"Deng, Rodriguez and Xia (2011)",,,
+five_facet_mindfulness_survey.observe,survey,,0.71,Pearson,56,21,Heeren et al. (2011),,,
+five_facet_mindfulness_survey.observe,survey,,0.19,Pearson,600,41,Petrocchi and Ottaviani (2016),,,
+five_facet_mindfulness_survey.total,survey,,0.798,ICC,14,30,Isenberg (2009),,,
+five_facet_mindfulness_survey.total,survey,,0.64,Pearson,56,21,Heeren et al. (2011),,,
+future_time_perspective_survey.future_time_perspective,survey,,0.76,Pearson,360,765,"Kooji, Bal and Kanfer (2014)",,,
+grit_scale_survey.grit,survey,,0.68,Pearson,360,279,Duckworth and Quinn (2009),,,
+grit_scale_survey.grit,survey,,0.61,Pearson,90,121,"Hill, Borrow and Bronk (2014)",,,
+grit_scale_survey.grit,survey,,0.78,Pearson,28,138,Li et al. (2016),,,
+impulsive_venture_survey.impulsiveness.logTr,survey,,0.76,Pearson,30,132,Luengo et al. (1991),,,
+impulsive_venture_survey.venturesomeness,survey,,0.8,Pearson,30,132,Luengo et al. (1991),,,
+leisure_time_activity_survey.activity_level,survey,,0.8,Spearman,28,267,Kiernan et al. (2013),,,
+leisure_time_activity_survey.activity_level,survey,,0.86,Pearson,9,60,Riebl et al. (2013),,,
+mindful_attention_awareness_survey.mindfulness,survey,,0.81,ICC,28,61,Brown and Ryan (2003),,,
+mindful_attention_awareness_survey.mindfulness,survey,,0.73,Pearson,70,82,Barnes et al. (2007),,,
+mindful_attention_awareness_survey.mindfulness,survey,,0.54,Pearson,20,70,Deng et al. (2012),,,
+mindful_attention_awareness_survey.mindfulness,survey,,0.66,Pearson,56,441,Murphy et al. (2012),,,
+mindful_attention_awareness_survey.mindfulness,survey,,0.94,Pearson,21,46,Matvienko-Sikar and Dockray (2017),,,
+ravens.score,survey,Number of correct responses out of 18,0.86,Pearson,7,20,"Watts, Baddeley and Williams (1982)","overall, raw, accuracy",0,18
+ravens.score,survey,Number of correct responses out of 18,0.91,Pearson,7,20,"Watts, Baddeley and Williams (1982)","overall, raw, accuracy",0,18
+ravens.score,survey,Number of correct responses out of 18,0.82,Pearson,42,31,Calvert and Waterfall (1982),"overall, raw, accuracy",0,18
+ravens.score,survey,Number of correct responses out of 18,1,Pearson,42,31,Calvert and Waterfall (1982),"overall, raw, accuracy",0,18
+ravens.score,survey,Number of correct responses out of 18,0.84,Pearson,42,31,Calvert and Waterfall (1982),"overall, raw, accuracy",0,18
+ravens.score,survey,Number of correct responses out of 18,0.96,Pearson,42,31,Calvert and Waterfall (1982),"overall, raw, accuracy",0,18
+ravens.score,survey,Number of correct responses out of 18,0.83,Pearson,14,38,Bors and Stokes (1998),"overall, raw, accuracy",0,18
+ravens.score,survey,Number of correct responses out of 18,0.87,Pearson,3600,217,Choudhury and Gorman (1999),"overall, raw, accuracy",0,18
+ravens.score,survey,Number of correct responses out of 18,0.76,Pearson,7,71,Arthur et al. (1999),"overall, raw, accuracy",0,18
+ravens.score,survey,Number of correct responses out of 18,0.84,Pearson,14,50,Costenbader and Ngari (2001),"overall, raw, accuracy",0,18
+ravens.score,survey,Number of correct responses out of 18,0.85,Pearson,45,67,Bors and Vigneau (2003),"overall, raw, accuracy",0,18
+ravens.score,survey,Number of correct responses out of 18,0.91,Pearson,45,67,Bors and Vigneau (2003),"overall, raw, accuracy",0,18
+ravens.score,survey,Number of correct responses out of 18,0.952,Pearson,53,10,Williams and McCord (2006),"overall, raw, accuracy",0,18
+ravens.score,survey,Number of correct responses out of 18,0.826,Pearson,53,11,Williams and McCord (2006),"overall, raw, accuracy",0,18
+ravens.score,survey,Number of correct responses out of 18,0.594,Pearson,53,25,Williams and McCord (2006),"overall, raw, accuracy",0,18
+selection_optimization_compensation_survey.compensation,survey,,0.76,Pearson,30,218,Freund and Baltes (2002),,,
+selection_optimization_compensation_survey.elective_selection,survey,,0.77,Pearson,30,218,Freund and Baltes (2002),,,
+selection_optimization_compensation_survey.optimization.ReflogTr,survey,,0.71,Pearson,30,218,Freund and Baltes (2002),,,
+sensation_seeking_survey.boredom_susceptibility,survey,,0.82,Pearson,7,38,Zuckerman et al. (1972),,,
+sensation_seeking_survey.boredom_susceptibility,survey,,0.66,Pearson,42,31,Zaleski (1984),,,
+sensation_seeking_survey.boredom_susceptibility,survey,,0.66,Pearson,14,61,Thombs et al. (1994),,,
+sensation_seeking_survey.boredom_susceptibility,survey,,0.52,Pearson,90,87,Euwema (2013),,,
+sensation_seeking_survey.disinhibition,survey,,0.91,Pearson,7,38,Zuckerman et al. (1972),,,
+sensation_seeking_survey.disinhibition,survey,,0.91,Pearson,42,31,Zaleski (1984),,,
+sensation_seeking_survey.disinhibition,survey,,0.81,Pearson,14,61,Thombs et al. (1994),,,
+sensation_seeking_survey.disinhibition,survey,,0.57,Pearson,90,87,Euwema (2013),,,
+sensation_seeking_survey.experience_seeking,survey,,0.92,Pearson,7,38,Zuckerman et al. (1972),,,
+sensation_seeking_survey.experience_seeking,survey,,0.78,Pearson,42,31,Zaleski (1984),,,
+sensation_seeking_survey.experience_seeking,survey,,0.63,Pearson,14,61,Thombs et al. (1994),,,
+sensation_seeking_survey.experience_seeking,survey,,0.69,Pearson,90,87,Euwema (2013),,,
+sensation_seeking_survey.thrill_adventure_seeking,survey,,0.94,Pearson,7,38,Zuckerman et al. (1972),,,
+sensation_seeking_survey.thrill_adventure_seeking,survey,,0.83,Pearson,42,31,Zaleski (1984),,,
+sensation_seeking_survey.thrill_adventure_seeking,survey,,0.69,Pearson,14,61,Thombs et al. (1994),,,
+sensation_seeking_survey.thrill_adventure_seeking,survey,,0.71,Pearson,90,87,Euwema (2013),,,
+sensation_seeking_survey.total,survey,,0.89,Pearson,7,38,Zuckerman et al. (1972),,,
+sensation_seeking_survey.total,survey,,0.82,Pearson,14,61,Thombs et al. (1994),,,
+sensation_seeking_survey.total,survey,,0.67,Pearson,90,87,Euwema (2013),,,
+ten_item_personality_survey.agreeableness,survey,,0.71,Pearson,42,180,"Gosling, Rentfrow and Swann (2003)",,,
+ten_item_personality_survey.agreeableness,survey,,0.52,Pearson,42,198,Romero et al. (2012),,,
+ten_item_personality_survey.agreeableness,survey,,0.61,Pearson,30,31,Renau et al. (2013),,,
+ten_item_personality_survey.agreeableness,survey,,0.69,Pearson,30,31,Renau et al. (2013),,,
+ten_item_personality_survey.conscientiousness.ReflogTr,survey,,0.76,Pearson,42,180,"Gosling, Rentfrow and Swann (2003)",,,
+ten_item_personality_survey.conscientiousness.ReflogTr,survey,,0.69,Pearson,42,198,Romero et al. (2012),,,
+ten_item_personality_survey.conscientiousness.ReflogTr,survey,,0.77,Pearson,30,31,Renau et al. (2013),,,
+ten_item_personality_survey.conscientiousness.ReflogTr,survey,,0.81,Pearson,30,31,Renau et al. (2013),,,
+ten_item_personality_survey.emotional_stability,survey,,0.7,Pearson,42,180,"Gosling, Rentfrow and Swann (2003)",,,
+ten_item_personality_survey.emotional_stability,survey,,0.83,Pearson,42,198,Romero et al. (2012),,,
+ten_item_personality_survey.emotional_stability,survey,,0.76,Pearson,30,31,Renau et al. (2013),,,
+ten_item_personality_survey.emotional_stability,survey,,0.82,Pearson,30,31,Renau et al. (2013),,,
+ten_item_personality_survey.extraversion,survey,,0.77,Pearson,42,180,"Gosling, Rentfrow and Swann (2003)",,,
+ten_item_personality_survey.extraversion,survey,,0.79,Pearson,42,198,Romero et al. (2012),,,
+ten_item_personality_survey.extraversion,survey,,0.81,Pearson,30,31,Renau et al. (2013),,,
+ten_item_personality_survey.extraversion,survey,,0.85,Pearson,30,31,Renau et al. (2013),,,
+ten_item_personality_survey.openness,survey,,0.62,Pearson,42,180,"Gosling, Rentfrow and Swann (2003)",,,
+ten_item_personality_survey.openness,survey,,0.72,Pearson,42,198,Romero et al. (2012),,,
+ten_item_personality_survey.openness,survey,,0.72,Pearson,30,31,Renau et al. (2013),,,
+ten_item_personality_survey.openness,survey,,0.7,Pearson,30,31,Renau et al. (2013),,,
+theories_of_willpower_survey.endorse_limited_resource,survey,,0.77,Pearson,90,41,"Job, Dweck and Walton (2010)",,,
+time_perspective_survey.future,survey,,0.82,Pearson,28,278,Kolesovs (2009),,,
+time_perspective_survey.future,survey,,0.78,Pearson,28,407,Kolesovs (2009),,,
+time_perspective_survey.future,survey,,0.64,Pearson,14,30,"Carelli, Wiberg and Wiberg (2011)",,,
+time_perspective_survey.future,survey,,0.77,Pearson,28,76,"Zhang, Howell and Bowerman (2013)",,,
+time_perspective_survey.future,survey,,0.8,Pearson,30,58,Zimbardo and Boyd (2015),,,
+time_perspective_survey.future,survey,,0.55,Pearson,180,51,Wang et al. (2015),,,
+time_perspective_survey.past_negative,survey,,0.89,Pearson,28,278,Kolesovs (2009),,,
+time_perspective_survey.past_negative,survey,,0.9,Pearson,28,407,Kolesovs (2009),,,
+time_perspective_survey.past_negative,survey,,0.85,Pearson,14,30,"Carelli, Wiberg and Wiberg (2011)",,,
+time_perspective_survey.past_negative,survey,,0.83,Pearson,28,76,"Zhang, Howell and Bowerman (2013)",,,
+time_perspective_survey.past_negative,survey,,0.7,Pearson,30,58,Zimbardo and Boyd (2015),,,
+time_perspective_survey.past_negative,survey,,0.76,Pearson,180,51,Wang et al. (2015),,,
+time_perspective_survey.past_positive,survey,,0.74,Pearson,28,278,Kolesovs (2009),,,
+time_perspective_survey.past_positive,survey,,0.54,Pearson,28,407,Kolesovs (2009),,,
+time_perspective_survey.past_positive,survey,,0.69,Pearson,14,30,"Carelli, Wiberg and Wiberg (2011)",,,
+time_perspective_survey.past_positive,survey,,0.73,Pearson,28,76,"Zhang, Howell and Bowerman (2013)",,,
+time_perspective_survey.past_positive,survey,,0.76,Pearson,30,58,Zimbardo and Boyd (2015),,,
+time_perspective_survey.past_positive,survey,,0.61,Pearson,180,51,Wang et al. (2015),,,
+time_perspective_survey.present_fatalistic,survey,,0.69,Pearson,28,278,Kolesovs (2009),,,
+time_perspective_survey.present_fatalistic,survey,,0.81,Pearson,28,407,Kolesovs (2009),,,
+time_perspective_survey.present_fatalistic,survey,,0.71,Pearson,14,30,"Carelli, Wiberg and Wiberg (2011)",,,
+time_perspective_survey.present_fatalistic,survey,,0.66,Pearson,28,76,"Zhang, Howell and Bowerman (2013)",,,
+time_perspective_survey.present_fatalistic,survey,,0.76,Pearson,30,58,Zimbardo and Boyd (2015),,,
+time_perspective_survey.present_fatalistic,survey,,0.54,Pearson,180,51,Wang et al. (2015),,,
+time_perspective_survey.present_hedonistic,survey,,0.84,Pearson,28,278,Kolesovs (2009),,,
+time_perspective_survey.present_hedonistic,survey,,0.73,Pearson,28,407,Kolesovs (2009),,,
+time_perspective_survey.present_hedonistic,survey,,0.74,Pearson,14,30,"Carelli, Wiberg and Wiberg (2011)",,,
+time_perspective_survey.present_hedonistic,survey,,0.76,Pearson,28,76,"Zhang, Howell and Bowerman (2013)",,,
+time_perspective_survey.present_hedonistic,survey,,0.72,Pearson,30,58,Zimbardo and Boyd (2015),,,
+time_perspective_survey.present_hedonistic,survey,,0.68,Pearson,180,51,Wang et al. (2015),,,
+upps_impulsivity_survey.lack_of_perseverance,survey,,0.64,Pearson,25,65,Joiner (2007),,,
+upps_impulsivity_survey.lack_of_perseverance,survey,,0.83,Pearson,9,126,Weafer et al. (2013),,,
+upps_impulsivity_survey.lack_of_perseverance,survey,,0.73,ICC,21,50,"Hedge, Powell and Sumner (2017)",,,
+upps_impulsivity_survey.lack_of_perseverance,survey,,0.78,ICC,21,62,"Hedge, Powell and Sumner (2017)",,,
+upps_impulsivity_survey.lack_of_perseverance,survey,,0.9,ICC,21,42,"Hedge, Powell and Sumner (2017)",,,
+upps_impulsivity_survey.lack_of_premeditation,survey,,0.73,Pearson,25,65,Joiner (2007),,,
+upps_impulsivity_survey.lack_of_premeditation,survey,,0.81,Pearson,9,126,Weafer et al. (2013),,,
+upps_impulsivity_survey.lack_of_premeditation,survey,,0.66,Pearson,360,407,Kaiser (2015),,,
+upps_impulsivity_survey.lack_of_premeditation,survey,,0.74,Pearson,360,407,Kaiser (2015),,,
+upps_impulsivity_survey.lack_of_premeditation,survey,,0.7,ICC,21,50,"Hedge, Powell and Sumner (2017)",,,
+upps_impulsivity_survey.lack_of_premeditation,survey,,0.85,ICC,21,62,"Hedge, Powell and Sumner (2017)",,,
+upps_impulsivity_survey.lack_of_premeditation,survey,,0.88,ICC,21,42,"Hedge, Powell and Sumner (2017)",,,
+upps_impulsivity_survey.negative_urgency,survey,,0.73,Pearson,25,65,Joiner (2007),,,
+upps_impulsivity_survey.negative_urgency,survey,,0.86,Pearson,9,126,Weafer et al. (2013),,,
+upps_impulsivity_survey.negative_urgency,survey,,0.7,Pearson,360,407,Kaiser (2015),,,
+upps_impulsivity_survey.negative_urgency,survey,,0.74,Pearson,360,407,Kaiser (2015),,,
+upps_impulsivity_survey.negative_urgency,survey,,0.72,ICC,21,50,"Hedge, Powell and Sumner (2017)",,,
+upps_impulsivity_survey.negative_urgency,survey,,0.73,ICC,21,62,"Hedge, Powell and Sumner (2017)",,,
+upps_impulsivity_survey.negative_urgency,survey,,0.78,ICC,21,42,"Hedge, Powell and Sumner (2017)",,,
+upps_impulsivity_survey.positive_urgency,survey,,0.85,Pearson,9,126,Weafer et al. (2013),,,
+upps_impulsivity_survey.positive_urgency,survey,,0.8,ICC,21,50,"Hedge, Powell and Sumner (2017)",,,
+upps_impulsivity_survey.positive_urgency,survey,,0.82,ICC,21,62,"Hedge, Powell and Sumner (2017)",,,
+upps_impulsivity_survey.positive_urgency,survey,,0.85,ICC,21,42,"Hedge, Powell and Sumner (2017)",,,
+upps_impulsivity_survey.sensation_seeking,survey,,0.86,Pearson,25,65,Joiner (2007),,,
+upps_impulsivity_survey.sensation_seeking,survey,,0.93,Pearson,9,126,Weafer et al. (2013),,,
+upps_impulsivity_survey.sensation_seeking,survey,,0.81,Pearson,360,407,Kaiser (2015),,,
+upps_impulsivity_survey.sensation_seeking,survey,,0.88,Pearson,360,407,Kaiser (2015),,,
+upps_impulsivity_survey.sensation_seeking,survey,,0.87,ICC,21,50,"Hedge, Powell and Sumner (2017)",,,
+upps_impulsivity_survey.sensation_seeking,survey,,0.89,ICC,21,62,"Hedge, Powell and Sumner (2017)",,,
+upps_impulsivity_survey.sensation_seeking,survey,,0.91,ICC,21,42,"Hedge, Powell and Sumner (2017)",,,

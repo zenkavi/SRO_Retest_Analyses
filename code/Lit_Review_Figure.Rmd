@@ -18,7 +18,7 @@ options(scipen = 1, digits = 4, width = 500)
 ```
 
 ```{r echo=FALSE}
-fig_data <- read.csv('/Users/zeynepenkavi/Downloads/lit_review_figure.csv')
+fig_data <- read.csv('../input/lit_review_figure.csv')
 ```
 
 Interactive plot - not rendered for now
