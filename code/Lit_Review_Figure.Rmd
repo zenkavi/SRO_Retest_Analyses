@@ -1,6 +1,7 @@
 ---
 title: "Lit Review Figure"
 output:
+  pdf_document: default
   html_document: default
 ---
 
@@ -13,7 +14,7 @@ library(GGally)
 library(stringr)
 library(plotly)
 sem <- function(x) {sd(x, na.rm=T) / sqrt(length(x))}
-options(scipen = 1, digits = 4)
+options(scipen = 1, digits = 4, width = 500)
 ```
 
 ```{r echo=FALSE}
@@ -22,7 +23,7 @@ fig_data <- read.csv('/Users/zeynepenkavi/Downloads/lit_review_figure.csv')
 
 Interactive plot
 
-```{r warning=FALSE, message=FALSE, fig.height=36, echo=FALSE}
+```{r warning=FALSE, message=FALSE, fig.height=36, echo=FALSE, eval=FALSE}
 ggplotly(fig_data %>%
   mutate(dv = factor(dv, levels = dv[order(task)]),
          days_cutoff = ifelse(days < 60, days, 120),
@@ -38,7 +39,7 @@ tooltip = c('sample_size', 'type', 'dv', 'retest_reliability', 'days')) %>%
 
 Static plot
 
-```{r warning= FALSE, message =FALSE, fig.height=36, echo=FALSE}
+```{r warning= FALSE, message =FALSE, fig.height=36, echo=FALSE, eval=FALSE}
 fig_data %>%
   mutate(dv = factor(dv, levels = dv[order(task)]),
          days_cutoff = ifelse(days < 60, days, 120),
@@ -47,4 +48,54 @@ ggplot(aes(x = dv, y = retest_reliability, label=days))+
   geom_point(aes(color = task, size=sample_size, shape = type, alpha = days_cutoff))+
   coord_flip()+
   theme_bw()
+```
+
+```{r warning= FALSE, message =FALSE, out.width = "80%", echo=FALSE}
+p1 = fig_data %>%
+  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
+  mutate(days_cutoff = ifelse(days < 60, days, 120),
+         task_group = factor(task_group, levels = task_group[order(task)])) %>%
+  filter(task == 'task') %>%
+ggplot(aes(y = var, x = retest_reliability)) + 
+  geom_point(aes(size=sample_size, shape = type, alpha = days_cutoff))+
+  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
+  theme(panel.spacing = unit(0.5, "lines"), 
+        strip.placement = "outside",
+        strip.text.y = element_text(angle=180),
+        panel.background = element_rect(fill = NA),
+        panel.grid.major = element_line(colour = "grey80"),
+        legend.position = 'bottom') + 
+  xlab("")+
+  ylab("")
+
+p2 = fig_data %>%
+  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
+  mutate(days_cutoff = ifelse(days < 60, days, 120),
+         task_group = factor(task_group, levels = task_group[order(task)])) %>%
+  filter(task == 'survey') %>%
+ggplot(aes(y = var, x = retest_reliability)) + 
+  geom_point(aes(size=sample_size, shape = type, alpha = days_cutoff), color = '#F8766D')+
+  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
+  theme(panel.spacing = unit(0.5, "lines"), 
+        strip.placement = "outside",
+        strip.text.y = element_text(angle=180),
+        panel.background = element_rect(fill = NA),
+        panel.grid.major = element_line(colour = "grey80")) + 
+  xlab("")+
+  ylab("")
+
+g_legend<-function(a.gplot){
+  tmp <- ggplot_gtable(ggplot_build(a.gplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)}
+
+mylegend<-g_legend(p1)
+
+p3 <- grid.arrange(arrangeGrob(p1 + geom_point(color='#00BFC4')+theme(legend.position="none"),
+                         p2 + theme(legend.position="none"),
+                         nrow=1),
+             mylegend, nrow=2,heights=c(10, 1))
+
+ggsave('Lit_Review_Plot.jpg', plot = p3, device = "jpeg", path = "../output/", width = 24, height = 20, units = "in")
 ```
