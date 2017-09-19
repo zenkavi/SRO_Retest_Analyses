@@ -1,8 +1,8 @@
 ---
 title: "Lit Review Figure"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r, message=FALSE, warning=FALSE, include=FALSE}
@@ -21,7 +21,7 @@ options(scipen = 1, digits = 4, width = 500)
 fig_data <- read.csv('/Users/zeynepenkavi/Downloads/lit_review_figure.csv')
 ```
 
-Interactive plot
+Interactive plot - not rendered for now
 
 ```{r warning=FALSE, message=FALSE, fig.height=36, echo=FALSE, eval=FALSE}
 ggplotly(fig_data %>%
@@ -50,14 +50,31 @@ ggplot(aes(x = dv, y = retest_reliability, label=days))+
   theme_bw()
 ```
 
-```{r warning= FALSE, message =FALSE, out.width = "80%", echo=FALSE}
-p1 = fig_data %>%
+```{r warning= FALSE, message =FALSE, echo=FALSE}
+p1_legend = fig_data %>%
   separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
   mutate(days_cutoff = ifelse(days < 60, days, 120),
          task_group = factor(task_group, levels = task_group[order(task)])) %>%
   filter(task == 'task') %>%
 ggplot(aes(y = var, x = retest_reliability)) + 
   geom_point(aes(size=sample_size, shape = type, alpha = days_cutoff))+
+  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
+  theme(panel.spacing = unit(0.5, "lines"), 
+        strip.placement = "outside",
+        strip.text.y = element_text(angle=180),
+        panel.background = element_rect(fill = NA),
+        panel.grid.major = element_line(colour = "grey80"),
+        legend.position = 'bottom') + 
+  xlab("")+
+  ylab("")
+
+p1 = fig_data %>%
+  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
+  mutate(days_cutoff = ifelse(days < 60, days, 120),
+         task_group = factor(task_group, levels = task_group[order(task)])) %>%
+  filter(task == 'task') %>%
+ggplot(aes(y = var, x = retest_reliability)) + 
+  geom_point(aes(size=sample_size, shape = type, alpha = days_cutoff), color='#00BFC4')+
   facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
   theme(panel.spacing = unit(0.5, "lines"), 
         strip.placement = "outside",
@@ -90,12 +107,16 @@ g_legend<-function(a.gplot){
   legend <- tmp$grobs[[leg]]
   return(legend)}
 
-mylegend<-g_legend(p1)
+mylegend<-g_legend(p1_legend)
 
-p3 <- grid.arrange(arrangeGrob(p1 + geom_point(color='#00BFC4')+theme(legend.position="none"),
+p3 <- arrangeGrob(arrangeGrob(p1 +theme(legend.position="none"),
                          p2 + theme(legend.position="none"),
                          nrow=1),
              mylegend, nrow=2,heights=c(10, 1))
 
 ggsave('Lit_Review_Plot.jpg', plot = p3, device = "jpeg", path = "../output/", width = 24, height = 20, units = "in")
+```
+
+```{r echo=FALSE, out.width='100%'}
+knitr::include_graphics('../output/Lit_Review_Plot.jpg')
 ```
