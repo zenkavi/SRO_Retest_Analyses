@@ -21,7 +21,7 @@ library(stringr)
 library(plotly)
 library(DT)
 sem <- function(x) {sd(x, na.rm=T) / sqrt(length(x))}
-render_this <- function(){rmarkdown::render('SRO_Report.Rmd', output_dir = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Report', html_notebook(toc = T, toc_float = T, code_folding = 'hide'))}
+render_this <- function(){rmarkdown::render('SRO_Report.Rmd', output_dir = '../output', html_notebook(toc = T, toc_float = T, code_folding = 'hide'))}
 options(scipen = 1, digits = 4)
 ```
 
@@ -1309,7 +1309,7 @@ boot_df
 Summarized bootstrapped reliabilities
 
 ```{r}
-boot_df <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/bootstrap_merged.csv')
+boot_df <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/bootstrap_merged.csv')
 
 
 boot_df = boot_df %>%
