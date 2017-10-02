@@ -16,3 +16,77 @@ library(plotly)
 sem <- function(x) {sd(x, na.rm=T) / sqrt(length(x))}
 options(scipen = 1, digits = 4, width = 500)
 ```
+
+Lit review figure
+
+```{r}
+
+```
+
+Bootstrapped reliabilities figure mirroring lit review figure
+(most likely excludes DDM)
+
+```{r}
+
+```
+
+Histogram of point estimates comparing distributions of survey vs. task measures
+
+```{r}
+
+```
+
+Stats comparing reliabilities of surveys vs tasks
+
+```{r}
+
+```
+
+Table for survey reliabilities by survey name
+
+```{r}
+
+```
+
+Stats checking if item number makes a difference for reliability estimates for surveys
+
+```{r}
+
+```
+
+Table for task reliabilities by task name
+
+```{r}
+
+```
+
+Stats checking if item number makes a difference for reliability estimates for tasks
+
+```{r}
+
+```
+
+Table for task reliabilities by cognitive construct
+
+```{r}
+
+```
+
+Histogram of DDM vs. RT and accuracy measures
+
+```{r}
+
+```
+
+Statistics comparing average reliabilities for DDM vs raw measures
+
+```{r}
+
+```
+
+Note on metric for retest reliabilities
+Scatter plots showing relationships between ICC, Pearson and Spearman
+
+```{r}
+
+```
