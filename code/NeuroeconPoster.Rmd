@@ -1,0 +1,18 @@
+---
+title: "Neuroecon Poster Figures"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r, message=FALSE, warning=FALSE, include=FALSE}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(gridExtra)
+library(GGally)
+library(stringr)
+library(plotly)
+sem <- function(x) {sd(x, na.rm=T) / sqrt(length(x))}
+options(scipen = 1, digits = 4, width = 500)
+```
