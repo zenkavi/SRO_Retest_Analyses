@@ -10,4 +10,4 @@ raw_retest_data.csv
 raw_retest_subs_test_data_preddm_correction.csv
 bootstrap_merged.csv
 all_ddm_sample_size_estimates.csv
-./output/workspaces/*
+output/workspaces/*
