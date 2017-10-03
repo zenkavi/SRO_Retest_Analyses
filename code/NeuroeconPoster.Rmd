@@ -120,18 +120,28 @@ Bootstrapped reliabilities figure mirroring lit review figure
 (excludes DDM)
 
 ```{r warning=FALSE, message=FALSE}
-lit_rev_uniq_dvs = fig_data %>%
-  distinct(dv, .keep_all=T) %>%
-  select(-retest_reliability, -type, -days, -sample_size, -reference, -measure_description, -task)
+boot_df_poster = boot_df[boot_df$dv %in% poster_vars$var,]
 
-boot_df_lit_rev = boot_df %>%
-  left_join(lit_rev_uniq_dvs, by = "dv") %>%
-  na.omit()
+boot_df_poster = boot_df_poster%>%
+  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
+  mutate(task_group = factor(task_group, levels = task_group[order(task)])) %>%
+  separate(var, c("var"), sep="\\.",remove=TRUE,extra="drop") %>%
+  mutate(task_group = gsub("_", " ", task_group),
+         var = gsub("_", " ", var)) %>%
+  arrange(task_group, var)
 
-p4 <- boot_df_lit_rev %>%
+boot_df_poster = boot_df_poster %>%
+  left_join(rel_df[,c("dv", "icc")], by = "dv") %>%
+  rename(icc = icc.x, point_est = icc.y)
+```
+
+
+```{r warning=FALSE, message=FALSE} 
+p4 <- boot_df_poster %>%
   filter(task == 'task') %>%
 ggplot(aes(y = var, x = icc)) + 
   geom_point(color = '#00BFC4')+
+  geom_point(aes(y = var, x = point_est), color = "black")+
   facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
   theme(panel.spacing = unit(0.75, "lines"), 
         strip.placement = "outside",
@@ -144,10 +154,11 @@ ggplot(aes(y = var, x = icc)) +
   scale_shape_manual(breaks = sort(fig_data$type), values = c(15, 17, 3))+
   geom_vline(xintercept = 0, color = "red", size = 1)
 
-p5 <- boot_df_lit_rev %>%
+p5 <- boot_df_poster %>%
   filter(task == 'survey') %>%
 ggplot(aes(y = var, x = icc)) + 
   geom_point(color = '#F8766D')+
+  geom_point(aes(y = var, x = point_est), color = "black")+
   facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
   theme(panel.spacing = unit(0.75, "lines"), 
         strip.placement = "outside",

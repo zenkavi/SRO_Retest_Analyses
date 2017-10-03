@@ -21,9 +21,11 @@ options(scipen = 1, digits = 4, width = 500)
 fig_data <- read.csv('../input/lit_review_figure.csv')
 ```
 
-Interactive plot - not rendered for now
+References mentioned in the plot below can be found [here](https://docs.google.com/spreadsheets/d/1hcED4_rWSGSE8Td0aqT0kWqlLCBAzRNKBXj3tSram58/edit?usp=sharing).
 
-```{r warning=FALSE, message=FALSE, fig.height=36, echo=FALSE, eval=FALSE}
+Interactive plot
+
+```{r warning=FALSE, message=FALSE, fig.height=36, echo=FALSE}
 ggplotly(fig_data %>%
   mutate(dv = factor(dv, levels = dv[order(task)]),
          days_cutoff = ifelse(days < 60, days, 120),
