@@ -75,11 +75,11 @@ This report uses the variables that were designated as "meaningful" before. This
 
 ### Load time 1 data
 ```{r}
-test_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_01-31-2017/meaningful_variables.csv')
+test_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_07-08-2017/meaningful_variables.csv')
 
-test_data2 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_01-31-2017/meaningful_variables_noDDM.csv')
+test_data2 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_07-08-2017/meaningful_variables_noDDM.csv')
 
-test_data3 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_01-31-2017/meaningful_variables_EZ.csv')
+test_data3 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_07-08-2017/meaningful_variables_EZ.csv')
 
 test_data <- merge(test_data, test_data2)
 test_data <- merge(test_data, test_data3)
@@ -89,7 +89,7 @@ rm(test_data2, test_data3)
 For reference here are the variables that are **not** included in the analyses of the remainder of this report because they were not of theoretical interest in factor structure analyses of this data so far. These include drift diffusion and other model parameters for specific conditions within a task; survey variables that are not part of the dependant variables for that survey in the literature and demographics (these are saved for prediction analyses).
 
 ```{r}
-test_data2 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_01-31-2017/variables_exhaustive.csv')
+test_data2 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_07-08-2017/variables_exhaustive.csv')
 
 test_data2$X <- as.character(test_data2$X)
 
@@ -129,6 +129,12 @@ names(retest_data)[1] <- 'sub_id'
 names(test_data)[1] <- 'sub_id'
 
 retest_data <- retest_data[retest_data$sub_id %in% test_data$sub_id,]
+```
+
+This should not be necessary once releases are matched but for now extract only retest variables from test data.
+
+```{r}
+test_data <- test_data[,c(names(retest_data))]
 ```
 
 ### Clean t1 data
