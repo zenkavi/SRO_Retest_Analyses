@@ -15,6 +15,19 @@ library(stringr)
 library(plotly)
 sem <- function(x) {sd(x, na.rm=T) / sqrt(length(x))}
 options(scipen = 1, digits = 4, width = 500)
+g_legend<-function(a.gplot){
+  tmp <- ggplot_gtable(ggplot_build(a.gplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)}
+```
+
+Variables that will be used in the figures for the poster
+
+```{r}
+poster_vars <- read.csv('../input/poster_var_list.csv', header=F)
+
+names(poster_vars) = "var"
 ```
 
 # Lit review figure
@@ -23,12 +36,14 @@ Read data in
 
 ```{r}
 fig_data <- read.csv('../input/lit_review_figure.csv')
+
+fig_data_poster = fig_data[fig_data$dv %in% poster_vars$var,]
 ```
 
 Split dv column, organize by model fit or raw measure
 
 ```{r warning=FALSE, message=FALSE}
-fig_data = fig_data %>%
+fig_data_poster = fig_data_poster %>%
   separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
   mutate(task_group = factor(task_group, levels = task_group[order(task)]),
          raw1_fit0 = grepl('raw', variable_type),
@@ -40,7 +55,7 @@ fig_data = fig_data %>%
 ```
 
 ```{r}
-p1_legend = fig_data %>%
+p1_legend = fig_data_poster %>%
   filter(task == 'task') %>%
 ggplot(aes(y = var, x = retest_reliability)) + 
   geom_point(aes(size=sample_size, shape=type))+
@@ -50,13 +65,14 @@ ggplot(aes(y = var, x = retest_reliability)) +
         strip.text.y = element_text(angle=180),
         panel.background = element_rect(fill = NA),
         panel.grid.major = element_line(colour = "grey80"),
-        legend.position = 'bottom') + 
+        legend.position = 'bottom', 
+        legend.key.size = unit(2, "cm")) + 
   xlab("")+
   ylab("")+
   scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
   scale_shape_manual(breaks = sort(fig_data$type), values = c(15, 16, 17, 3))
 
-p1 = fig_data %>%
+p1 = fig_data_poster %>%
   filter(task == 'task') %>%
 ggplot(aes(y = var, x = retest_reliability)) + 
   geom_point(aes(size=sample_size, shape = type), color='#00BFC4')+
@@ -70,9 +86,10 @@ ggplot(aes(y = var, x = retest_reliability)) +
   xlab("")+
   ylab("")+
   scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
-  scale_shape_manual(breaks = sort(fig_data$type), values = c(15, 16, 17, 3))
+  scale_shape_manual(breaks = sort(fig_data$type), values = c(15, 16, 17, 3))+
+  geom_vline(xintercept = 0, color = "red", size = 1)
 
-p2 = fig_data %>%
+p2 = fig_data_poster %>%
   filter(task == 'survey') %>%
 ggplot(aes(y = var, x = retest_reliability)) + 
   geom_point(aes(size=sample_size, shape = type), color = '#F8766D')+
@@ -85,13 +102,8 @@ ggplot(aes(y = var, x = retest_reliability)) +
   xlab("")+
   ylab("")+
   scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
-  scale_shape_manual(breaks = sort(fig_data$type), values = c(15, 17, 3))
-
-g_legend<-function(a.gplot){
-  tmp <- ggplot_gtable(ggplot_build(a.gplot))
-  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
-  legend <- tmp$grobs[[leg]]
-  return(legend)}
+  scale_shape_manual(breaks = sort(fig_data$type), values = c(15, 17, 3))+
+  geom_vline(xintercept = 0, color = "red", size = 1)
 
 mylegend<-g_legend(p1_legend)
 
@@ -105,21 +117,52 @@ ggsave('Lit_Review_Poster_Plot.jpg', plot = p3, device = "jpeg", path = "../outp
 ```
 
 Bootstrapped reliabilities figure mirroring lit review figure
-(most likely excludes DDM)
+(excludes DDM)
 
-```{r}
-unique(fig_data
+```{r warning=FALSE, message=FALSE}
+lit_rev_uniq_dvs = fig_data %>%
+  distinct(dv, .keep_all=T) %>%
+  select(-retest_reliability, -type, -days, -sample_size, -reference, -measure_description, -task)
 
-boot_df %>%
-  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
-  mutate(task_group = factor(task_group, levels = task_group[order(task)]),
-         raw1_fit0 = grepl('raw', variable_type),
-         type = as.character(type)) %>%
-  separate(var, c("var"), sep="\\.",remove=TRUE,extra="drop") %>%
-  mutate(task_group = gsub("_", " ", task_group),
-         var = gsub("_", " ", var))
+boot_df_lit_rev = boot_df %>%
+  left_join(lit_rev_uniq_dvs, by = "dv") %>%
+  na.omit()
 
-# ggsave('Bootstrap_Poster_Plot.jpg', plot = p3, device = "jpeg", path = "../output/figures/", width = 48, height = 23, units = "in")
+p4 <- boot_df_lit_rev %>%
+  filter(task == 'task') %>%
+ggplot(aes(y = var, x = icc)) + 
+  geom_point(color = '#00BFC4')+
+  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
+  theme(panel.spacing = unit(0.75, "lines"), 
+        strip.placement = "outside",
+        strip.text.y = element_text(angle=180, size=20),
+        panel.background = element_rect(fill = NA),
+        panel.grid.major = element_line(colour = "grey80")) + 
+  xlab("")+
+  ylab("")+
+  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_shape_manual(breaks = sort(fig_data$type), values = c(15, 17, 3))+
+  geom_vline(xintercept = 0, color = "red", size = 1)
+
+p5 <- boot_df_lit_rev %>%
+  filter(task == 'survey') %>%
+ggplot(aes(y = var, x = icc)) + 
+  geom_point(color = '#F8766D')+
+  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
+  theme(panel.spacing = unit(0.75, "lines"), 
+        strip.placement = "outside",
+        strip.text.y = element_text(angle=180, size=20),
+        panel.background = element_rect(fill = NA),
+        panel.grid.major = element_line(colour = "grey80")) + 
+  xlab("")+
+  ylab("")+
+  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_shape_manual(breaks = sort(fig_data$type), values = c(15, 17, 3))+
+  geom_vline(xintercept = 0, color = "red", size = 1)
+  
+p6 <- arrangeGrob(p4, p5,nrow=1)
+
+ggsave('Bootstrap_Poster_Plot.jpg', plot = p6, device = "jpeg", path = "../output/figures/", width = 48, height = 23, units = "in")
 ```
 
 Histogram of point estimates comparing distributions of survey vs. task measures
