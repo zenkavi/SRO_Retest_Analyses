@@ -20,6 +20,7 @@ options(scipen = 1, digits = 4, width = 500)
 Lit review figure
 
 ```{r}
+fig_data <- read.csv('../input/lit_review_figure.csv')
 
 ```
 
