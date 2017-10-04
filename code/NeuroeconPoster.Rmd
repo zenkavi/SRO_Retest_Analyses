@@ -13,6 +13,7 @@ library(gridExtra)
 library(GGally)
 library(stringr)
 library(plotly)
+library(xtable)
 sem <- function(x) {sd(x, na.rm=T) / sqrt(length(x))}
 options(scipen = 1, digits = 4, width = 500)
 g_legend<-function(a.gplot){
@@ -133,6 +134,10 @@ boot_df_poster = boot_df_poster%>%
 boot_df_poster = boot_df_poster %>%
   left_join(rel_df[,c("dv", "icc")], by = "dv") %>%
   rename(icc = icc.x, point_est = icc.y)
+
+#Manual correction
+boot_df_poster = boot_df_poster %>%
+  mutate(task = ifelse(task_group == 'holt laury survey', "task", task))
 ```
 
 
@@ -178,50 +183,120 @@ ggsave('Bootstrap_Poster_Plot.jpg', plot = p6, device = "jpeg", path = "../outpu
 
 Histogram of point estimates comparing distributions of survey vs. task measures
 
-```{r}
+```{r warning=FALSE, message=FALSE}
+p7 <- ggplot_build(rel_df %>%
+               ggplot(aes(icc, fill=task)) +
+               geom_histogram(position = 'identity', alpha=0.5))$data[[1]] %>%
+  mutate(task=ifelse(as.character(fill) == "#00BFC4", "task", "survey")) %>%
+  ggplot(aes(x,y, fill=task))+
+  geom_bar(stat='identity', position='identity', alpha=0.5)+
+  xlab('ICC')+
+  ylab('Count')+
+  theme_bw()+
+  theme(legend.position="bottom",
+        legend.title = element_blank(),
+        legend.text= element_text(size=30),
+        axis.text.x = element_text(size=20),
+        axis.text.y = element_text(size=20),
+        axis.title.x = element_text(size = 30),
+        axis.title.y = element_text(size = 30))
 
+ggsave('Point_Est_Hist_Poster.jpg', plot = p7, device = "jpeg", path = "../output/figures/", width = 10, height = 10, units = "in")
 ```
 
 Stats comparing reliabilities of surveys vs tasks
 
 ```{r}
-
+summary(lm(icc ~ task, data=rel_df))
 ```
 
 Table for survey reliabilities by survey name
 
 ```{r}
-
+rel_df
 ```
 
 Stats checking if item number makes a difference for reliability estimates for surveys
 
-```{r}
+```{r warning=FALSE, message=FALSE}
+survey_labels = fig_data %>%
+  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
+  mutate(task_group = factor(task_group, levels = task_group[order(task)])) %>%
+  distinct(task_group, .keep_all=T) %>%
+  select(-dv, -var, -measure_description, -retest_reliability, -type, -days, -sample_size, -reference) %>%
+  filter(task == "survey")
 
+tmp = rel_df %>%
+  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
+  mutate(task_group = factor(task_group, levels = task_group[order(task)])) %>%
+  filter(task == "survey") %>%
+  left_join(survey_labels, by = "task_group") %>%
+  na.omit()
+
+summary(lm(icc ~ num_all_trials,data = tmp))
 ```
 
 Table for task reliabilities by task name
 
 ```{r}
+survey_rel_table = boot_df %>%
+  filter(task == "survey") %>%
+  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
+  group_by(task_group) %>%
+  summarise(min_icc = min(icc),
+            mean_icc = mean(icc),
+            max_icc = max(icc)) %>%
+  mutate(task_group = gsub("_", " ", task_group))
 
+names(survey_rel_table) <- c("Survey", "Min ICC", "Mean ICC", "Max ICC")
+write.csv(survey_rel_table, "../output/figures/survey_rel_table.csv")
 ```
 
 Stats checking if item number makes a difference for reliability estimates for tasks
 
-```{r}
+```{r warning=FALSE, message=FALSE}
+measure_labels <- read.csv('../input/measure_labels.csv')
 
+measure_labels = measure_labels %>%
+  select(dv, task, variable_type, ddm_task, num_all_trials)%>%
+  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
+  mutate(task_group = factor(task_group, levels = task_group[order(task)])) %>%
+  distinct(task_group, .keep_all=T) %>%
+  filter(task == "task") %>%
+  select(-dv, -var, -task)
+
+tmp = rel_df %>%
+  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
+  mutate(task_group = factor(task_group, levels = task_group[order(task)])) %>%
+  filter(task == "task") %>%
+  left_join(measure_labels, by = "task_group") %>%
+  na.omit()
+
+summary(lm(icc ~ num_all_trials,data = tmp))
 ```
 
-Table for task reliabilities by cognitive construct
+Table for task reliabilities by task name
 
 ```{r}
+task_rel_table = boot_df %>%
+  filter(task == "task") %>%
+  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
+  group_by(task_group) %>%
+  summarise(min_icc = min(icc),
+            mean_icc = mean(icc),
+            max_icc = max(icc)) %>%
+  mutate(task_group = gsub("_", " ", task_group))
 
+names(task_rel_table) <- c("Task", "Min ICC", "Mean ICC", "Max ICC")
+write.csv(task_rel_table, "../output/figures/task_rel_table.csv")
 ```
 
 Histogram of DDM vs. RT and accuracy measures
 
 ```{r}
-
+tmp %>%
+  filter(ddm_task == 1) %>%
+  
 ```
 
 Statistics comparing average reliabilities for DDM vs raw measures
