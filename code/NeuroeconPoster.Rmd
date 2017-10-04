@@ -80,7 +80,8 @@ ggplot(aes(y = var, x = retest_reliability)) +
   facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
   theme(panel.spacing = unit(0.75, "lines"), 
         strip.placement = "outside",
-        strip.text.y = element_text(angle=180, size=20),
+        strip.text.y = element_text(angle=180, size=36),
+        axis.text.y = element_text(size=20),
         panel.background = element_rect(fill = NA),
         panel.grid.major = element_line(colour = "grey80"),
         legend.position = 'bottom') + 
@@ -97,7 +98,8 @@ ggplot(aes(y = var, x = retest_reliability)) +
   facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
   theme(panel.spacing = unit(0.75, "lines"), 
         strip.placement = "outside",
-        strip.text.y = element_text(angle=180, size=20),
+        strip.text.y = element_text(angle=180, size=36),
+        axis.text.y = element_text(size=20),
         panel.background = element_rect(fill = NA),
         panel.grid.major = element_line(colour = "grey80")) + 
   xlab("")+
@@ -356,7 +358,7 @@ Scatter plots showing relationships between ICC, Pearson and Spearman
 p9 = rel_df %>%
   ggplot(aes(icc, spearman, color=task))+
   geom_point()+
-  geom_abline(intercept = 0, slope=1))+
+  geom_abline(intercept = 0, slope=1)+
   theme_bw()+
   theme(legend.position="bottom",
         legend.title = element_blank(),
