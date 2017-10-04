@@ -52,7 +52,9 @@ fig_data_poster = fig_data_poster %>%
   separate(var, c("var"), sep="\\.",remove=TRUE,extra="drop") %>%
   mutate(task_group = gsub("_", " ", task_group),
          var = gsub("_", " ", var)) %>%
-  arrange(task_group, raw1_fit0, var)
+  arrange(task_group, raw1_fit0, var) %>%
+  mutate(task_group = ifelse(task_group == "psychological refractory period two choices", "psychological refractory period", ifelse(task_group == "angling risk task always sunny", "angling risk task",task_group))) %>%
+  mutate(task_group = gsub("survey", "", task_group))
 ```
 
 ```{r}
@@ -77,7 +79,7 @@ p1 = fig_data_poster %>%
   filter(task == 'task') %>%
 ggplot(aes(y = var, x = retest_reliability)) + 
   geom_point(aes(size=sample_size, shape = type), color='#00BFC4')+
-  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
+  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y", labeller = label_wrap_gen(width=20)) +
   theme(panel.spacing = unit(0.75, "lines"), 
         strip.placement = "outside",
         strip.text.y = element_text(angle=180, size=36),
@@ -88,6 +90,7 @@ ggplot(aes(y = var, x = retest_reliability)) +
   xlab("")+
   ylab("")+
   scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
   scale_shape_manual(breaks = sort(fig_data$type), values = c(15, 16, 17, 3))+
   geom_vline(xintercept = 0, color = "red", size = 1)
 
@@ -95,7 +98,7 @@ p2 = fig_data_poster %>%
   filter(task == 'survey') %>%
 ggplot(aes(y = var, x = retest_reliability)) + 
   geom_point(aes(size=sample_size, shape = type), color = '#F8766D')+
-  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
+  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y", labeller = label_wrap_gen(width=20)) +
   theme(panel.spacing = unit(0.75, "lines"), 
         strip.placement = "outside",
         strip.text.y = element_text(angle=180, size=36),
@@ -105,6 +108,7 @@ ggplot(aes(y = var, x = retest_reliability)) +
   xlab("")+
   ylab("")+
   scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
   scale_shape_manual(breaks = sort(fig_data$type), values = c(15, 17, 3))+
   geom_vline(xintercept = 0, color = "red", size = 1)
 
@@ -115,7 +119,7 @@ p3 <- arrangeGrob(arrangeGrob(p1 +theme(legend.position="none"),
                          nrow=1),
              mylegend, nrow=2,heights=c(12, 1))
 
-ggsave('Lit_Review_Poster_Plot.jpg', plot = p3, device = "jpeg", path = "../output/figures/", width = 48, height = 23, units = "in")
+ggsave('Lit_Review_Poster_Plot.jpg', plot = p3, device = "jpeg", path = "../output/figures/", width = 35, height = 56, units = "in", limitsize = FALSE)
 
 ```
 
@@ -139,7 +143,9 @@ boot_df_poster = boot_df_poster %>%
 
 #Manual correction
 boot_df_poster = boot_df_poster %>%
-  mutate(task = ifelse(task_group == 'holt laury survey', "task", task))
+  mutate(task = ifelse(task_group == 'holt laury survey', "task", task)) %>%
+  mutate(task_group = ifelse(task_group == "psychological refractory period two choices", "psychological refractory period", ifelse(task_group == "angling risk task always sunny", "angling risk task",task_group))) %>%
+  mutate(task_group = gsub("survey", "", task_group))
 ```
 
 
@@ -149,15 +155,17 @@ p4 <- boot_df_poster %>%
 ggplot(aes(y = var, x = icc)) + 
   geom_point(color = '#00BFC4')+
   geom_point(aes(y = var, x = point_est), color = "black")+
-  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
+  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y", labeller = label_wrap_gen(width=20)) +
   theme(panel.spacing = unit(0.75, "lines"), 
         strip.placement = "outside",
-        strip.text.y = element_text(angle=180, size=20),
+        strip.text.y = element_text(angle=180, size=36),
+        axis.text.y = element_text(size=20),
         panel.background = element_rect(fill = NA),
         panel.grid.major = element_line(colour = "grey80")) + 
   xlab("")+
   ylab("")+
   scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
   scale_shape_manual(breaks = sort(fig_data$type), values = c(15, 17, 3))+
   geom_vline(xintercept = 0, color = "red", size = 1)
 
@@ -166,21 +174,23 @@ p5 <- boot_df_poster %>%
 ggplot(aes(y = var, x = icc)) + 
   geom_point(color = '#F8766D')+
   geom_point(aes(y = var, x = point_est), color = "black")+
-  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
+  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y", labeller = label_wrap_gen(width=20)) +
   theme(panel.spacing = unit(0.75, "lines"), 
         strip.placement = "outside",
-        strip.text.y = element_text(angle=180, size=20),
+        strip.text.y = element_text(angle=180, size=36),
+        axis.text.y = element_text(size=20),
         panel.background = element_rect(fill = NA),
         panel.grid.major = element_line(colour = "grey80")) + 
   xlab("")+
   ylab("")+
   scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
   scale_shape_manual(breaks = sort(fig_data$type), values = c(15, 17, 3))+
   geom_vline(xintercept = 0, color = "red", size = 1)
   
 p6 <- arrangeGrob(p4, p5,nrow=1)
 
-ggsave('Bootstrap_Poster_Plot.jpg', plot = p6, device = "jpeg", path = "../output/figures/", width = 48, height = 23, units = "in")
+ggsave('Bootstrap_Poster_Plot.jpg', plot = p6, device = "jpeg", path = "../output/figures/", width = 35, height = 56, units = "in", limitsize = FALSE)
 ```
 
 Histogram of point estimates comparing distributions of survey vs. task measures
@@ -321,7 +331,7 @@ p8 = measure_labels %>%
         axis.title.y = element_text(size = 30),
         strip.text = element_text(size=30))
 
-ggsave('DDM_raw_comp_Poster.jpg', plot = p8, device = "jpeg", path = "../output/figures/", width = 18, height = 5, units = "in")
+ggsave('DDM_raw_comp_Poster.jpg', plot = p8, device = "jpeg", path = "../output/figures/", width = 20, height = 6, units = "in")
 ```
 
 Statistics comparing average reliabilities for DDM vs raw measures
