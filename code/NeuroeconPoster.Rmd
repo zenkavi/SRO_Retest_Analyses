@@ -293,21 +293,79 @@ write.csv(task_rel_table, "../output/figures/task_rel_table.csv")
 
 Histogram of DDM vs. RT and accuracy measures
 
-```{r}
-tmp %>%
+```{r warning=FALSE, message=FALSE}
+measure_labels <- read.csv('../input/measure_labels.csv')
+
+p8 = measure_labels %>%
+  select(dv, task, variable_type, ddm_task, num_all_trials)%>%
+  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
+  mutate(task_group = factor(task_group, levels = task_group[order(task)])) %>%
+  filter(task == "task") %>%
+  select(-var, -task) %>%
+  left_join(rel_df[,c("dv", "icc")], by="dv")%>%
   filter(ddm_task == 1) %>%
-  
+  separate(variable_type, c("overall_difference", "raw_EZ_hddm", "param"), extra="merge") %>%
+  na.omit() %>%
+  ggplot(aes(icc))+
+  geom_histogram(aes(fill=param),  alpha=0.5, position = 'identity')+
+  facet_wrap(~raw_EZ_hddm)+
+  theme_bw()+
+  theme(legend.position="bottom",
+        legend.title = element_blank(),
+        legend.text= element_text(size=30),
+        axis.text.x = element_text(size=20),
+        axis.text.y = element_text(size=20),
+        axis.title.x = element_text(size = 30),
+        axis.title.y = element_text(size = 30),
+        strip.text = element_text(size=30))
+
+ggsave('DDM_raw_comp_Poster.jpg', plot = p8, device = "jpeg", path = "../output/figures/", width = 18, height = 5, units = "in")
 ```
 
 Statistics comparing average reliabilities for DDM vs raw measures
 
-```{r}
+```{r warning=FALSE, message=FALSE}
+tmp = measure_labels %>%
+  select(dv, task, variable_type, ddm_task, num_all_trials)%>%
+  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
+  mutate(task_group = factor(task_group, levels = task_group[order(task)])) %>%
+  filter(task == "task") %>%
+  select(-var, -task) %>%
+  left_join(rel_df[,c("dv", "icc")], by="dv")%>%
+  filter(ddm_task == 1) %>%
+  separate(variable_type, c("overall_difference", "raw_EZ_hddm", "param"), extra="merge") %>%
+  na.omit()
 
+summary(lm(icc~raw_EZ_hddm, data=tmp[tmp$raw_EZ_hddm != "raw",]))
 ```
+
+
+```{r}
+summary(lm(icc~raw_EZ_hddm, data=tmp[tmp$raw_EZ_hddm != "EZ",]))
+```
+
+```{r}
+summary(lm(icc~raw_EZ_hddm, data=tmp[tmp$raw_EZ_hddm != "hddm",]))
+```
+
 
 Note on metric for retest reliabilities
 Scatter plots showing relationships between ICC, Pearson and Spearman
 
 ```{r}
+p9 = rel_df %>%
+  ggplot(aes(icc, spearman, color=task))+
+  geom_point()+
+  geom_abline(intercept = 0, slope=1))+
+  theme_bw()+
+  theme(legend.position="bottom",
+        legend.title = element_blank(),
+        legend.text= element_text(size=30),
+        axis.text.x = element_text(size=20),
+        axis.text.y = element_text(size=20),
+        axis.title.x = element_text(size = 30),
+        axis.title.y = element_text(size = 30),
+        strip.text = element_text(size=30))
 
+ggsave('ICC_Spearman_Poster.jpg', plot = p9, device = "jpeg", path = "../output/figures/", width = 10, height = 10, units = "in")
 ```
