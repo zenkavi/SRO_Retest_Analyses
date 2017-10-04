@@ -119,7 +119,13 @@ p3 <- arrangeGrob(arrangeGrob(p1 +theme(legend.position="none"),
                          nrow=1),
              mylegend, nrow=2,heights=c(12, 1))
 
+p3nl <- arrangeGrob(p1 +theme(legend.position="none"),
+                         p2 + theme(legend.position="none"),
+                         nrow=1)
+
 ggsave('Lit_Review_Poster_Plot.jpg', plot = p3, device = "jpeg", path = "../output/figures/", width = 35, height = 56, units = "in", limitsize = FALSE)
+
+ggsave('Lit_Review_Poster_Plot_nl.jpg', plot = p3nl, device = "jpeg", path = "../output/figures/", width = 24, height = 42, units = "in", limitsize = FALSE)
 
 ```
 
@@ -190,7 +196,7 @@ ggplot(aes(y = var, x = icc)) +
   
 p6 <- arrangeGrob(p4, p5,nrow=1)
 
-ggsave('Bootstrap_Poster_Plot.jpg', plot = p6, device = "jpeg", path = "../output/figures/", width = 35, height = 56, units = "in", limitsize = FALSE)
+ggsave('Bootstrap_Poster_Plot.jpg', plot = p6, device = "jpeg", path = "../output/figures/", width = 24, height = 42, units = "in", limitsize = FALSE)
 ```
 
 Histogram of point estimates comparing distributions of survey vs. task measures
@@ -380,4 +386,107 @@ p9 = rel_df %>%
         strip.text = element_text(size=30))
 
 ggsave('ICC_Spearman_Poster.jpg', plot = p9, device = "jpeg", path = "../output/figures/", width = 10, height = 10, units = "in")
+```
+
+Summarizing at task level
+
+```{r}
+p1_t <- fig_data_poster %>%
+  filter(task == 'task') %>%
+ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_reliability)) + 
+  geom_point(aes(size=sample_size, shape = type), color='#00BFC4')+
+  theme_bw()+
+  theme(axis.text.y = element_text(size=43),
+        legend.position = 'none') + 
+  xlab("")+
+  ylab("")+
+  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
+  scale_shape_manual(breaks = sort(fig_data$type), values = c(15, 16, 17, 3))+
+  scale_size_continuous(range = c(5, 50))+
+  geom_vline(xintercept = 0, color = "red", size = 1)
+
+p2_t <- fig_data_poster %>%
+  filter(task == 'survey') %>%
+ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_reliability)) + 
+  geom_point(aes(size=sample_size, shape = type), color='#F8766D')+
+  theme_bw()+
+  theme(axis.text.y = element_text(size=43),
+        legend.position = 'none') + 
+  xlab("")+
+  ylab("")+
+  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
+  scale_shape_manual(breaks = sort(fig_data$type), values = c(15, 16, 17, 3))+
+  scale_size_continuous(range = c(5, 50))+
+  geom_vline(xintercept = 0, color = "red", size = 1)
+
+p3_t <- arrangeGrob(p1_t, p2_t, nrow=1)
+
+ggsave('Lit_Review_Poster_Plot_t.jpg', plot = p3_t, device = "jpeg", path = "../output/figures/", width = 26, height = 45, units = "in", limitsize = FALSE)
+```
+
+```{r}
+p4_t <- boot_df_poster %>%
+  filter(task == 'task') %>%
+ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) + 
+  geom_violin(fill='#00BFC4')+
+  theme_bw() + 
+  theme(axis.text.y = element_text(size=30))+
+  xlab("")+
+  ylab("")+
+  scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))+
+  geom_hline(yintercept = 0, color = "red", size = 1)+
+  coord_flip()
+
+p5_t <- boot_df_poster %>%
+  filter(task == 'survey') %>%
+ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) + 
+  geom_violin(fill='#F8766D')+
+  theme_bw() + 
+  theme(axis.text.y = element_text(size=43))+
+  xlab("")+
+  ylab("")+
+  scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))+
+  geom_hline(yintercept = 0, color = "red", size = 1)+
+  coord_flip()
+  
+p6_t <- arrangeGrob(p4_t, p5_t,nrow=1)
+
+ggsave('Bootstrap_Poster_Plot_t.jpg', plot = p6_t, device = "jpeg", path = "../output/figures/", width = 26, height = 45, units = "in", limitsize = FALSE)
+
+```
+
+
+
+```{r warning=FALSE, message=FALSE}
+p10 = measure_labels %>%
+  select(dv, task, variable_type, ddm_task, num_all_trials)%>%
+  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
+  mutate(task_group = factor(task_group, levels = task_group[order(task)])) %>%
+  filter(task == "task") %>%
+  select(-var, -task) %>%
+  left_join(rel_df[,c("dv", "icc")], by="dv")%>%
+  # filter(ddm_task == 1) %>%
+  separate(variable_type, c("overall_difference", "raw_EZ_hddm", "param"), extra="merge") %>%
+  mutate(raw_EZ_hddm = ifelse(ddm_task == 0, "other", raw_EZ_hddm),
+         param = ifelse(ddm_task == 0, "other", param)) %>%
+  na.omit() %>%
+  ggplot(aes(icc))+
+  geom_histogram(aes(fill=param),  alpha=0.5, position = 'identity')+
+  facet_grid(.~factor(raw_EZ_hddm, levels = c("raw", "EZ", "hddm", "other"), labels=c("Raw", "EZ-diffusion", "Hierarchical diffusion", "Other")))+
+  theme_bw()+
+  theme(legend.position="bottom",
+        legend.title = element_blank(),
+        legend.text= element_text(size=30),
+        axis.text.x = element_text(size=20),
+        axis.text.y = element_text(size=20),
+        axis.title.x = element_text(size = 30),
+        axis.title.y = element_text(size = 30),
+        strip.text = element_text(size=30))+
+  guides(fill  = guide_legend(nrow = 1))
+
+ggsave('Measure_type_comp_Poster.jpg', plot = p10, device = "jpeg", path = "../output/figures/", width = 30, height = 6, units = "in")
 ```
