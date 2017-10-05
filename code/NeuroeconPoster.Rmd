@@ -423,7 +423,7 @@ ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_re
 
 p3_t <- arrangeGrob(p1_t, p2_t, nrow=1)
 
-ggsave('Lit_Review_Poster_Plot_t.jpg', plot = p3_t, device = "jpeg", path = "../output/figures/", width = 26, height = 45, units = "in", limitsize = FALSE)
+ggsave('Lit_Review_Poster_Plot_t.jpg', plot = p3_t, device = "jpeg", path = "../output/figures/", width = 27, height = 48, units = "in", limitsize = FALSE)
 ```
 
 ```{r}
@@ -436,7 +436,7 @@ ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) +
   xlab("")+
   ylab("")+
   scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
-  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))+
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 15))+
   geom_hline(yintercept = 0, color = "red", size = 1)+
   coord_flip()
 
@@ -455,7 +455,7 @@ ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) +
   
 p6_t <- arrangeGrob(p4_t, p5_t,nrow=1)
 
-ggsave('Bootstrap_Poster_Plot_t.jpg', plot = p6_t, device = "jpeg", path = "../output/figures/", width = 26, height = 45, units = "in", limitsize = FALSE)
+ggsave('Bootstrap_Poster_Plot_t.jpg', plot = p6_t, device = "jpeg", path = "../output/figures/", width = 27, height = 48, units = "in", limitsize = FALSE)
 
 ```
 
