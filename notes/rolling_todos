@@ -1,0 +1,41 @@
+
+- write python function for icc's
+
+- make retest report (papaja)
+
+SURVEY LABELINGGGGG
+
+How much do hddm parameters change when fitting to whole vs partial sample
+
+How to reliabilities change w sample size (refit from 50 to 150) both for EZ and hddm (gives a prescriptive recommendation on which method to use depending on sample size)
+
+Turn off h of ddm and see if it makes a difference
+
+Bayesian ways of test retest (esp for HDDM) -> contact MH
+
+What is kl divergence
+
+State vs trait measures: e.g. if stroop distribution stayed the same across the time points but people moved around that would make stroop a ood state measure bud bad trait measure. Still it's a useful measure. For example if we had not controlled for subjects we would have considered this a successful replication. But perhaps it is a measure that ought not to be associated with trait measures in explaining the source of the variance
+
+Order effects?
+
+Reliability efficiency: using the Spearman-Brown prophecy formula can you calculate predicted reliabilities for each task to make them more comparable
+
+------------
+robust samwich for standard errors
+
+add 1 paragraph on what transformation effects are
+
+add pearsons (and then figure out which to calculate)
+
+eta sq: SStime/SStotal
+partial eta sq: SStime+SSerror/SStotal
+
+omega sq: ?? df correction
+
+difficult to compare sem's across measures because it's unit dependant
+
+for each task completion time difference (instead of individuals)
+
+ADD AGE AND SEX SANITY CHCEK FOR THE RETEST DATA
+DO RETEST ON ALL DEMOGRAPHICS
