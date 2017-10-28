@@ -26,20 +26,27 @@ Run: local in case of debugging; doesn't take too long other than a couple minut
 DV creation
 Input: calculate_retest_DVs.batch, Data/Retest_09-27-2017/batch_output, Data/Retest_09-27-2017/batch_output/.err, Data/Retest_09-27-2017/batch_output/.out, calculate_retest_exp_DVs.py
 Script: /batch_file/retest/run_retest_exps.sh
-Output: /batch_files/retest/*.model, /batch_files/retest/*.db, /batch_files/retest/*.csv, ../../Data/Retest_09-27-2017/batch_output/*_DV.json, ../../Data/Retest_09-27-2017/batch_output/*_DV_valence.json 
+Output: /batch_files/retest/*.model, /batch_files/retest/*.db, /batch_files/retest/*.csv, ../../Data/Retest_09-27-2017/batch_output/*_retest_DV.json, ../../Data/Retest_09-27-2017/batch_output/*_retest_DV_valence.json 
 Run: On Sherlock 1 using ~/miniconda3/bin/python, on Sherlock 2 using ~/miniconda/bin/python with the SRO_retest environment 
 
+Post DV creation cleanup
+Input: change path in concatenate_retest_DVs.py
+Script: cleanup_retest.sh
+Output: ../../Data/Retest_09-27-2017/batch_output/hddm_models/*.model, ../../Data/Retest_09-27-2017/batch_output/hddm_models/*.db, ../../Data/Retest_09-27-2017/batch_output/hddm_data/*_data.csv, ../../Data/Retest_09-27-2017/Local/
+Run: On Sherlock from batch_files/retest
+
 Save data II (post dv calculation)
+Input: mturk_retest_DV.json, mturk_retest_DV_valence.json
+Script: retest_save_data_post.py
+Output: meaningful_variables.csv, meaningful_variables_EZ.csv, meaningful_variables_clean.csv, meaningful_variables_hddm.csv, meaningful_variables_imputed.csv, meaningful_variables_imputed_for_task_selection.csv, meaningful_variables_noDDM.csv, short_DV_valence.csv, short_meaningful_variables.csv, short_meaningful_variables_EZ.csv, short_meaningful_variables_clean.csv, short_meaningful_variables_hddm.csv, short_meaningful_variables_imputed.csv, short_meaningful_variables_imputed_for_task_selection.csv, short_meaningful_variables_noDDM.csv, short_subject_x_items.csv, short_taskdata.csv, short_taskdata_clean.csv, short_taskdata_imputed.csv, short_taskdata_imputed_for_task_selection.csv, short_variables_exhaustive.csv, taskdata.csv, taskdata_clean.csv, taskdata_imputed.csv, taskdata_imputed_for_task_selection.csv, variables_exhaustive.csv
+Run: Local
+
+Bootstrap (do this for variables exhaustive - can't before the test data matches all new retest vars)
 Input:
 Script:
 Output:
 
 DDM refit for original sample
-Input:
-Script:
-Output:
-
-Bootstrap
 Input:
 Script:
 Output:
