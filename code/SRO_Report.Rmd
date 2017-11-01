@@ -34,13 +34,13 @@ options(scipen = 1, digits = 4)
 This sample consists of data for 150 subjects of the original sample of 522 that has completed the initial battery of 37 cognitive tasks, 23 surveys and 3 surveys on demographics. Details of the original sample as well as quality control (qc) procedures are described elsewhere. Invited participants were chosen randomly and only subsets of them were invited for a given batch (instead of opening the battery to all qualified subjects) with the intention to avoid a potential oversampling and bias towards "high self regulators".
 
 ```{r warning=FALSE, message=FALSE}
-workers = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-21-2017/Local/User_717570_workers.csv')
+workers = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/Local/User_717570_workers.csv')
 workers = workers %>% 
   group_by(Worker.ID) %>%
   mutate(Retest_worker=ifelse(sum(CURRENT.RetestWorker,CURRENT.RetestWorkerB2,CURRENT.RetestWorkerB3,CURRENT.RetestWorkerB4,CURRENT.RetestWorkerB5,na.rm=T)>0,1,0)) %>%
   ungroup()
 
-worker_counts <- fromJSON('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-21-2017/Local/retest_worker_counts.json')
+worker_counts <- fromJSON('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/Local/retest_worker_counts.json')
 
 worker_counts = as.data.frame(unlist(worker_counts))
 names(worker_counts) = "task_count"
@@ -49,11 +49,11 @@ names(worker_counts) = "task_count"
 In total `r sum(workers$Retest_worker)` participants were invited, `r nrow(worker_counts)` began the battery, `r sum(worker_counts$task_count >= 62)` completed the battery and 150 provided data that passed qc for both time points. Our target sample size was determined in advance of data collection and data collection continued until this number of participants with data that survived qc was reached.
 
 ```{r warning=FALSE, message=FALSE}
-disc_comp_date = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-21-2017/Local/discovery_completion_dates.csv', header=FALSE)
-val_comp_date = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-21-2017/Local/validation_completion_dates.csv', header=FALSE)
+disc_comp_date = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/Local/discovery_completion_dates.csv', header=FALSE)
+val_comp_date = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/Local/validation_completion_dates.csv', header=FALSE)
 test_comp_date = rbind(disc_comp_date, val_comp_date)
 rm(disc_comp_date, val_comp_date)
-retest_comp_date = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-21-2017/Local/retest_completion_dates.csv', header=FALSE)
+retest_comp_date = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/Local/retest_completion_dates.csv', header=FALSE)
 comp_dates = merge(retest_comp_date, test_comp_date, by="V1")
 names(comp_dates) <- c("sub_id", "retest_comp", "test_comp")
 comp_dates$retest_comp = as.Date(comp_dates$retest_comp)
@@ -107,11 +107,11 @@ rm(test_data2, df)
 
 ### Load time 2 data 
 ```{r}
-retest_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-21-2017/meaningful_variables.csv')
+retest_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/meaningful_variables.csv')
 
-retest_data2 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-21-2017/meaningful_variables_noDDM.csv')
+retest_data2 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/meaningful_variables_noDDM.csv')
 
-retest_data3 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-21-2017/meaningful_variables_EZ.csv')
+retest_data3 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/meaningful_variables_EZ.csv')
 
 retest_data <- merge(retest_data, retest_data2)
 retest_data <- merge(retest_data, retest_data3)
@@ -144,7 +144,7 @@ The cleaning functions here are translated from the python pipeline to mimick th
 The original cleaning procedures include three steps:  
 1. Removing outliers for each variable where outliers are defined as those who are greater than 2.5 IQR from median. **This step is skipped here because removing outliers from either dataset could lead to an unnecessary increase in missing data. Since we are interested in the average distance between two measures of a metric for a given subject instead of the distance between all these metrics this seemed appropriate.**  
 2. Removing correlated variables *within* a task. In creating `meaningful_variables_clean` if variables for a given task correlated >.85 only one was kept. **This step is skipped here because we want to look at the reliability of as many variables as we can.**  
-3. Log transforming variables with skew. In cleaning t1 data variables that had a |skew| > 1 were log transformed and those for which skew could not be removed successfully were dropped. **Here we transform all variables that have a |skew|>1 in t1 data but variables that are not successfully transformed will be listed and not dropped.**
+3. Log transforming variables with skew. In cleaning t1 data variables that had a |skew| > 1 were log transformed and those for which skew could not be removed successfully were dropped. **Here we transform all variables that have a |skew|>1 in t1 data but variables that are not successfully transformed (i.e. where the transformation has not decreased the skew below the threshold) will be listed and not dropped.**
 
 ```{r}
 remove_outliers = function(data_column, quantile_range = 2.5){
