@@ -69,7 +69,6 @@ choice_reaction_time.avg_rt.logTr,task,Median response time for correct response
 choice_reaction_time.avg_rt.logTr,task,Median response time for correct responses,0.64,Pearson,1,20,"Deary, Liewald and Nissan (2011)","overall, raw, rt",1,50
 choice_reaction_time.avg_rt.logTr,task,Median response time for correct responses,0.83,Pearson,1,20,"Deary, Liewald and Nissan (2011)","overall, raw, rt",1,50
 choice_reaction_time.avg_rt.logTr,task,Median response time for correct responses,0.79,ICC,1,96,Jones et al. (2016),"overall, raw, rt",1,50
-choice_reaction_time.modal_mean_diff,task,Difference between modal and mean response time,0.38,Pearson,9,128,Weafer et al. (2013),"difference, raw, rt",1,50
 dietary_decision.prop_healthy_choice,task,Proportion of choices in the test phase where the item with higher health rating is chosen,0.42,Pearson,7,27,Vlaev et al. (2017),"overall, raw",0,49
 dietary_decision.prop_healthy_choice,task,Proportion of choices in the test phase where the item with higher health rating is chosen,0.61,Pearson,7,27,Vlaev et al. (2017),"overall, raw",0,49
 dietary_decision.prop_healthy_choice,task,Proportion of choices in the test phase where the item with higher health rating is chosen,0.54,Pearson,7,27,Vlaev et al. (2017),"overall, raw",0,49
@@ -132,7 +131,6 @@ go_nogo.go_rt,task,Mean RT for go trials,0.74,ICC,21,47,"Hedge, Powell and Sumne
 go_nogo.go_rt,task,Mean RT for go trials,0.63,ICC,21,57,"Hedge, Powell and Sumner (2017)","condition, raw, rt",0,35
 go_nogo.omission_errors,task,Go false alarms where response is witheld when it shouldn't have been,0.69,ICC,21,47,"Hedge, Powell and Sumner (2017)","condition, raw, accuracy",0,35
 go_nogo.omission_errors,task,Go false alarms where response is witheld when it shouldn't have been,0.42,ICC,21,57,"Hedge, Powell and Sumner (2017)","condition, raw, accuracy",0,35
-holt_laury_survey.prob_weighing_curvature,task,Gamma where w(p) = exp(-(-(ln p)^gamma)),0.73,Spearman,50,53,Wölbert and Riedl (2013),"overall, fit",0,10
 holt_laury_survey.risk_aversion,task,Relative risk aversion (U(x) = (x^(1-r))/(1-r)- implementation details may vary),0.32,Spearman,37,29,Chung et al. (2017),"overall, fit",0,10
 holt_laury_survey.risk_aversion,task,Relative risk aversion (U(x) = (x^(1-r))/(1-r)- implementation details may vary),0.68,Spearman,37,31,Chung et al. (2017),"overall, fit",0,10
 holt_laury_survey.risk_aversion,task,Relative risk aversion (U(x) = (x^(1-r))/(1-r)- implementation details may vary),0.41,Spearman,37,47,Chung et al. (2017),"overall, fit",0,10
@@ -141,12 +139,12 @@ holt_laury_survey.risk_aversion,task,Relative risk aversion (U(x) = (x^(1-r))/(1
 holt_laury_survey.risk_aversion,task,Relative risk aversion (U(x) = (x^(1-r))/(1-r)- implementation details may vary),0.58,Pearson,100,97,Anderson et al. (2008),"overall, fit",0,10
 holt_laury_survey.risk_aversion,task,Relative risk aversion (U(x) = (x^(1-r))/(1-r)- implementation details may vary),0.34,Pearson,100,97,Anderson et al. (2008),"overall, fit",0,10
 holt_laury_survey.risk_aversion,task,Relative risk aversion (U(x) = (x^(1-r))/(1-r)- implementation details may vary),0.43,Pearson,100,97,Anderson et al. (2008),"overall, fit",0,10
+holt_laury_survey.risk_aversion,task,Relative risk aversion (U(x) = (x^(1-r))/(1-r)- implementation details may vary),0.77,Spearman,49,53,Wölbert and Riedl (2013),"overall, fit",0,10
 holt_laury_survey.risky_choices,task,Number of time the risky gamble is chosen among the 10 choices,0.258,Spearman,360,44,Lönnqvist et al. (2015),"overall, raw",0,10
 holt_laury_survey.risky_choices,task,Number of time the risky gamble is chosen among the 10 choices,0.36,Spearman,37,29,Chung et al. (2017),"overall, raw",0,10
 holt_laury_survey.risky_choices,task,Number of time the risky gamble is chosen among the 10 choices,0.62,Spearman,37,31,Chung et al. (2017),"overall, raw",0,10
 holt_laury_survey.risky_choices,task,Number of time the risky gamble is chosen among the 10 choices,0.23,Spearman,37,47,Chung et al. (2017),"overall, raw",0,10
 holt_laury_survey.risky_choices,task,Number of time the risky gamble is chosen among the 10 choices,0.51,Spearman,37,65,Chung et al. (2017),"overall, raw",0,10
-holt_laury_survey.value_func_curvature,task,Alpha where v(x) = x^alpha,0.77,Spearman,50,53,Wölbert and Riedl (2013),"overall, fit",0,10
 information_sampling_task.Decreasing_Win_motivation,task,Average latency in opening each box in the condition where opening each additional box decreases the points that can be earned in that round following a correct guess of the color in majority,0.02,ICC,360,312,Grummitt et al.,"condition, raw, rt",0,20
 information_sampling_task.Decreasing_Win_boxes_opened,task,Number of boxes opened on average for all rounds in the decreasing win condition,0.53,ICC,360,312,Grummitt et al.,"condition, raw",0,20
 information_sampling_task.Fixed_Win_motivation,task,Average latency in opening each box in the condition where the points that can be earned is fixed in that round following a correct guess of the color in majority,0.55,ICC,360,312,Grummitt et al.,"condition,raw, rt",0,20
@@ -405,14 +403,14 @@ bis11_survey.Nonplanning,survey,,0.73,ICC,14,31,Suris et al. (2007),"condition, 
 bis11_survey.Nonplanning,survey,,0.77,ICC,14,34,Suris et al. (2007),"condition, fit",0,11
 bis11_survey.Nonplanning,survey,,0.72,Spearman,30,153,Stanford et al. (2009),"condition, fit",0,11
 bis11_survey.Nonplanning,survey,,0.85,Pearson,9,127,Weafer et al. (2013),"condition, fit",0,11
-bis11_survey.Total,survey,,0.71,ICC,120,34,Someya et al. (2001),"condition, raw",0,30
-bis11_survey.Total,survey,,0.89,Pearson,60,83,Fossati et al. (2001),"condition, raw",0,30
-bis11_survey.Total,survey,,0.77,ICC,14,32,Suris et al. (2007),"condition, raw",0,30
-bis11_survey.Total,survey,,0.78,ICC,14,31,Suris et al. (2007),"condition, raw",0,30
-bis11_survey.Total,survey,,0.8,ICC,14,34,Suris et al. (2007),"condition, raw",0,30
-bis11_survey.Total,survey,,0.83,Pearson,60,44,Gülec et al. (2008),"condition, raw",0,30
-bis11_survey.Total,survey,,0.83,Spearman,30,153,Stanford et al. (2009),"condition, raw",0,30
-bis11_survey.Total,survey,,0.92,Pearson,9,127,Weafer et al. (2013),"condition, raw",0,30
+bis11_survey.total,survey,,0.71,ICC,120,34,Someya et al. (2001),"condition, raw",0,30
+bis11_survey.total,survey,,0.89,Pearson,60,83,Fossati et al. (2001),"condition, raw",0,30
+bis11_survey.total,survey,,0.77,ICC,14,32,Suris et al. (2007),"condition, raw",0,30
+bis11_survey.total,survey,,0.78,ICC,14,31,Suris et al. (2007),"condition, raw",0,30
+bis11_survey.total,survey,,0.8,ICC,14,34,Suris et al. (2007),"condition, raw",0,30
+bis11_survey.total,survey,,0.83,Pearson,60,44,Gülec et al. (2008),"condition, raw",0,30
+bis11_survey.total,survey,,0.83,Spearman,30,153,Stanford et al. (2009),"condition, raw",0,30
+bis11_survey.total,survey,,0.92,Pearson,9,127,Weafer et al. (2013),"condition, raw",0,30
 brief_self_control_survey.self_control,survey,,0.87,Pearson,21,233,Tangney et al. (2004),"overall, raw",0,13
 brief_self_control_survey.self_control,survey,,0.75,Pearson,210,140,Duckworth and Seligman (2005),"overall, raw",0,13
 brief_self_control_survey.self_control,survey,,0.76,Pearson,210,164,Duckworth and Seligman (2005),"overall, raw",0,13

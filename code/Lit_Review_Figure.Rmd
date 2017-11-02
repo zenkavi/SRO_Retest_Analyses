@@ -42,6 +42,7 @@ tooltip = c('sample_size', 'type', 'dv', 'retest_reliability', 'days')) %>%
 Static plot
 
 ```{r warning= FALSE, message =FALSE, fig.height=36, echo=FALSE, eval=FALSE}
+#Static plot with everything in same panel
 fig_data %>%
   mutate(dv = factor(dv, levels = dv[order(task)]),
          days_cutoff = ifelse(days < 60, days, 120),

@@ -21,7 +21,12 @@ library(stringr)
 library(plotly)
 library(DT)
 sem <- function(x) {sd(x, na.rm=T) / sqrt(length(x))}
-render_this <- function(){rmarkdown::render('SRO_Report.Rmd', output_dir = '../output', html_notebook(toc = T, toc_float = T, code_folding = 'hide'))}
+g_legend<-function(a.gplot){
+  tmp <- ggplot_gtable(ggplot_build(a.gplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)}
+render_this <- function(){rmarkdown::render('SRO_Report.Rmd', output_dir = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/reports', html_notebook(toc = T, toc_float = T, code_folding = 'hide'))}
 options(scipen = 1, digits = 4)
 ```
 
@@ -65,9 +70,145 @@ Data collection took place on average `r round(mean(as.numeric(comp_dates$days_b
 
 ## Literature
 
-### Tasks
+One the major contributions of this project is a comprehensive literature review of the retest reliabilities of the surveys and tasks that were used. We reviewed the literature on a measure (as opposed to task level) paying attention to differences in sample size, the delay between the two measurements as well as the statistic that was used to assess reliabilities (e.g. Spearman vs. Pearson correlations). Here we present a table and a visualization summarizing our findings. References mentioned in the table below can be found [here](https://docs.google.com/spreadsheets/d/1hcED4_rWSGSE8Td0aqT0kWqlLCBAzRNKBXj3tSram58/edit?usp=sharing).  
 
-### Surveys
+```{r}
+lit_review <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/lit_review_figure.csv')
+
+datatable(lit_review %>%
+  mutate(dv = gsub(".ReflogTr", "",dv),
+         dv = gsub(".logTr", "", dv)))
+```
+
+Measure level plot
+
+```{r warning=FALSE, message=FALSE}
+lit_review = lit_review %>%
+  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
+  mutate(task_group = factor(task_group, levels = task_group[order(task)]),
+         raw1_fit0 = grepl('raw', variable_type),
+         type = as.character(type)) %>%
+  mutate(task_group = gsub("_", " ", task_group),
+         var = gsub("_", " ", var),
+         dv = gsub(".ReflogTr", "",dv),
+         dv = gsub(".logTr", "", dv)) %>%
+  arrange(task_group, raw1_fit0, var) %>%
+  mutate(task_group = ifelse(task_group == "psychological refractory period two choices", "psychological refractory period", ifelse(task_group == "angling risk task always sunny", "angling risk task",task_group))) %>%
+  mutate(task_group = gsub("survey", "", task_group)) %>%
+    select(-measure_description, -reference)
+```
+
+```{r warning= FALSE, message =FALSE, echo=FALSE}
+p1_legend = lit_review %>%
+  filter(task == 'task') %>%
+ggplot(aes(y = var, x = retest_reliability)) + 
+  geom_point(aes(size=sample_size, shape=type))+
+  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
+  theme(panel.spacing = unit(0.5, "lines"), 
+        strip.placement = "outside",
+        strip.text.y = element_text(angle=180),
+        panel.background = element_rect(fill = NA),
+        panel.grid.major = element_line(colour = "grey80"),
+        legend.position = 'bottom') + 
+  xlab("")+
+  ylab("")+
+  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_shape_manual(breaks = sort(lit_review$type), values = c(15, 16, 17, 3))
+
+p1 = lit_review %>%
+  filter(task == 'task') %>%
+ggplot(aes(y = var, x = retest_reliability)) + 
+  geom_point(aes(size=sample_size, shape = type), color='#00BFC4')+
+  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
+  theme(panel.spacing = unit(0.5, "lines"), 
+        strip.placement = "outside",
+        strip.text.y = element_text(angle=180),
+        panel.background = element_rect(fill = NA),
+        panel.grid.major = element_line(colour = "grey80"),
+        legend.position = 'bottom') + 
+  xlab("")+
+  ylab("")+
+  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_shape_manual(breaks = sort(lit_review$type), values = c(15, 16, 17, 3))
+
+p2 = lit_review %>%
+  filter(task == 'survey') %>%
+ggplot(aes(y = var, x = retest_reliability)) + 
+  geom_point(aes(size=sample_size, shape = type), color = '#F8766D')+
+  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
+  theme(panel.spacing = unit(0.5, "lines"), 
+        strip.placement = "outside",
+        strip.text.y = element_text(angle=180),
+        panel.background = element_rect(fill = NA),
+        panel.grid.major = element_line(colour = "grey80")) + 
+  xlab("")+
+  ylab("")+
+  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_shape_manual(breaks = sort(lit_review$type), values = c(15, 17, 3))
+
+mylegend<-g_legend(p1_legend)
+
+p3 <- arrangeGrob(arrangeGrob(p1 +theme(legend.position="none"),
+                         p2 + theme(legend.position="none"),
+                         nrow=1),
+             mylegend, nrow=2,heights=c(10, 1))
+
+ggsave('Lit_Review_Plot.jpg', plot = p3, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 24, height = 20, units = "in")
+rm(p1, p2, p3, p1_legend, mylegend)
+```
+
+```{r echo=FALSE, out.width='100%'}
+knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/Lit_Review_Plot.jpg')
+```
+
+Because this plot is difficult to digest we summarize it on a task level to give a general sense of the main takeaways. This plot naturally disregards much of the fine grained information.
+
+```{r}
+p1_t <- lit_review %>%
+  filter(task == 'task') %>%
+ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_reliability)) + 
+  geom_point(aes(size=sample_size, shape = type), color='#00BFC4')+
+  theme_bw()+
+  theme(axis.text.y = element_text(size=43),
+        legend.position = 'none') + 
+  xlab("")+
+  ylab("")+
+  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
+  scale_shape_manual(breaks = sort(lit_review$type), values = c(15, 16, 17, 3))+
+  scale_size_continuous(range = c(5, 50))+
+  geom_vline(xintercept = 0, color = "red", size = 1)
+
+p2_t <- lit_review %>%
+  filter(task == 'survey') %>%
+ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_reliability)) + 
+  geom_point(aes(size=sample_size, shape = type), color='#F8766D')+
+  theme_bw()+
+  theme(axis.text.y = element_text(size=43),
+        legend.position = 'none') + 
+  xlab("")+
+  ylab("")+
+  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
+  scale_shape_manual(breaks = sort(lit_review$type), values = c(15, 16, 17, 3))+
+  scale_size_continuous(range = c(5, 50))+
+  geom_vline(xintercept = 0, color = "red", size = 1)
+
+p3_t <- arrangeGrob(p1_t, p2_t, nrow=1)
+
+ggsave('Lit_Review_Plot_t.jpg', plot = p3_t, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 27, height = 48, units = "in", limitsize = FALSE)
+rm(p1_t, p2_t, p3_t)
+```
+
+```{r echo=FALSE, out.width='100%'}
+knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/Lit_Review_Plot_t.jpg')
+```
+
+An interactive version of this plot could be find [here](https://zenkavi.github.io/SRO_Retest_Analyses/output/reports/Lit_Review_Figure.html)
+
+Takeaways from this review are: 
+- Survey measures have been reported to higher reliability compared to task measures  
+- Survey measures have less variability in the reported reliabiltiy estimates compared to task measures' 
 
 ## Loading and matching datasets
 
