@@ -10,6 +10,8 @@ General:
 - Push all changes to origin
 - Pull on Sherlock
 - Run all jobs on Sherlock
+- pip install expfactory-analysis
+- python setup.py install
 
 Download data + post process + QC
 Input: Self_Regulation_Retest_Settings.txt, expfactory_token.txt, worker_lookup.json
@@ -42,9 +44,10 @@ Output: meaningful_variables.csv, meaningful_variables_EZ.csv, meaningful_variab
 Run: Local
 
 Bootstrap (do this for variables exhaustive - can't before the test data matches all new retest vars)
-Input:
+Input: batch_output/bootstrap_output, variables_exhaustive.csv
 Script:
 Output:
+Run: Sherlock
 
 DDM refit for original sample
 Input:
