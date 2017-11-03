@@ -1,0 +1,174 @@
+---
+title: 'SRO Retest Interactive Figures'
+output:
+github_document:
+toc: yes
+toc_float: yes
+---
+
+#################################
+NOT USED
+#################################
+
+```{r, message=FALSE, warning=FALSE, include=FALSE}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(gridExtra)
+library(lme4)
+library(GGally)
+library(jsonlite)
+library(psych)
+library(rmarkdown)
+library(psych)
+library(stringr)
+library(plotly)
+library(DT)
+sem <- function(x) {sd(x, na.rm=T) / sqrt(length(x))}
+g_legend<-function(a.gplot){
+  tmp <- ggplot_gtable(ggplot_build(a.gplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)}
+render_this <- function(){rmarkdown::render('SRO_Report.Rmd', output_dir = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/reports', html_notebook(toc = T, toc_float = T, code_folding = 'hide'))}
+options(scipen = 1, digits = 4)
+```
+
+```{r echo=FALSE}
+#Convenience functions to make prettier interactive histograms
+get_labels = function(plot_df, ref_df, bin_col, group_col){
+  
+  plot_df$bin = as.numeric(factor(plot_df$x))
+  ref_df$bin = NA
+  
+  for(i in 1:nrow(ref_df)){
+    for(j in 1:nrow(plot_df)){
+      # if(ref_df[i, bin_col] <= plot_df$xmax[j] & ref_df[i, bin_col]>=plot_df$xmin[j] & all(ref_df[i, group_col] == plot_df[j, group_col])){
+      if(ref_df[i, bin_col] <= plot_df$xmax[j] & ref_df[i, bin_col]>=plot_df$xmin[j] & ref_df[i, group_col] == plot_df[j, group_col]){
+        ref_df$bin[i] <- plot_df$bin[j]
+      }
+    }
+  }
+  
+  ref_df = ref_df %>% 
+    group_by_("bin", group_col) %>%
+    mutate(label=as.character(toJSON(unique(dv))))
+  
+  label_df = ref_df[!duplicated(ref_df[,c('label')]),c(group_col, 'bin', 'label')]
+  
+  out_df = left_join(plot_df,label_df, by= c("bin", group_col))
+  
+  return(out_df)
+}
+
+
+line_break <- function(cell){
+  out = paste(unlist(strsplit(gsub("\\]","",gsub("\\[","",cell)), ",")), sep="\n", collapse = "</br>")
+  return(out)
+}
+
+prettify_label = function(df){
+  for(i in 1:nrow(df)){
+    df$label[i] =line_break(df$label[i])
+  }
+  return(df)
+}
+```
+
+### Spearman
+
+```{r warning=FALSE, message=FALSE}
+ggplotly(ggplot_build(rel_df %>%
+                        ggplot(aes(spearman, fill=task)) +
+                        geom_histogram(position = 'identity', alpha=0.5))$data[[1]] %>%
+           mutate(task=ifelse(as.character(fill) == "#00BFC4", "task", "survey")) %>%
+           get_labels(.,rel_df, "spearman", "task") %>%
+           prettify_label(.) %>%
+           ggplot(aes(x,y, fill=task, label=label))+
+           geom_bar(stat='identity', position='identity', alpha=0.5)+
+           xlab('Spearman')+
+           ylab('Count')+
+           theme_bw(),
+         tooltip = 'label',
+         hoverinfo = 'text')
+```
+
+### ICC
+
+```{r warning=FALSE, message=FALSE}
+ggplotly(ggplot_build(rel_df %>%
+                        ggplot(aes(icc, fill=task)) +
+                        geom_histogram(position = 'identity', alpha=0.5))$data[[1]] %>%
+           mutate(task=ifelse(as.character(fill) == "#00BFC4", "task", "survey")) %>%
+           get_labels(.,rel_df, "icc", "task") %>%
+           prettify_label(.) %>%
+           ggplot(aes(x,y, fill=task, label=label))+
+           geom_bar(stat='identity', position='identity', alpha=0.5)+
+           xlab('ICC')+
+           ylab('Count')+
+           theme_bw(),
+         tooltip = 'label',
+         hoverinfo = 'text')
+```
+
+### Partial $\eta^2$ 
+
+Tooltip might not work well for this graph for the highest bar because the label is too large. But this bar indicates measures where the effect of time is very small anyway. We might want to pay closer attention to those not in this lowest bar since those are the variables where there is a non-negligible effect of time, indicating either a learning effect or other kind of systematic change that we did not hypothesize to observe with any of these measures.
+
+```{r warning=FALSE, message=FALSE}
+ggplotly(ggplot_build(rel_df %>%
+                        ggplot(aes(eta_sq, fill=task)) +
+                        geom_histogram(position = 'identity', alpha=0.5))$data[[1]] %>%
+           mutate(task=ifelse(as.character(fill) == "#00BFC4", "task", "survey")) %>%
+           get_labels(.,rel_df, "eta_sq", "task") %>%
+           prettify_label(.) %>%
+           ggplot(aes(x,y, fill=task, label=label))+
+           geom_bar(stat='identity', position='identity', alpha=0.5)+
+           xlab('Partial Eta Squared')+
+           ylab('Count')+
+           theme_bw(),
+         tooltip = 'label',
+         hoverinfo = 'text')
+```
+
+#### Effect of time
+
+So what variables show a non-negligible effect of time and in what direction? (sorted by increasing partial $\eta^2$)
+
+```{r warning=FALSE, message=FALSE}
+time_effect_vars = ggplot_build(rel_df %>%
+               ggplot(aes(eta_sq, fill=task)) +
+               geom_histogram(position = 'identity', alpha=0.5))$data[[1]] %>%
+  mutate(task=ifelse(as.character(fill) == "#00BFC4", "task", "survey")) %>%
+  get_labels(.,rel_df, "eta_sq", "task") %>%
+  prettify_label(.) %>%
+  filter(bin != 1 & bin !=2 & label != "NA") %>%
+  select(label, task) %>%
+  separate(label,into=c(as.character(1:27)),sep = "</br>") %>%
+  gather(key, value, -task) %>%
+  select(value, task) %>%
+  na.omit()
+
+time_effect_vars$value = gsub("\"", "", time_effect_vars$value)
+datatable(time_effect_vars)
+```
+
+Box plots showing the distributions of difference scores between the measurements at two time points for each measure can be found under the [Completion times](#diff_plot) section.
+
+### SEM
+
+```{r warning=FALSE, message=FALSE}
+ggplotly(ggplot_build(rel_df %>%
+                        ggplot(aes(sem, fill=task)) +
+                        geom_histogram(position = 'identity', alpha=0.5))$data[[1]] %>%
+           mutate(task=ifelse(as.character(fill) == "#00BFC4", "task", "survey")) %>%
+           get_labels(.,rel_df, "sem", "task") %>%
+           prettify_label(.) %>%
+           ggplot(aes(x,y, fill=task, label=label))+
+           geom_bar(stat='identity', position='identity', alpha=0.5)+
+           xlab('SEM')+
+           ylab('Count')+
+           theme_bw(),
+         tooltip = 'label',
+         hoverinfo = 'text')
+```

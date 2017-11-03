@@ -26,6 +26,7 @@ g_legend<-function(a.gplot){
   leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
   legend <- tmp$grobs[[leg]]
   return(legend)}
+trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 render_this <- function(){rmarkdown::render('SRO_Report.Rmd', output_dir = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/reports', html_notebook(toc = T, toc_float = T, code_folding = 'hide'))}
 options(scipen = 1, digits = 4)
 ```
@@ -231,6 +232,9 @@ rm(tmp1, tmp2, tmp3, lit_rev_vars)
 test_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/t1_data/variables_exhaustive.csv')
 
 test_data <- test_data[,names(test_data) %in% retest_report_vars]
+
+test_data$X <- as.character(test_data$X)
+names(test_data)[which(names(test_data) == 'X')] <-'sub_id' 
 ```
 
 For reference here are the variables that are **not** included in the analyses of the remainder of this report because they were not of theoretical interest in factor structure analyses of this data so far. These include drift diffusion and other model parameters for specific conditions within a task; survey variables that are not part of the dependant variables for that survey in the literature and demographics (these are saved for prediction analyses).
@@ -253,87 +257,29 @@ rm(test_data2, df)
 retest_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/variables_exhaustive.csv')
 
 retest_data <- retest_data[,names(retest_data) %in% retest_report_vars]
-```
 
-```{r}
-#Process sub_id columns in the data dataframes
 retest_data$X <- as.character(retest_data$X)
-test_data$X <- as.character(test_data$X)
-
-names(retest_data)[1] <- 'sub_id'
-names(test_data)[1] <- 'sub_id'
+names(retest_data)[which(names(retest_data) == 'X')] <-'sub_id' 
+retest_data = retest_data[retest_data$sub_id %in% test_data$sub_id,]
 ```
 
 ### Replace HDDM parameters in t1 data
 
-Since HDDM parameters depend on the sample on which they are fit we refit the model on t1 data for the subjects that have t2 data. Here we replace the HDDM parameters in the current t1 dataset with these refitted values and transform them as they would have been transformed for the full sample to mimick the procedure we applied to rest of the t2 data. 
+Since HDDM parameters depend on the sample on which they are fit we refit the model on t1 data for the subjects that have t2 data. Here we replace the HDDM parameters in the current t1 dataset with these refitted values. 
 
-Transform hddm refits as they had been transformed for the full sample t1 data.
 ```{r}
 hddm_refits <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-21-2017/hddm_refits_exhaustive.csv')
 
+hddm_refits = hddm_refits[,names(hddm_refits) %in% retest_report_vars]
+
 hddm_refits$X <- as.character(hddm_refits$X)
+names(hddm_refits)[which(names(hddm_refits) == 'X')] <-'sub_id' 
 
-names(hddm_refits)[1] <- 'sub_id'
+test_data = cbind(test_data$sub_id, test_data[,names(test_data) %in% names(hddm_refits) == FALSE])
 
-hddm_logTr_vars = data.frame(grep('(?=.*hddm)(?=.*logTr)', names(retest_subs_test_data), value=T, perl=T))
-names(hddm_logTr_vars) = c('var')
-hddm_logTr_vars$sign = ifelse(grepl(".ReflogTr",hddm_logTr_vars$var), 'negative', 'positive')
-hddm_logTr_vars$var = gsub(".logTr|.ReflogTr", "", hddm_logTr_vars$var)
+names(test_data)[which(names(test_data) == 'test_data$sub_id')] <-'sub_id'
 
-transformed_hddm_refits = hddm_refits
-
-for(i in 1:length(names(transformed_hddm_refits))){
-  tmp_col = names(transformed_hddm_refits)[i]
-  if(tmp_col %in% hddm_logTr_vars$var){
-    sign = hddm_logTr_vars$sign[which(tmp_col == hddm_logTr_vars$var)]
-      if(sign == 'positive'){
-        # clean_retest_data[,tmp_col] = log(clean_retest_data[,tmp_col])
-        transformed_hddm_refits[,tmp_col] = pos_log(transformed_hddm_refits[,tmp_col])
-        names(transformed_hddm_refits)[which(names(transformed_hddm_refits) == tmp_col)] = paste0(tmp_col, '.logTr')
-        cat(paste0(tmp_col ,' was positively skewed and transformed.'))
-        cat('\n')
-      }
-      else if(sign == 'negative'){
-        transformed_hddm_refits[,tmp_col] = neg_log(transformed_hddm_refits[,tmp_col])
-        names(transformed_hddm_refits)[which(names(transformed_hddm_refits) == tmp_col)] = paste0(tmp_col, '.ReflogTr')
-        cat(paste0(tmp_col ,' was negatively skewed and transformed.'))
-        cat('\n')
-      }
-    }
-}
-```
-
-Check if transformation of hddm refits worked
-```{r}
-transform_hddm_logTr_vars = data.frame(grep('logTr', names(transformed_hddm_refits), value=T))
-names(transform_hddm_logTr_vars) = c('var')
-transform_hddm_logTr_vars$sign = ifelse(grepl(".ReflogTr",transform_hddm_logTr_vars$var), 'negative', 'positive')
-transform_hddm_logTr_vars$var = gsub(".logTr|.ReflogTr", "", transform_hddm_logTr_vars$var)
-transform_hddm_logTr_vars = transform_hddm_logTr_vars %>% arrange(var)
-hddm_logTr_vars = hddm_logTr_vars %>% arrange(var)
-transform_hddm_logTr_vars == hddm_logTr_vars
-```
-
-Replace t1 hddm parameters for retest subjects
-
-```{r}
-replace_hddm_vars = data.frame(grep('(?=.*hddm)(?=.*logTr)', names(retest_subs_test_data), value=T, perl=T))
-names(replace_hddm_vars) = c('var')
-
-hddm_fix_retest_subs_test_data = retest_subs_test_data
-
-for(i in 1:length(names(hddm_fix_retest_subs_test_data))){
-  if(names(hddm_fix_retest_subs_test_data)[i] %in% replace_hddm_vars$var){
-    hddm_fix_retest_subs_test_data[,names(hddm_fix_retest_subs_test_data)[i]] <- transformed_hddm_refits[,names(hddm_fix_retest_subs_test_data)[i]]
-  }
-}
-
-retest_subs_test_data <- hddm_fix_retest_subs_test_data
-```
-
-```{r}
-rm(hddm_refits, transformed_hddm_refits, hddm_logTr_vars, transform_hddm_logTr_vars, replace_hddm_vars, hddm_fix_retest_subs_test_data, sign, i)
+test_data = merge(test_data, hddm_refits, by="sub_id")
 ```
 
 # Results
@@ -345,6 +291,7 @@ Based on [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9
 - partial $\eta^2$ for time ($SS_{time}/SS_{within}$): effect size of time   
 - SEM ($\sqrt(MS_{error})$): standard error of measurement; the smaller the better
 
+
 ```{r}
 numeric_cols = c()
 
@@ -354,7 +301,7 @@ for(i in 1:length(names(test_data))){
   }
 }
 
-match_t1_t2 <- function(dv_var, t1_df = retest_subs_test_data, t2_df = retest_data, merge_var = 'sub_id', format = "long", sample = 'full', sample_vec){
+match_t1_t2 <- function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 'sub_id', format = "long", sample = 'full', sample_vec){
   
   if(sample == 'full'){
    df = merge(t1_df[,c(merge_var, dv_var)], t2_df[,c(merge_var, dv_var)], by = merge_var) 
@@ -379,7 +326,7 @@ match_t1_t2 <- function(dv_var, t1_df = retest_subs_test_data, t2_df = retest_da
   return(df)
 }
 
-get_spearman = function(dv_var, t1_df = retest_subs_test_data, t2_df = retest_data, merge_var = 'sub_id', sample='full', sample_vec){
+get_spearman = function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 'sub_id', sample='full', sample_vec){
   
   if(sample=='full'){
     df = match_t1_t2(dv_var, t1_df = t1_df, t2_df = t2_df, merge_var = merge_var, format='wide')
@@ -393,7 +340,7 @@ get_spearman = function(dv_var, t1_df = retest_subs_test_data, t2_df = retest_da
   return(rho)
 }
 
-get_icc <- function(dv_var, t1_df = retest_subs_test_data, t2_df = retest_data, merge_var = 'sub_id', sample='full', sample_vec){
+get_icc <- function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 'sub_id', sample='full', sample_vec){
   if(sample=='full'){
     df = match_t1_t2(dv_var, t1_df = t1_df, t2_df = t2_df, merge_var = merge_var, format='wide')
   }
@@ -407,7 +354,21 @@ get_icc <- function(dv_var, t1_df = retest_subs_test_data, t2_df = retest_data, 
   return(icc_3k)
 }
 
-get_var_breakdown <- function(dv_var, t1_df = retest_subs_test_data, t2_df = retest_data, merge_var = 'sub_id', sample='full', sample_vec){
+get_pearson = function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 'sub_id', sample='full', sample_vec){
+  
+  if(sample=='full'){
+    df = match_t1_t2(dv_var, t1_df = t1_df, t2_df = t2_df, merge_var = merge_var, format='wide')
+  }
+  else if(sample=='bootstrap'){
+    df = match_t1_t2(dv_var, t1_df = t1_df, t2_df = t2_df, merge_var = merge_var, format='wide', sample='bootstrap', sample_vec = sample_vec)
+  }
+  
+  rho = cor(df$`1`, df$`2`, method='pearson')
+  
+  return(rho)
+}
+
+get_var_breakdown <- function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 'sub_id', sample='full', sample_vec){
   if(sample=='full'){
     df = match_t1_t2(dv_var, t1_df = t1_df, t2_df = t2_df, merge_var = merge_var, format='wide')
   }
@@ -423,7 +384,7 @@ get_var_breakdown <- function(dv_var, t1_df = retest_subs_test_data, t2_df = ret
   return(var_breakdown)
   }
 
-get_eta <- function(dv_var, t1_df = retest_subs_test_data, t2_df = retest_data, merge_var = 'sub_id', sample='full', sample_vec){
+get_eta <- function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 'sub_id', sample='full', sample_vec){
   if(sample=='full'){
     df = match_t1_t2(dv_var, t1_df = t1_df, t2_df = t2_df, merge_var = merge_var)
   }
@@ -438,7 +399,7 @@ get_eta <- function(dv_var, t1_df = retest_subs_test_data, t2_df = retest_data, 
   return(eta)
   }
 
-get_sem <- function(dv_var, t1_df = retest_subs_test_data, t2_df = retest_data, merge_var = 'sub_id', sample='full', sample_vec){
+get_sem <- function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 'sub_id', sample='full', sample_vec){
   if(sample=='full'){
     df = match_t1_t2(dv_var, t1_df = t1_df, t2_df = t2_df, merge_var = merge_var)
   }
@@ -454,7 +415,8 @@ get_sem <- function(dv_var, t1_df = retest_subs_test_data, t2_df = retest_data, 
 
 ```{r}
 rel_df <- data.frame(spearman = rep(NA, length(numeric_cols)),
-                     icc = rep(NA, length(numeric_cols)), 
+                     icc = rep(NA, length(numeric_cols)),
+                     pearson = rep(NA, length(numeric_cols)),
                      eta_sq = rep(NA, length(numeric_cols)),
                      sem = rep(NA, length(numeric_cols)),
                      var_subs = rep(NA, length(numeric_cols)),
@@ -466,6 +428,7 @@ row.names(rel_df) <- numeric_cols
 for(i in 1:length(numeric_cols)){
   rel_df[numeric_cols[i], 'spearman'] <- get_spearman(numeric_cols[i]) 
   rel_df[numeric_cols[i], 'icc'] <- get_icc(numeric_cols[i])
+  rel_df[numeric_cols[i], 'pearson'] <- get_pearson(numeric_cols[i])
   rel_df[numeric_cols[i], 'eta_sq'] <- get_eta(numeric_cols[i])
   rel_df[numeric_cols[i], 'sem'] <- get_sem(numeric_cols[i])
   rel_df[numeric_cols[i], 'var_subs'] <- get_var_breakdown(numeric_cols[i])$subs
@@ -477,8 +440,9 @@ rel_df$dv = row.names(rel_df)
 row.names(rel_df) = seq(1:nrow(rel_df))
 rel_df$task = 'task'
 rel_df[grep('survey', rel_df$dv), 'task'] = 'survey'
+rel_df[grep('holt', rel_df$dv), 'task'] = "task"
 rel_df = rel_df %>%
-  select(dv, task, spearman, icc, eta_sq, sem, var_subs, var_ind, var_resid)
+  select(dv, task, spearman, icc, pearson, eta_sq, sem, var_subs, var_ind, var_resid)
 # row.names(rel_df) = NULL
 ```
 
@@ -491,276 +455,88 @@ rel_df %>%
   group_by(task) %>%
   summarise(median_spearman = median(spearman),
             median_icc = median(icc),
+            median_pearson = median(pearson),
             median_eta_sq = median(eta_sq),
             median_sem = median(sem),
             num_vars = n()) %>%
   datatable() %>%
-  formatRound(columns=c('median_spearman', 'median_icc', 'median_eta_sq', 'median_sem'), digits=3)
+  formatRound(columns=c('median_spearman', 'median_icc', 'median_pearson','median_eta_sq', 'median_sem'), digits=3)
 ```
 
-*Rank orders for reliabilities*
-
-- Note that this table can be sorted by different metrics, filtered for specific values for each column and is searchable.  
-- Demographics are excluded from this list of variables (because they are saved for predictive analyses).  
-- Holt and Laury test-retest is the worst for *surveys*. But note that this is not a survey that has been studied extensively psychometrically like others. This is more similar to our tasks (one that is used more often by economists). In previous data I have worked with retest reliablities for this task was ~.35 so the results here are in line with this.  
-- Otherwise the lowest survey reliabilities are 0.5.
+**Table of reliability point estimates**
 
 ```{r}
 rel_df %>%
   datatable(filter='top') %>%
-  formatRound(columns=c('spearman', 'icc', 'eta_sq', 'sem'), digits=3)
+  formatRound(columns=c('spearman', 'icc', 'pearson','eta_sq', 'sem'), digits=3)
 ```
 
 ### Histograms of reliability metrics
 
-```{r echo=FALSE}
-#Convenience functions to make prettier interactive histograms
-get_labels = function(plot_df, ref_df, bin_col, group_col){
-  
-  plot_df$bin = as.numeric(factor(plot_df$x))
-  ref_df$bin = NA
-  
-  for(i in 1:nrow(ref_df)){
-    for(j in 1:nrow(plot_df)){
-      # if(ref_df[i, bin_col] <= plot_df$xmax[j] & ref_df[i, bin_col]>=plot_df$xmin[j] & all(ref_df[i, group_col] == plot_df[j, group_col])){
-      if(ref_df[i, bin_col] <= plot_df$xmax[j] & ref_df[i, bin_col]>=plot_df$xmin[j] & ref_df[i, group_col] == plot_df[j, group_col]){
-        ref_df$bin[i] <- plot_df$bin[j]
-      }
-    }
-  }
-  
-  ref_df = ref_df %>% 
-    group_by_("bin", group_col) %>%
-    mutate(label=as.character(toJSON(unique(dv))))
-  
-  label_df = ref_df[!duplicated(ref_df[,c('label')]),c(group_col, 'bin', 'label')]
-  
-  out_df = left_join(plot_df,label_df, by= c("bin", group_col))
-  
-  return(out_df)
-}
-
-
-line_break <- function(cell){
-  out = paste(unlist(strsplit(gsub("\\]","",gsub("\\[","",cell)), ",")), sep="\n", collapse = "</br>")
-  return(out)
-}
-
-prettify_label = function(df){
-  for(i in 1:nrow(df)){
-    df$label[i] =line_break(df$label[i])
-  }
-  return(df)
-}
-```
-
-### Spearman
-
 ```{r warning=FALSE, message=FALSE}
-ggplotly(ggplot_build(rel_df %>%
-                        ggplot(aes(spearman, fill=task)) +
-                        geom_histogram(position = 'identity', alpha=0.5))$data[[1]] %>%
-           mutate(task=ifelse(as.character(fill) == "#00BFC4", "task", "survey")) %>%
-           get_labels(.,rel_df, "spearman", "task") %>%
-           prettify_label(.) %>%
-           ggplot(aes(x,y, fill=task, label=label))+
-           geom_bar(stat='identity', position='identity', alpha=0.5)+
-           xlab('Spearman')+
-           ylab('Count')+
-           theme_bw(),
-         tooltip = 'label',
-         hoverinfo = 'text')
-```
-
-### ICC
-
-```{r warning=FALSE, message=FALSE}
-ggplotly(ggplot_build(rel_df %>%
-                        ggplot(aes(icc, fill=task)) +
-                        geom_histogram(position = 'identity', alpha=0.5))$data[[1]] %>%
-           mutate(task=ifelse(as.character(fill) == "#00BFC4", "task", "survey")) %>%
-           get_labels(.,rel_df, "icc", "task") %>%
-           prettify_label(.) %>%
-           ggplot(aes(x,y, fill=task, label=label))+
-           geom_bar(stat='identity', position='identity', alpha=0.5)+
-           xlab('ICC')+
-           ylab('Count')+
-           theme_bw(),
-         tooltip = 'label',
-         hoverinfo = 'text')
-```
-
-### Partial $\eta^2$ 
-
-Tooltip might not work well for this graph for the highest bar because the label is too large. But this bar indicates measures where the effect of time is very small anyway. We might want to pay closer attention to those not in this lowest bar since those are the variables where there is a non-negligible effect of time, indicating either a learning effect or other kind of systematic change that we did not hypothesize to observe with any of these measures.
-
-```{r warning=FALSE, message=FALSE}
-ggplotly(ggplot_build(rel_df %>%
-                        ggplot(aes(eta_sq, fill=task)) +
-                        geom_histogram(position = 'identity', alpha=0.5))$data[[1]] %>%
-           mutate(task=ifelse(as.character(fill) == "#00BFC4", "task", "survey")) %>%
-           get_labels(.,rel_df, "eta_sq", "task") %>%
-           prettify_label(.) %>%
-           ggplot(aes(x,y, fill=task, label=label))+
-           geom_bar(stat='identity', position='identity', alpha=0.5)+
-           xlab('Partial Eta Squared')+
-           ylab('Count')+
-           theme_bw(),
-         tooltip = 'label',
-         hoverinfo = 'text')
-```
-
-#### Effect of time
-
-So what variables show a non-negligible effect of time and in what direction? (sorted by increasing partial $\eta^2$)
-
-```{r warning=FALSE, message=FALSE}
-time_effect_vars = ggplot_build(rel_df %>%
-               ggplot(aes(eta_sq, fill=task)) +
-               geom_histogram(position = 'identity', alpha=0.5))$data[[1]] %>%
-  mutate(task=ifelse(as.character(fill) == "#00BFC4", "task", "survey")) %>%
-  get_labels(.,rel_df, "eta_sq", "task") %>%
-  prettify_label(.) %>%
-  filter(bin != 1 & bin !=2 & label != "NA") %>%
-  select(label, task) %>%
-  separate(label,into=c(as.character(1:27)),sep = "</br>") %>%
-  gather(key, value, -task) %>%
-  select(value, task) %>%
-  na.omit()
-
-time_effect_vars$value = gsub("\"", "", time_effect_vars$value)
-datatable(time_effect_vars)
-```
-
-Box plots showing the distributions of difference scores between the measurements at two time points for each measure can be found under the [Completion times](#diff_plot) section.
-
-### SEM
-
-```{r warning=FALSE, message=FALSE}
-ggplotly(ggplot_build(rel_df %>%
-                        ggplot(aes(sem, fill=task)) +
-                        geom_histogram(position = 'identity', alpha=0.5))$data[[1]] %>%
-           mutate(task=ifelse(as.character(fill) == "#00BFC4", "task", "survey")) %>%
-           get_labels(.,rel_df, "sem", "task") %>%
-           prettify_label(.) %>%
-           ggplot(aes(x,y, fill=task, label=label))+
-           geom_bar(stat='identity', position='identity', alpha=0.5)+
-           xlab('SEM')+
-           ylab('Count')+
-           theme_bw(),
-         tooltip = 'label',
-         hoverinfo = 'text')
-```
-
-### Negative icc's?
-```{r}
-neg_icc_vars = rel_df %>%
-  arrange(icc) %>% 
-  filter(icc<0) %>%
-  select(dv)
-```
-
-Some variables (`r neg_icc_vars$dv`) have <0 ICC's. This would be the case if the $MS_{error}$>$MS_{between}$. 
-
-Plot data for measures with negative ICC.  
-x-axis is time 1 data and y-axis is time 2 data. The scatter plots show that the scores for measures with negative ICC's have no relationship across time points.
-```{r, fig.height=12, fig.width=12}
-tmp = data.frame()
-
-for(i in 1:nrow(neg_icc_vars)){
-  tmp = rbind(tmp, match_t1_t2(neg_icc_vars$dv[i]))
-}
-rm(neg_icc_vars)
-
-tmp %>%
-  spread(time, score) %>%
-  # mutate(dv_wrap = str_wrap(dv, width = 30)) %>%
-  ggplot(aes(`1`, `2`))+
-  geom_point()+
-  theme_bw()+
-  facet_wrap(~dv, scales='free', labeller = label_wrap_gen())
-
-```
-
-This point is clarified further by compare these scatter plots to those of variables with highest ICC. These variables have strong and clear positive linear relationships.
-
-```{r fig.height=12, fig.width=12}
-high_icc_vars = rel_df %>%
-  arrange(-icc)  %>% 
-  filter(icc>0.92) %>%
-  select(dv)
-
-tmp = data.frame()
-
-for(i in 1:nrow(high_icc_vars)){
-  tmp = rbind(tmp, match_t1_t2(high_icc_vars$dv[i]))
-}
-rm(high_icc_vars)
-
-tmp %>%
-  spread(time, score) %>%
-  ggplot(aes(`1`, `2`))+
-  geom_point()+
-  theme_bw()+
-  facet_wrap(~dv, scales='free')
-
-```
-
-```{r echo=FALSE}
-rm(tmp)
-```
-
-### Relationship between ICC and Spearman
-These two measures give mostly similar answers regarding the reliabilities of the measures except for 
-
-```{r}
-ggplotly(rel_df %>%
-           ggplot(aes(spearman, icc, col=task, label=dv, label2=eta_sq))+
-           geom_point()+
-           theme_bw()+
-           theme(legend.title = element_blank())+
-           geom_abline(intercept = 0, slope=1))
-```
-
-What are the variables clustered around 0 ICC?
-
-```{r}
 rel_df %>%
-  filter(icc>(-0.1), icc<0.1) %>%
-  arrange(icc) %>%
-  datatable() %>%
-  formatRound(columns=c('spearman', 'icc', 'eta_sq', 'sem'), digits=3)
+  select(dv, task, spearman, pearson, icc) %>%
+  gather(key, value, -dv, -task) %>%
+  ggplot(aes(value, fill=task))+
+  geom_histogram(alpha = 0.5, position = 'identity')+
+  facet_wrap(~key)+
+  theme_bw()+
+  theme(legend.position = 'bottom',
+        legend.title = element_blank())+
+  xlab("")
 ```
 
-### Relationship between ICC and $\eta^2$
+Task measures have significanlty lower reliability (here checking only on point estimates of ICC).
 
 ```{r}
-ggplotly(rel_df %>%
-  ggplot(aes(eta_sq, icc, col=task, label=dv))+
-  geom_point()+
-  theme_bw()+
-  theme(legend.title = element_blank()))
+summary(lm(icc~task, rel_df))
 ```
 
-## Reliability by measure types
+### Relationship between reliability metrics
 
-The results presented so far aim to be comprehensive but are difficult to parse through and get a clear sense of what is going on (other than a general impression that surveys tend to have higher reliabilities than tasks). In this and the following section we try to deal with this in two ways to make the results more digestable with two kinds of categorizations. 
+```{r warning=FALSE, message=FALSE}
+p1 = rel_df %>%
+  ggplot(aes(spearman, icc, col=task))+
+  geom_point()+
+  theme_bw()+
+  theme(legend.title = element_blank(),
+        legend.position = "none")+
+  geom_abline(intercept = 0, slope=1)
 
-### Tasks
+p2 = rel_df %>%
+  ggplot(aes(pearson, icc, col=task))+
+  geom_point()+
+  theme_bw()+
+  theme(legend.title = element_blank(),
+        legend.position = "none")+
+  geom_abline(intercept = 0, slope=1)
 
-We aim to make contact with the literature to make the results more accesible to readers who have experience with our tasks but do not want to   
-1. take away from the novelty of the main papers coming out of this project outlining the factor structure that this data unveils   
-2. necessarily make prescriptive recommendations or theoretical arguments on why certain measures of certain processes are more reliable than others.  
+p3 = rel_df %>%
+  ggplot(aes(pearson, spearman, col=task))+
+  geom_point()+
+  theme_bw()+
+  theme(legend.title = element_blank(),
+        legend.position = "none")+
+  geom_abline(intercept = 0, slope=1)
 
-With this in mind we reduce the list of over 270 task measures to a list of one per task by averaging only the raw measures from all the trials in a task. We chose to reduce the information in this manner to avoid any bias stemming from differential amount of interest and procedures applied to certain tasks over others (e.g. a task can have over 10 measures because it has multiple conditions and we have chosen to fit DDM's for specific conditions while another might only have 2 due to our relative inexperience and lack of interest in it). We check whether the number of trials in a task has a significant effect on these average reliabilities of raw measures as well. 
-
-We plan to supplement/potentially replace this with an additional labeling procedure intending to capture the underlying putative cognitive processes but are deferring this until at least for another week. This exercise might not even prove helpful but at least a per task summary seemed a reasonable first pass.  
+grid.arrange(p1, p2, p3, nrow=1)
+```
 
 ```{r echo=FALSE}
-measure_labels <- read.csv('/Users/zeynepenkavi/Downloads/retest_measure_labels.csv')
-measure_labels = measure_labels %>% select(-Patrick_hates)
+rm(p1,p2,p3)
+```
 
-trim <- function (x) gsub("^\\s+|\\s+$", "", x)
+Note: Some variables have <0 ICC's. This would be the case if the $MS_{error}$>$MS_{between}$. Data for these variables have no relationship between the two time points.
+
+## Task Reliabilities
+
+Here we summarize the results on a task level to make it more digestable and easier to make contact with the literature.  
+
+With this in mind we reduce the list of task measures to a list of one per task by averaging only the raw measures from all the trials in a task. We chose to reduce the information in this manner to avoid any bias stemming from differential amount of interest and procedures applied to certain tasks over others (e.g. a task can have over 10 measures because it has multiple conditions and we have chosen to fit DDM's for specific conditions while another might only have 2 due to our relative inexperience and lack of interest in it). We check whether the number of trials in a task has a significant effect on these average reliabilities of raw measures as well. 
+
+```{r echo=FALSE}
+measure_labels <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/measure_labels.csv')
+measure_labels = measure_labels %>% select(-measure_description,-measure_type,-measure_type_Ian,-measure_type_Russ,-notes,-Patrick_hates)
 ```
 
 We filter out the DDM parameters and measures for specific contrasts. Note that this does leave some tasks with measures that are model fits and/or for specific conditions (because at least the current datasets do not include measures that are based on all the trials **and** are raw though I could dive in to variables_exhaustive for such measures. For example the average relialibility for Kirby is based on three discount rates for specific conditions.). Here's the order of tasks by mean reliability sorted for ICC and then Spearman's $\rho$.
@@ -769,7 +545,6 @@ We filter out the DDM parameters and measures for specific contrasts. Note that 
 tmp = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(task == 'task') %>%
-  select(-measure_description, -notes, -measure_type, -task, -ddm_task) %>%
   left_join(rel_df[,c("dv", "spearman","icc")], by='dv') %>%
   separate(variable_type, c("label_1", "label_2", "label_3"), sep = ",") %>%
   mutate(label_1 = trim(label_1),
@@ -790,88 +565,17 @@ tmp %>%
   formatRound(columns=c('median_spearman', 'median_icc'), digits=3)
 ```
 
-Does number of items in a task have a significant effect on the average ICC of (mostly) raw measures for all trials from a task? No.
+Does number of items in a task have a significant effect on the average ICC of (mostly) raw measures for all trials from a task? No. (no effect on Spearman either)
 
 ```{r warning=FALSE, message=FALSE}
 summary(lm(median_icc ~ num_trials, data = tmp))
 ```
 
-Does number of items in a task have a significant effect on the average Spearman $\rho$ of (mostly) raw measures for all trials from a task? No.
-
-```{r warning=FALSE, message=FALSE}
-summary(lm(median_spearman ~ num_trials, data = tmp))
-```
-
-Does number of measures that went in to this reliability estimate have a significant effect on the average ICC of (mostly) raw measures for all trials from a task? It seems the more measures that goes in to summarizing overall reliability for a task the worse it gets. This would make sense if these variables are intended to measure different things and some are less reliable than others.
+Does number of measures that went in to this reliability estimate have a significant effect on the average ICC of (mostly) raw measures for all trials from a task? No. (same is true for Spearman)
 
 ```{r warning=FALSE, message=FALSE}
 summary(lm(median_icc ~ num_measures, data = tmp))
 ```
-
-Does number of measures that went in to this reliability estimate have a significant effect on the average ICC of (mostly) raw measures for all trials from a task?  
-The same is true for Spearman's correlations as well.
-
-```{r warning=FALSE, message=FALSE}
-summary(lm(median_spearman ~ num_measures, data = tmp))
-```
-
-In addition to average relilibilities for each task we can look at relilibities of measures organized by the putative cognitive process they are intended to measure. Note however that these labels are not determined in a data driven manner.
-
-```{r warning=FALSE, message=FALSE}
-measure_labels %>%
-  mutate(dv = as.character(dv)) %>%
-  filter(task == 'task') %>%
-  select(-measure_description, -notes, -variable_type, -task, -ddm_task) %>%
-  left_join(rel_df[,c("dv", "spearman","icc")], by='dv') %>%
-  group_by(measure_type) %>%
-  summarise(median_icc = median(icc),
-            median_spearman = median(spearman),
-            num_measures = n()) %>%
-  arrange(-median_icc, -median_spearman) %>%
-  datatable() %>%
-  formatRound(columns=c('median_spearman', 'median_icc'), digits=3)
-```
-
-Here is what the distributions look like.  
-- Alerting: This labels consists only of ANT alerting contrast (no cue - double cue trials). 4/6 are drift diffusion parameters.    
-- Cue encoding: This label consists only of three by two task switch cost contrast (stay (where cue and task remains the same) - switch (where task is the same but cue changes) trials). Again most are drift diffusion parameters.  
-- Delay discounting: This label consists of the discount rates for the Bickel titrator (3), Kirby items (3) and discount titrate (model fit to random set of stimuli). **Does the discrepancy between ICC and Spearman for these measures, given the specific interest in these tasks in the literature warrant a more detailed look in to these?**  
-- Information use: This label includes Columbia Card Task (both versions) and information sampling task.  
-- Inhibition: This label includes go no-go, motor selective stop signal, stimulus selective stop signal and regular stop signal (excluding specific constrasts).  
-- Intelligence: This label includes ravens and tower of london.  
-- Learning: This label includes ART, CCT, two stage decision, dietary decision task, hierarchical rule task, information sampling task, probabilistic selection task, shift task, two stage task.   
-- Neutral writing: This label consists only of the writing task.  
-- Orienting: This labels consists only of ANT orienting contrast (center - spatial cue trials). 4/6 are drift diffusion parameters.   
-- Positive writing: This label consists only of the writing task.  
-- Proactive control: This labels consists of one DPX contrast (AY - BY trials), motor selective stop signal and regular stop signal.   
-- Reactive control: This labels consists of one DPX contrast (BX - BY trials) and motor selective stop signal.  
-- Resisting proactive interference: This label consists of one contrast in directed forgetting and recent probes tasks (negative (where the stimulus to respond to is in forgetting set) and control (where the stimulus to respond to is new) trials).  
-- Response conflict: This label consists of ANT conflict contrast (congruent-incongruent), DPX, local global conflict contrast, shape matching, simon, stroop.  
-- Response selection: This label consists of choice reaction time task.  
-- Risk Taking: This label consists of ART and CCT.  
-- Selective attention: This label consists of local global task and ANT (all trials).  
-- Set shifting: This label consists of local global, PRT and three by two.    
-- Speed: This label consists of raw response times in information sampling task, simple reaction time, tower of london.  
-- Working memory: This label consists of adaptive n back, digit span, directed forgetting, keep track, recent probes, spatial span.
-
-```{r warning=FALSE, message=FALSE, fig.width=12, fig.height=10}
-measure_labels %>%
-  mutate(dv = as.character(dv)) %>%
-  filter(task == 'task') %>%
-  select(-measure_description, -notes, -variable_type, -task, -ddm_task) %>%
-  left_join(rel_df[,c("dv", "spearman","icc")], by='dv') %>%
-  select(measure_type, icc, spearman) %>%
-  gather(key, value, -measure_type) %>%
-  ggplot(aes(value, fill=key))+
-  geom_histogram(position='identity', alpha=0.5)+
-  theme_bw()+
-  facet_wrap(~measure_type)+
-  theme(legend.title = element_blank())
-```
-
-### Surveys
-
-To be filled with factor labels after processing either ASU factor analyses or Russ' MIRT?
 
 ## Reliability by variable types
 
@@ -887,7 +591,6 @@ Potentially prescriptive recommendations coming out of this section would intend
 tmp = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(task == 'task') %>%
-  select(-measure_description, -notes, -measure_type, -task) %>%
   left_join(rel_df[,c("dv", "spearman","icc")], by='dv') %>%
   separate(variable_type, c("label_1", "label_2", "label_3"), sep = ",") %>%
   mutate(label_1 = trim(label_1),
@@ -904,8 +607,7 @@ In addition to raw response time and accuracy measures we get from certain tasks
 Table of median reliabilities for the two kinds of DDM models' (hddm and EZ) parameters compared to raw response times and accuracies depending on whether they were fit to all data or whether they are contrast of two conditions sorted by mean ICC and mean Spearman's $\rho$.
 
 - All parameters that were fit to all trials compared to contrasts have higher relialibilities.   
-- Raw variables are not the variables with highest ICC's overall. Raw response times do, however, have the highest Spearman's $\rho$'s on average. 
-- 2 of 3 hddm parameters also have higher mean reliabilities than EZ parameter estimates.  
+- Raw variables are not the variables with highest ICC's overall supporting the idea of using these parameters as individual difference variables that are more interpretable. 
 
 ```{r warning=FALSE, message=FALSE}
 tmp %>%
@@ -916,17 +618,6 @@ tmp %>%
   arrange(-median_icc, -median_spearman) %>%
   datatable() %>%
   formatRound(columns=c('median_spearman', 'median_icc'), digits=3)
-```
-
-```{r}
-tmp %>%
-  group_by(label_1,label_2, label_3) %>%
-  summarise(mean_icc = mean(icc),
-            mean_spearman = mean(spearman),
-            n_vars = n()) %>%
-  arrange(-mean_icc, -mean_spearman) %>%
-  datatable() %>%
-  formatRound(columns=c('mean_spearman', 'mean_icc'), digits=3)
 ```
 
 Are these differences meaningful?
@@ -1008,10 +699,6 @@ tmp_simp = tmp %>%
 
 summary(lm(icc~label_3, tmp_simp))
 ```
-
-### Surveys
-
-Would this be a comparison of factor reliability versus item reliability?
 
 ## Completion times
 
@@ -1096,126 +783,12 @@ t1_2_difference %>%
            coord_flip()
 ```
 
-
-## Transformation effects
-
-```{r}
-raw_retest_subs_test_data = raw_test_data[raw_test_data$sub_id %in% raw_retest_data$sub_id,]
-
-raw_numeric_cols = c()
-
-for(i in 1:length(names(raw_test_data))){
-  if(is.numeric(raw_test_data[,i])){
-    raw_numeric_cols <- c(raw_numeric_cols, names(raw_test_data)[i])
-  }
-}
-
-raw_rel_df <- data.frame(spearman = rep(NA, length(raw_numeric_cols)),
-                     icc = rep(NA, length(raw_numeric_cols)), 
-                     eta_sq = rep(NA, length(raw_numeric_cols)),
-                     sem = rep(NA, length(raw_numeric_cols)))
-
-row.names(raw_rel_df) <- raw_numeric_cols
-
-for(i in 1:length(raw_numeric_cols)){
-  raw_rel_df[raw_numeric_cols[i], 'spearman'] <- get_spearman(raw_numeric_cols[i], t1_df = raw_retest_subs_test_data, t2_df = raw_retest_data) 
-  raw_rel_df[raw_numeric_cols[i], 'icc'] <- get_icc(raw_numeric_cols[i], t1_df = raw_retest_subs_test_data, t2_df = raw_retest_data)
-  raw_rel_df[raw_numeric_cols[i], 'eta_sq'] <- get_eta(raw_numeric_cols[i], t1_df = raw_retest_subs_test_data, t2_df = raw_retest_data)
-  raw_rel_df[raw_numeric_cols[i], 'sem'] <- get_sem(raw_numeric_cols[i], t1_df = raw_retest_subs_test_data, t2_df = raw_retest_data)
-}
-
-raw_rel_df$dv = row.names(raw_rel_df)
-row.names(raw_rel_df) = seq(1:nrow(raw_rel_df))
-raw_rel_df$task = 'task'
-raw_rel_df[grep('survey', raw_rel_df$dv), 'task'] = 'survey'
-raw_rel_df = raw_rel_df %>%
-  select(dv, task, spearman, icc, eta_sq, sem)
-```
-
-
-```{r warning=FALSE, message=FALSE}
-raw_rel_df %>%
-  group_by(task) %>%
-  summarise(median_spearman = median(spearman),
-            median_icc = median(icc),
-            median_eta_sq = median(eta_sq),
-            median_sem = median(sem),
-            num_vars = n()) %>%
-  datatable() %>%
-  formatRound(columns=c('median_spearman', 'median_icc', 'median_eta_sq', 'median_sem'), digits=3)
-```
-
-Plots of change in reliability depending on transformation
-
-```{r}
-ggplotly(rel_df %>%
-  mutate(dv = gsub(".logTr", "", dv)) %>%
-  mutate(dv = gsub(".Re", "", dv)) %>%
-  left_join(raw_rel_df, by = 'dv') %>%
-  ggplot(aes(spearman.x, spearman.y, color = task.x, label=dv))+
-  geom_point()+
-  geom_abline(intercept = 0, slope=1)+
-  theme_bw()+
-  theme(legend.title = element_blank())+
-  xlab("Spearman with transformation")+
-  ylab("Spearman witouth transformation"))
-```
-
-```{r}
-ggplotly(rel_df %>%
-  mutate(dv = gsub(".logTr", "", dv)) %>%
-  mutate(dv = gsub(".Re", "", dv)) %>%
-  left_join(raw_rel_df, by = 'dv') %>%
-  ggplot(aes(icc.x, icc.y, color = task.x, label=dv))+
-  geom_point()+
-  geom_abline(intercept = 0, slope=1)+
-  theme_bw()+
-  theme(legend.title = element_blank())+
-  xlab("ICC with transformation")+
-  ylab("ICC without transformation"))
-```
-
 ## Bootstrapping
-
-```{r eval=FALSE, echo=FALSE}
-sample_workers = function(N = 150, repl= TRUE, df=retest_data, worker_col = "sub_id"){
-  return(sample(df[,worker_col], N, replace = repl))
-}
-
-bootstrap_relialibility = function(metric = c('icc', 'spearman', 'eta_sq', 'sem'), dv_var, N=150){
-  tmp_sample = sample_workers(N)
-  out_df = data.frame(dv = dv_var)
-  if('icc' %in% metric){
-    out_df$icc = get_icc(dv_var, sample = 'bootstrap', sample_vec = tmp_sample)
-  }
-  if('spearman' %in% metric){
-    out_df$spearman = get_spearman(dv_var, sample = 'bootstrap', sample_vec = tmp_sample)
-  }
-  if('eta_sq' %in% metric){
-    out_df$eta_sq = get_eta(dv_var, sample = 'bootstrap', sample_vec = tmp_sample)
-  }
-  if('sem' %in% metric){
-    out_df$sem = get_sem(dv_var, sample = 'bootstrap', sample_vec = tmp_sample)
-  }
-  return(out_df)
-}
-
-# Bootstrapping everything at once in this way locally would take around four hours.
-non_hddm_numeric_cols=numeric_cols[-grep("hddm", numeric_cols)]
-
-boot_df = as.data.frame(non_hddm_numeric_cols) %>%
-  mutate(index = 1:n()) %>%
-  group_by(index) %>%
-  do(plyr::rdply(10, bootstrap_relialibility(dv_var = as.character(.$non_hddm_numeric_cols))))
-
-boot_df
-```
 
 Summarized bootstrapped reliabilities
 
 ```{r}
 boot_df <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/bootstrap_merged.csv')
-
 
 boot_df = boot_df %>%
   drop_na() %>%
