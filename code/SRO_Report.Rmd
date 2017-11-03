@@ -75,9 +75,7 @@ One the major contributions of this project is a comprehensive literature review
 ```{r}
 lit_review <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/lit_review_figure.csv')
 
-datatable(lit_review %>%
-  mutate(dv = gsub(".ReflogTr", "",dv),
-         dv = gsub(".logTr", "", dv)))
+datatable(lit_review)
 ```
 
 Measure level plot
@@ -89,9 +87,7 @@ lit_review = lit_review %>%
          raw1_fit0 = grepl('raw', variable_type),
          type = as.character(type)) %>%
   mutate(task_group = gsub("_", " ", task_group),
-         var = gsub("_", " ", var),
-         dv = gsub(".ReflogTr", "",dv),
-         dv = gsub(".logTr", "", dv)) %>%
+         var = gsub("_", " ", var)) %>%
   arrange(task_group, raw1_fit0, var) %>%
   mutate(task_group = ifelse(task_group == "psychological refractory period two choices", "psychological refractory period", ifelse(task_group == "angling risk task always sunny", "angling risk task",task_group))) %>%
   mutate(task_group = gsub("survey", "", task_group)) %>%
@@ -210,31 +206,37 @@ Takeaways from this review are:
 - Survey measures have been reported to higher reliability compared to task measures  
 - Survey measures have less variability in the reported reliabiltiy estimates compared to task measures' 
 
-## Loading and matching datasets
+## Loading datasets
 
-This report uses the variables that were designated as "meaningful" before. This is not the smallest subset where certain variables are dropped because they are correlated with other variables (within a task) and includes both accuracies as well as both kinds of DDM variables (EZ and HDDM). It will not include variables that were considered not of theoretical interest in the analyses of time 1 data. The variables that are not included will be listed for reference as well.
+The variables included in this report are:  
+- meaningful variables (includes only hdddm parameters)  
+- EZ diffusion parameters  
+- Raw RT and Accuracy measures  
+- Variables found in the literature (for comparison)  
+
+```{r echo=FALSE}
+#Get variables of interest
+tmp1 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_10-08-2017/meaningful_variables.csv')
+tmp2 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_10-08-2017/meaningful_variables_noDDM.csv')
+tmp3 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_10-08-2017/meaningful_variables_EZ.csv')
+retest_report_vars = c(names(tmp1), names(tmp2), names(tmp3))
+retest_report_vars = unique(retest_report_vars)
+lit_rev_vars = unique(lit_review$dv)[which(unique(lit_review$dv) %in% retest_report_vars == FALSE)]
+retest_report_vars = c(retest_report_vars, lit_rev_vars)
+rm(tmp1, tmp2, tmp3, lit_rev_vars)
+```
 
 ### Load time 1 data
 ```{r}
-test_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_07-08-2017/meaningful_variables.csv')
+test_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/t1_data/variables_exhaustive.csv')
 
-test_data2 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_07-08-2017/meaningful_variables_noDDM.csv')
-
-test_data3 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_07-08-2017/meaningful_variables_EZ.csv')
-
-test_data <- merge(test_data, test_data2)
-test_data <- merge(test_data, test_data3)
-rm(test_data2, test_data3)
+test_data <- test_data[,names(test_data) %in% retest_report_vars]
 ```
 
 For reference here are the variables that are **not** included in the analyses of the remainder of this report because they were not of theoretical interest in factor structure analyses of this data so far. These include drift diffusion and other model parameters for specific conditions within a task; survey variables that are not part of the dependant variables for that survey in the literature and demographics (these are saved for prediction analyses).
 
 ```{r}
-test_data2 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_07-08-2017/variables_exhaustive.csv')
-
-test_data2$X <- as.character(test_data2$X)
-
-names(test_data2)[1] <- 'sub_id'
+test_data2 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/t1_data/variables_exhaustive.csv')
 
 df <- data.frame(names(test_data2)[which(names(test_data2) %in% names(test_data) == FALSE)])
 names(df) = c('vars')
@@ -248,18 +250,10 @@ rm(test_data2, df)
 
 ### Load time 2 data 
 ```{r}
-retest_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/meaningful_variables.csv')
+retest_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/variables_exhaustive.csv')
 
-retest_data2 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/meaningful_variables_noDDM.csv')
-
-retest_data3 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/meaningful_variables_EZ.csv')
-
-retest_data <- merge(retest_data, retest_data2)
-retest_data <- merge(retest_data, retest_data3)
-rm(retest_data2, retest_data3)
+retest_data <- retest_data[,names(retest_data) %in% retest_report_vars]
 ```
-
-Extract t2 participants with good t1 data: We only invited those with good data but due to a technical error a handful of subjects who weren't checked for data quality completed the retest battery as well. One of those subjects gave good t2 data but didn't have good t1 data and therefore is removed from further analyses.
 
 ```{r}
 #Process sub_id columns in the data dataframes
@@ -268,263 +262,6 @@ test_data$X <- as.character(test_data$X)
 
 names(retest_data)[1] <- 'sub_id'
 names(test_data)[1] <- 'sub_id'
-
-retest_data <- retest_data[retest_data$sub_id %in% test_data$sub_id,]
-```
-
-This should not be necessary once releases are matched but for now extract only retest variables from test data.
-
-```{r}
-test_data <- test_data[,c(names(retest_data))]
-```
-
-### Clean t1 data
-
-The cleaning functions here are translated from the python pipeline to mimick the same procedure that was applied to the `meaningful_variables` in creating `meaningful_variables_clean`.
-
-The original cleaning procedures include three steps:  
-1. Removing outliers for each variable where outliers are defined as those who are greater than 2.5 IQR from median. **This step is skipped here because removing outliers from either dataset could lead to an unnecessary increase in missing data. Since we are interested in the average distance between two measures of a metric for a given subject instead of the distance between all these metrics this seemed appropriate.**  
-2. Removing correlated variables *within* a task. In creating `meaningful_variables_clean` if variables for a given task correlated >.85 only one was kept. **This step is skipped here because we want to look at the reliability of as many variables as we can.**  
-3. Log transforming variables with skew. In cleaning t1 data variables that had a |skew| > 1 were log transformed and those for which skew could not be removed successfully were dropped. **Here we transform all variables that have a |skew|>1 in t1 data but variables that are not successfully transformed (i.e. where the transformation has not decreased the skew below the threshold) will be listed and not dropped.**
-
-```{r}
-remove_outliers = function(data_column, quantile_range = 2.5){
-  
-  q_25 = quantile(data_column, na.rm=T)[2]
-  q_50 = quantile(data_column, na.rm=T)[3]
-  q_75 = quantile(data_column, na.rm=T)[4]
-  
-  lowlimit = q_50 - quantile_range*(q_75 - q_25)
-  highlimit = q_50 + quantile_range*(q_75 - q_25)
-  
-  data_column = ifelse(data_column<lowlimit, NA, ifelse(data_column>highlimit, NA, data_column))
-  
-  return(data_column)
-}
-
-"%w/o%" <- function(x, y) x[!x %in% y]
-
-pos_log <- function(column){
-  col_min = min(column, na.rm=T)
-  a = 1-col_min
-  column = column+a
-  return(log(column))
-}
-
-neg_log <- function(column){
-  col_max = max(column, na.rm=T)
-  column = col_max+1-column
-  return(log(column))
-}
-
-transform_remove_skew = function(data, columns, threshold = 1, drop=FALSE){
-  
-  tmp = as.data.frame(apply(data[,columns],2,skew))
-  names(tmp) = c("skew")
-  tmp$dv = row.names(tmp)
-  tmp = tmp %>% 
-    filter(abs(skew)>threshold)
-  
-  skewed_variables = tmp$dv
-  skew_subset = data[, skewed_variables]
-  positive_subset = data[,tmp$dv[tmp$skew>0]]
-  negative_subset = data[,tmp$dv[tmp$skew<0]]
-  
-  # transform variables
-  # log transform for positive skew
-  # positive_subset = log(positive_subset)
-  # positive_subset = pos_log(positive_subset) #slight divergence from original code
-  positive_subset = as.data.frame(apply(positive_subset, 2, pos_log))
-  successful_transforms = as.data.frame(apply(positive_subset, 2, skew))
-  names(successful_transforms) = c('skew')
-  successful_transforms$dv = row.names(successful_transforms)
-  successful_transforms = successful_transforms %>% filter(abs(skew)<threshold)
-  successful_transforms = successful_transforms$dv
-  successful_transforms = positive_subset[,successful_transforms]
-  dropped_vars = names(positive_subset) %w/o% names(successful_transforms)
-  
-  cat(rep('*', 40))
-  cat('\n')
-  cat(paste0(length(names(positive_subset)) ,' data positively skewed data were transformed:'))
-  cat('\n')
-  cat(names(positive_subset), sep = '\n')
-  cat(rep('*', 40))
-  cat('\n')
-  
-  # replace transformed variables
-  data = data[,-c(which(names(data) %in% names(positive_subset)))]
-  
-  if(drop == TRUE){
-    names(successful_transforms) = paste0(names(successful_transforms), '.logTr')
-    cat(rep('*', 40))
-    cat('\n')
-    cat(paste0('Dropping ', length(dropped_vars) ,' positively skewed data that could not be transformed successfully:'))
-    cat('\n')
-    cat(dropped_vars, sep = '\n')
-    cat(rep('*', 40))
-    cat('\n')
-    data = cbind(data, successful_transforms)
-  }
-  else{
-    names(positive_subset) = paste0(names(positive_subset), '.logTr')
-    cat(rep('*', 40))
-    cat('\n')
-    cat(paste0(length(dropped_vars) ,' positively skewed data could not be transformed successfully:'))
-    cat('\n')
-    cat(dropped_vars, sep = '\n')
-    cat(rep('*', 40))
-    cat('\n')
-    data = cbind(data, positive_subset)
-  }
-  
-  
-  # reflected log transform for negative skew      
-  negative_subset = as.data.frame(apply(negative_subset, 2, neg_log))
-  successful_transforms = as.data.frame(apply(negative_subset, 2, skew))
-  names(successful_transforms) = c('skew')
-  successful_transforms$dv = row.names(successful_transforms)
-  successful_transforms = successful_transforms %>% filter(abs(skew)<1)
-  successful_transforms = successful_transforms$dv
-  successful_transforms = negative_subset[,successful_transforms]
-  dropped_vars = names(negative_subset) %w/o% names(successful_transforms)
-  
-  cat(rep('*', 40))
-  cat('\n')
-  cat(paste0(length(names(negative_subset)) ,' data negatively skewed data were transformed:'))
-  cat('\n')
-  cat(names(negative_subset), sep = '\n')
-  cat(rep('*', 40))
-  cat('\n')
-  
-  # replace transformed variables
-  data = data[,-c(which(names(data) %in% names(negative_subset)))]
-  if(drop == TRUE){
-    names(successful_transforms) = paste0(names(successful_transforms), '.ReflogTr')
-    cat(rep('*', 40))
-    cat('\n')
-    cat(paste0('Dropping ', length(dropped_vars) ,' negatively skewed data that could not be transformed successfully:'))
-    cat('\n')
-    cat(dropped_vars, sep = '\n')
-    cat(rep('*', 40))
-    cat('\n')
-    data = cbind(data, successful_transforms)
-  }
-  else{
-    names(negative_subset) = paste0(names(negative_subset), '.ReflogTr')
-    cat(rep('*', 40))
-    cat('\n')
-    cat(paste0(length(dropped_vars) ,' negatively skewed data could not be transformed successfully:'))
-    cat('\n')
-    cat(dropped_vars, sep = '\n')
-    cat(rep('*', 40))
-    cat('\n')
-    data = cbind(data, negative_subset)
-  }
-  
-  return(data)
-}
-```
-
-Clean t1 data on full sample without dropping any columns. Columns that are not transformed successfully are listed.
-
-```{r warning=FALSE}
-numeric_cols = c()
-
-for(i in 1:length(names(test_data))){
-  if(is.numeric(test_data[,i])){
-    numeric_cols <- c(numeric_cols, names(test_data)[i])
-  }
-}
-
-# clean_test_data = cbind(sub_id = test_data$sub_id, as.data.frame(apply(test_data[, -which(names(test_data) %in% c("sub_id"))], 2, remove_outliers)))
-
-# clean_test_data = transform_remove_skew(clean_test_data, numeric_cols)
-clean_test_data = transform_remove_skew(test_data, numeric_cols)
-```
-
-```{r echo=FALSE}
-rm(i)
-```
-
-### Clean t2 data
-
-Instead of applying the same functions applied to t1 data we check which variables are transformed in what way and transform the t2 data the same way. Again we are not removing outliers in the t2 or dropping variables if the skew is not removed successfully after transforming.
-
-Get list of transformed variables and the sign of their skew
-```{r}
-logTr_vars = data.frame(grep('logTr', names(clean_test_data), value=T))
-names(logTr_vars) = c('var')
-logTr_vars$sign = ifelse(grepl(".ReflogTr",logTr_vars$var), 'negative', 'positive')
-logTr_vars$var = gsub(".logTr|.ReflogTr", "", logTr_vars$var)
-```
-
-Transform the t2 columns the same way t1 columns were transformed.
-
-```{r warning=FALSE}
-clean_retest_data = retest_data
-
-for(i in 1:length(names(clean_retest_data))){
-  tmp_col = names(clean_retest_data)[i]
-  if(tmp_col %in% logTr_vars$var){
-    sign = logTr_vars$sign[which(tmp_col == logTr_vars$var)]
-      if(sign == 'positive'){
-        # clean_retest_data[,tmp_col] = log(clean_retest_data[,tmp_col])
-        clean_retest_data[,tmp_col] = pos_log(clean_retest_data[,tmp_col])
-        names(clean_retest_data)[which(names(clean_retest_data) == tmp_col)] = paste0(tmp_col, '.logTr')
-        cat(paste0(tmp_col ,' was positively skewed and transformed.'))
-        cat('\n')
-      }
-      else if(sign == 'negative'){
-        clean_retest_data[,tmp_col] = neg_log(clean_retest_data[,tmp_col])
-        names(clean_retest_data)[which(names(clean_retest_data) == tmp_col)] = paste0(tmp_col, '.ReflogTr')
-        cat(paste0(tmp_col ,' was negatively skewed and transformed.'))
-        cat('\n')
-      }
-    }
-}
-```
-
-```{r echo = FALSE}
-rm(i, sign, tmp_col)
-```
-
-Check transformations are correct
-```{r}
-retest_logTr_vars = data.frame(grep('logTr', names(clean_retest_data), value=T))
-names(retest_logTr_vars) = c('var')
-retest_logTr_vars$sign = ifelse(grepl(".ReflogTr",retest_logTr_vars$var), 'negative', 'positive')
-retest_logTr_vars$var = gsub(".logTr|.ReflogTr", "", retest_logTr_vars$var)
-retest_logTr_vars = retest_logTr_vars %>% arrange(var)
-logTr_vars = logTr_vars %>% arrange(var)
-retest_logTr_vars == logTr_vars
-```
-
-
-```{r echo=FALSE}
-rm(logTr_vars, retest_logTr_vars)
-```
-
-```{r}
-# Switch df names
-raw_retest_data = retest_data
-raw_test_data = test_data
-test_data = clean_test_data
-retest_data = clean_retest_data
-rm(clean_test_data, clean_retest_data)
-```
-
-### Extract t-1 data for t-2 subjects
-```{r}
-retest_subs_test_data <- test_data[test_data$sub_id %in% retest_data$sub_id,]
-
-rest_subs_test_data <- test_data[test_data$sub_id %in% retest_data$sub_id == FALSE,]
-
-#Arrange datasets of same size by sub_id
-retest_data = retest_data %>% arrange(sub_id)
-retest_subs_test_data = retest_subs_test_data %>% arrange(sub_id)
-
-#CHECK IF EVERYTHING IS ORDERED RIGHT
-as.character(retest_subs_test_data$sub_id) == as.character(retest_data$sub_id)
 ```
 
 ### Replace HDDM parameters in t1 data

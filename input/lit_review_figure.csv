@@ -1,13 +1,13 @@
 dv,task,measure_description,retest_reliability,type,days,sample_size,reference,variable_type,ddm_task,num_all_trials
-adaptive_n_back.acc.ReflogTr,task,Proportion of correct responses (both hits and correct rejections) where correct is pressing one button over the other for a letter depending on the load,0.493,Pearson,7,70,Hockey and Geffen (2004),"overall, raw, accuracy",1,525
-adaptive_n_back.acc.ReflogTr,task,Proportion of correct responses (both hits and correct rejections) where correct is pressing one button over the other for a letter depending on the load,0.732,Pearson,7,70,Hockey and Geffen (2004),"overall, raw, accuracy",1,525
-adaptive_n_back.acc.ReflogTr,task,Proportion of correct responses (both hits and correct rejections) where correct is pressing one button over the other for a letter depending on the load,0.519,Pearson,7,70,Hockey and Geffen (2004),"overall, raw, accuracy",1,525
-adaptive_n_back.acc.ReflogTr,task,Proportion of correct responses (both hits and correct rejections) where correct is pressing one button over the other for a letter depending on the load,0.538,Pearson,7,70,Hockey and Geffen (2004),"overall, raw, accuracy",1,525
-adaptive_n_back.acc.ReflogTr,task,Proportion of correct responses (both hits and correct rejections) where correct is pressing one button over the other for a letter depending on the load,0.65,Pearson,18,105,Van Leeuwen et al. (2007),"overall, raw, accuracy",1,525
-adaptive_n_back.acc.ReflogTr,task,Proportion of correct responses (both hits and correct rejections) where correct is pressing one button over the other for a letter depending on the load,0.7,Pearson,18,105,Van Leeuwen et al. (2007),"overall, raw, accuracy",1,525
-adaptive_n_back.acc.ReflogTr,task,Proportion of correct responses (both hits and correct rejections) where correct is pressing one button over the other for a letter depending on the load,0.16,Pearson,18,29,Van Leeuwen et al. (2007),"overall, raw, accuracy",1,525
-adaptive_n_back.acc.ReflogTr,task,Proportion of correct responses (both hits and correct rejections) where correct is pressing one button over the other for a letter depending on the load,0.7,Pearson,18,29,Van Leeuwen et al. (2007),"overall, raw, accuracy",1,525
-adaptive_n_back.acc.ReflogTr,task,Proportion of correct responses (both hits and correct rejections) where correct is pressing one button over the other for a letter depending on the load,0.69,Pearson,28,112,Stueder-Luthi et al. (2012),"overall, raw, accuracy",1,525
+adaptive_n_back.acc,task,Proportion of correct responses (both hits and correct rejections) where correct is pressing one button over the other for a letter depending on the load,0.493,Pearson,7,70,Hockey and Geffen (2004),"overall, raw, accuracy",1,525
+adaptive_n_back.acc,task,Proportion of correct responses (both hits and correct rejections) where correct is pressing one button over the other for a letter depending on the load,0.732,Pearson,7,70,Hockey and Geffen (2004),"overall, raw, accuracy",1,525
+adaptive_n_back.acc,task,Proportion of correct responses (both hits and correct rejections) where correct is pressing one button over the other for a letter depending on the load,0.519,Pearson,7,70,Hockey and Geffen (2004),"overall, raw, accuracy",1,525
+adaptive_n_back.acc,task,Proportion of correct responses (both hits and correct rejections) where correct is pressing one button over the other for a letter depending on the load,0.538,Pearson,7,70,Hockey and Geffen (2004),"overall, raw, accuracy",1,525
+adaptive_n_back.acc,task,Proportion of correct responses (both hits and correct rejections) where correct is pressing one button over the other for a letter depending on the load,0.65,Pearson,18,105,Van Leeuwen et al. (2007),"overall, raw, accuracy",1,525
+adaptive_n_back.acc,task,Proportion of correct responses (both hits and correct rejections) where correct is pressing one button over the other for a letter depending on the load,0.7,Pearson,18,105,Van Leeuwen et al. (2007),"overall, raw, accuracy",1,525
+adaptive_n_back.acc,task,Proportion of correct responses (both hits and correct rejections) where correct is pressing one button over the other for a letter depending on the load,0.16,Pearson,18,29,Van Leeuwen et al. (2007),"overall, raw, accuracy",1,525
+adaptive_n_back.acc,task,Proportion of correct responses (both hits and correct rejections) where correct is pressing one button over the other for a letter depending on the load,0.7,Pearson,18,29,Van Leeuwen et al. (2007),"overall, raw, accuracy",1,525
+adaptive_n_back.acc,task,Proportion of correct responses (both hits and correct rejections) where correct is pressing one button over the other for a letter depending on the load,0.69,Pearson,28,112,Stueder-Luthi et al. (2012),"overall, raw, accuracy",1,525
 adaptive_n_back.avg_rt,task,Median response times for correct responses only,0.857,Pearson,7,70,Hockey and Geffen (2004),"overall, raw, rt",1,525
 adaptive_n_back.avg_rt,task,Median response times for correct responses only,0.787,Pearson,7,70,Hockey and Geffen (2004),"overall, raw, rt",1,525
 adaptive_n_back.avg_rt,task,Median response times for correct responses only,0.691,Pearson,7,70,Hockey and Geffen (2004),"overall, raw, rt",1,525
@@ -29,12 +29,12 @@ attention_network_task.alerting_rt,task,Difference in median response time betwe
 attention_network_task.alerting_rt,task,Difference in median response time between nocue and double cue trials,0.35,Pearson,7,68,"Habekost, Petersen and Vangkilde (2014)","difference, raw, rt",1,192
 attention_network_task.avg_rt,task,Median response time for correct responses,0.87,Pearson,40,1,Fan et al. (2002),"overall, raw, rt",1,192
 attention_network_task.avg_rt,task,Median response time for correct responses,0.856,Pearson,7,75,Paap and Sawi (2016),"overall, raw, rt",1,192
-attention_network_task.conflict_rt.logTr,task,Difference in median response time between incongruent and congruent flanker trials,0.72,Pearson,40,1,Fan et al. (2002),"difference, raw, rt",1,192
-attention_network_task.conflict_rt.logTr,task,Difference in median response time between incongruent and congruent flanker trials,0.81,Pearson,104,1,Fan et al. (2001),"difference, raw, rt",1,192
-attention_network_task.conflict_rt.logTr,task,Difference in median response time between incongruent and congruent flanker trials,0.86,Pearson,10,9,Ishigami and Klein (2010),"difference, raw, rt",1,192
-attention_network_task.conflict_rt.logTr,task,Difference in median response time between incongruent and congruent flanker trials,0.84,Pearson,7,68,"Habekost, Petersen and Vangkilde (2014)","difference, raw, rt",1,192
-attention_network_task.conflict_rt.logTr,task,Difference in median response time between incongruent and congruent flanker trials,0.74,Pearson,7,68,"Habekost, Petersen and Vangkilde (2014)","difference, raw, rt",1,192
-attention_network_task.conflict_rt.logTr,task,Difference in median response time between incongruent and congruent flanker trials,0.515,Pearson,7,75,Paap and Sawi (2016),"difference, raw, rt",1,192
+attention_network_task.conflict_rt,task,Difference in median response time between incongruent and congruent flanker trials,0.72,Pearson,40,1,Fan et al. (2002),"difference, raw, rt",1,192
+attention_network_task.conflict_rt,task,Difference in median response time between incongruent and congruent flanker trials,0.81,Pearson,104,1,Fan et al. (2001),"difference, raw, rt",1,192
+attention_network_task.conflict_rt,task,Difference in median response time between incongruent and congruent flanker trials,0.86,Pearson,10,9,Ishigami and Klein (2010),"difference, raw, rt",1,192
+attention_network_task.conflict_rt,task,Difference in median response time between incongruent and congruent flanker trials,0.84,Pearson,7,68,"Habekost, Petersen and Vangkilde (2014)","difference, raw, rt",1,192
+attention_network_task.conflict_rt,task,Difference in median response time between incongruent and congruent flanker trials,0.74,Pearson,7,68,"Habekost, Petersen and Vangkilde (2014)","difference, raw, rt",1,192
+attention_network_task.conflict_rt,task,Difference in median response time between incongruent and congruent flanker trials,0.515,Pearson,7,75,Paap and Sawi (2016),"difference, raw, rt",1,192
 attention_network_task.congruent_rt,task,Median response time for trials where target and flankers are congruent,0.858,Pearson,7,75,Paap and Sawi (2016),"condition, raw, rt",1,192
 attention_network_task.incongruent_rt,task,Median response time for trials where target and flankers are incongruent,0.879,Pearson,7,75,Paap and Sawi (2016),"condition, raw, rt",1,192
 attention_network_task.neutral_rt,task,Median response time for trials where flankers do not point a direction,0.642,Pearson,7,75,Paap and Sawi (2016),"condition, raw, rt",1,192
@@ -46,29 +46,29 @@ attention_network_task.orienting_rt,task,Difference in median response time betw
 bickel_titrator.auc_small,task,Area under the curve of indifference points not assuming a shape for the discounitng function for small later rewards only,0.67,Pearson,30,131,"Horan, Johnson and Green (2017)","condition, raw",0,31
 bickel_titrator.auc_small,task,Area under the curve of indifference points not assuming a shape for the discounitng function for small later rewards only,0.86,Pearson,7,49,Smits et al. (2013),"condition, raw",0,31
 bickel_titrator.auc_small,task,Area under the curve of indifference points not assuming a shape for the discounitng function for small later rewards only,0.89,Pearson,9,112,Weafer et al. (2013),"condition, raw",0,31
-bickel_titrator.hyp_discount_rate_large.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $1 million. Estimated by fitting model to six decayed values for different delays,0.71,Pearson,7,30,"Baker, Johnson and Bickel (2003)","condition, fit",0,31
-bickel_titrator.hyp_discount_rate_large.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $1 million. Estimated by fitting model to six decayed values for different delays,0.9,Pearson,7,30,"Baker, Johnson and Bickel (2003)","condition, fit",0,31
-bickel_titrator.hyp_discount_rate_large.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $1 million. Estimated by fitting model to six decayed values for different delays,0.65,Pearson,7,30,"Johnson, Bickel and Baker (2007)","condition, fit",0,31
-bickel_titrator.hyp_discount_rate_medium.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $1000. Estimated by fitting model to six decayed values for different delays,0.78,Pearson,7,30,"Baker, Johnson and Bickel (2003)","condition, fit",0,31
-bickel_titrator.hyp_discount_rate_medium.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $1000. Estimated by fitting model to six decayed values for different delays,0.87,Pearson,7,30,"Baker, Johnson and Bickel (2003)","condition, fit",0,31
-bickel_titrator.hyp_discount_rate_medium.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $1000. Estimated by fitting model to six decayed values for different delays,0.718,Pearson,7,30,"Johnson, Bickel and Baker (2007)","condition, fit",0,31
-bickel_titrator.hyp_discount_rate_medium.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $1000. Estimated by fitting model to six decayed values for different delays,0.41,Pearson,28,37,De Wilde et al. (2013),"condition, fit",0,31
-bickel_titrator.hyp_discount_rate_medium.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $1000. Estimated by fitting model to six decayed values for different delays,0.68,Spearman,1,220,Yoon and Chapman (2016),"condition, fit",0,31
-bickel_titrator.hyp_discount_rate_small.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $10. Estimated by fitting model to six decayed values for different delays,0.77,Pearson,9,48,Hendrickson and Rasmussen (2013),"condition, fit",0,31
-bickel_titrator.hyp_discount_rate_small.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $10. Estimated by fitting model to six decayed values for different delays,0.939,Pearson,4,24,Richards et al. (1999),"condition, fit",0,31
-bickel_titrator.hyp_discount_rate_small.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $10. Estimated by fitting model to six decayed values for different delays,0.74,Pearson,7,30,"Baker, Johnson and Bickel (2003)","condition, fit",0,31
-bickel_titrator.hyp_discount_rate_small.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $10. Estimated by fitting model to six decayed values for different delays,0.82,Pearson,7,30,"Baker, Johnson and Bickel (2003)","condition, fit",0,31
-bickel_titrator.hyp_discount_rate_small.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $10. Estimated by fitting model to six decayed values for different delays,0.549,Pearson,7,30,"Johnson, Bickel and Baker (2007)","condition, fit",0,31
-bickel_titrator.hyp_discount_rate_small.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $10. Estimated by fitting model to six decayed values for different delays,0.43,Pearson,28,37,De Wilde et al. (2013),"condition, fit",0,31
-bickel_titrator.hyp_discount_rate_small.logTr,task,Hyperbolic discount rate for condition where larger amount is fixed at $10. Estimated by fitting model to six decayed values for different delays,0.5,Pearson,28,37,De Wilde et al. (2013),"condition, fit",0,31
-choice_reaction_time.avg_rt.logTr,task,Median response time for correct responses,0.6,Pearson,21,55,Barrett et al. (1982),"overall, raw, rt",1,50
-choice_reaction_time.avg_rt.logTr,task,Median response time for correct responses,0.59,Pearson,1,16,Kennedy et al. (1989),"overall, raw, rt",1,50
-choice_reaction_time.avg_rt.logTr,task,Median response time for correct responses,0.94,Pearson,1,16,Kennedy et al. (1989),"overall, raw, rt",1,50
-choice_reaction_time.avg_rt.logTr,task,Median response time for correct responses,0.94,Pearson,1,16,Kennedy et al. (1989),"overall, raw, rt",1,50
-choice_reaction_time.avg_rt.logTr,task,Median response time for correct responses,0.71,Pearson,28,21,Williams et al. (2005),"overall, raw, rt",1,50
-choice_reaction_time.avg_rt.logTr,task,Median response time for correct responses,0.64,Pearson,1,20,"Deary, Liewald and Nissan (2011)","overall, raw, rt",1,50
-choice_reaction_time.avg_rt.logTr,task,Median response time for correct responses,0.83,Pearson,1,20,"Deary, Liewald and Nissan (2011)","overall, raw, rt",1,50
-choice_reaction_time.avg_rt.logTr,task,Median response time for correct responses,0.79,ICC,1,96,Jones et al. (2016),"overall, raw, rt",1,50
+bickel_titrator.hyp_discount_rate_large,task,Hyperbolic discount rate for condition where larger amount is fixed at $1 million. Estimated by fitting model to six decayed values for different delays,0.71,Pearson,7,30,"Baker, Johnson and Bickel (2003)","condition, fit",0,31
+bickel_titrator.hyp_discount_rate_large,task,Hyperbolic discount rate for condition where larger amount is fixed at $1 million. Estimated by fitting model to six decayed values for different delays,0.9,Pearson,7,30,"Baker, Johnson and Bickel (2003)","condition, fit",0,31
+bickel_titrator.hyp_discount_rate_large,task,Hyperbolic discount rate for condition where larger amount is fixed at $1 million. Estimated by fitting model to six decayed values for different delays,0.65,Pearson,7,30,"Johnson, Bickel and Baker (2007)","condition, fit",0,31
+bickel_titrator.hyp_discount_rate_medium,task,Hyperbolic discount rate for condition where larger amount is fixed at $1000. Estimated by fitting model to six decayed values for different delays,0.78,Pearson,7,30,"Baker, Johnson and Bickel (2003)","condition, fit",0,31
+bickel_titrator.hyp_discount_rate_medium,task,Hyperbolic discount rate for condition where larger amount is fixed at $1000. Estimated by fitting model to six decayed values for different delays,0.87,Pearson,7,30,"Baker, Johnson and Bickel (2003)","condition, fit",0,31
+bickel_titrator.hyp_discount_rate_medium,task,Hyperbolic discount rate for condition where larger amount is fixed at $1000. Estimated by fitting model to six decayed values for different delays,0.718,Pearson,7,30,"Johnson, Bickel and Baker (2007)","condition, fit",0,31
+bickel_titrator.hyp_discount_rate_medium,task,Hyperbolic discount rate for condition where larger amount is fixed at $1000. Estimated by fitting model to six decayed values for different delays,0.41,Pearson,28,37,De Wilde et al. (2013),"condition, fit",0,31
+bickel_titrator.hyp_discount_rate_medium,task,Hyperbolic discount rate for condition where larger amount is fixed at $1000. Estimated by fitting model to six decayed values for different delays,0.68,Spearman,1,220,Yoon and Chapman (2016),"condition, fit",0,31
+bickel_titrator.hyp_discount_rate_small,task,Hyperbolic discount rate for condition where larger amount is fixed at $10. Estimated by fitting model to six decayed values for different delays,0.77,Pearson,9,48,Hendrickson and Rasmussen (2013),"condition, fit",0,31
+bickel_titrator.hyp_discount_rate_small,task,Hyperbolic discount rate for condition where larger amount is fixed at $10. Estimated by fitting model to six decayed values for different delays,0.939,Pearson,4,24,Richards et al. (1999),"condition, fit",0,31
+bickel_titrator.hyp_discount_rate_small,task,Hyperbolic discount rate for condition where larger amount is fixed at $10. Estimated by fitting model to six decayed values for different delays,0.74,Pearson,7,30,"Baker, Johnson and Bickel (2003)","condition, fit",0,31
+bickel_titrator.hyp_discount_rate_small,task,Hyperbolic discount rate for condition where larger amount is fixed at $10. Estimated by fitting model to six decayed values for different delays,0.82,Pearson,7,30,"Baker, Johnson and Bickel (2003)","condition, fit",0,31
+bickel_titrator.hyp_discount_rate_small,task,Hyperbolic discount rate for condition where larger amount is fixed at $10. Estimated by fitting model to six decayed values for different delays,0.549,Pearson,7,30,"Johnson, Bickel and Baker (2007)","condition, fit",0,31
+bickel_titrator.hyp_discount_rate_small,task,Hyperbolic discount rate for condition where larger amount is fixed at $10. Estimated by fitting model to six decayed values for different delays,0.43,Pearson,28,37,De Wilde et al. (2013),"condition, fit",0,31
+bickel_titrator.hyp_discount_rate_small,task,Hyperbolic discount rate for condition where larger amount is fixed at $10. Estimated by fitting model to six decayed values for different delays,0.5,Pearson,28,37,De Wilde et al. (2013),"condition, fit",0,31
+choice_reaction_time.avg_rt,task,Median response time for correct responses,0.6,Pearson,21,55,Barrett et al. (1982),"overall, raw, rt",1,50
+choice_reaction_time.avg_rt,task,Median response time for correct responses,0.59,Pearson,1,16,Kennedy et al. (1989),"overall, raw, rt",1,50
+choice_reaction_time.avg_rt,task,Median response time for correct responses,0.94,Pearson,1,16,Kennedy et al. (1989),"overall, raw, rt",1,50
+choice_reaction_time.avg_rt,task,Median response time for correct responses,0.94,Pearson,1,16,Kennedy et al. (1989),"overall, raw, rt",1,50
+choice_reaction_time.avg_rt,task,Median response time for correct responses,0.71,Pearson,28,21,Williams et al. (2005),"overall, raw, rt",1,50
+choice_reaction_time.avg_rt,task,Median response time for correct responses,0.64,Pearson,1,20,"Deary, Liewald and Nissan (2011)","overall, raw, rt",1,50
+choice_reaction_time.avg_rt,task,Median response time for correct responses,0.83,Pearson,1,20,"Deary, Liewald and Nissan (2011)","overall, raw, rt",1,50
+choice_reaction_time.avg_rt,task,Median response time for correct responses,0.79,ICC,1,96,Jones et al. (2016),"overall, raw, rt",1,50
 dietary_decision.prop_healthy_choice,task,Proportion of choices in the test phase where the item with higher health rating is chosen,0.42,Pearson,7,27,Vlaev et al. (2017),"overall, raw",0,49
 dietary_decision.prop_healthy_choice,task,Proportion of choices in the test phase where the item with higher health rating is chosen,0.61,Pearson,7,27,Vlaev et al. (2017),"overall, raw",0,49
 dietary_decision.prop_healthy_choice,task,Proportion of choices in the test phase where the item with higher health rating is chosen,0.54,Pearson,7,27,Vlaev et al. (2017),"overall, raw",0,49
@@ -161,16 +161,16 @@ kirby.hyp_discount_rate_avg,task,Hyperbolic discount rate for all items,0.65,Spe
 kirby.hyp_discount_rate_avg,task,Hyperbolic discount rate for all items,0.85,Pearson,1,93,Arfer Luhmann (2017),"overall, fit",0,27
 kirby.hyp_discount_rate_avg,task,Hyperbolic discount rate for all items,0.77,Pearson,30,93,Arfer Luhmann (2017),"overall, fit",0,27
 kirby.hyp_discount_rate_avg,task,Hyperbolic discount rate for all items,0.56,ICC,28,90,Black and Rosen (2011),"overall, fit",0,27
-kirby.hyp_discount_rate_large.logTr,task,Hyperbolic discount rate for set of 9 choices with large rewards,0.66,Pearson,35,81,Kirby (2009),"condition, fit",0,27
-kirby.hyp_discount_rate_large.logTr,task,Hyperbolic discount rate for set of 9 choices with large rewards,0.59,Pearson,360,37,Kirby (2009),"condition, fit",0,27
-kirby.hyp_discount_rate_large.logTr,task,Hyperbolic discount rate for set of 9 choices with large rewards,0.57,Pearson,399,46,Kirby (2009),"condition, fit",0,27
-kirby.hyp_discount_rate_medium.logTr,task,Hyperbolic discount rate for set of 9 choices with medium rewards,0.75,Pearson,35,81,Kirby (2009),"condition, fit",0,27
-kirby.hyp_discount_rate_medium.logTr,task,Hyperbolic discount rate for set of 9 choices with medium rewards,0.71,Pearson,360,37,Kirby (2009),"condition, fit",0,27
-kirby.hyp_discount_rate_medium.logTr,task,Hyperbolic discount rate for set of 9 choices with medium rewards,0.61,Pearson,399,46,Kirby (2009),"condition, fit",0,27
-kirby.hyp_discount_rate_small.logTr,task,Hyperbolic discount rate for set of 9 choices with small rewards,0.77,Pearson,35,81,Kirby (2009),"condition, fit",0,27
-kirby.hyp_discount_rate_small.logTr,task,Hyperbolic discount rate for set of 9 choices with small rewards,0.71,Pearson,360,37,Kirby (2009),"condition, fit",0,27
-kirby.hyp_discount_rate_small.logTr,task,Hyperbolic discount rate for set of 9 choices with small rewards,0.59,Pearson,399,46,Kirby (2009),"condition, fit",0,27
-local_global_letter.acc.ReflogTr,task,Proportion of correct choices (excluding no response trials) where correct choice means indicating the correct local or global letter depending on the color of the stimulus,0.17,Pearson,540,211,Ven et al. (2013),"overall, raw, accuracy",1,27
+kirby.hyp_discount_rate_large,task,Hyperbolic discount rate for set of 9 choices with large rewards,0.66,Pearson,35,81,Kirby (2009),"condition, fit",0,27
+kirby.hyp_discount_rate_large,task,Hyperbolic discount rate for set of 9 choices with large rewards,0.59,Pearson,360,37,Kirby (2009),"condition, fit",0,27
+kirby.hyp_discount_rate_large,task,Hyperbolic discount rate for set of 9 choices with large rewards,0.57,Pearson,399,46,Kirby (2009),"condition, fit",0,27
+kirby.hyp_discount_rate_medium,task,Hyperbolic discount rate for set of 9 choices with medium rewards,0.75,Pearson,35,81,Kirby (2009),"condition, fit",0,27
+kirby.hyp_discount_rate_medium,task,Hyperbolic discount rate for set of 9 choices with medium rewards,0.71,Pearson,360,37,Kirby (2009),"condition, fit",0,27
+kirby.hyp_discount_rate_medium,task,Hyperbolic discount rate for set of 9 choices with medium rewards,0.61,Pearson,399,46,Kirby (2009),"condition, fit",0,27
+kirby.hyp_discount_rate_small,task,Hyperbolic discount rate for set of 9 choices with small rewards,0.77,Pearson,35,81,Kirby (2009),"condition, fit",0,27
+kirby.hyp_discount_rate_small,task,Hyperbolic discount rate for set of 9 choices with small rewards,0.71,Pearson,360,37,Kirby (2009),"condition, fit",0,27
+kirby.hyp_discount_rate_small,task,Hyperbolic discount rate for set of 9 choices with small rewards,0.59,Pearson,399,46,Kirby (2009),"condition, fit",0,27
+local_global_letter.acc,task,Proportion of correct choices (excluding no response trials) where correct choice means indicating the correct local or global letter depending on the color of the stimulus,0.17,Pearson,540,211,Ven et al. (2013),"overall, raw, accuracy",1,27
 local_global_letter.conflict_rt,task,Difference in median rt between incongruent and congruent trials (incongruent trials are those that have different local and global letters and congruent trials have the same),0.31,Pearson,9,55,Dale and Arnell (2013),"difference, raw, rt",1,27
 local_global_letter.conflict_rt,task,Difference in median rt between incongruent and congruent trials (incongruent trials are those that have different local and global letters and congruent trials have the same),0.27,Pearson,9,58,Dale and Arnell (2013),"difference, raw, rt",1,27
 local_global_letter.congruent_rt,task,Mean RT in congruent trials only,0.73,Pearson,9,55,Dale and Arnell (2013),"condition, raw, rt",1,27
@@ -209,9 +209,9 @@ ravens.score,task,Number of correct responses out of 18,0.91,Pearson,45,67,Bors 
 ravens.score,task,Number of correct responses out of 18,0.952,Pearson,53,10,Williams and McCord (2006),"overall, raw, accuracy",0,18
 ravens.score,task,Number of correct responses out of 18,0.826,Pearson,53,11,Williams and McCord (2006),"overall, raw, accuracy",0,18
 ravens.score,task,Number of correct responses out of 18,0.594,Pearson,53,25,Williams and McCord (2006),"overall, raw, accuracy",0,18
-recent_probes.acc.ReflogTr,task,Proportion of correct responses including hits and correct rejections (excluding no response trials) where correct means identifying whether the presented letter was in the memory set of six letter,0.39,Pearson,1,247,Caretta (1992),"overall, raw, accuracy",1,72
-recent_probes.acc.ReflogTr,task,Proportion of correct responses including hits and correct rejections (excluding no response trials) where correct means identifying whether the presented letter was in the memory set of six letter,0.417,ICC,1,65,Jones et al. (2016),"overall, raw, accuracy",1,72
-recent_probes.acc.ReflogTr,task,Proportion of correct responses including hits and correct rejections (excluding no response trials) where correct means identifying whether the presented letter was in the memory set of six letter,0.4,Pearson,21,55,Barrett et al. (1982),"overall, raw, accuracy",1,72
+recent_probes.acc,task,Proportion of correct responses including hits and correct rejections (excluding no response trials) where correct means identifying whether the presented letter was in the memory set of six letter,0.39,Pearson,1,247,Caretta (1992),"overall, raw, accuracy",1,72
+recent_probes.acc,task,Proportion of correct responses including hits and correct rejections (excluding no response trials) where correct means identifying whether the presented letter was in the memory set of six letter,0.417,ICC,1,65,Jones et al. (2016),"overall, raw, accuracy",1,72
+recent_probes.acc,task,Proportion of correct responses including hits and correct rejections (excluding no response trials) where correct means identifying whether the presented letter was in the memory set of six letter,0.4,Pearson,21,55,Barrett et al. (1982),"overall, raw, accuracy",1,72
 recent_probes.avg_rt,task,Median response time for correct responses,0.88,Pearson,90,26,Smith and Langolf (1981),"overall, raw, rt",1,72
 recent_probes.avg_rt,task,Median response time for correct responses,0.79,Pearson,1,247,Caretta (1992),"overall, raw, rt",1,72
 recent_probes.avg_rt,task,Median response time for correct responses,0.51,Pearson,7,78,Roznowski and Smith (1993),"overall, raw, rt",1,72
@@ -264,28 +264,28 @@ shift_task.trial_pre_first_cat,task,Trials to complete first category,0.16,Kenda
 shift_task.trial_pre_first_cat,task,Trials to complete first category,0.44,Spearman,12,29,Ingram et al. (1999),"overall, raw",0,410
 simon.congruent_acc,task,Accuracy on trials where the side of the screen the stimulus appeared matched the response button,0.68,ICC,66.5,23,Wöstmann et al. (2013),"overall, raw, accuracy",1,100
 simon.incongruent_acc,task,Accuracy on trials where the side of the screen the stimulus appeared did not match the response button,0.85,ICC,66.5,23,Wöstmann et al. (2013),"overall, raw, accuracy",1,100
-simon.acc.ReflogTr,task,Proportion of correct responses (excluding non-response trials) where correct means pressing the correct button for the correct color regardless of where it appears on the screen,0.15,Pearson,540,208,Ven et al. (2013),"overall, raw, accuracy",1,100
+simon.acc,task,Proportion of correct responses (excluding non-response trials) where correct means pressing the correct button for the correct color regardless of where it appears on the screen,0.15,Pearson,540,208,Ven et al. (2013),"overall, raw, accuracy",1,100
 simon.congruent_avg_rt,task,Median response time on trials where the side of the screen the stimulus appeared matched the response button,0.94,ICC,66.5,23,Wöstmann et al. (2013),"condition, raw, rt",1,100
 simon.congruent_avg_rt,task,Median response time on trials where the side of the screen the stimulus appeared matched the response button,0.714,Pearson,7,75,Paap and Sawi (2016),"condition, raw, rt",1,100
 simon.incongruent_avg_rt,task,Median response time on trials where the side of the screen the stimulus appeared did not match the response button,0.96,ICC,66.5,23,Wöstmann et al. (2013),"condition, raw, rt",1,100
 simon.incongruent_avg_rt,task,Median response time on trials where the side of the screen the stimulus appeared did not match the response button,0.719,Pearson,7,75,Paap and Sawi (2016),"condition, raw, rt",1,100
 simon.congruent_sd_rt,task,Standard deviation of response time on trials where the side of the screen the stimulus appeared matched the response button,0.9,ICC,66.5,23,Wöstmann et al. (2013),"condition, raw, rt",1,100
 simon.incongruent_sd_rt,task,Standard deviation of response times on trials where the side of the screen the stimulus appeared did not match the response button,0.81,ICC,66.5,23,Wöstmann et al. (2013),"condition, raw, rt",1,100
-simon.simon_acc.ReflogTr,task,Difference in proportion of correct responses between incongruent (trials where response should be left and response is on right) and congruent trials (trials where the response should be left and the stimulus is on left),0.1,Pearson,7,37,De Jong et al. (2003),"difference, raw, accuracy",1,100
-simon.simon_acc.ReflogTr,task,Difference in proportion of correct responses between incongruent (trials where response should be left and response is on right) and congruent trials (trials where the response should be left and the stimulus is on left),0.77,ICC,66.5,23,Wöstmann et al. (2013),"difference, raw, accuracy",1,100
-simon.simon_acc.ReflogTr,task,Difference in proportion of correct responses between incongruent (trials where response should be left and response is on right) and congruent trials (trials where the response should be left and the stimulus is on left),0.62,Pearson,56,25,Linck and Weiss (2015),"difference, raw, accuracy",1,100
+simon.simon_acc,task,Difference in proportion of correct responses between incongruent (trials where response should be left and response is on right) and congruent trials (trials where the response should be left and the stimulus is on left),0.1,Pearson,7,37,De Jong et al. (2003),"difference, raw, accuracy",1,100
+simon.simon_acc,task,Difference in proportion of correct responses between incongruent (trials where response should be left and response is on right) and congruent trials (trials where the response should be left and the stimulus is on left),0.77,ICC,66.5,23,Wöstmann et al. (2013),"difference, raw, accuracy",1,100
+simon.simon_acc,task,Difference in proportion of correct responses between incongruent (trials where response should be left and response is on right) and congruent trials (trials where the response should be left and the stimulus is on left),0.62,Pearson,56,25,Linck and Weiss (2015),"difference, raw, accuracy",1,100
 simon.simon_rt,task,Difference in median response time in correct responses between incongruent (trials where response should be left and response is on right) and congruent trials (trials where the response should be left and the stimulus is on left),0.89,ICC,66.5,23,Wöstmann et al. (2013),"difference, raw, accuracy",1,100
 simon.simon_rt,task,Difference in median response time in correct responses between incongruent (trials where response should be left and response is on right) and congruent trials (trials where the response should be left and the stimulus is on left),0.428,Pearson,7,75,Paap and Sawi (2016),"difference, raw, accuracy",1,100
-simple_reaction_time.avg_rt.logTr,task,Median response time (excluding no response trials),0.73,Pearson,3600,217,Choudhury and Gorman (1999),"overall, raw, rt",0,150
-simple_reaction_time.avg_rt.logTr,task,Median response time (excluding no response trials),0.46,Pearson,1,103,Collie et al. (2003),"overall, raw, rt",0,150
-simple_reaction_time.avg_rt.logTr,task,Median response time (excluding no response trials),0.77,Pearson,1,103,Collie et al. (2003),"overall, raw, rt",0,150
-simple_reaction_time.avg_rt.logTr,task,Median response time (excluding no response trials),0.7,Pearson,14,175,Erlanger et al. (2003),"overall, raw, rt",0,150
-simple_reaction_time.avg_rt.logTr,task,Median response time (excluding no response trials),0.8,ICC,14,18,Lemay et al. (2004),"overall, raw, rt",0,150
-simple_reaction_time.avg_rt.logTr,task,Median response time (excluding no response trials),0.73,ICC,7,45,Falleti et al. (2007),"overall, raw, rt",0,150
-simple_reaction_time.avg_rt.logTr,task,Median response time (excluding no response trials),0.94,ICC,1,45,Falleti et al. (2007),"overall, raw, rt",0,150
-simple_reaction_time.avg_rt.logTr,task,Median response time (excluding no response trials),0.6,ICC,30,50,Cole et al. (2013),"overall, raw, rt",0,150
-simple_reaction_time.avg_rt.logTr,task,Median response time (excluding no response trials),0.4,ICC,30,50,Cole et al. (2013),"overall, raw, rt",0,150
-simple_reaction_time.avg_rt.logTr,task,Median response time (excluding no response trials),0.825,ICC,1,95,Jones et al. (2016),"overall, raw, rt",0,150
+simple_reaction_time.avg_rt,task,Median response time (excluding no response trials),0.73,Pearson,3600,217,Choudhury and Gorman (1999),"overall, raw, rt",0,150
+simple_reaction_time.avg_rt,task,Median response time (excluding no response trials),0.46,Pearson,1,103,Collie et al. (2003),"overall, raw, rt",0,150
+simple_reaction_time.avg_rt,task,Median response time (excluding no response trials),0.77,Pearson,1,103,Collie et al. (2003),"overall, raw, rt",0,150
+simple_reaction_time.avg_rt,task,Median response time (excluding no response trials),0.7,Pearson,14,175,Erlanger et al. (2003),"overall, raw, rt",0,150
+simple_reaction_time.avg_rt,task,Median response time (excluding no response trials),0.8,ICC,14,18,Lemay et al. (2004),"overall, raw, rt",0,150
+simple_reaction_time.avg_rt,task,Median response time (excluding no response trials),0.73,ICC,7,45,Falleti et al. (2007),"overall, raw, rt",0,150
+simple_reaction_time.avg_rt,task,Median response time (excluding no response trials),0.94,ICC,1,45,Falleti et al. (2007),"overall, raw, rt",0,150
+simple_reaction_time.avg_rt,task,Median response time (excluding no response trials),0.6,ICC,30,50,Cole et al. (2013),"overall, raw, rt",0,150
+simple_reaction_time.avg_rt,task,Median response time (excluding no response trials),0.4,ICC,30,50,Cole et al. (2013),"overall, raw, rt",0,150
+simple_reaction_time.avg_rt,task,Median response time (excluding no response trials),0.825,ICC,1,95,Jones et al. (2016),"overall, raw, rt",0,150
 spatial_span.forward_span,task,Average number of locations remembered in order of appearance after dropping the first four trials,0.7,Pearson,9,1122,Orsini (1994),"condition, raw",0,14
 spatial_span.forward_span,task,Average number of locations remembered in order of appearance after dropping the first four trials,0.79,Pearson,9,1122,Orsini (1994),"condition, raw",0,14
 spatial_span.forward_span,task,Average number of locations remembered in order of appearance after dropping the first four trials,0.6,Pearson,90,145,"Baddeley, Gardner and Grantham-McGregor (1995)","condition, raw",0,14
@@ -343,17 +343,17 @@ stroop.incongruent_errors,task,Number of errors in trials where the print color 
 stroop.incongruent_rt,task,Median response time in trials where the print color and the word do not match,0.79,Pearson,7,28,Strauss et al. (2005),"condition, raw, rt",1,96
 stroop.incongruent_rt,task,Median response time in trials where the print color and the word do not match,0.67,ICC,21,47,"Hedge, Powell and Sumner (2017)","condition, raw, rt",1,96
 stroop.incongruent_rt,task,Median response time in trials where the print color and the word do not match,0.7,ICC,21,56,"Hedge, Powell and Sumner (2017)","condition, raw, rt",1,96
-stroop.stroop_acc.ReflogTr,task,Difference in proportion of correct responses between incongruent (where word color does not match the word) and congruent trials (where word color does match the word),0.67,Pearson,107,27,"Kindlon, Mezzacappa and Earls (1995)","difference, raw, accuracy",1,96
-stroop.stroop_acc.ReflogTr,task,Difference in proportion of correct responses between incongruent (where word color does not match the word) and congruent trials (where word color does match the word),0.81,ICC,180,26,Neyens and Aldenkamp (1997),"difference, raw, accuracy",1,96
-stroop.stroop_acc.ReflogTr,task,Difference in proportion of correct responses between incongruent (where word color does not match the word) and congruent trials (where word color does match the word),0.48,ICC,21,47,"Hedge, Powell and Sumner (2017)","difference, raw, accuracy",1,96
-stroop.stroop_acc.ReflogTr,task,Difference in proportion of correct responses between incongruent (where word color does not match the word) and congruent trials (where word color does match the word),0.44,ICC,21,56,"Hedge, Powell and Sumner (2017)","difference, raw, accuracy",1,96
+stroop.stroop_acc,task,Difference in proportion of correct responses between incongruent (where word color does not match the word) and congruent trials (where word color does match the word),0.67,Pearson,107,27,"Kindlon, Mezzacappa and Earls (1995)","difference, raw, accuracy",1,96
+stroop.stroop_acc,task,Difference in proportion of correct responses between incongruent (where word color does not match the word) and congruent trials (where word color does match the word),0.81,ICC,180,26,Neyens and Aldenkamp (1997),"difference, raw, accuracy",1,96
+stroop.stroop_acc,task,Difference in proportion of correct responses between incongruent (where word color does not match the word) and congruent trials (where word color does match the word),0.48,ICC,21,47,"Hedge, Powell and Sumner (2017)","difference, raw, accuracy",1,96
+stroop.stroop_acc,task,Difference in proportion of correct responses between incongruent (where word color does not match the word) and congruent trials (where word color does match the word),0.44,ICC,21,56,"Hedge, Powell and Sumner (2017)","difference, raw, accuracy",1,96
 stroop.stroop_rt,task,Difference in median response times in correct trials between incongruent (where word color does not match the word) and congruent trials (where word color does match the word),0.68,Pearson,1,45,Siegrist (1997),"difference, raw, rt",1,96
 stroop.stroop_rt,task,Difference in median response times in correct trials between incongruent (where word color does not match the word) and congruent trials (where word color does match the word),0.46,Pearson,7,28,Strauss et al. (2005),"difference, raw, rt",1,96
 stroop.stroop_rt,task,Difference in median response times in correct trials between incongruent (where word color does not match the word) and congruent trials (where word color does match the word),0.6,ICC,21,47,"Hedge, Powell and Sumner (2017)","difference, raw, rt",1,96
 stroop.stroop_rt,task,Difference in median response times in correct trials between incongruent (where word color does not match the word) and congruent trials (where word color does match the word),0.66,ICC,21,56,"Hedge, Powell and Sumner (2017)","difference, raw, rt",1,96
 stroop.stroop_rt,task,Difference in median response times in correct trials between incongruent (where word color does not match the word) and congruent trials (where word color does match the word),0.57,Pearson,7,66,Bender et al. (2016),"difference, raw, rt",1,96
-tower_of_london.avg_move_time.logTr,task,Average time to take action on correct trials,0.475,ICC,7,27,Köstering et al. (2015),"overall, raw, rt",0,12
-tower_of_london.avg_move_time.logTr,task,Average time to take action on correct trials,0.3,ICC,14,19,Lemay et al. (2004),"overall, raw, rt",0,12
+tower_of_london.avg_move_time,task,Average time to take action on correct trials,0.475,ICC,7,27,Köstering et al. (2015),"overall, raw, rt",0,12
+tower_of_london.avg_move_time,task,Average time to take action on correct trials,0.3,ICC,14,19,Lemay et al. (2004),"overall, raw, rt",0,12
 tower_of_london.num_optimal_solutions,task,Total number of correct responses with optimal solutions,0.6,Pearson,30,162,Lowe and Rabbitt (1998),"overall, raw",0,12
 tower_of_london.num_optimal_solutions,task,Total number of correct responses with optimal solutions,0.7,Pearson,42,34,"Schnirman, Welsh and Retzlaff (1998)","overall, raw",0,12
 tower_of_london.num_optimal_solutions,task,Total number of correct responses with optimal solutions,0.66,ICC,3,48,Keefe et al. (2004),"overall, raw",0,12
@@ -391,12 +391,12 @@ bis11_survey.Attentional,survey,,0.62,ICC,14,31,Suris et al. (2007),"condition, 
 bis11_survey.Attentional,survey,,0.58,ICC,14,34,Suris et al. (2007),"condition, fit",0,8
 bis11_survey.Attentional,survey,,0.61,Spearman,30,153,Stanford et al. (2009),"condition, fit",0,8
 bis11_survey.Attentional,survey,,0.86,Pearson,9,127,Weafer et al. (2013),"condition, fit",0,8
-bis11_survey.Motor.logTr,survey,,0.74,ICC,120,34,Someya et al. (2001),"condition, fit",0,11
-bis11_survey.Motor.logTr,survey,,0.43,ICC,14,32,Suris et al. (2007),"condition, fit",0,11
-bis11_survey.Motor.logTr,survey,,0.25,ICC,14,31,Suris et al. (2007),"condition, fit",0,11
-bis11_survey.Motor.logTr,survey,,0.57,ICC,14,34,Suris et al. (2007),"condition, fit",0,11
-bis11_survey.Motor.logTr,survey,,0.67,Spearman,30,153,Stanford et al. (2009),"condition, fit",0,11
-bis11_survey.Motor.logTr,survey,,0.88,Pearson,9,127,Weafer et al. (2013),"condition, fit",0,11
+bis11_survey.Motor,survey,,0.74,ICC,120,34,Someya et al. (2001),"condition, fit",0,11
+bis11_survey.Motor,survey,,0.43,ICC,14,32,Suris et al. (2007),"condition, fit",0,11
+bis11_survey.Motor,survey,,0.25,ICC,14,31,Suris et al. (2007),"condition, fit",0,11
+bis11_survey.Motor,survey,,0.57,ICC,14,34,Suris et al. (2007),"condition, fit",0,11
+bis11_survey.Motor,survey,,0.67,Spearman,30,153,Stanford et al. (2009),"condition, fit",0,11
+bis11_survey.Motor,survey,,0.88,Pearson,9,127,Weafer et al. (2013),"condition, fit",0,11
 bis11_survey.Nonplanning,survey,,0.84,ICC,120,34,Someya et al. (2001),"condition, fit",0,11
 bis11_survey.Nonplanning,survey,,0.72,ICC,14,32,Suris et al. (2007),"condition, fit",0,11
 bis11_survey.Nonplanning,survey,,0.73,ICC,14,31,Suris et al. (2007),"condition, fit",0,11
@@ -414,10 +414,10 @@ bis11_survey.total,survey,,0.92,Pearson,9,127,Weafer et al. (2013),"condition, r
 brief_self_control_survey.self_control,survey,,0.87,Pearson,21,233,Tangney et al. (2004),"overall, raw",0,13
 brief_self_control_survey.self_control,survey,,0.75,Pearson,210,140,Duckworth and Seligman (2005),"overall, raw",0,13
 brief_self_control_survey.self_control,survey,,0.76,Pearson,210,164,Duckworth and Seligman (2005),"overall, raw",0,13
-dickman_survey.dysfunctional.logTr,survey,,0.73,Pearson,25,211,Brunas-Wagstaff et al. (1997),"condition, fit",0,12
-dickman_survey.dysfunctional.logTr,survey,,0.824,Spearman,360,11,Caci et al. (2003),"condition, fit",0,12
-dickman_survey.dysfunctional.logTr,survey,,0.528,Spearman,360,38,Caci et al. (2003),"condition, fit",0,12
-dickman_survey.dysfunctional.logTr,survey,,0.765,Pearson,30,107,Chico et al. (2003),"condition, fit",0,12
+dickman_survey.dysfunctional,survey,,0.73,Pearson,25,211,Brunas-Wagstaff et al. (1997),"condition, fit",0,12
+dickman_survey.dysfunctional,survey,,0.824,Spearman,360,11,Caci et al. (2003),"condition, fit",0,12
+dickman_survey.dysfunctional,survey,,0.528,Spearman,360,38,Caci et al. (2003),"condition, fit",0,12
+dickman_survey.dysfunctional,survey,,0.765,Pearson,30,107,Chico et al. (2003),"condition, fit",0,12
 dickman_survey.functional,survey,,0.58,Pearson,25,211,Brunas-Wagstaff et al. (1997),"condition, fit",0,11
 dickman_survey.functional,survey,,0.435,Spearman,360,11,Caci et al. (2003),"condition, fit",0,11
 dickman_survey.functional,survey,,0.695,Spearman,360,38,Caci et al. (2003),"condition, fit",0,11
@@ -477,7 +477,7 @@ future_time_perspective_survey.future_time_perspective,survey,,0.76,Pearson,360,
 grit_scale_survey.grit,survey,,0.68,Pearson,360,279,Duckworth and Quinn (2009),"overall, raw",0,8
 grit_scale_survey.grit,survey,,0.61,Pearson,90,121,"Hill, Borrow and Bronk (2014)","overall, raw",0,8
 grit_scale_survey.grit,survey,,0.78,Pearson,28,138,Li et al. (2016),"overall, raw",0,8
-impulsive_venture_survey.impulsiveness.logTr,survey,,0.76,Pearson,30,132,Luengo et al. (1991),"condition, fit",0,19
+impulsive_venture_survey.impulsiveness,survey,,0.76,Pearson,30,132,Luengo et al. (1991),"condition, fit",0,19
 impulsive_venture_survey.venturesomeness,survey,,0.8,Pearson,30,132,Luengo et al. (1991),"condition, fit",0,16
 leisure_time_activity_survey.activity_level,survey,,0.8,Spearman,28,267,Kiernan et al. (2013),"overall, raw",0,1
 leisure_time_activity_survey.activity_level,survey,,0.86,Pearson,9,60,Riebl et al. (2013),"overall, raw",0,1
@@ -488,7 +488,7 @@ mindful_attention_awareness_survey.mindfulness,survey,,0.66,Pearson,56,441,Murph
 mindful_attention_awareness_survey.mindfulness,survey,,0.94,Pearson,21,46,Matvienko-Sikar and Dockray (2017),"overall, raw",0,15
 selection_optimization_compensation_survey.compensation,survey,,0.76,Pearson,30,218,Freund and Baltes (2002),"condition, fit",0,12
 selection_optimization_compensation_survey.elective_selection,survey,,0.77,Pearson,30,218,Freund and Baltes (2002),"condition, fit",0,12
-selection_optimization_compensation_survey.optimization.ReflogTr,survey,,0.71,Pearson,30,218,Freund and Baltes (2002),"condition, fit",0,12
+selection_optimization_compensation_survey.optimization,survey,,0.71,Pearson,30,218,Freund and Baltes (2002),"condition, fit",0,12
 sensation_seeking_survey.boredom_susceptibility,survey,,0.82,Pearson,7,38,Zuckerman et al. (1972),"condition, fit",0,10
 sensation_seeking_survey.boredom_susceptibility,survey,,0.66,Pearson,42,31,Zaleski (1984),"condition, fit",0,10
 sensation_seeking_survey.boredom_susceptibility,survey,,0.66,Pearson,14,61,Thombs et al. (1994),"condition, fit",0,10
@@ -512,10 +512,10 @@ ten_item_personality_survey.agreeableness,survey,,0.71,Pearson,42,180,"Gosling, 
 ten_item_personality_survey.agreeableness,survey,,0.52,Pearson,42,198,Romero et al. (2012),"condition, fit",0,2
 ten_item_personality_survey.agreeableness,survey,,0.61,Pearson,30,31,Renau et al. (2013),"condition, fit",0,2
 ten_item_personality_survey.agreeableness,survey,,0.69,Pearson,30,31,Renau et al. (2013),"condition, fit",0,2
-ten_item_personality_survey.conscientiousness.ReflogTr,survey,,0.76,Pearson,42,180,"Gosling, Rentfrow and Swann (2003)","condition, fit",0,2
-ten_item_personality_survey.conscientiousness.ReflogTr,survey,,0.69,Pearson,42,198,Romero et al. (2012),"condition, fit",0,2
-ten_item_personality_survey.conscientiousness.ReflogTr,survey,,0.77,Pearson,30,31,Renau et al. (2013),"condition, fit",0,2
-ten_item_personality_survey.conscientiousness.ReflogTr,survey,,0.81,Pearson,30,31,Renau et al. (2013),"condition, fit",0,2
+ten_item_personality_survey.conscientiousness,survey,,0.76,Pearson,42,180,"Gosling, Rentfrow and Swann (2003)","condition, fit",0,2
+ten_item_personality_survey.conscientiousness,survey,,0.69,Pearson,42,198,Romero et al. (2012),"condition, fit",0,2
+ten_item_personality_survey.conscientiousness,survey,,0.77,Pearson,30,31,Renau et al. (2013),"condition, fit",0,2
+ten_item_personality_survey.conscientiousness,survey,,0.81,Pearson,30,31,Renau et al. (2013),"condition, fit",0,2
 ten_item_personality_survey.emotional_stability,survey,,0.7,Pearson,42,180,"Gosling, Rentfrow and Swann (2003)","condition, fit",0,2
 ten_item_personality_survey.emotional_stability,survey,,0.83,Pearson,42,198,Romero et al. (2012),"condition, fit",0,2
 ten_item_personality_survey.emotional_stability,survey,,0.76,Pearson,30,31,Renau et al. (2013),"condition, fit",0,2
