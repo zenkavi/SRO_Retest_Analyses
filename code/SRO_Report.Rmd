@@ -27,7 +27,7 @@ g_legend<-function(a.gplot){
   legend <- tmp$grobs[[leg]]
   return(legend)}
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
-render_this <- function(){rmarkdown::render('SRO_Report.Rmd', output_dir = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/reports', html_notebook(toc = T, toc_float = T, code_folding = 'hide'))}
+render_this <- function(){rmarkdown::render('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/SRO_Report.Rmd', output_dir = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/reports', html_notebook(toc = T, toc_float = T, code_folding = 'hide'))}
 options(scipen = 1, digits = 4)
 ```
 
@@ -76,7 +76,7 @@ One the major contributions of this project is a comprehensive literature review
 ```{r}
 lit_review <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/lit_review_figure.csv')
 
-datatable(lit_review)
+lit_review
 ```
 
 Measure level plot
@@ -245,7 +245,7 @@ test_data2 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regu
 df <- data.frame(names(test_data2)[which(names(test_data2) %in% names(test_data) == FALSE)])
 names(df) = c('vars')
 
-datatable(df)
+df
 ```
 
 ```{r echo=FALSE}
@@ -484,6 +484,8 @@ rel_df %>%
   theme(legend.position = 'bottom',
         legend.title = element_blank())+
   xlab("")
+
+ggsave('Rel_Histograms.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 12, height = 4, units = "in", limitsize = FALSE)
 ```
 
 Task measures have significanlty lower reliability (here checking only on point estimates of ICC).
@@ -520,6 +522,8 @@ p3 = rel_df %>%
   geom_abline(intercept = 0, slope=1)
 
 grid.arrange(p1, p2, p3, nrow=1)
+
+ggsave('Metric_Scatterplots.jpg', plot = grid.arrange(p1, p2, p3, nrow=1), device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 12, height = 4, units = "in", limitsize = FALSE)
 ```
 
 ```{r echo=FALSE}
@@ -643,6 +647,8 @@ measure_labels %>%
   xlab("")+
   ylab("ICC")+
   theme(legend.title = element_blank())
+
+ggsave('DDM_comparisons.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 12, height = 4, units = "in", limitsize = FALSE)
 ```
 
 Are these differences meaningful?
