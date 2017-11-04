@@ -917,16 +917,21 @@ rm(p4_t, p5_t, p6_t)
 ## Variance breakdown
 
 ```{r warning=FALSE, message=FALSE}
-p1 = rel_df %>%
+tmp = rel_df %>%
   mutate(var_subs_pct = var_subs/(var_subs+var_ind+var_resid)*100,
          var_ind_pct = var_ind/(var_subs+var_ind+var_resid)*100, 
          var_resid_pct = var_resid/(var_subs+var_ind+var_resid)*100) %>%
   select(dv, task, var_subs_pct, var_ind_pct, var_resid_pct) %>%
-  gather(key, value, -dv, -task) %>%
-  mutate(key = factor(key, levels = c("var_subs_pct", "var_ind_pct", "var_resid_pct")),
+  # gather(key, value, -dv, -task) %>%
+  mutate(#key = factor(key, levels = c("var_subs_pct", "var_ind_pct", "var_resid_pct")),
          dv = factor(dv, levels = dv[order(task)])) %>%
   separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
   mutate(task_group = factor(task_group, levels = task_group[order(task)])) %>%
+  arrange(task_group, var_subs_pct) %>%
+  mutate(rank = row_number()) %>%
+  arrange(task, task_group, rank) %>%
+  gather(key, value, -dv, -task_group, -var, -task, -rank) %>%
+  ungroup()%>%
   # separate(var, c("var"), sep="\\.",remove=TRUE,extra="drop") %>%
   mutate(task_group = gsub("_", " ", task_group),
          var = gsub("_", " ", var),
@@ -936,69 +941,85 @@ p1 = rel_df %>%
   mutate(task_group = gsub("survey", "", task_group)) %>%
   filter(task=="task",
          !grepl("EZ|hddm", dv))%>%
-  ggplot(aes(x=var, y=value, fill=key))+
-  geom_bar(stat='identity', alpha = 0.75)+
+  arrange(task_group, rank)
+labels = tmp %>%
+  distinct(dv, .keep_all=T)
+
+p1 <- tmp %>%
+  ggplot(aes(x=factor(rank), y=value, fill=factor(key, levels = c("var_resid_pct", "var_ind_pct", "var_subs_pct"))))+
+  geom_bar(stat='identity', alpha = 0.75, color='#00BFC4')+
+  scale_x_discrete(breaks = labels$rank,
+                       labels = labels$var)+
   coord_flip()+
   facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
   theme(panel.spacing = unit(0.5, "lines"), 
         strip.placement = "outside",
         strip.text.y = element_text(angle=180),
         panel.background = element_rect(fill = NA),
-        panel.grid.major = element_line(colour = "grey80"),
+        panel.grid.major = element_line(colour = "grey85"),
         legend.position = 'bottom')+
   #theme_bw()+  
   theme(legend.title = element_blank())+
-  scale_fill_discrete(breaks = c("var_subs_pct", "var_ind_pct", "var_resid_pct"),
-                    labels = c("Variance between individuals",
-                               "Variance between sessions",
-                               "Error variance"),
-                     h=c(100,500))+
+  scale_fill_manual(breaks = c("var_subs_pct", "var_ind_pct", "var_resid_pct"),
+                      labels = c("Variance between individuals",
+                                 "Variance between sessions",
+                                 "Error variance"),
+                  values=c("grey65", "grey45", "grey25"))+
   ylab("")+
   xlab("")
 
-p2 = rel_df %>%
+tmp = rel_df %>%
   mutate(var_subs_pct = var_subs/(var_subs+var_ind+var_resid)*100,
          var_ind_pct = var_ind/(var_subs+var_ind+var_resid)*100, 
          var_resid_pct = var_resid/(var_subs+var_ind+var_resid)*100) %>%
   select(dv, task, var_subs_pct, var_ind_pct, var_resid_pct) %>%
-  gather(key, value, -dv, -task) %>%
-  mutate(key = factor(key, levels = c("var_subs_pct", "var_ind_pct", "var_resid_pct")),
+  # gather(key, value, -dv, -task) %>%
+  mutate(#key = factor(key, levels = c("var_subs_pct", "var_ind_pct", "var_resid_pct")),
          dv = factor(dv, levels = dv[order(task)])) %>%
   separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
   mutate(task_group = factor(task_group, levels = task_group[order(task)])) %>%
-  separate(var, c("var"), sep="\\.",remove=TRUE,extra="drop") %>%
+  arrange(task_group, var_subs_pct) %>%
+  mutate(rank = row_number()) %>%
+  arrange(task, task_group, rank) %>%
+  gather(key, value, -dv, -task_group, -var, -task, -rank) %>%
+  ungroup()%>%
+  # separate(var, c("var"), sep="\\.",remove=TRUE,extra="drop") %>%
   mutate(task_group = gsub("_", " ", task_group),
-         var = gsub("_", " ", var)) %>%
+         var = gsub("_", " ", var),
+         var=gsub(".ReflogTr", "", var),
+         var=gsub(".logTr", "", var)) %>%
   mutate(task_group = ifelse(task_group == "psychological refractory period two choices", "psychological refractory period", ifelse(task_group == "angling risk task always sunny", "angling risk task",task_group))) %>%
   mutate(task_group = gsub("survey", "", task_group)) %>%
   filter(task=="survey")%>%
-  ggplot(aes(x=var, y=value, fill=key))+
+  arrange(task_group, rank)
+labels = tmp %>%
+  distinct(dv, .keep_all=T)
+
+p2 <- tmp %>%
+  ggplot(aes(x=factor(rank), y=value, fill=factor(key, levels = c("var_resid_pct", "var_ind_pct", "var_subs_pct"))))+
   geom_bar(stat='identity', alpha = 0.75)+
+  geom_bar(stat='identity', color='#F8766D', show.legend=FALSE)+
+  scale_x_discrete(breaks = labels$rank,
+                       labels = labels$var)+
   coord_flip()+
   facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
   theme(panel.spacing = unit(0.5, "lines"), 
         strip.placement = "outside",
         strip.text.y = element_text(angle=180),
         panel.background = element_rect(fill = NA),
-        panel.grid.major = element_line(colour = "grey80"),
+        panel.grid.major = element_line(colour = "grey85"),
         legend.position = 'bottom')+
   #theme_bw()+  
   theme(legend.title = element_blank())+
-  scale_fill_discrete(breaks = c("var_subs_pct", "var_ind_pct", "var_resid_pct"),
-                    labels = c("Variance between individuals",
-                               "Variance between sessions",
-                               "Error variance"),
-                    h=c(100,500))+
+  scale_fill_manual(breaks = c("var_subs_pct", "var_ind_pct", "var_resid_pct"),
+                      labels = c("Variance between individuals",
+                                 "Variance between sessions",
+                                 "Error variance"),
+                  values=c("grey65", "grey45", "grey25"))+
   ylab("")+
   xlab("")
 
-g_legend<-function(a.gplot){
-  tmp <- ggplot_gtable(ggplot_build(a.gplot))
-  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
-  legend <- tmp$grobs[[leg]]
-  return(legend)}
-
-mylegend<-g_legend(p1)
+mylegend<-g_legend(p2)
 
 p3 <- arrangeGrob(arrangeGrob(p1 +theme(legend.position="none"),
                          p2 + theme(legend.position="none"),
