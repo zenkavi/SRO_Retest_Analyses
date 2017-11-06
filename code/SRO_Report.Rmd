@@ -85,11 +85,10 @@ Measure level plot
 lit_review = lit_review %>%
   separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
   mutate(task_group = factor(task_group, levels = task_group[order(task)]),
-         raw1_fit0 = grepl('raw', variable_type),
          type = as.character(type)) %>%
   mutate(task_group = gsub("_", " ", task_group),
          var = gsub("_", " ", var)) %>%
-  arrange(task_group, raw1_fit0, var) %>%
+  arrange(task_group, raw_fit, var) %>%
   mutate(task_group = ifelse(task_group == "psychological refractory period two choices", "psychological refractory period", ifelse(task_group == "angling risk task always sunny", "angling risk task",task_group))) %>%
   mutate(task_group = gsub("survey", "", task_group)) %>%
     select(-measure_description, -reference)
@@ -216,7 +215,7 @@ The variables included in this report are:
 - Variables found in the literature (for comparison)  
 
 ```{r echo=FALSE}
-#Get variables of interest
+#Get variables of interest from Ian's release
 tmp1 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_10-08-2017/meaningful_variables.csv')
 tmp2 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_10-08-2017/meaningful_variables_noDDM.csv')
 tmp3 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_10-08-2017/meaningful_variables_EZ.csv')
@@ -285,7 +284,7 @@ test_data = merge(test_data, hddm_refits, by="sub_id")
 # Results
 
 ## Reliability metrics 
-For correlations we report Spearman's $\rho$'s only.  
+  
 Based on [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9d379b79de4f767740.pdf) ICC(3,k) does not take in to account within subject differences between two time points (i.e. the fixed effect of time/systematic error). Thus, it is well approximated by Pearson's r and subject to similar criticisms. [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9d379b79de4f767740.pdf) suggests reporting at least this systematic error effect size if one chooses to report with ICC(3,k). Based on his conclusions here I report:  
 - ICC(3,k): As Dave clarified this ranges from 1 to -1/(number of repeated measures -1) so in our case this range would be [-1, 1]; larger values would mean that the two scores of a subject for a given measure are more similar to each other than they are to scores of other people  
 - partial $\eta^2$ for time ($SS_{time}/SS_{within}$): effect size of time   
@@ -550,11 +549,7 @@ tmp = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(task == 'task') %>%
   left_join(rel_df[,c("dv", "spearman","icc")], by='dv') %>%
-  separate(variable_type, c("label_1", "label_2", "label_3"), sep = ",") %>%
-  mutate(label_1 = trim(label_1),
-         label_2=trim(label_2),
-         label_3=trim(label_3))%>%
-  filter(label_1 %in% c('difference', 'EZ', 'hddm') ==FALSE & label_2 %in% c('difference', 'EZ', 'hddm') == FALSE) %>%
+  filter(overall_difference != 'difference' & raw_fit %in% c('EZ', 'hddm') == FALSE)%>%
   separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
   select(-extra_1, -extra_2) %>%
   group_by(task_name) %>%
@@ -572,13 +567,31 @@ tmp %>%
 Does number of items in a task have a significant effect on the average ICC of (mostly) raw measures for all trials from a task? No. (no effect on Spearman either)
 
 ```{r warning=FALSE, message=FALSE}
-summary(lm(median_icc ~ num_trials, data = tmp))
+tmp = measure_labels %>%
+  mutate(dv = as.character(dv)) %>%
+  filter(task == 'task') %>%
+  left_join(rel_df[,c("dv", "spearman","icc")], by='dv') %>%
+  filter(overall_difference != 'difference' & raw_fit %in% c('EZ', 'hddm') == FALSE)%>%
+  separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
+  select(-extra_1, -extra_2)
+
+summary(lm(icc ~ num_all_trials, data = tmp))
 ```
 
-Does number of measures that went in to this reliability estimate have a significant effect on the average ICC of (mostly) raw measures for all trials from a task? No. (same is true for Spearman)
-
 ```{r warning=FALSE, message=FALSE}
-summary(lm(median_icc ~ num_measures, data = tmp))
+measure_labels %>%
+  mutate(dv = as.character(dv)) %>%
+  filter(task == 'task') %>%
+  left_join(rel_df[,c("dv", "spearman","icc")], by='dv') %>%
+  filter(overall_difference != 'difference' & raw_fit %in% c('EZ', 'hddm') == FALSE)%>%
+  separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
+  select(-extra_1, -extra_2) %>%
+  ggplot(aes(num_all_trials, icc))+
+  geom_point()+
+  geom_smooth(method="lm")+
+  theme_bw()+
+  xlab("Number of trials")+
+  ylab("ICC")
 ```
 
 ## Reliability by variable types
@@ -596,10 +609,6 @@ tmp = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(task == 'task') %>%
   left_join(rel_df[,c("dv", "spearman","icc")], by='dv') %>%
-  separate(variable_type, c("label_1", "label_2", "label_3"), sep = ",") %>%
-  mutate(label_1 = trim(label_1),
-         label_2=trim(label_2),
-         label_3=trim(label_3))%>%
   filter(ddm_task == 1) %>%
   separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.', remove=FALSE) %>%
   select(-extra_1, -extra_2) %>%
@@ -615,7 +624,7 @@ Table of median reliabilities for the two kinds of DDM models' (hddm and EZ) par
 
 ```{r warning=FALSE, message=FALSE}
 tmp %>%
-  group_by(label_1,label_2, label_3) %>%
+  group_by(overall_difference, raw_fit, rt_acc) %>%
   summarise(median_icc = median(icc),
             median_spearman = median(spearman),
             n_vars = n()) %>%
@@ -628,19 +637,16 @@ Plot the distributions of different types of variables
 
 ```{r warning=FALSE, message=FALSE}
 measure_labels %>%
-  select(dv, task, variable_type, ddm_task, num_all_trials)%>%
   separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
   mutate(task_group = factor(task_group, levels = task_group[order(task)])) %>%
   filter(task == "task") %>%
   select(-var, -task) %>%
   left_join(rel_df[,c("dv", "icc")], by="dv")%>%
-  # filter(ddm_task == 1) %>%
-  separate(variable_type, c("overall_difference", "raw_EZ_hddm", "param"), extra="merge") %>%
-  mutate(raw_EZ_hddm = ifelse(ddm_task == 0, "other", raw_EZ_hddm),
-         param = ifelse(ddm_task == 0, "other", param)) %>%
   na.omit() %>%
-  filter(overall_difference!='condition') %>%
-  ggplot(aes(x=factor(raw_EZ_hddm, levels = c("raw", "EZ", "hddm", "other"), labels=c("Raw", "EZ-diffusion", "Hierarchical diffusion", "Other")),y=icc,fill=param))+
+  filter(overall_difference!='condition',
+         raw_fit != 'fit',
+         rt_acc != 'other') %>%
+  ggplot(aes(x=factor(raw_fit, levels = c("raw", "EZ", "hddm"), labels=c("Raw", "EZ-diffusion", "Hierarchical diffusion")),y=icc,fill=rt_acc))+
   geom_boxplot(position = position_dodge(width=0.75))+
   facet_wrap(~factor(overall_difference, levels=c("overall", "difference"), labels=c("Overall", "Difference")))+
   theme_bw()+
@@ -655,14 +661,19 @@ Are these differences meaningful?
 
 Reliabilities for difference variables is lower.
 
-```{r}
-summary(lm(icc ~ label_1,tmp))
-```
+```{r message=FALSE, warning=FALSE}
+tmp = measure_labels %>%
+  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
+  mutate(task_group = factor(task_group, levels = task_group[order(task)])) %>%
+  filter(task == "task") %>%
+  select(-var, -task) %>%
+  left_join(rel_df[,c("dv", "icc")], by="dv")%>%
+  na.omit() %>%
+  filter(overall_difference!='condition',
+         raw_fit != 'fit',
+         rt_acc != 'other')
 
-When all trials are used the drift rates and rt's have higher reliabilities compared to accuracies.
-
-```{r}
-summary(lm(icc~label_3,tmp[tmp$label_1=="overall",]))
+summary(lm(icc ~ overall_difference*raw_fit,tmp))
 ```
 
 ## Completion times
@@ -715,13 +726,13 @@ tmp = t1_2_difference %>%
   summarise(mean_diff = mean(difference, na.rm=T),
             days_btw = unique(days_btw))
 
-ggplotly(tmp %>%
+tmp %>%
   ggplot(aes(days_btw, mean_diff))+
   geom_point()+
   theme_bw()+
   xlab("Days between completion")+
   ylab("Mean standardized difference between two time points")+
-  geom_smooth(method="lm"))
+  geom_smooth(method="lm")
 ```
 
 To confirm: the slope of this line is not significant. That is, there doesn't seem to be a systematic difference between the two measurements depending on the number of days between the two measurements.
@@ -738,8 +749,10 @@ rm(tmp)
 
 Summarized bootstrapped reliabilities
 
-```{r}
-boot_df <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/bootstrap_merged.csv')
+```{r message=FALSE, warning=FALSE}
+# boot_df <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/bootstrap_merged.csv')
+
+boot_df <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/bootstrap_merged.csv')
 
 boot_df = boot_df %>%
   drop_na() %>%
@@ -934,9 +947,9 @@ tmp = rel_df %>%
   ungroup()%>%
   # separate(var, c("var"), sep="\\.",remove=TRUE,extra="drop") %>%
   mutate(task_group = gsub("_", " ", task_group),
-         var = gsub("_", " ", var),
-         var=gsub(".ReflogTr", "", var),
-         var=gsub(".logTr", "", var)) %>%
+         var = gsub("_", " ", var)) %>%
+         # var=gsub(".ReflogTr", "", var),
+         # var=gsub(".logTr", "", var)) %>%
   mutate(task_group = ifelse(task_group == "psychological refractory period two choices", "psychological refractory period", ifelse(task_group == "angling risk task always sunny", "angling risk task",task_group))) %>%
   mutate(task_group = gsub("survey", "", task_group)) %>%
   filter(task=="task",
@@ -1027,6 +1040,7 @@ p3 <- arrangeGrob(arrangeGrob(p1 +theme(legend.position="none"),
              mylegend, nrow=2,heights=c(10, 1))
 
 ggsave('Variance_Breakdown_Plot.jpg', plot = p3, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 24, height = 20, units = "in")
+rm(tmp, labels)
 ```
 
 ```{r echo=FALSE, out.width='100%'}
@@ -1058,19 +1072,20 @@ Summarizing for clearer presentation
 ```{r}
 tmp %>%
   group_by(task, key) %>%
-  ggplot(aes(task, value, fill=key))+
+  ggplot(aes(factor(task, levels=c("task","survey"), labels=c("Task", "Survey")), value, fill=key, color=task))+
   geom_boxplot()+
   theme_bw()+
   theme(legend.title = element_blank())+
-  scale_fill_discrete(breaks = c("var_subs_pct", "var_ind_pct", "var_resid_pct"),
+  scale_fill_manual(breaks = c("var_subs_pct", "var_ind_pct", "var_resid_pct"),
                     labels = c("Variance between individuals",
                                "Variance between sessions",
                                "Error variance"),
-                    h=c(100,500))+
+                    values=c("grey65", "grey45", "grey25"))+
+  scale_color_discrete(guide = FALSE)+
   xlab("")+
   ylab("Percent")
 
-ggsave('Variance_Breakdown_Plot_Summary.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 6, height = 5, units = "in")
+ggsave('Variance_Breakdown_Plot_Summary.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 10, height = 5, units = "in")
 ```
 
 

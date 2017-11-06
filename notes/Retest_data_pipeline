@@ -10,8 +10,9 @@ General:
 - Push all changes to origin
 - Pull on Sherlock
 - Run all jobs on Sherlock
-- pip install expfactory-analysis
-- python setup.py install
+- pip install -e expfactory-analysis
+- python setup.py install for selfregulation module
+- SRO conda environment can be built using environment.yml in the root directory (conda env create -f environment.yml)
 
 Download data + post process + QC
 Input: Self_Regulation_Retest_Settings.txt, expfactory_token.txt, worker_lookup.json
@@ -43,10 +44,22 @@ Script: retest_save_data_post.py
 Output: meaningful_variables.csv, meaningful_variables_EZ.csv, meaningful_variables_clean.csv, meaningful_variables_hddm.csv, meaningful_variables_imputed.csv, meaningful_variables_imputed_for_task_selection.csv, meaningful_variables_noDDM.csv, short_DV_valence.csv, short_meaningful_variables.csv, short_meaningful_variables_EZ.csv, short_meaningful_variables_clean.csv, short_meaningful_variables_hddm.csv, short_meaningful_variables_imputed.csv, short_meaningful_variables_imputed_for_task_selection.csv, short_meaningful_variables_noDDM.csv, short_subject_x_items.csv, short_taskdata.csv, short_taskdata_clean.csv, short_taskdata_imputed.csv, short_taskdata_imputed_for_task_selection.csv, short_variables_exhaustive.csv, taskdata.csv, taskdata_clean.csv, taskdata_imputed.csv, taskdata_imputed_for_task_selection.csv, variables_exhaustive.csv
 Run: Local
 
-Bootstrap (do this for variables exhaustive - can't before the test data matches all new retest vars)
-Input: batch_output/bootstrap_output, variables_exhaustive.csv
-Script:
-Output:
+Extract t1-data:
+Input: extract_t1_data.R, extract_t1_data.batch, Data/Complete_10-27-2017/, Data/Retest_09-27-2017/t1_data
+Script: run_extract_t1_data.sh
+Output: Data/Retest_09-27-17/t1_data/*.csv
+Run: Sherlock
+
+Bootstrap 
+Input: Data/Retest_09-27-17/batch_output/bootstrap_output, Data/Retest_09-27-17/batch_output/bootstrap_output/.err, Data/Retest_09-27-17/batch_output/bootstrap_output/.out, batch_scripts/retest/bootstrap_retest.R, bootstrap_scripts/retest/bootstrap_retest.batch, retest_report_vars.txt,
+Script: run_bootstrap_retest.sh
+Output: batch_output/bootstrap_output/*.csv, batch_output/bootstrap_output/.err/*.err, batch_output/bootstrap_output/.out/*.out 
+Run: Sherlock
+
+Bootstrap merge and cleanup
+Input: batch_output/boostrap_output/*.csv
+Script: concatenate_boostrap.sh
+Output: Local/bootstrap_merged.csv
 Run: Sherlock
 
 DDM refit for original sample
