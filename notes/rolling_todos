@@ -15,18 +15,12 @@ Bayesian ways of test retest (esp for HDDM) -> contact MH
 
 What is kl divergence
 
-State vs trait measures: e.g. if stroop distribution stayed the same across the time points but people moved around that would make stroop a ood state measure bud bad trait measure. Still it's a useful measure. For example if we had not controlled for subjects we would have considered this a successful replication. But perhaps it is a measure that ought not to be associated with trait measures in explaining the source of the variance
-
 Order effects?
-
-Reliability efficiency: using the Spearman-Brown prophecy formula can you calculate predicted reliabilities for each task to make them more comparable
 
 ------------
 robust samwich for standard errors
 
 add 1 paragraph on what transformation effects are
-
-add pearsons (and then figure out which to calculate)
 
 eta sq: SStime/SStotal
 partial eta sq: SStime+SSerror/SStotal
@@ -39,4 +33,8 @@ for each task completion time difference (instead of individuals)
 
 ADD AGE AND SEX SANITY CHCEK FOR THE RETEST DATA
 DO RETEST ON ALL DEMOGRAPHICS
-HAVE PIPELINE OUTPUT ICC_DF AND BOOT_DF
+LEARNING EFFECTS FOR TASKS
+DOES RELIABILITY FOR A TASK CHANGE DEPENDING ON HOW MANY TRIALS YOU USE TO ESTIMATE IT?
+
+Can you use the test retest data to find who is amenable to an intervention?
+Looking at the extent of change in the demographics etc and what that can be predicted by?

@@ -20,285 +20,21 @@ library(psych)
 library(stringr)
 library(plotly)
 library(DT)
+
+render_this <- function(){rmarkdown::render('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/SRO_Report.Rmd', output_dir = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/reports', html_notebook(toc = T, toc_float = T, toc_depth = 2, code_folding = 'hide'))}
+options(scipen = 1, digits = 4)
+```
+
+```{r, message=FALSE, warning=FALSE}
 sem <- function(x) {sd(x, na.rm=T) / sqrt(length(x))}
+
 g_legend<-function(a.gplot){
   tmp <- ggplot_gtable(ggplot_build(a.gplot))
   leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
   legend <- tmp$grobs[[leg]]
   return(legend)}
+
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
-render_this <- function(){rmarkdown::render('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/SRO_Report.Rmd', output_dir = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/reports', html_notebook(toc = T, toc_float = T, code_folding = 'hide'))}
-options(scipen = 1, digits = 4)
-```
-
-# Introduction
-
-# Methods
-
-## Data collection
-
-This sample consists of data for 150 subjects of the original sample of 522 that has completed the initial battery of 37 cognitive tasks, 23 surveys and 3 surveys on demographics. Details of the original sample as well as quality control (qc) procedures are described elsewhere (Eisenberg et al., 2017). Invited participants were chosen randomly and only subsets of them were invited for a given batch (instead of opening the battery to all qualified subjects) with the intention to avoid a potential oversampling and bias towards "high self regulators".
-
-```{r warning=FALSE, message=FALSE}
-workers = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/Local/User_717570_workers.csv')
-workers = workers %>% 
-  group_by(Worker.ID) %>%
-  mutate(Retest_worker=ifelse(sum(CURRENT.RetestWorker,CURRENT.RetestWorkerB2,CURRENT.RetestWorkerB3,CURRENT.RetestWorkerB4,CURRENT.RetestWorkerB5,na.rm=T)>0,1,0)) %>%
-  ungroup()
-
-worker_counts <- fromJSON('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/Local/retest_worker_counts.json')
-
-worker_counts = as.data.frame(unlist(worker_counts))
-names(worker_counts) = "task_count"
-```
-
-In total `r sum(workers$Retest_worker)` participants were invited, `r nrow(worker_counts)` began the battery, `r sum(worker_counts$task_count >= 62)` completed the battery and 150 provided data that passed qc for both time points. Our target sample size was determined in advance of data collection and data collection continued until this number of participants with data that survived qc was reached.
-
-```{r warning=FALSE, message=FALSE}
-disc_comp_date = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/Local/discovery_completion_dates.csv', header=FALSE)
-val_comp_date = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/Local/validation_completion_dates.csv', header=FALSE)
-test_comp_date = rbind(disc_comp_date, val_comp_date)
-rm(disc_comp_date, val_comp_date)
-retest_comp_date = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/Local/retest_completion_dates.csv', header=FALSE)
-comp_dates = merge(retest_comp_date, test_comp_date, by="V1")
-names(comp_dates) <- c("sub_id", "retest_comp", "test_comp")
-comp_dates$retest_comp = as.Date(comp_dates$retest_comp)
-comp_dates$test_comp = as.Date(comp_dates$test_comp)
-comp_dates$days_btw = with(comp_dates, retest_comp-test_comp)
-```
-
-Data collection took place on average `r round(mean(as.numeric(comp_dates$days_btw)))` number of days after the completion of the initial battery with a range of `r round(range(as.numeric(comp_dates$days_btw)))[1]` to `r round(range(as.numeric(comp_dates$days_btw)))[2]` days.
-
-## Literature
-
-One the major contributions of this project is a comprehensive literature review of the retest reliabilities of the surveys and tasks that were used. We reviewed the literature on a measure (as opposed to task level) paying attention to differences in sample size, the delay between the two measurements as well as the statistic that was used to assess reliabilities (e.g. Spearman vs. Pearson correlations). Here we present a table and a visualization summarizing our findings. References mentioned in the table below can be found [here](https://docs.google.com/spreadsheets/d/1hcED4_rWSGSE8Td0aqT0kWqlLCBAzRNKBXj3tSram58/edit?usp=sharing).  
-
-```{r}
-lit_review <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/lit_review_figure.csv')
-
-lit_review
-```
-
-Measure level plot
-
-```{r warning=FALSE, message=FALSE}
-lit_review = lit_review %>%
-  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
-  mutate(task_group = factor(task_group, levels = task_group[order(task)]),
-         type = as.character(type)) %>%
-  mutate(task_group = gsub("_", " ", task_group),
-         var = gsub("_", " ", var)) %>%
-  arrange(task_group, raw_fit, var) %>%
-  mutate(task_group = ifelse(task_group == "psychological refractory period two choices", "psychological refractory period", ifelse(task_group == "angling risk task always sunny", "angling risk task",task_group))) %>%
-  mutate(task_group = gsub("survey", "", task_group)) %>%
-    select(-measure_description, -reference)
-```
-
-```{r warning= FALSE, message =FALSE, echo=FALSE}
-p1_legend = lit_review %>%
-  filter(task == 'task') %>%
-ggplot(aes(y = var, x = retest_reliability)) + 
-  geom_point(aes(size=sample_size, shape=type))+
-  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
-  theme(panel.spacing = unit(0.5, "lines"), 
-        strip.placement = "outside",
-        strip.text.y = element_text(angle=180),
-        panel.background = element_rect(fill = NA),
-        panel.grid.major = element_line(colour = "grey80"),
-        legend.position = 'bottom') + 
-  xlab("")+
-  ylab("")+
-  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
-  scale_shape_manual(breaks = sort(lit_review$type), values = c(15, 16, 17, 3))
-
-p1 = lit_review %>%
-  filter(task == 'task') %>%
-ggplot(aes(y = var, x = retest_reliability)) + 
-  geom_point(aes(size=sample_size, shape = type), color='#00BFC4')+
-  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
-  theme(panel.spacing = unit(0.5, "lines"), 
-        strip.placement = "outside",
-        strip.text.y = element_text(angle=180),
-        panel.background = element_rect(fill = NA),
-        panel.grid.major = element_line(colour = "grey80"),
-        legend.position = 'bottom') + 
-  xlab("")+
-  ylab("")+
-  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
-  scale_shape_manual(breaks = sort(lit_review$type), values = c(15, 16, 17, 3))
-
-p2 = lit_review %>%
-  filter(task == 'survey') %>%
-ggplot(aes(y = var, x = retest_reliability)) + 
-  geom_point(aes(size=sample_size, shape = type), color = '#F8766D')+
-  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
-  theme(panel.spacing = unit(0.5, "lines"), 
-        strip.placement = "outside",
-        strip.text.y = element_text(angle=180),
-        panel.background = element_rect(fill = NA),
-        panel.grid.major = element_line(colour = "grey80")) + 
-  xlab("")+
-  ylab("")+
-  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
-  scale_shape_manual(breaks = sort(lit_review$type), values = c(15, 17, 3))
-
-mylegend<-g_legend(p1_legend)
-
-p3 <- arrangeGrob(arrangeGrob(p1 +theme(legend.position="none"),
-                         p2 + theme(legend.position="none"),
-                         nrow=1),
-             mylegend, nrow=2,heights=c(10, 1))
-
-ggsave('Lit_Review_Plot.jpg', plot = p3, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 24, height = 20, units = "in")
-rm(p1, p2, p3, p1_legend, mylegend)
-```
-
-```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/Lit_Review_Plot.jpg')
-```
-
-Because this plot is difficult to digest we summarize it on a task level to give a general sense of the main takeaways. This plot naturally disregards much of the fine grained information.
-
-```{r}
-p1_t <- lit_review %>%
-  filter(task == 'task') %>%
-ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_reliability)) + 
-  geom_point(aes(size=sample_size, shape = type), color='#00BFC4')+
-  theme_bw()+
-  theme(axis.text.y = element_text(size=43),
-        legend.position = 'none') + 
-  xlab("")+
-  ylab("")+
-  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
-  scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
-  scale_shape_manual(breaks = sort(lit_review$type), values = c(15, 16, 17, 3))+
-  scale_size_continuous(range = c(5, 50))+
-  geom_vline(xintercept = 0, color = "red", size = 1)
-
-p2_t <- lit_review %>%
-  filter(task == 'survey') %>%
-ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_reliability)) + 
-  geom_point(aes(size=sample_size, shape = type), color='#F8766D')+
-  theme_bw()+
-  theme(axis.text.y = element_text(size=43),
-        legend.position = 'none') + 
-  xlab("")+
-  ylab("")+
-  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
-  scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
-  scale_shape_manual(breaks = sort(lit_review$type), values = c(15, 16, 17, 3))+
-  scale_size_continuous(range = c(5, 50))+
-  geom_vline(xintercept = 0, color = "red", size = 1)
-
-p3_t <- arrangeGrob(p1_t, p2_t, nrow=1)
-
-ggsave('Lit_Review_Plot_t.jpg', plot = p3_t, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 27, height = 48, units = "in", limitsize = FALSE)
-rm(p1_t, p2_t, p3_t)
-```
-
-```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/Lit_Review_Plot_t.jpg')
-```
-
-An interactive version of this plot could be find [here](https://zenkavi.github.io/SRO_Retest_Analyses/output/reports/Lit_Review_Figure.html)
-
-Takeaways from this review are: 
-- Survey measures have been reported to higher reliability compared to task measures  
-- Survey measures have less variability in the reported reliabiltiy estimates compared to task measures' 
-
-## Loading datasets
-
-The variables included in this report are:  
-- meaningful variables (includes only hdddm parameters)  
-- EZ diffusion parameters  
-- Raw RT and Accuracy measures  
-- Variables found in the literature (for comparison)  
-
-```{r echo=FALSE}
-#Get variables of interest from Ian's release
-tmp1 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_10-08-2017/meaningful_variables.csv')
-tmp2 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_10-08-2017/meaningful_variables_noDDM.csv')
-tmp3 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_10-08-2017/meaningful_variables_EZ.csv')
-retest_report_vars = c(names(tmp1), names(tmp2), names(tmp3))
-retest_report_vars = unique(retest_report_vars)
-lit_rev_vars = unique(lit_review$dv)[which(unique(lit_review$dv) %in% retest_report_vars == FALSE)]
-retest_report_vars = c(retest_report_vars, lit_rev_vars)
-rm(tmp1, tmp2, tmp3, lit_rev_vars)
-```
-
-### Load time 1 data
-```{r}
-test_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/t1_data/variables_exhaustive.csv')
-
-test_data <- test_data[,names(test_data) %in% retest_report_vars]
-
-test_data$X <- as.character(test_data$X)
-names(test_data)[which(names(test_data) == 'X')] <-'sub_id' 
-```
-
-For reference here are the variables that are **not** included in the analyses of the remainder of this report because they were not of theoretical interest in factor structure analyses of this data so far. These include drift diffusion and other model parameters for specific conditions within a task; survey variables that are not part of the dependant variables for that survey in the literature and demographics (these are saved for prediction analyses).
-
-```{r}
-test_data2 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/t1_data/variables_exhaustive.csv')
-
-df <- data.frame(names(test_data2)[which(names(test_data2) %in% names(test_data) == FALSE)])
-names(df) = c('vars')
-
-df
-```
-
-```{r echo=FALSE}
-rm(test_data2, df)
-```
-
-### Load time 2 data 
-```{r}
-retest_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/variables_exhaustive.csv')
-
-retest_data <- retest_data[,names(retest_data) %in% retest_report_vars]
-
-retest_data$X <- as.character(retest_data$X)
-names(retest_data)[which(names(retest_data) == 'X')] <-'sub_id' 
-retest_data = retest_data[retest_data$sub_id %in% test_data$sub_id,]
-```
-
-### Replace HDDM parameters in t1 data
-
-Since HDDM parameters depend on the sample on which they are fit we refit the model on t1 data for the subjects that have t2 data. Here we replace the HDDM parameters in the current t1 dataset with these refitted values. 
-
-```{r}
-hddm_refits <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-21-2017/hddm_refits_exhaustive.csv')
-
-hddm_refits = hddm_refits[,names(hddm_refits) %in% retest_report_vars]
-
-hddm_refits$X <- as.character(hddm_refits$X)
-names(hddm_refits)[which(names(hddm_refits) == 'X')] <-'sub_id' 
-
-test_data = cbind(test_data$sub_id, test_data[,names(test_data) %in% names(hddm_refits) == FALSE])
-
-names(test_data)[which(names(test_data) == 'test_data$sub_id')] <-'sub_id'
-
-test_data = merge(test_data, hddm_refits, by="sub_id")
-```
-
-# Results
-
-## Reliability metrics 
-  
-Based on [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9d379b79de4f767740.pdf) ICC(3,k) does not take in to account within subject differences between two time points (i.e. the fixed effect of time/systematic error). Thus, it is well approximated by Pearson's r and subject to similar criticisms. [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9d379b79de4f767740.pdf) suggests reporting at least this systematic error effect size if one chooses to report with ICC(3,k). Based on his conclusions here I report:  
-- ICC(3,k): As Dave clarified this ranges from 1 to -1/(number of repeated measures -1) so in our case this range would be [-1, 1]; larger values would mean that the two scores of a subject for a given measure are more similar to each other than they are to scores of other people  
-- partial $\eta^2$ for time ($SS_{time}/SS_{within}$): effect size of time   
-- SEM ($\sqrt(MS_{error})$): standard error of measurement; the smaller the better
-
-
-```{r}
-numeric_cols = c()
-
-for(i in 1:length(names(test_data))){
-  if(is.numeric(test_data[,i])){
-    numeric_cols <- c(numeric_cols, names(test_data)[i])
-  }
-}
 
 match_t1_t2 <- function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 'sub_id', format = "long", sample = 'full', sample_vec){
   
@@ -412,7 +148,349 @@ get_sem <- function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 
 }
 ```
 
+# Introduction
+
+# Methods
+
+## Data collection
+
+This sample consists of data for 150 subjects of the original sample of 522 that has completed the initial battery of 37 cognitive tasks, 23 surveys and 3 surveys on demographics. Details of the original sample as well as quality control (qc) procedures are described elsewhere (Eisenberg et al., 2017). Invited participants were chosen randomly and only subsets of them were invited for a given batch (instead of opening the battery to all qualified subjects) with the intention to avoid a potential oversampling and bias towards "high self regulators".
+
+```{r warning=FALSE, message=FALSE}
+workers = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/Local/User_717570_workers.csv')
+workers = workers %>% 
+  group_by(Worker.ID) %>%
+  mutate(Retest_worker=ifelse(sum(CURRENT.RetestWorker,CURRENT.RetestWorkerB2,CURRENT.RetestWorkerB3,CURRENT.RetestWorkerB4,CURRENT.RetestWorkerB5,na.rm=T)>0,1,0)) %>%
+  ungroup()
+
+worker_counts <- fromJSON('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/Local/retest_worker_counts.json')
+
+worker_counts = as.data.frame(unlist(worker_counts))
+names(worker_counts) = "task_count"
+```
+
+In total `r sum(workers$Retest_worker)` participants were invited, `r nrow(worker_counts)` began the battery, `r sum(worker_counts$task_count >= 62)` completed the battery and 150 provided data that passed qc for both time points. Our target sample size was determined in advance of data collection and data collection continued until this number of participants with data that survived qc was reached.
+
+```{r warning=FALSE, message=FALSE}
+disc_comp_date = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/Local/discovery_completion_dates.csv', header=FALSE)
+val_comp_date = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/Local/validation_completion_dates.csv', header=FALSE)
+test_comp_date = rbind(disc_comp_date, val_comp_date)
+rm(disc_comp_date, val_comp_date)
+retest_comp_date = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/Local/retest_completion_dates.csv', header=FALSE)
+comp_dates = merge(retest_comp_date, test_comp_date, by="V1")
+names(comp_dates) <- c("sub_id", "retest_comp", "test_comp")
+comp_dates$retest_comp = as.Date(comp_dates$retest_comp)
+comp_dates$test_comp = as.Date(comp_dates$test_comp)
+comp_dates$days_btw = with(comp_dates, retest_comp-test_comp)
+```
+
+Data collection took place on average `r round(mean(as.numeric(comp_dates$days_btw)))` number of days after the completion of the initial battery with a range of `r round(range(as.numeric(comp_dates$days_btw)))[1]` to `r round(range(as.numeric(comp_dates$days_btw)))[2]` days.
+
+## Demographics
+
 ```{r}
+test_demog <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/t1_data/demographic_health.csv')
+
+retest_demog <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/demographic_health.csv')
+
+retest_demog = retest_demog[retest_demog$X %in% test_demog$X,]
+
+names(test_demog)[which(names(test_demog) == 'X')] <-'sub_id'
+names(retest_demog)[which(names(retest_demog) == 'X')] <-'sub_id'
+
+summary(retest_demog %>%
+          select(Sex, Age))
+```
+
+## Literature
+
+One the major contributions of this project is a comprehensive literature review of the retest reliabilities of the surveys and tasks that were used. We reviewed the literature on a measure (as opposed to task level) paying attention to differences in sample size, the delay between the two measurements as well as the statistic that was used to assess reliabilities (e.g. Spearman vs. Pearson correlations). Here we present a table and a visualization summarizing our findings. References mentioned in the table below can be found [here](https://docs.google.com/spreadsheets/d/1hcED4_rWSGSE8Td0aqT0kWqlLCBAzRNKBXj3tSram58/edit?usp=sharing).  
+
+```{r}
+lit_review <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/lit_review_figure.csv')
+
+lit_review
+```
+
+Measure level plot
+
+```{r warning=FALSE, message=FALSE}
+lit_review = lit_review %>%
+  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
+  mutate(task_group = factor(task_group, levels = task_group[order(task)]),
+         type = as.character(type)) %>%
+  mutate(task_group = gsub("_", " ", task_group),
+         var = gsub("_", " ", var)) %>%
+  arrange(task_group, raw_fit, var) %>%
+  mutate(task_group = ifelse(task_group == "psychological refractory period two choices", "psychological refractory period", ifelse(task_group == "angling risk task always sunny", "angling risk task",task_group))) %>%
+  mutate(task_group = gsub("survey", "", task_group)) %>%
+    select(-measure_description, -reference)
+```
+
+```{r warning= FALSE, message =FALSE, echo=FALSE}
+p1_legend = lit_review %>%
+  filter(task == 'task') %>%
+ggplot(aes(y = var, x = retest_reliability)) + 
+  geom_point(aes(size=sample_size, shape=type))+
+  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
+  theme(panel.spacing = unit(0.5, "lines"), 
+        strip.placement = "outside",
+        strip.text.y = element_text(angle=180),
+        panel.background = element_rect(fill = NA),
+        panel.grid.major = element_line(colour = "grey80"),
+        legend.position = 'bottom') + 
+  xlab("")+
+  ylab("")+
+  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_shape_manual(breaks = sort(lit_review$type), values = c(15, 16, 17, 3))
+
+p1 = lit_review %>%
+  filter(task == 'task') %>%
+ggplot(aes(y = var, x = retest_reliability)) + 
+  geom_point(aes(size=sample_size, shape = type), color='#00BFC4')+
+  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
+  theme(panel.spacing = unit(0.5, "lines"), 
+        strip.placement = "outside",
+        strip.text.y = element_text(angle=180),
+        panel.background = element_rect(fill = NA),
+        panel.grid.major = element_line(colour = "grey80"),
+        legend.position = 'bottom') + 
+  xlab("")+
+  ylab("")+
+  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_shape_manual(breaks = sort(lit_review$type), values = c(15, 16, 17, 3))
+
+p2 = lit_review %>%
+  filter(task == 'survey') %>%
+ggplot(aes(y = var, x = retest_reliability)) + 
+  geom_point(aes(size=sample_size, shape = type), color = '#F8766D')+
+  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
+  theme(panel.spacing = unit(0.5, "lines"), 
+        strip.placement = "outside",
+        strip.text.y = element_text(angle=180),
+        panel.background = element_rect(fill = NA),
+        panel.grid.major = element_line(colour = "grey80")) + 
+  xlab("")+
+  ylab("")+
+  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_shape_manual(breaks = sort(lit_review$type), values = c(15, 17, 3))
+
+mylegend<-g_legend(p1_legend)
+
+p3 <- arrangeGrob(arrangeGrob(p1 +theme(legend.position="none"),
+                         p2 + theme(legend.position="none"),
+                         nrow=1),
+             mylegend, nrow=2,heights=c(10, 1))
+
+ggsave('Lit_Review_Plot.jpg', plot = p3, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 24, height = 20, units = "in", dpi=100)
+rm(p1, p2, p3, p1_legend, mylegend)
+```
+
+```{r echo=FALSE, out.width='100%'}
+knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/Lit_Review_Plot.jpg')
+```
+
+Because this plot is difficult to digest we summarize it on a task level to give a general sense of the main takeaways. This plot naturally disregards much of the fine grained information.
+
+```{r}
+p1_t_legend <- lit_review %>%
+  filter(task == 'task') %>%
+ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_reliability)) + 
+  geom_point(aes(size=sample_size, shape = type), color='black')+
+  theme_bw()+
+  theme(axis.text.y = element_text(size=43),
+        legend.position = 'bottom',
+        axis.text.x = element_text(size=23),
+        axis.title.x = element_text(size=30), 
+        legend.text = element_text(size=20), 
+        legend.key.width = unit(0.75, "inches"), 
+        legend.title = element_text(size=28),
+        legend.spacing.x = unit(0.5, "inches")) + 
+  guides(size = guide_legend(override.aes = list(size=c(9,18,28))),
+         shape = guide_legend(override.aes = list(size=18)))+
+  xlab("Reliability")+
+  ylab("")+
+  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
+  scale_shape_manual(breaks = sort(lit_review$type), values = c(15, 16, 17, 3), name="Type")+
+  scale_size_continuous(name = "Sample Size")+
+  geom_vline(xintercept = 0, color = "red", size = 1)
+
+p1_t <- lit_review %>%
+  filter(task == 'task') %>%
+ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_reliability)) + 
+  geom_point(aes(size=sample_size, shape = type), color='#00BFC4')+
+  theme_bw()+
+  theme(axis.text.y = element_text(size=43),
+        legend.position = 'none',
+        axis.text.x = element_text(size=23),
+        axis.title.x = element_text(size=30)) + 
+  xlab("Reliability")+
+  ylab("")+
+  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
+  scale_shape_manual(breaks = sort(lit_review$type), values = c(15, 16, 17, 3))+
+  scale_size_continuous(range = c(5, 35))+
+  geom_vline(xintercept = 0, color = "red", size = 1)
+
+p2_t <- lit_review %>%
+  filter(task == 'survey') %>%
+ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_reliability)) + 
+  geom_point(aes(size=sample_size, shape = type), color='#F8766D')+
+  theme_bw()+
+  theme(axis.text.y = element_text(size=43),
+        legend.position = 'none',
+        axis.text.x = element_text(size=23),
+        axis.title.x = element_text(size=30)) + 
+  xlab("Reliability")+
+  ylab("")+
+  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
+  scale_shape_manual(breaks = sort(lit_review$type), values = c(15, 16, 17, 3))+
+  scale_size_continuous(range = c(5, 35))+
+  geom_vline(xintercept = 0, color = "red", size = 1)
+
+mylegend<-g_legend(p1_t_legend)
+
+p3_t <- arrangeGrob(arrangeGrob(p1_t, p2_t, nrow=1), mylegend, nrow=2,heights=c(10, 1))
+
+ggsave('Lit_Review_Plot_t.jpg', plot = p3_t, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 27, height = 48, units = "in", limitsize = FALSE, dpi = 72)
+rm(p1_t, p2_t, p3_t, mylegend, p1_t_legend)
+```
+
+```{r echo=FALSE, out.width='100%'}
+knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/Lit_Review_Plot_t.jpg')
+```
+
+An interactive version of this plot could be find [here](https://zenkavi.github.io/SRO_Retest_Analyses/output/reports/Lit_Review_Figure.html)
+
+Takeaways from this review are: 
+- Survey measures have been reported to higher reliability compared to task measures  
+- Survey measures have less variability in the reported reliabiltiy estimates compared to task measures' 
+
+## Loading datasets
+
+The variables included in this report are:  
+- meaningful variables (includes only hdddm parameters)  
+- EZ diffusion parameters  
+- Raw RT and Accuracy measures  
+- Variables found in the literature (for comparison)  
+
+```{r echo=FALSE}
+#Get variables of interest from Ian's release
+tmp1 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_10-08-2017/meaningful_variables.csv')
+tmp2 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_10-08-2017/meaningful_variables_noDDM.csv')
+tmp3 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_10-08-2017/meaningful_variables_EZ.csv')
+retest_report_vars = c(names(tmp1), names(tmp2), names(tmp3))
+retest_report_vars = unique(retest_report_vars)
+lit_rev_vars = as.character(unique(lit_review$dv)[which(unique(lit_review$dv) %in% retest_report_vars == FALSE)])
+retest_report_vars = c(retest_report_vars, lit_rev_vars)
+rm(tmp1, tmp2, tmp3, lit_rev_vars)
+```
+
+### Load time 1 data
+```{r}
+test_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/t1_data/variables_exhaustive.csv')
+
+test_data <- test_data[,names(test_data) %in% retest_report_vars]
+
+test_data$X <- as.character(test_data$X)
+names(test_data)[which(names(test_data) == 'X')] <-'sub_id' 
+```
+
+For reference here are the variables that are **not** included in the analyses of the remainder of this report because they were not of theoretical interest in factor structure analyses of this data so far. These include drift diffusion and other model parameters for specific conditions within a task; survey variables that are not part of the dependant variables for that survey in the literature and demographics (these are saved for prediction analyses).
+
+```{r}
+test_data2 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/t1_data/variables_exhaustive.csv')
+
+df <- data.frame(names(test_data2)[which(names(test_data2) %in% names(test_data) == FALSE)])
+names(df) = c('vars')
+
+df
+```
+
+```{r echo=FALSE}
+rm(test_data2, df)
+```
+
+### Load time 2 data 
+```{r}
+retest_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/variables_exhaustive.csv')
+
+retest_data <- retest_data[,names(retest_data) %in% retest_report_vars]
+
+retest_data$X <- as.character(retest_data$X)
+names(retest_data)[which(names(retest_data) == 'X')] <-'sub_id' 
+retest_data = retest_data[retest_data$sub_id %in% test_data$sub_id,]
+```
+
+### Replace HDDM parameters in t1 data
+
+Since HDDM parameters depend on the sample on which they are fit we refit the model on t1 data for the subjects that have t2 data. Here we replace the HDDM parameters in the current t1 dataset with these refitted values. 
+
+```{r}
+hddm_refits <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-21-2017/hddm_refits_exhaustive.csv')
+
+hddm_refits = hddm_refits[,names(hddm_refits) %in% retest_report_vars]
+
+hddm_refits$X <- as.character(hddm_refits$X)
+names(hddm_refits)[which(names(hddm_refits) == 'X')] <-'sub_id' 
+
+test_data = cbind(test_data$sub_id, test_data[,names(test_data) %in% names(hddm_refits) == FALSE])
+
+names(test_data)[which(names(test_data) == 'test_data$sub_id')] <-'sub_id'
+
+test_data = merge(test_data, hddm_refits, by="sub_id")
+```
+
+# Results
+
+## Demographics reliability
+
+```{r}
+numeric_cols = c()
+
+for(i in 1:length(names(test_demog))){
+  if(is.numeric(test_demog[,i])){
+    numeric_cols <- c(numeric_cols, names(test_demog)[i])
+  }
+}
+
+demog_rel_df <- data.frame(spearman = rep(NA, length(numeric_cols)),
+                     icc = rep(NA, length(numeric_cols)),
+                     pearson = rep(NA, length(numeric_cols)))
+
+row.names(demog_rel_df) <- numeric_cols
+
+for(i in 1:length(numeric_cols)){
+  demog_rel_df[numeric_cols[i], 'spearman'] <- get_spearman(numeric_cols[i], t1_df = test_demog, t2_df = retest_demog) 
+  demog_rel_df[numeric_cols[i], 'icc'] <- get_icc(numeric_cols[i], t1_df = test_demog, t2_df = retest_demog)
+  demog_rel_df[numeric_cols[i], 'pearson'] <- get_pearson(numeric_cols[i], t1_df = test_demog, t2_df = retest_demog)
+}
+
+demog_rel_df
+```
+
+```{r echo=FALSE}
+rm(test_demog, retest_demog, demog_rel_df, numeric_cols)
+```
+
+## Reliability metrics 
+  
+Based on [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9d379b79de4f767740.pdf) ICC(3,k) does not take in to account within subject differences between two time points (i.e. the fixed effect of time/systematic error). Thus, it is well approximated by Pearson's r and subject to similar criticisms. [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9d379b79de4f767740.pdf) suggests reporting at least this systematic error effect size if one chooses to report with ICC(3,k). Based on his conclusions here I report:  
+- ICC(3,k): As Dave clarified this ranges from 1 to -1/(number of repeated measures -1) so in our case this range would be [-1, 1]; larger values would mean that the two scores of a subject for a given measure are more similar to each other than they are to scores of other people  
+- partial $\eta^2$ for time ($SS_{time}/SS_{within}$): effect size of time   
+- SEM ($\sqrt(MS_{error})$): standard error of measurement; the smaller the better
+
+```{r}
+numeric_cols = c()
+
+for(i in 1:length(names(test_data))){
+  if(is.numeric(test_data[,i])){
+    numeric_cols <- c(numeric_cols, names(test_data)[i])
+  }
+}
+
 rel_df <- data.frame(spearman = rep(NA, length(numeric_cols)),
                      icc = rep(NA, length(numeric_cols)),
                      pearson = rep(NA, length(numeric_cols)),
@@ -445,32 +523,189 @@ rel_df = rel_df %>%
 # row.names(rel_df) = NULL
 ```
 
-Average reliability metrics and the number of variables for both the surveys and the tasks
-Both Spearman $\rho$'s as well the ICC's are higher for surveys.  
-Systematic differences between the two measurements ($\eta^2$) are higher for tasks than surveys (potentially indicating learning effects?).  
-Unexpectedly, median standard error of measurement is higher for surveys but the distribution below suggests that this is a side effect of having too many task measures with very low SEMs.
-```{r warning=FALSE, message=FALSE}
-rel_df %>%
-  group_by(task) %>%
-  summarise(median_spearman = median(spearman),
-            median_icc = median(icc),
-            median_pearson = median(pearson),
-            median_eta_sq = median(eta_sq),
-            median_sem = median(sem),
-            num_vars = n()) %>%
+Summarized bootstrapped reliabilities
+
+```{r message=FALSE, warning=FALSE}
+boot_df <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/bootstrap_merged.csv')
+
+boot_df = boot_df %>%
+  drop_na() %>%
+  mutate(icc = as.numeric(as.character(icc)),
+         spearman = as.numeric(as.character(spearman)),
+         eta_sq = as.numeric(as.character(eta_sq)),
+         sem = as.numeric(as.character(sem))) 
+
+boot_df = boot_df[boot_df$dv %in% retest_report_vars,]
+
+retest_report_vars[which(retest_report_vars %in% boot_df$dv==FALSE)]
+
+boot_df %>%
+  group_by(dv) %>%
+  summarise(icc_median = quantile(icc, probs = 0.5),
+            icc_2.5 = quantile(icc, probs = 0.025),
+            icc_97.5 = quantile(icc, probs = 0.975),
+            spearman_median = quantile(spearman, probs = 0.5),
+            spearman_2.5 = quantile(spearman, probs = 0.025),
+            spearman_97.5 = quantile(spearman, probs = 0.975)) %>%
   datatable() %>%
-  formatRound(columns=c('median_spearman', 'median_icc', 'median_pearson','median_eta_sq', 'median_sem'), digits=3)
+  formatRound(columns=c('icc_median', 'icc_2.5', 'icc_97.5', 'spearman_median', 'spearman_2.5', 'spearman_97.5'), digits=3)
 ```
 
-**Table of reliability point estimates**
+Comparison of survey measures to cognitive task measures in the bootstrapped results. Multilevel model with random intercepts for each measure and fixed effect of survey versus cognitive measure. (Same result as seen in point estimates comparison).
 
 ```{r}
-rel_df %>%
-  datatable(filter='top') %>%
-  formatRound(columns=c('spearman', 'icc', 'pearson','eta_sq', 'sem'), digits=3)
+boot_df = boot_df %>%
+    mutate(task = ifelse(grepl("survey",dv), "survey","task"),
+           task = ifelse(grepl("holt",dv), "task", task))
+
+summary(lmerTest::lmer(icc ~  task + (1|dv), boot_df))
 ```
 
-### Histograms of reliability metrics
+Checking DDM results in the bootstrapped estimates. Same as before too.
+
+```{r warning=FALSE, message=FALSE}
+tmp = measure_labels %>%
+  mutate(dv = as.character(dv)) %>%
+  filter(task == 'task') %>%
+  separate(variable_type, c("label_1", "label_2", "label_3"), sep = ",") %>%
+  mutate(label_1 = trim(label_1),
+         label_2=trim(label_2),
+         label_3=trim(label_3))%>%
+  filter(ddm_task == 1) %>%
+  separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.', remove=FALSE) %>%
+  select(-extra_1, -extra_2) %>%
+  drop_na() %>%
+  left_join(boot_df[,c("dv", "icc")], by = 'dv')
+```
+
+```{r}
+summary(lmerTest::lmer(icc ~ label_1 + (1|dv) ,tmp))
+```
+
+```{r}
+summary(lmerTest::lmer(icc ~ label_3 + (1|dv) ,tmp))
+```
+
+```{r warning=FALSE, message=FALSE}
+poster_vars <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/poster_var_list.csv', header=F)
+
+names(poster_vars) = "var"
+
+boot_df_poster = boot_df[boot_df$dv %in% poster_vars$var,]
+
+boot_df_poster = boot_df_poster%>%
+  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
+  mutate(task_group = factor(task_group, levels = task_group[order(task)])) %>%
+  separate(var, c("var"), sep="\\.",remove=TRUE,extra="drop") %>%
+  mutate(task_group = gsub("_", " ", task_group),
+         var = gsub("_", " ", var)) %>%
+  arrange(task_group, var)
+
+boot_df_poster = boot_df_poster %>%
+  left_join(rel_df[,c("dv", "icc")], by = "dv") %>%
+  rename(icc = icc.x, point_est = icc.y)
+
+#Manual correction
+boot_df_poster = boot_df_poster %>%
+  mutate(task = ifelse(task_group == 'holt laury survey', "task", task)) %>%
+  mutate(task_group = ifelse(task_group == "psychological refractory period two choices", "psychological refractory period", ifelse(task_group == "angling risk task always sunny", "angling risk task",task_group))) %>%
+  mutate(task_group = gsub("survey", "", task_group))
+```
+
+
+```{r warning=FALSE, message=FALSE} 
+p4 <- boot_df_poster %>%
+  filter(task == 'task') %>%
+ggplot(aes(y = var, x = icc)) + 
+  geom_point(color = '#00BFC4')+
+  geom_point(aes(y = var, x = point_est), color = "black")+
+  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y", labeller = label_wrap_gen(width=20)) +
+  theme(panel.spacing = unit(0.75, "lines"), 
+        strip.placement = "outside",
+        strip.text.y = element_text(angle=180, size=36),
+        axis.text.y = element_text(size=20),
+        panel.background = element_rect(fill = NA),
+        panel.grid.major = element_line(colour = "grey80")) + 
+  xlab("")+
+  ylab("")+
+  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
+  scale_shape_manual(breaks = sort(boot_df_poster$type), values = c(15, 17, 3))+
+  geom_vline(xintercept = 0, color = "red", size = 1)
+
+p5 <- boot_df_poster %>%
+  filter(task == 'survey') %>%
+ggplot(aes(y = var, x = icc)) + 
+  geom_point(color = '#F8766D')+
+  geom_point(aes(y = var, x = point_est), color = "black")+
+  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y", labeller = label_wrap_gen(width=20)) +
+  theme(panel.spacing = unit(0.75, "lines"), 
+        strip.placement = "outside",
+        strip.text.y = element_text(angle=180, size=36),
+        axis.text.y = element_text(size=20),
+        panel.background = element_rect(fill = NA),
+        panel.grid.major = element_line(colour = "grey80")) + 
+  xlab("")+
+  ylab("")+
+  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
+  scale_shape_manual(breaks = sort(boot_df_poster$type), values = c(15, 17, 3))+
+  geom_vline(xintercept = 0, color = "red", size = 1)
+  
+p6 <- arrangeGrob(p4, p5,nrow=1)
+
+ggsave('Bootstrap_Poster_Plot.jpg', plot = p6, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 24, height = 42, units = "in", limitsize = FALSE)
+```
+
+```{r echo=FALSE, out.width='100%'}
+knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/Bootstrap_Poster_Plot.jpg')
+```
+
+```{r echo=FALSE}
+rm(p4, p5, p6)
+```
+
+```{r}
+p4_t <- boot_df_poster %>%
+  filter(task == 'task') %>%
+ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) + 
+  geom_violin(fill='#00BFC4')+
+  theme_bw() + 
+  theme(axis.text.y = element_text(size=30))+
+  xlab("")+
+  ylab("")+
+  scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 15))+
+  geom_hline(yintercept = 0, color = "red", size = 1)+
+  coord_flip()
+
+p5_t <- boot_df_poster %>%
+  filter(task == 'survey') %>%
+ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) + 
+  geom_violin(fill='#F8766D')+
+  theme_bw() + 
+  theme(axis.text.y = element_text(size=43))+
+  xlab("")+
+  ylab("")+
+  scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))+
+  geom_hline(yintercept = 0, color = "red", size = 1)+
+  coord_flip()
+  
+p6_t <- arrangeGrob(p4_t, p5_t,nrow=1)
+
+ggsave('Bootstrap_Poster_Plot_t.jpg', plot = p6_t, device = "jpeg", path = "../output/figures/", width = 27, height = 48, units = "in", limitsize = FALSE)
+```
+
+```{r echo=FALSE, out.width='100%'}
+knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/Bootstrap_Poster_Plot_t.jpg')
+```
+
+```{r echo=FALSE}
+rm(p4_t, p5_t, p6_t)
+```
+
+### Histograms of reliability metrics (point estimates)
 
 ```{r warning=FALSE, message=FALSE}
 rel_df %>%
@@ -487,13 +722,7 @@ rel_df %>%
 ggsave('Rel_Histograms.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 12, height = 4, units = "in", limitsize = FALSE)
 ```
 
-Task measures have significanlty lower reliability (here checking only on point estimates of ICC).
-
-```{r}
-summary(lm(icc~task, rel_df))
-```
-
-### Relationship between reliability metrics
+### Relationship between reliability metrics (point estimates)
 
 ```{r warning=FALSE, message=FALSE}
 p1 = rel_df %>%
@@ -535,7 +764,7 @@ Note: Some variables have <0 ICC's. This would be the case if the $MS_{error}$>$
 
 Here we summarize the results on a task level to make it more digestable and easier to make contact with the literature.  
 
-With this in mind we reduce the list of task measures to a list of one per task by averaging only the raw measures from all the trials in a task. We chose to reduce the information in this manner to avoid any bias stemming from differential amount of interest and procedures applied to certain tasks over others (e.g. a task can have over 10 measures because it has multiple conditions and we have chosen to fit DDM's for specific conditions while another might only have 2 due to our relative inexperience and lack of interest in it). We check whether the number of trials in a task has a significant effect on these average reliabilities of raw measures as well. 
+We reduce the list of task measures to a list of one per task by averaging only the raw measures from all the trials in a task. We chose to reduce the information in this manner to avoid any bias stemming from differential amount of interest and procedures applied to certain tasks over others (e.g. a task can have over 10 measures because it has multiple conditions and we have chosen to fit DDM's for specific conditions while another might only have 2 due to our relative inexperience and lack of interest in it). We check whether the number of trials in a task has a significant effect on these average reliabilities of raw measures as well. 
 
 ```{r echo=FALSE}
 measure_labels <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/measure_labels.csv')
@@ -743,188 +972,6 @@ summary(lm(mean_diff ~ days_btw, data=tmp))
 
 ```{r echo=FALSE}
 rm(tmp)
-```
-
-## Bootstrapping
-
-Summarized bootstrapped reliabilities
-
-```{r message=FALSE, warning=FALSE}
-# boot_df <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/bootstrap_merged.csv')
-
-boot_df <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/bootstrap_merged.csv')
-
-boot_df = boot_df %>%
-  drop_na() %>%
-  mutate(icc = as.numeric(as.character(icc)),
-         spearman = as.numeric(as.character(spearman)),
-         eta_sq = as.numeric(as.character(eta_sq)),
-         sem = as.numeric(as.character(sem))) 
-
-boot_df %>%
-  group_by(dv) %>%
-  summarise(icc_median = quantile(icc, probs = 0.5),
-            icc_2.5 = quantile(icc, probs = 0.025),
-            icc_97.5 = quantile(icc, probs = 0.975),
-            spearman_median = quantile(spearman, probs = 0.5),
-            spearman_2.5 = quantile(spearman, probs = 0.025),
-            spearman_97.5 = quantile(spearman, probs = 0.975)) %>%
-  datatable() %>%
-  formatRound(columns=c('icc_median', 'icc_2.5', 'icc_97.5', 'spearman_median', 'spearman_2.5', 'spearman_97.5'), digits=3)
-```
-
-Comparison of survey measures to cognitive task measures in the bootstrapped results. Multilevel model with random intercepts for each measure and fixed effect of survey versus cognitive measure. (Same result as seen in point estimates comparison).
-
-```{r}
-boot_df = boot_df %>%
-    mutate(task = ifelse(grepl("survey",dv), "survey","task"),
-           task = ifelse(grepl("holt",dv), "task", task))
-
-summary(lmerTest::lmer(icc ~  task + (1|dv), boot_df))
-```
-
-Checking DDM results in the bootstrapped estimates. Same as before too.
-
-```{r warning=FALSE, message=FALSE}
-tmp = measure_labels %>%
-  mutate(dv = as.character(dv)) %>%
-  filter(task == 'task') %>%
-  separate(variable_type, c("label_1", "label_2", "label_3"), sep = ",") %>%
-  mutate(label_1 = trim(label_1),
-         label_2=trim(label_2),
-         label_3=trim(label_3))%>%
-  filter(ddm_task == 1) %>%
-  separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.', remove=FALSE) %>%
-  select(-extra_1, -extra_2) %>%
-  drop_na() %>%
-  left_join(boot_df[,c("dv", "icc")], by = 'dv')
-```
-
-```{r}
-summary(lmerTest::lmer(icc ~ label_1 + (1|dv) ,tmp))
-```
-
-```{r}
-summary(lmerTest::lmer(icc ~ label_3 + (1|dv) ,tmp))
-```
-
-```{r warning=FALSE, message=FALSE}
-poster_vars <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/poster_var_list.csv', header=F)
-
-names(poster_vars) = "var"
-
-boot_df_poster = boot_df[boot_df$dv %in% poster_vars$var,]
-
-boot_df_poster = boot_df_poster%>%
-  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
-  mutate(task_group = factor(task_group, levels = task_group[order(task)])) %>%
-  separate(var, c("var"), sep="\\.",remove=TRUE,extra="drop") %>%
-  mutate(task_group = gsub("_", " ", task_group),
-         var = gsub("_", " ", var)) %>%
-  arrange(task_group, var)
-
-boot_df_poster = boot_df_poster %>%
-  left_join(rel_df[,c("dv", "icc")], by = "dv") %>%
-  rename(icc = icc.x, point_est = icc.y)
-
-#Manual correction
-boot_df_poster = boot_df_poster %>%
-  mutate(task = ifelse(task_group == 'holt laury survey', "task", task)) %>%
-  mutate(task_group = ifelse(task_group == "psychological refractory period two choices", "psychological refractory period", ifelse(task_group == "angling risk task always sunny", "angling risk task",task_group))) %>%
-  mutate(task_group = gsub("survey", "", task_group))
-```
-
-
-```{r warning=FALSE, message=FALSE} 
-p4 <- boot_df_poster %>%
-  filter(task == 'task') %>%
-ggplot(aes(y = var, x = icc)) + 
-  geom_point(color = '#00BFC4')+
-  geom_point(aes(y = var, x = point_est), color = "black")+
-  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y", labeller = label_wrap_gen(width=20)) +
-  theme(panel.spacing = unit(0.75, "lines"), 
-        strip.placement = "outside",
-        strip.text.y = element_text(angle=180, size=36),
-        axis.text.y = element_text(size=20),
-        panel.background = element_rect(fill = NA),
-        panel.grid.major = element_line(colour = "grey80")) + 
-  xlab("")+
-  ylab("")+
-  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
-  scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
-  scale_shape_manual(breaks = sort(boot_df_poster$type), values = c(15, 17, 3))+
-  geom_vline(xintercept = 0, color = "red", size = 1)
-
-p5 <- boot_df_poster %>%
-  filter(task == 'survey') %>%
-ggplot(aes(y = var, x = icc)) + 
-  geom_point(color = '#F8766D')+
-  geom_point(aes(y = var, x = point_est), color = "black")+
-  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y", labeller = label_wrap_gen(width=20)) +
-  theme(panel.spacing = unit(0.75, "lines"), 
-        strip.placement = "outside",
-        strip.text.y = element_text(angle=180, size=36),
-        axis.text.y = element_text(size=20),
-        panel.background = element_rect(fill = NA),
-        panel.grid.major = element_line(colour = "grey80")) + 
-  xlab("")+
-  ylab("")+
-  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
-  scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
-  scale_shape_manual(breaks = sort(boot_df_poster$type), values = c(15, 17, 3))+
-  geom_vline(xintercept = 0, color = "red", size = 1)
-  
-p6 <- arrangeGrob(p4, p5,nrow=1)
-
-ggsave('Bootstrap_Poster_Plot.jpg', plot = p6, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 24, height = 42, units = "in", limitsize = FALSE)
-```
-
-```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/Bootstrap_Poster_Plot.jpg')
-```
-
-```{r echo=FALSE}
-rm(p4, p5, p6)
-```
-
-```{r}
-p4_t <- boot_df_poster %>%
-  filter(task == 'task') %>%
-ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) + 
-  geom_violin(fill='#00BFC4')+
-  theme_bw() + 
-  theme(axis.text.y = element_text(size=30))+
-  xlab("")+
-  ylab("")+
-  scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
-  scale_x_discrete(labels = function(x) str_wrap(x, width = 15))+
-  geom_hline(yintercept = 0, color = "red", size = 1)+
-  coord_flip()
-
-p5_t <- boot_df_poster %>%
-  filter(task == 'survey') %>%
-ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) + 
-  geom_violin(fill='#F8766D')+
-  theme_bw() + 
-  theme(axis.text.y = element_text(size=43))+
-  xlab("")+
-  ylab("")+
-  scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
-  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))+
-  geom_hline(yintercept = 0, color = "red", size = 1)+
-  coord_flip()
-  
-p6_t <- arrangeGrob(p4_t, p5_t,nrow=1)
-
-ggsave('Bootstrap_Poster_Plot_t.jpg', plot = p6_t, device = "jpeg", path = "../output/figures/", width = 27, height = 48, units = "in", limitsize = FALSE)
-```
-
-```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/Bootstrap_Poster_Plot_t.jpg')
-```
-
-```{r echo=FALSE}
-rm(p4_t, p5_t, p6_t)
 ```
 
 ## Variance breakdown

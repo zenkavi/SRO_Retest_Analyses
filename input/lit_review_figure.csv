@@ -22,16 +22,16 @@ angling_risk_task_always_sunny.keep_adjusted_clicks,task,Average number of click
 angling_risk_task_always_sunny.keep_adjusted_clicks,task,Average number of clicks for trials where blue fish was not caught in the condition where probability of loosing everything in the round increased with each click,0.39,Pearson,700,275,MacPherson et al. (2010),condition,raw,,0,60
 angling_risk_task_always_sunny.keep_adjusted_clicks,task,Average number of clicks for trials where blue fish was not caught in the condition where probability of loosing everything in the round increased with each click,0.67,Pearson,700,275,MacPherson et al. (2010),condition,raw,,0,60
 angling_risk_task_always_sunny.keep_adjusted_clicks,task,Average number of clicks for trials where blue fish was not caught in the condition where probability of loosing everything in the round increased with each click,0.49,Pearson,700,275,MacPherson et al. (2010),condition,raw,,0,60
-attention_network_task.alerting_rt,task,Difference in median response time between nocue and double cue trials,0.52,Pearson,40,1,Fan et al. (2002),difference,raw,rt,1,192
-attention_network_task.alerting_rt,task,Difference in median response time between nocue and double cue trials,0.36,Pearson,104,1,Fan et al. (2001),difference,raw,rt,1,192
-attention_network_task.alerting_rt,task,Difference in median response time between nocue and double cue trials,-0.02,Pearson,10,9,Ishigami and Klein (2010),difference,raw,rt,1,192
+attention_network_task.alerting_rt,task,Difference in median response time between nocue and double cue trials,0.52,Pearson,1,40,Fan et al. (2002),difference,raw,rt,1,192
+attention_network_task.alerting_rt,task,Difference in median response time between nocue and double cue trials,0.36,Pearson,1,104,Fan et al. (2001),difference,raw,rt,1,192
+attention_network_task.alerting_rt,task,Difference in median response time between nocue and double cue trials,-0.02,Pearson,9,10,Ishigami and Klein (2010),difference,raw,rt,1,192
 attention_network_task.alerting_rt,task,Difference in median response time between nocue and double cue trials,0.14,Pearson,7,68,"Habekost, Petersen and Vangkilde (2014)",difference,raw,rt,1,192
 attention_network_task.alerting_rt,task,Difference in median response time between nocue and double cue trials,0.35,Pearson,7,68,"Habekost, Petersen and Vangkilde (2014)",difference,raw,rt,1,192
-attention_network_task.avg_rt,task,Median response time for correct responses,0.87,Pearson,40,1,Fan et al. (2002),overall,raw,rt,1,192
+attention_network_task.avg_rt,task,Median response time for correct responses,0.87,Pearson,1,40,Fan et al. (2002),overall,raw,rt,1,192
 attention_network_task.avg_rt,task,Median response time for correct responses,0.856,Pearson,7,75,Paap and Sawi (2016),overall,raw,rt,1,192
-attention_network_task.conflict_rt,task,Difference in median response time between incongruent and congruent flanker trials,0.72,Pearson,40,1,Fan et al. (2002),difference,raw,rt,1,192
-attention_network_task.conflict_rt,task,Difference in median response time between incongruent and congruent flanker trials,0.81,Pearson,104,1,Fan et al. (2001),difference,raw,rt,1,192
-attention_network_task.conflict_rt,task,Difference in median response time between incongruent and congruent flanker trials,0.86,Pearson,10,9,Ishigami and Klein (2010),difference,raw,rt,1,192
+attention_network_task.conflict_rt,task,Difference in median response time between incongruent and congruent flanker trials,0.72,Pearson,1,40,Fan et al. (2002),difference,raw,rt,1,192
+attention_network_task.conflict_rt,task,Difference in median response time between incongruent and congruent flanker trials,0.81,Pearson,1,104,Fan et al. (2001),difference,raw,rt,1,192
+attention_network_task.conflict_rt,task,Difference in median response time between incongruent and congruent flanker trials,0.86,Pearson,9,10,Ishigami and Klein (2010),difference,raw,rt,1,192
 attention_network_task.conflict_rt,task,Difference in median response time between incongruent and congruent flanker trials,0.84,Pearson,7,68,"Habekost, Petersen and Vangkilde (2014)",difference,raw,rt,1,192
 attention_network_task.conflict_rt,task,Difference in median response time between incongruent and congruent flanker trials,0.74,Pearson,7,68,"Habekost, Petersen and Vangkilde (2014)",difference,raw,rt,1,192
 attention_network_task.conflict_rt,task,Difference in median response time between incongruent and congruent flanker trials,0.515,Pearson,7,75,Paap and Sawi (2016),difference,raw,rt,1,192
@@ -40,7 +40,7 @@ attention_network_task.incongruent_rt,task,Median response time for trials where
 attention_network_task.neutral_rt,task,Median response time for trials where flankers do not point a direction,0.642,Pearson,7,75,Paap and Sawi (2016),condition,raw,rt,1,192
 attention_network_task.orienting_rt,task,Difference in median response time between center and spatial cue trials,0.61,Pearson,1,40,Fan et al. (2002),difference,raw,rt,1,192
 attention_network_task.orienting_rt,task,Difference in median response time between center and spatial cue trials,0.41,Pearson,1,104,Fan et al. (2001),difference,raw,rt,1,192
-attention_network_task.orienting_rt,task,Difference in median response time between center and spatial cue trials,0.57,Pearson,10,9,Ishigami and Klein (2010),difference,raw,rt,1,192
+attention_network_task.orienting_rt,task,Difference in median response time between center and spatial cue trials,0.57,Pearson,9,10,Ishigami and Klein (2010),difference,raw,rt,1,192
 attention_network_task.orienting_rt,task,Difference in median response time between center and spatial cue trials,0.58,Pearson,7,68,"Habekost, Petersen and Vangkilde (2014)",difference,raw,rt,1,192
 attention_network_task.orienting_rt,task,Difference in median response time between center and spatial cue trials,0.59,Pearson,7,68,"Habekost, Petersen and Vangkilde (2014)",difference,raw,rt,1,192
 bickel_titrator.auc_small,task,Area under the curve of indifference points not assuming a shape for the discounitng function for small later rewards only,0.67,Pearson,30,131,"Horan, Johnson and Green (2017)",condition,raw,,0,31
