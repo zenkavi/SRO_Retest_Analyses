@@ -629,7 +629,7 @@ tmp %>%
   xlab("")+
   theme(legend.title = element_blank())
 
-ggsave('Bootstrap_DDM_Comp.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 20, height = 8, units = "in", limitsize = FALSE)
+ggsave('Bootstrap_DDM_Comp.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 24, height = 6, units = "in", limitsize = FALSE)
 ```
 
 ```{r warning=FALSE, message=FALSE}
