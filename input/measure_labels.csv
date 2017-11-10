@@ -138,11 +138,11 @@ information_sampling_task.Fixed_Win_boxes_opened,task,,,,,condition,raw,other,0,
 information_sampling_task.Fixed_Win_motivation,task,Average latency in opening each box in the condition where the points that can be earned is fixed in that round following a correct guess of the color in majority,speed,,speed,condition,raw,rt,0,20,,x
 information_sampling_task.Fixed_Win_P_correct,task,Average probability of a correct response given the number of opened boxes in the condition where the points that can be earned is fixed in that round following a correct guess of the color in majority,learning,,information use,condition,raw,other,0,20,,x
 keep_track.score,task,Proportion of items remembered correctly where correct means indicating the last item of a category in a given sequence of words,working memory,,working memory,overall,raw,other,0,135,,
-kirby.exp_discount_rate_avg,task,,,,,overall,fit,other,0,27,,
+kirby.exp_discount_rate,task,,,,,overall,fit,other,0,27,,
 kirby.exp_discount_rate_large,task,,,,,condition,fit,other,0,27,,
 kirby.exp_discount_rate_medium,task,,,,,condition,fit,other,0,27,,
 kirby.exp_discount_rate_small,task,,,,,condition,fit,other,0,27,,
-kirby.hyp_discount_rate_avg,task,,,,,overall,fit,other,0,27,,
+kirby.hyp_discount_rate,task,,,,,overall,fit,other,0,27,,
 kirby.hyp_discount_rate_large,task,Hyperbolic discount rate for set of 9 choices with large rewards,delay discounting,,risk taking,condition,fit,other,0,27,,
 kirby.hyp_discount_rate_medium,task,Hyperbolic discount rate for set of 9 choices with medium rewards,delay discounting,,risk taking,condition,fit,other,0,27,,
 kirby.hyp_discount_rate_small,task,Hyperbolic discount rate for set of 9 choices with small rewards,delay discounting,,risk taking,condition,fit,other,0,27,,

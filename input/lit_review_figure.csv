@@ -150,17 +150,17 @@ information_sampling_task.Decreasing_Win_boxes_opened,task,Number of boxes opene
 information_sampling_task.Fixed_Win_motivation,task,Average latency in opening each box in the condition where the points that can be earned is fixed in that round following a correct guess of the color in majority,0.55,ICC,360,312,Grummitt et al.,condition,raw,rt,0,20
 information_sampling_task.Fixed_Win_boxes_opened,task,Number of boxes opened on average for all rounds in the fixed win condition,0.16,ICC,360,312,Grummitt et al.,condition,raw,,0,20
 keep_track.score,task,Proportion of items remembered correctly where correct means indicating the last item of a category in a given sequence of words,0.36,Pearson,540,211,Ven et al. (2013),overall,raw,,0,135
-kirby.exp_discount_rate_avg,task,Exponential discount rate for all items,0.68,Spearman,49,53,Wölbert and Riedl (2013),overall,fit,,0,27
+kirby.exp_discount_rate,task,Exponential discount rate for all items,0.68,Spearman,49,53,Wölbert and Riedl (2013),overall,fit,,0,27
 kirby.exp_discount_rate_large,task,Exponential discount rate for large delayed rewards only,0.61,Spearman,49,53,Wölbert and Riedl (2013),condition,fit,,0,27
 kirby.exp_discount_rate_medium,task,Exponential discount rate for medium delayed rewards only,0.68,Spearman,49,53,Wölbert and Riedl (2013),condition,fit,,0,27
 kirby.exp_discount_rate_small,task,Exponential discount rate for small delayed rewards only,0.67,Spearman,49,53,Wölbert and Riedl (2013),condition,fit,,0,27
-kirby.hyp_discount_rate_avg,task,Hyperbolic discount rate for all items,0.77,Pearson,35,81,Kirby (2009),overall,fit,,0,27
-kirby.hyp_discount_rate_avg,task,Hyperbolic discount rate for all items,0.71,Pearson,360,37,Kirby (2009),overall,fit,,0,27
-kirby.hyp_discount_rate_avg,task,Hyperbolic discount rate for all items,0.73,Pearson,399,46,Kirby (2009),overall,fit,,0,27
-kirby.hyp_discount_rate_avg,task,Hyperbolic discount rate for all items,0.65,Spearman,1,220,Yoon and Chapman (2016),overall,fit,,0,27
-kirby.hyp_discount_rate_avg,task,Hyperbolic discount rate for all items,0.85,Pearson,1,93,Arfer Luhmann (2017),overall,fit,,0,27
-kirby.hyp_discount_rate_avg,task,Hyperbolic discount rate for all items,0.77,Pearson,30,93,Arfer Luhmann (2017),overall,fit,,0,27
-kirby.hyp_discount_rate_avg,task,Hyperbolic discount rate for all items,0.56,ICC,28,90,Black and Rosen (2011),overall,fit,,0,27
+kirby.hyp_discount_rate,task,Hyperbolic discount rate for all items,0.77,Pearson,35,81,Kirby (2009),overall,fit,,0,27
+kirby.hyp_discount_rate,task,Hyperbolic discount rate for all items,0.71,Pearson,360,37,Kirby (2009),overall,fit,,0,27
+kirby.hyp_discount_rate,task,Hyperbolic discount rate for all items,0.73,Pearson,399,46,Kirby (2009),overall,fit,,0,27
+kirby.hyp_discount_rate,task,Hyperbolic discount rate for all items,0.65,Spearman,1,220,Yoon and Chapman (2016),overall,fit,,0,27
+kirby.hyp_discount_rate,task,Hyperbolic discount rate for all items,0.85,Pearson,1,93,Arfer Luhmann (2017),overall,fit,,0,27
+kirby.hyp_discount_rate,task,Hyperbolic discount rate for all items,0.77,Pearson,30,93,Arfer Luhmann (2017),overall,fit,,0,27
+kirby.hyp_discount_rate,task,Hyperbolic discount rate for all items,0.56,ICC,28,90,Black and Rosen (2011),overall,fit,,0,27
 kirby.hyp_discount_rate_large,task,Hyperbolic discount rate for set of 9 choices with large rewards,0.66,Pearson,35,81,Kirby (2009),condition,fit,,0,27
 kirby.hyp_discount_rate_large,task,Hyperbolic discount rate for set of 9 choices with large rewards,0.59,Pearson,360,37,Kirby (2009),condition,fit,,0,27
 kirby.hyp_discount_rate_large,task,Hyperbolic discount rate for set of 9 choices with large rewards,0.57,Pearson,399,46,Kirby (2009),condition,fit,,0,27
@@ -260,8 +260,8 @@ shift_task.total_errors,task,Number of incorrect responses,0.9,ICC,720,17,Ozonof
 shift_task.total_errors,task,Number of incorrect responses,0.66,Pearson,360,87,"Paolo, Axelrod and Tröster (1996)",overall,raw,accuracy,0,410
 shift_task.total_errors,task,Number of incorrect responses,0.78,Pearson,462,66,Greve et al. (2012),overall,raw,accuracy,0,410
 shift_task.total_errors,task,Number of incorrect responses,0.78,Pearson,462,66,Greve et al. (2012),overall,raw,accuracy,0,410
-shift_task.trial_pre_first_cat,task,Trials to complete first category,0.16,Kendall's Tau,360,87,"Paolo, Axelrod and Tröster (1996)",overall,raw,,0,410
-shift_task.trial_pre_first_cat,task,Trials to complete first category,0.44,Spearman,12,29,Ingram et al. (1999),overall,raw,,0,410
+shift_task.trials_pre_first_cat,task,Trials to complete first category,0.16,Kendall's Tau,360,87,"Paolo, Axelrod and Tröster (1996)",overall,raw,,0,410
+shift_task.trials_pre_first_cat,task,Trials to complete first category,0.44,Spearman,12,29,Ingram et al. (1999),overall,raw,,0,410
 simon.congruent_acc,task,Accuracy on trials where the side of the screen the stimulus appeared matched the response button,0.68,ICC,66.5,23,Wöstmann et al. (2013),overall,raw,accuracy,1,100
 simon.incongruent_acc,task,Accuracy on trials where the side of the screen the stimulus appeared did not match the response button,0.85,ICC,66.5,23,Wöstmann et al. (2013),overall,raw,accuracy,1,100
 simon.acc,task,Proportion of correct responses (excluding non-response trials) where correct means pressing the correct button for the correct color regardless of where it appears on the screen,0.15,Pearson,540,208,Ven et al. (2013),overall,raw,accuracy,1,100

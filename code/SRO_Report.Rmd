@@ -537,7 +537,7 @@ boot_df = boot_df %>%
 
 boot_df = boot_df[boot_df$dv %in% retest_report_vars,]
 
-retest_report_vars[which(retest_report_vars %in% boot_df$dv==FALSE)]
+# retest_report_vars[which(retest_report_vars %in% boot_df$dv==FALSE)]
 
 boot_df %>%
   group_by(dv) %>%
@@ -551,49 +551,93 @@ boot_df %>%
   formatRound(columns=c('icc_median', 'icc_2.5', 'icc_97.5', 'spearman_median', 'spearman_2.5', 'spearman_97.5'), digits=3)
 ```
 
-Comparison of survey measures to cognitive task measures in the bootstrapped results. Multilevel model with random intercepts for each measure and fixed effect of survey versus cognitive measure. (Same result as seen in point estimates comparison).
+Comparison of survey measures to cognitive task measures in the bootstrapped results. Multilevel model with random intercepts for each measure and fixed effect of survey versus cognitive measure. 
 
 ```{r}
 boot_df = boot_df %>%
     mutate(task = ifelse(grepl("survey",dv), "survey","task"),
            task = ifelse(grepl("holt",dv), "task", task))
 
+boot_df %>%
+  group_by(task) %>%
+  summarise(icc_median = quantile(icc, probs = 0.5),
+            icc_2.5 = quantile(icc, probs = 0.025),
+            icc_97.5 = quantile(icc, probs = 0.975),
+            spearman_median = quantile(spearman, probs = 0.5),
+            spearman_2.5 = quantile(spearman, probs = 0.025),
+            spearman_97.5 = quantile(spearman, probs = 0.975),
+            num_vars = n()/1000) %>%
+  datatable() %>%
+  formatRound(columns=c('icc_median', 'icc_2.5', 'icc_97.5', 'spearman_median', 'spearman_2.5', 'spearman_97.5'), digits=3)
+```
+
+
+```{r}
 summary(lmerTest::lmer(icc ~  task + (1|dv), boot_df))
 ```
 
-Checking DDM results in the bootstrapped estimates. Same as before too.
+```{r warning=FALSE, message=FALSE}
+boot_df %>%
+  ggplot(aes(icc, fill = task))+
+  geom_histogram(alpha=0.5, position='identity')+
+  theme_bw()+
+  theme(legend.title = element_blank())+
+  xlab("ICC")
+```
+
+
+```{r echo=FALSE}
+measure_labels <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/measure_labels.csv')
+measure_labels = measure_labels %>% select(-measure_description,-measure_type,-measure_type_Ian,-measure_type_Russ,-notes,-Patrick_hates)
+```
+
+
+Checking DDM results in the bootstrapped estimates. Variables using all trials are significantly more reliable compared to difference scores. Raw measures don't differ from DDM parameters. Which DDM is better depends on whether all trials are used.
 
 ```{r warning=FALSE, message=FALSE}
 tmp = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
-  filter(task == 'task') %>%
-  separate(variable_type, c("label_1", "label_2", "label_3"), sep = ",") %>%
-  mutate(label_1 = trim(label_1),
-         label_2=trim(label_2),
-         label_3=trim(label_3))%>%
-  filter(ddm_task == 1) %>%
-  separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.', remove=FALSE) %>%
-  select(-extra_1, -extra_2) %>%
+  filter(ddm_task == 1, 
+         overall_difference != "condition") %>%
   drop_na() %>%
-  left_join(boot_df[,c("dv", "icc")], by = 'dv')
+  left_join(boot_df[,c("dv", "icc", "spearman")], by = 'dv')
+
+tmp %>%
+  group_by(overall_difference, raw_fit, rt_acc) %>%
+  summarise(icc_median = quantile(icc, probs = 0.5),
+            icc_2.5 = quantile(icc, probs = 0.025),
+            icc_97.5 = quantile(icc, probs = 0.975),
+            spearman_median = quantile(spearman, probs = 0.5),
+            spearman_2.5 = quantile(spearman, probs = 0.025),
+            spearman_97.5 = quantile(spearman, probs = 0.975),
+            num_vars = n()/1000) %>%
+  datatable() %>%
+  formatRound(columns=c('icc_median', 'icc_2.5', 'icc_97.5', 'spearman_median', 'spearman_2.5', 'spearman_97.5'), digits=3)
 ```
 
 ```{r}
-summary(lmerTest::lmer(icc ~ label_1 + (1|dv) ,tmp))
+summary(lmerTest::lmer(icc ~ overall_difference*raw_fit + (1|dv) ,tmp))
 ```
 
 ```{r}
-summary(lmerTest::lmer(icc ~ label_3 + (1|dv) ,tmp))
+tmp %>%
+  ggplot(aes(factor(raw_fit, levels = c("raw", "EZ", "hddm"), labels=c("Raw", "EZ-diffusion", "Hierarchical diffusion")), icc, fill=factor(rt_acc, levels = c("rt","accuracy","other", "drift rate", "threshold", "non-decision"), labels=c("Response Time", "Accuracy", "Other","Drift Rate", "Threshold", "Non-decision"))))+
+  geom_boxplot()+
+  facet_wrap(~factor(overall_difference, levels=c("overall", "difference"), labels=c("Overall", "Difference")))+
+  theme_bw()+
+  ylab("ICC")+
+  xlab("")+
+  theme(legend.title = element_blank())
+
+ggsave('Bootstrap_DDM_Comp.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 20, height = 8, units = "in", limitsize = FALSE)
 ```
 
 ```{r warning=FALSE, message=FALSE}
-poster_vars <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/poster_var_list.csv', header=F)
+tmp = measure_labels %>%
+  mutate(dv = as.character(dv)) %>%
+  left_join(boot_df[,c("dv", "icc", "spearman")], by = 'dv') 
 
-names(poster_vars) = "var"
-
-boot_df_poster = boot_df[boot_df$dv %in% poster_vars$var,]
-
-boot_df_poster = boot_df_poster%>%
+tmp = tmp %>%
   separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
   mutate(task_group = factor(task_group, levels = task_group[order(task)])) %>%
   separate(var, c("var"), sep="\\.",remove=TRUE,extra="drop") %>%
@@ -601,21 +645,23 @@ boot_df_poster = boot_df_poster%>%
          var = gsub("_", " ", var)) %>%
   arrange(task_group, var)
 
-boot_df_poster = boot_df_poster %>%
+tmp = tmp %>%
   left_join(rel_df[,c("dv", "icc")], by = "dv") %>%
   rename(icc = icc.x, point_est = icc.y)
 
 #Manual correction
-boot_df_poster = boot_df_poster %>%
-  mutate(task = ifelse(task_group == 'holt laury survey', "task", task)) %>%
+tmp = tmp %>%
+  mutate(task = ifelse(task_group == 'holt laury survey', "task", as.character(task))) %>%
   mutate(task_group = ifelse(task_group == "psychological refractory period two choices", "psychological refractory period", ifelse(task_group == "angling risk task always sunny", "angling risk task",task_group))) %>%
   mutate(task_group = gsub("survey", "", task_group))
 ```
 
+Variable level summary of bootstrapped reliabilities.
 
 ```{r warning=FALSE, message=FALSE} 
-p4 <- boot_df_poster %>%
-  filter(task == 'task') %>%
+p4 <- tmp %>%
+  filter(task == 'task',
+         raw_fit == 'raw') %>%
 ggplot(aes(y = var, x = icc)) + 
   geom_point(color = '#00BFC4')+
   geom_point(aes(y = var, x = point_est), color = "black")+
@@ -630,10 +676,9 @@ ggplot(aes(y = var, x = icc)) +
   ylab("")+
   scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
   scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
-  scale_shape_manual(breaks = sort(boot_df_poster$type), values = c(15, 17, 3))+
   geom_vline(xintercept = 0, color = "red", size = 1)
 
-p5 <- boot_df_poster %>%
+p5 <- tmp %>%
   filter(task == 'survey') %>%
 ggplot(aes(y = var, x = icc)) + 
   geom_point(color = '#F8766D')+
@@ -649,24 +694,21 @@ ggplot(aes(y = var, x = icc)) +
   ylab("")+
   scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
   scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
-  scale_shape_manual(breaks = sort(boot_df_poster$type), values = c(15, 17, 3))+
   geom_vline(xintercept = 0, color = "red", size = 1)
   
 p6 <- arrangeGrob(p4, p5,nrow=1)
 
-ggsave('Bootstrap_Poster_Plot.jpg', plot = p6, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 24, height = 42, units = "in", limitsize = FALSE)
-```
+ggsave('Bootstrap_Var_Plot.jpg', plot = p6, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 36, height = 72, units = "in", limitsize = FALSE, dpi=50)
 
-```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/Bootstrap_Poster_Plot.jpg')
-```
-
-```{r echo=FALSE}
 rm(p4, p5, p6)
 ```
 
-```{r}
-p4_t <- boot_df_poster %>%
+```{r echo=FALSE, out.width='100%'}
+knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/Bootstrap_Var_Plot.jpg')
+```
+
+```{r message=FALSE, warning=FALSE}
+p4_t <- tmp %>%
   filter(task == 'task') %>%
 ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) + 
   geom_violin(fill='#00BFC4')+
@@ -679,7 +721,7 @@ ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) +
   geom_hline(yintercept = 0, color = "red", size = 1)+
   coord_flip()
 
-p5_t <- boot_df_poster %>%
+p5_t <- tmp %>%
   filter(task == 'survey') %>%
 ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) + 
   geom_violin(fill='#F8766D')+
@@ -765,11 +807,6 @@ Note: Some variables have <0 ICC's. This would be the case if the $MS_{error}$>$
 Here we summarize the results on a task level to make it more digestable and easier to make contact with the literature.  
 
 We reduce the list of task measures to a list of one per task by averaging only the raw measures from all the trials in a task. We chose to reduce the information in this manner to avoid any bias stemming from differential amount of interest and procedures applied to certain tasks over others (e.g. a task can have over 10 measures because it has multiple conditions and we have chosen to fit DDM's for specific conditions while another might only have 2 due to our relative inexperience and lack of interest in it). We check whether the number of trials in a task has a significant effect on these average reliabilities of raw measures as well. 
-
-```{r echo=FALSE}
-measure_labels <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/measure_labels.csv')
-measure_labels = measure_labels %>% select(-measure_description,-measure_type,-measure_type_Ian,-measure_type_Russ,-notes,-Patrick_hates)
-```
 
 We filter out the DDM parameters and measures for specific contrasts. Note that this does leave some tasks with measures that are model fits and/or for specific conditions (because at least the current datasets do not include measures that are based on all the trials **and** are raw though I could dive in to variables_exhaustive for such measures. For example the average relialibility for Kirby is based on three discount rates for specific conditions.). Here's the order of tasks by mean reliability sorted for ICC and then Spearman's $\rho$.
 
