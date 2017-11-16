@@ -619,7 +619,7 @@ knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Anal
 rm(p4_t, p5_t, p6_t)
 ```
 
-### Histograms of reliability metrics (point estimates)
+### Histograms of reliability metrics
 
 ```{r warning=FALSE, message=FALSE}
 boot_df %>%
@@ -633,25 +633,13 @@ boot_df %>%
         legend.title = element_blank())+
   xlab("")
 
-
-# rel_df %>%
-#   select(dv, task, spearman, pearson, icc) %>%
-#   gather(key, value, -dv, -task) %>%
-#   ggplot(aes(value, fill=task))+
-#   geom_histogram(alpha = 0.5, position = 'identity')+
-#   facet_wrap(~key)+
-#   theme_bw()+
-#   theme(legend.position = 'bottom',
-#         legend.title = element_blank())+
-#   xlab("")
-
 ggsave('Rel_Histograms.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 12, height = 4, units = "in", limitsize = FALSE)
 ```
 
-### Relationship between reliability metrics (point estimates)
+### Relationship between reliability metrics
 
 ```{r warning=FALSE, message=FALSE}
-p1 = rel_df %>%
+p1 = boot_df %>%
   ggplot(aes(spearman, icc, col=task))+
   geom_point()+
   theme_bw()+
@@ -659,7 +647,7 @@ p1 = rel_df %>%
         legend.position = "none")+
   geom_abline(intercept = 0, slope=1)
 
-p2 = rel_df %>%
+p2 = boot_df %>%
   ggplot(aes(pearson, icc, col=task))+
   geom_point()+
   theme_bw()+
@@ -667,7 +655,7 @@ p2 = rel_df %>%
         legend.position = "none")+
   geom_abline(intercept = 0, slope=1)
 
-p3 = rel_df %>%
+p3 = boot_df %>%
   ggplot(aes(pearson, spearman, col=task))+
   geom_point()+
   theme_bw()+
@@ -698,20 +686,26 @@ We filter out the DDM parameters and measures for specific contrasts. Note that 
 tmp = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(task == 'task') %>%
-  left_join(rel_df[,c("dv", "spearman","icc")], by='dv') %>%
+  left_join(boot_df[,c("dv", "icc", "spearman")], by = 'dv') %>%
   filter(overall_difference != 'difference' & raw_fit %in% c('EZ', 'hddm') == FALSE)%>%
   separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
   select(-extra_1, -extra_2) %>%
   group_by(task_name) %>%
   summarise(median_icc = median(icc),
             median_spearman = median(spearman),
+            min_icc = min(icc),
+            max_icc = max(icc),
+            min_spearman = min(spearman),
+            max_spearman = max(spearman),
             num_measures = n(),
-            num_trials = unique(num_all_trials)) %>%
+            num_trials = unique(num_all_trials))%>%
   arrange(-median_icc, -median_spearman)
 
 tmp %>%
   datatable() %>%
-  formatRound(columns=c('median_spearman', 'median_icc'), digits=3)
+  formatRound(columns=c('median_spearman', 'median_icc',
+                        'min_spearman', 'min_icc',
+                        'max_spearman', 'max_icc'), digits=3)
 ```
 
 Does number of items in a task have a significant effect on the average ICC of (mostly) raw measures for all trials from a task? No. (no effect on Spearman either)
