@@ -63,9 +63,9 @@ Output: Local/bootstrap_merged.csv
 Run: Sherlock
 
 DDM refit for original sample
-Input:
-Script:
-Output:
+Input: calculate_hddm_refits.batch, calculate_hddm_refits.py, batch_output/hddm_refits, batch_output/hddm_refits/.err, batch_output/hddm_refits/.out
+Script: run_hddm_refits.sh 
+Output: Sherlock
 
 DDM Analyses
 Input:

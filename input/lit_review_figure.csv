@@ -105,12 +105,12 @@ dot_pattern_expectancy.AY_errors,task,Errors in AY trials,0.39,ICC,23,38,"Jones,
 dot_pattern_expectancy.AY_errors,task,Errors in AY trials,0.27,ICC,23,38,"Jones, Sponheim and McDonald (2010)",condition,raw,,1,128
 dot_pattern_expectancy.AY_rt,task,Mean RT for AY trials,0.63,ICC,23,38,"Jones, Sponheim and McDonald (2010)",condition,raw,rt,1,128
 dot_pattern_expectancy.AY_rt,task,Mean RT for AY trials,0.56,ICC,23,38,"Jones, Sponheim and McDonald (2010)",condition,raw,rt,1,128
-dot_pattern_expectancy.BX_error,task,Errors in BX trials,0.28,ICC,23,38,"Jones, Sponheim and McDonald (2010)",condition,raw,,1,128
-dot_pattern_expectancy.BX_error,task,Errors in BX trials,0.42,ICC,23,38,"Jones, Sponheim and McDonald (2010)",condition,raw,,1,128
+dot_pattern_expectancy.BX_errors,task,Errors in BX trials,0.28,ICC,23,38,"Jones, Sponheim and McDonald (2010)",condition,raw,,1,128
+dot_pattern_expectancy.BX_errors,task,Errors in BX trials,0.42,ICC,23,38,"Jones, Sponheim and McDonald (2010)",condition,raw,,1,128
 dot_pattern_expectancy.BX_rt,task,Mean RT for BX trials,0.34,ICC,23,38,"Jones, Sponheim and McDonald (2010)",condition,raw,rt,1,128
 dot_pattern_expectancy.BX_rt,task,Mean RT for BX trials,0.34,ICC,23,38,"Jones, Sponheim and McDonald (2010)",condition,raw,rt,1,128
-dot_pattern_expectancy.BY_error,task,Errors in BY trials,-0.06,ICC,23,38,"Jones, Sponheim and McDonald (2010)",condition,raw,,1,128
-dot_pattern_expectancy.BY_error,task,Errors in BY trials,-0.06,ICC,23,38,"Jones, Sponheim and McDonald (2010)",condition,raw,,1,128
+dot_pattern_expectancy.BY_errors,task,Errors in BY trials,-0.06,ICC,23,38,"Jones, Sponheim and McDonald (2010)",condition,raw,,1,128
+dot_pattern_expectancy.BY_errors,task,Errors in BY trials,-0.06,ICC,23,38,"Jones, Sponheim and McDonald (2010)",condition,raw,,1,128
 dot_pattern_expectancy.BY_rt,task,Mean RT for BY trials,0.54,ICC,23,38,"Jones, Sponheim and McDonald (2010)",condition,raw,rt,1,128
 dot_pattern_expectancy.BY_rt,task,Mean RT for BY trials,0.54,ICC,23,38,"Jones, Sponheim and McDonald (2010)",condition,raw,rt,1,128
 dot_pattern_expectancy.dprime,task,Difference between hit rate in AX trials and false alarm rate on BX trials,0.8,ICC,23,38,"Jones, Sponheim and McDonald (2010)",difference,raw,,1,128
