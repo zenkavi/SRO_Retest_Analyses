@@ -100,7 +100,7 @@ dot_pattern_expectancy.AY.BY_EZ_thresh,task,Difference in EZ ddm threshold param
 dot_pattern_expectancy.AY.BY_hddm_drift,task,Difference in hddm drift rate parameter between AY and BY trials,proactive control,,proactive control,difference,hddm,drift rate,1,128,,
 dot_pattern_expectancy.AY.BY_rt,task,Difference in median response times between AY and BY trials,proactive control,,speed,difference,raw,rt,1,128,,
 dot_pattern_expectancy.bias,task,Negative average of hit rate in AX and false alarm rate in BX,reactive control,,,condition,raw,other,1,128,,x
-dot_pattern_expectancy.BX_error,task,,,,,condition,raw,accuracy,1,128,,
+dot_pattern_expectancy.BX_errors,task,,,,,condition,raw,accuracy,1,128,,
 dot_pattern_expectancy.BX_rt,task,,,,,condition,raw,rt,1,128,,
 dot_pattern_expectancy.BX.BY_acc,task,Difference in mean accuracy between BX and BY trials,reactive control,,reactive control,difference,raw,accuracy,1,128,,
 dot_pattern_expectancy.BX.BY_EZ_drift,task,Difference in EZ ddm drift rate parameter between BX and BY trials,reactive control,,reactive control,difference,EZ,drift rate,1,128,,
@@ -108,7 +108,7 @@ dot_pattern_expectancy.BX.BY_EZ_non_decision,task,Difference in EZ ddm non-decis
 dot_pattern_expectancy.BX.BY_EZ_thresh,task,Difference in EZ ddm threshold parameter between BX and BY trials,reactive control,,speed,difference,EZ,threshold,1,128,,
 dot_pattern_expectancy.BX.BY_hddm_drift,task,Difference in hddm drift rate parameter between BX and BY trials,reactive control,,reactive control,difference,hddm,drift rate,1,128,,
 dot_pattern_expectancy.BX.BY_rt,task,Difference in median response times between BX and BY trials,reactive control,,speed,difference,raw,rt,1,128,,
-dot_pattern_expectancy.BY_error,task,,,,,condition,raw,accuracy,1,128,,
+dot_pattern_expectancy.BY_errors,task,,,,,condition,raw,accuracy,1,128,,
 dot_pattern_expectancy.BY_rt,task,,,,,condition,raw,rt,1,128,,
 dot_pattern_expectancy.dprime,task,Difference between hit rate in AX trials and false alarm rate on BX trials,reactive control,,set shifting/response conflict,difference,raw,other,1,128,,x
 dot_pattern_expectancy.EZ_drift,task,EZ ddm drift rate parameter for all trials (excluding no response trials),response conflict,,set shifting/response conflict,overall,EZ,drift rate,1,128,,x

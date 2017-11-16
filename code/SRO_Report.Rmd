@@ -407,7 +407,7 @@ boot_df = boot_df %>%
 
 boot_df = boot_df[boot_df$dv %in% retest_report_vars,]
 
-retest_report_vars[which(retest_report_vars %in% boot_df$dv==FALSE)]
+# retest_report_vars[which(retest_report_vars %in% boot_df$dv==FALSE)]
 
 boot_df %>%
   group_by(dv) %>%
@@ -453,6 +453,8 @@ boot_df %>%
   theme_bw()+
   theme(legend.title = element_blank())+
   xlab("ICC")
+
+ggsave('Hist_Boot_Rel.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 6, height = 4, units = "in", limitsize = FALSE, dpi = 72)
 ```
 
 
@@ -460,7 +462,6 @@ boot_df %>%
 measure_labels <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/measure_labels.csv')
 measure_labels = measure_labels %>% select(-measure_description,-measure_type,-measure_type_Ian,-measure_type_Russ,-notes,-Patrick_hates)
 ```
-
 
 Checking DDM results in the bootstrapped estimates. Variables using all trials are significantly more reliable compared to difference scores. Raw measures don't differ from DDM parameters. Which DDM is better depends on whether all trials are used.
 
@@ -503,6 +504,7 @@ ggsave('Bootstrap_DDM_Comp.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dr
 ```
 
 ```{r warning=FALSE, message=FALSE}
+# Df wrangling for plotting
 tmp = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   left_join(boot_df[,c("dv", "icc", "spearman")], by = 'dv') 
@@ -568,13 +570,13 @@ ggplot(aes(y = var, x = icc)) +
   
 p6 <- arrangeGrob(p4, p5,nrow=1)
 
-ggsave('Bootstrap_Var_Plot.jpg', plot = p6, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 36, height = 72, units = "in", limitsize = FALSE, dpi=50)
+ggsave('Bootstrap_Raw_Var_Plot.jpg', plot = p6, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 36, height = 72, units = "in", limitsize = FALSE, dpi=50)
 
 rm(p4, p5, p6)
 ```
 
 ```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/Bootstrap_Var_Plot.jpg')
+knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/Bootstrap_Raw_Var_Plot.jpg')
 ```
 
 ```{r message=FALSE, warning=FALSE}
@@ -620,7 +622,7 @@ rm(p4_t, p5_t, p6_t)
 ### Histograms of reliability metrics (point estimates)
 
 ```{r warning=FALSE, message=FALSE}
-rel_df %>%
+boot_df %>%
   select(dv, task, spearman, pearson, icc) %>%
   gather(key, value, -dv, -task) %>%
   ggplot(aes(value, fill=task))+
@@ -630,6 +632,18 @@ rel_df %>%
   theme(legend.position = 'bottom',
         legend.title = element_blank())+
   xlab("")
+
+
+# rel_df %>%
+#   select(dv, task, spearman, pearson, icc) %>%
+#   gather(key, value, -dv, -task) %>%
+#   ggplot(aes(value, fill=task))+
+#   geom_histogram(alpha = 0.5, position = 'identity')+
+#   facet_wrap(~key)+
+#   theme_bw()+
+#   theme(legend.position = 'bottom',
+#         legend.title = element_blank())+
+#   xlab("")
 
 ggsave('Rel_Histograms.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 12, height = 4, units = "in", limitsize = FALSE)
 ```
