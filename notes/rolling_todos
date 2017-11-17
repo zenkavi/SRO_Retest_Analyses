@@ -1,19 +1,15 @@
+HDDM REFITS
+REMAINING DDM ANALYSES: sample size, turning h off
 
-- write python function for icc's
+turn retest report to latex using papaja
 
-- make retest report (papaja)
-
-SURVEY LABELINGGGGG
+SURVEY LABELING
 
 How much do hddm parameters change when fitting to whole vs partial sample
 
 How to reliabilities change w sample size (refit from 50 to 150) both for EZ and hddm (gives a prescriptive recommendation on which method to use depending on sample size)
 
 Turn off h of ddm and see if it makes a difference
-
-Bayesian ways of test retest (esp for HDDM) -> contact MH
-
-What is kl divergence
 
 Order effects?
 
@@ -29,12 +25,6 @@ omega sq: ?? df correction
 
 difficult to compare sem's across measures because it's unit dependant
 
-for each task completion time difference (instead of individuals)
-
-ADD AGE AND SEX SANITY CHCEK FOR THE RETEST DATA
-DO RETEST ON ALL DEMOGRAPHICS
-LEARNING EFFECTS FOR TASKS
 DOES RELIABILITY FOR A TASK CHANGE DEPENDING ON HOW MANY TRIALS YOU USE TO ESTIMATE IT?
 
-Can you use the test retest data to find who is amenable to an intervention?
-Looking at the extent of change in the demographics etc and what that can be predicted by?
+change retest data loading to pkl

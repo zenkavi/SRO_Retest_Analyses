@@ -633,13 +633,15 @@ boot_df %>%
         legend.title = element_blank())+
   xlab("")
 
-ggsave('Rel_Histograms.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 12, height = 4, units = "in", limitsize = FALSE)
+ggsave('Booth_Rel_Histograms.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 12, height = 4, units = "in", limitsize = FALSE)
 ```
 
-### Relationship between reliability metrics
+### Relationship between reliability metrics (point estimates)
+
+Bootstrapped version is essentially the same.
 
 ```{r warning=FALSE, message=FALSE}
-p1 = boot_df %>%
+p1 = rel_df %>%
   ggplot(aes(spearman, icc, col=task))+
   geom_point()+
   theme_bw()+
@@ -647,7 +649,7 @@ p1 = boot_df %>%
         legend.position = "none")+
   geom_abline(intercept = 0, slope=1)
 
-p2 = boot_df %>%
+p2 = rel_df %>%
   ggplot(aes(pearson, icc, col=task))+
   geom_point()+
   theme_bw()+
@@ -655,7 +657,7 @@ p2 = boot_df %>%
         legend.position = "none")+
   geom_abline(intercept = 0, slope=1)
 
-p3 = boot_df %>%
+p3 = rel_df %>%
   ggplot(aes(pearson, spearman, col=task))+
   geom_point()+
   theme_bw()+
@@ -714,19 +716,22 @@ Does number of items in a task have a significant effect on the average ICC of (
 tmp = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(task == 'task') %>%
-  left_join(rel_df[,c("dv", "spearman","icc")], by='dv') %>%
+  # left_join(rel_df[,c("dv", "spearman","icc")], by='dv') %>%
+  left_join(boot_df[,c("dv", "spearman","icc")], by='dv') %>%
   filter(overall_difference != 'difference' & raw_fit %in% c('EZ', 'hddm') == FALSE)%>%
   separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
   select(-extra_1, -extra_2)
 
-summary(lm(icc ~ num_all_trials, data = tmp))
+# summary(lm(icc ~ num_all_trials, data = tmp))
+summary(lmer(icc ~ num_all_trials + (1|dv), data = tmp))
 ```
 
 ```{r warning=FALSE, message=FALSE}
 measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(task == 'task') %>%
-  left_join(rel_df[,c("dv", "spearman","icc")], by='dv') %>%
+  # left_join(rel_df[,c("dv", "spearman","icc")], by='dv') %>%
+  left_join(boot_df[,c("dv", "spearman","icc")], by='dv') %>%
   filter(overall_difference != 'difference' & raw_fit %in% c('EZ', 'hddm') == FALSE)%>%
   separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
   select(-extra_1, -extra_2) %>%
@@ -738,89 +743,9 @@ measure_labels %>%
   ylab("ICC")
 ```
 
-## Reliability by variable types
-
-In this section we label the measures based on the procedure behind the creation of a variable. This moves further away from the literature and thinking about our measures in terms of specific tasks, surveys or cognitive processes and is a more novel way of presenting our data. 
-
-Potentially prescriptive recommendations coming out of this section would intend to build intuitions about different treatments to data that have higher reliabilities especially when researchers plan on making their own tasks and collecting different kinds of measures.
- 
-### Tasks
-
-#### DDM parameters
-
-```{r warning=FALSE, message=FALSE}
-tmp = measure_labels %>%
-  mutate(dv = as.character(dv)) %>%
-  filter(task == 'task') %>%
-  left_join(rel_df[,c("dv", "spearman","icc")], by='dv') %>%
-  filter(ddm_task == 1) %>%
-  separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.', remove=FALSE) %>%
-  select(-extra_1, -extra_2) %>%
-  drop_na()
-```
-
-In addition to raw response time and accuracy measures we get from certain tasks we have also chosen to fit drift diffusion models to them. The tasks we have chosen to fit these models are: `unique(tmp$task_name)`. This list does not include all cognitive tasks in the battery.
-
-Table of median reliabilities for the two kinds of DDM models' (hddm and EZ) parameters compared to raw response times and accuracies depending on whether they were fit to all data or whether they are contrast of two conditions sorted by mean ICC and mean Spearman's $\rho$.
-
-- All parameters that were fit to all trials compared to contrasts have higher relialibilities.   
-- Raw variables are not the variables with highest ICC's overall supporting the idea of using these parameters as individual difference variables that are more interpretable. 
-
-```{r warning=FALSE, message=FALSE}
-tmp %>%
-  group_by(overall_difference, raw_fit, rt_acc) %>%
-  summarise(median_icc = median(icc),
-            median_spearman = median(spearman),
-            n_vars = n()) %>%
-  arrange(-median_icc, -median_spearman) %>%
-  datatable() %>%
-  formatRound(columns=c('median_spearman', 'median_icc'), digits=3)
-```
-
-Plot the distributions of different types of variables
-
-```{r warning=FALSE, message=FALSE}
-measure_labels %>%
-  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
-  mutate(task_group = factor(task_group, levels = task_group[order(task)])) %>%
-  filter(task == "task") %>%
-  select(-var, -task) %>%
-  left_join(rel_df[,c("dv", "icc")], by="dv")%>%
-  na.omit() %>%
-  filter(overall_difference!='condition',
-         raw_fit != 'fit',
-         rt_acc != 'other') %>%
-  ggplot(aes(x=factor(raw_fit, levels = c("raw", "EZ", "hddm"), labels=c("Raw", "EZ-diffusion", "Hierarchical diffusion")),y=icc,fill=rt_acc))+
-  geom_boxplot(position = position_dodge(width=0.75))+
-  facet_wrap(~factor(overall_difference, levels=c("overall", "difference"), labels=c("Overall", "Difference")))+
-  theme_bw()+
-  xlab("")+
-  ylab("ICC")+
-  theme(legend.title = element_blank())
-
-ggsave('DDM_comparisons.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 12, height = 4, units = "in", limitsize = FALSE)
-```
-
-Are these differences meaningful?
-
-Reliabilities for difference variables is lower.
-
-```{r message=FALSE, warning=FALSE}
-tmp = measure_labels %>%
-  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
-  mutate(task_group = factor(task_group, levels = task_group[order(task)])) %>%
-  filter(task == "task") %>%
-  select(-var, -task) %>%
-  left_join(rel_df[,c("dv", "icc")], by="dv")%>%
-  na.omit() %>%
-  filter(overall_difference!='condition',
-         raw_fit != 'fit',
-         rt_acc != 'other')
-
-summary(lm(icc ~ overall_difference*raw_fit,tmp))
-```
-
 ## Completion times
+
+### Subject level
 
 Do people differ in how much their scores change depending on how many days it has been since they completed the initial battery?  
 
@@ -854,7 +779,7 @@ t1_2_difference = merge(t1_2_difference, comp_dates[,c('sub_id', 'days_btw')], b
 rm(test_comp_date, retest_comp_date, comp_dates)
 ```
 
-The effect of number of days in between in the full model where the difference scores are regressed on a fixed effect for measure and days between the two scores and random intercepts for each subject (*Should this model include the interaction between the fixed effects?*). Since there are over 300 measures the output of the full model is not presented here. Instead below are the coefficient for the fixed effect of days between completion times and its t value.
+The effect of number of days in between in the full model where the difference scores are regressed on a fixed effect for measure and days between the two scores and random intercepts for each subject (*Should this model include the interaction between the fixed effects?*). Since there are over 400 measures the output of the full model is not presented here. Instead below are the coefficient for the fixed effect of days between completion times and its t value.
 
 ```{r}
 mod = lmer(difference ~ dv + days_btw + (1|sub_id), data = t1_2_difference)
@@ -887,6 +812,66 @@ summary(lm(mean_diff ~ days_btw, data=tmp))
 
 ```{r echo=FALSE}
 rm(tmp)
+```
+
+### Task level
+
+For each variable does the average difference between two time points vary by the average number of days between the two time points? No. The slopes of these lines or the interaction is not significant.
+
+```{r warning=FALSE, message=FALSE}
+t1_2_difference <- t1_2_difference %>%
+  separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
+  select(-extra_1, -extra_2) %>% 
+  mutate(task = ifelse(grepl("survey",dv), "survey","task"),
+           task = ifelse(grepl("holt",dv), "task", task))
+
+# summary(lmer(difference ~ days_btw + (task_name|sub_id), t1_2_difference))
+
+t1_2_difference %>%
+  mutate(task = ifelse(grepl("survey",dv), "survey","task"),
+           task = ifelse(grepl("holt",dv), "task", task)) %>%
+  group_by(dv) %>%
+  summarise(mean_diff = mean(difference),
+            mean_days_btw = mean(days_btw),
+            task = unique(task)) %>%
+  ggplot(aes(mean_days_btw, mean_diff, color=task))+
+  geom_point()+
+  theme_bw()+
+  geom_smooth(method="lm")+
+  xlab("Average days between completion")+
+  ylab("Average difference between time points")+
+  theme(legend.title = element_blank())
+```
+
+```{r}
+tmp = t1_2_difference %>%
+  group_by(dv) %>%
+  summarise(mean_diff = mean(difference),
+            mean_days_btw = mean(days_btw),
+            task = unique(task))
+
+summary(lm(mean_diff ~ mean_days_btw*task, tmp))
+```
+
+## Learning effects
+
+Is the t2 score higher for task variables? Plotting the average difference between time points (for all subjects) for each dependent variable coloring by task. More positive on the y-axis means more improvement. Didn't want to summarize it at task level because not all measures might be things we'd expect learning effects on.
+
+It's hard to detect any meaningful global changes/improvements from this graph. It seems that for each task there might be some variables that have improved at t2 but whether these are menaingful learning effects should be determined based on the variable.
+
+```{r}
+t1_2_difference %>%
+  filter(task == "task") %>%
+  group_by(dv) %>%
+  summarise(mean_diff = mean(difference),
+            task_name = unique(task_name)) %>%
+  ggplot(aes(dv,mean_diff, color=task_name))+
+  geom_point()+
+  theme_bw()+
+  theme(legend.position = "none",
+        axis.text.x = element_blank())+
+  xlab("Dependent variable")+
+  ylab("Average difference between time points")
 ```
 
 ## Variance breakdown
