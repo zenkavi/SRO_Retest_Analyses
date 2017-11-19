@@ -1,15 +1,8 @@
 HDDM REFITS
-REMAINING DDM ANALYSES: sample size, turning h off
 
 turn retest report to latex using papaja
 
 SURVEY LABELING
-
-How much do hddm parameters change when fitting to whole vs partial sample
-
-How to reliabilities change w sample size (refit from 50 to 150) both for EZ and hddm (gives a prescriptive recommendation on which method to use depending on sample size)
-
-Turn off h of ddm and see if it makes a difference
 
 Order effects?
 
@@ -24,7 +17,5 @@ partial eta sq: SStime+SSerror/SStotal
 omega sq: ?? df correction
 
 difficult to compare sem's across measures because it's unit dependant
-
-DOES RELIABILITY FOR A TASK CHANGE DEPENDING ON HOW MANY TRIALS YOU USE TO ESTIMATE IT?
 
 change retest data loading to pkl

@@ -345,14 +345,15 @@ demog_rel_df %>%
 rm(test_demog, retest_demog, demog_rel_df, numeric_cols)
 ```
 
-## Reliability metrics 
-  
+## Relationship between reliability metrics (point estimates)
+
 Based on [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9d379b79de4f767740.pdf) ICC(3,k) does not take in to account within subject differences between two time points (i.e. the fixed effect of time/systematic error). Thus, it is well approximated by Pearson's r and subject to similar criticisms. [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9d379b79de4f767740.pdf) suggests reporting at least this systematic error effect size if one chooses to report with ICC(3,k). Based on his conclusions here I report:  
 - ICC(3,k): As Dave clarified this ranges from 1 to -1/(number of repeated measures -1) so in our case this range would be [-1, 1]; larger values would mean that the two scores of a subject for a given measure are more similar to each other than they are to scores of other people  
 - partial $\eta^2$ for time ($SS_{time}/SS_{within}$): effect size of time   
 - SEM ($\sqrt(MS_{error})$): standard error of measurement; the smaller the better
 
 ```{r}
+#Create df of point estimate reliabilities
 numeric_cols = c()
 
 for(i in 1:length(names(test_data))){
@@ -393,6 +394,46 @@ rel_df = rel_df %>%
 # row.names(rel_df) = NULL
 ```
 
+Though we are primarily reporting ICC's as our metric of reliability the results don't change depending on the metric chosen. Here we plot point estimates of three different reliability metrics against each other (ICC, Pearson, Spearman). The bootstrapped version is essentially the same but the plots are busier due to more datapoints.
+
+```{r warning=FALSE, message=FALSE}
+p1 = rel_df %>%
+  ggplot(aes(spearman, icc, col=task))+
+  geom_point()+
+  theme_bw()+
+  theme(legend.title = element_blank(),
+        legend.position = "none")+
+  geom_abline(intercept = 0, slope=1)
+
+p2 = rel_df %>%
+  ggplot(aes(pearson, icc, col=task))+
+  geom_point()+
+  theme_bw()+
+  theme(legend.title = element_blank(),
+        legend.position = "none")+
+  geom_abline(intercept = 0, slope=1)
+
+p3 = rel_df %>%
+  ggplot(aes(pearson, spearman, col=task))+
+  geom_point()+
+  theme_bw()+
+  theme(legend.title = element_blank(),
+        legend.position = "none")+
+  geom_abline(intercept = 0, slope=1)
+
+grid.arrange(p1, p2, p3, nrow=1)
+
+ggsave('Metric_Scatterplots.jpg', plot = grid.arrange(p1, p2, p3, nrow=1), device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 12, height = 4, units = "in", limitsize = FALSE)
+```
+
+```{r echo=FALSE}
+rm(p1,p2,p3)
+```
+
+Note: Some variables have <0 ICC's. This would be the case if the $MS_{error}$>$MS_{between}$. Data for these variables have no relationship between the two time points.
+
+## Summary of all measure reliabilities
+
 Summarized bootstrapped reliabilities
 
 ```{r message=FALSE, warning=FALSE}
@@ -421,86 +462,9 @@ boot_df %>%
   formatRound(columns=c('icc_median', 'icc_2.5', 'icc_97.5', 'spearman_median', 'spearman_2.5', 'spearman_97.5'), digits=3)
 ```
 
-Comparison of survey measures to cognitive task measures in the bootstrapped results. Multilevel model with random intercepts for each measure and fixed effect of survey versus cognitive measure. 
-
-```{r}
-boot_df = boot_df %>%
-    mutate(task = ifelse(grepl("survey",dv), "survey","task"),
-           task = ifelse(grepl("holt",dv), "task", task))
-
-boot_df %>%
-  group_by(task) %>%
-  summarise(icc_median = quantile(icc, probs = 0.5),
-            icc_2.5 = quantile(icc, probs = 0.025),
-            icc_97.5 = quantile(icc, probs = 0.975),
-            spearman_median = quantile(spearman, probs = 0.5),
-            spearman_2.5 = quantile(spearman, probs = 0.025),
-            spearman_97.5 = quantile(spearman, probs = 0.975),
-            num_vars = n()/1000) %>%
-  datatable() %>%
-  formatRound(columns=c('icc_median', 'icc_2.5', 'icc_97.5', 'spearman_median', 'spearman_2.5', 'spearman_97.5'), digits=3)
-```
-
-
-```{r}
-summary(lmerTest::lmer(icc ~  task + (1|dv), boot_df))
-```
-
-```{r warning=FALSE, message=FALSE}
-boot_df %>%
-  ggplot(aes(icc, fill = task))+
-  geom_histogram(alpha=0.5, position='identity')+
-  theme_bw()+
-  theme(legend.title = element_blank())+
-  xlab("ICC")
-
-ggsave('Hist_Boot_Rel.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 6, height = 4, units = "in", limitsize = FALSE, dpi = 72)
-```
-
-
 ```{r echo=FALSE}
 measure_labels <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/measure_labels.csv')
 measure_labels = measure_labels %>% select(-measure_description,-measure_type,-measure_type_Ian,-measure_type_Russ,-notes,-Patrick_hates)
-```
-
-Checking DDM results in the bootstrapped estimates. Variables using all trials are significantly more reliable compared to difference scores. Raw measures don't differ from DDM parameters. Which DDM is better depends on whether all trials are used.
-
-```{r warning=FALSE, message=FALSE}
-tmp = measure_labels %>%
-  mutate(dv = as.character(dv)) %>%
-  filter(ddm_task == 1, 
-         overall_difference != "condition") %>%
-  drop_na() %>%
-  left_join(boot_df[,c("dv", "icc", "spearman")], by = 'dv')
-
-tmp %>%
-  group_by(overall_difference, raw_fit, rt_acc) %>%
-  summarise(icc_median = quantile(icc, probs = 0.5),
-            icc_2.5 = quantile(icc, probs = 0.025),
-            icc_97.5 = quantile(icc, probs = 0.975),
-            spearman_median = quantile(spearman, probs = 0.5),
-            spearman_2.5 = quantile(spearman, probs = 0.025),
-            spearman_97.5 = quantile(spearman, probs = 0.975),
-            num_vars = n()/1000) %>%
-  datatable() %>%
-  formatRound(columns=c('icc_median', 'icc_2.5', 'icc_97.5', 'spearman_median', 'spearman_2.5', 'spearman_97.5'), digits=3)
-```
-
-```{r}
-summary(lmerTest::lmer(icc ~ overall_difference*raw_fit + (1|dv) ,tmp))
-```
-
-```{r}
-tmp %>%
-  ggplot(aes(factor(raw_fit, levels = c("raw", "EZ", "hddm"), labels=c("Raw", "EZ-diffusion", "Hierarchical diffusion")), icc, fill=factor(rt_acc, levels = c("rt","accuracy","other", "drift rate", "threshold", "non-decision"), labels=c("Response Time", "Accuracy", "Other","Drift Rate", "Threshold", "Non-decision"))))+
-  geom_boxplot()+
-  facet_wrap(~factor(overall_difference, levels=c("overall", "difference"), labels=c("Overall", "Difference")))+
-  theme_bw()+
-  ylab("ICC")+
-  xlab("")+
-  theme(legend.title = element_blank())
-
-ggsave('Bootstrap_DDM_Comp.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 24, height = 6, units = "in", limitsize = FALSE)
 ```
 
 ```{r warning=FALSE, message=FALSE}
@@ -619,62 +583,200 @@ knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Anal
 rm(p4_t, p5_t, p6_t)
 ```
 
-### Histograms of reliability metrics
+## Survey vs Tasks
+
+Comparison of survey measures to cognitive task measures in the bootstrapped results. Multilevel model with random intercepts for each measure and fixed effect of survey versus cognitive measure. 
+
+```{r}
+boot_df = boot_df %>%
+    mutate(task = ifelse(grepl("survey",dv), "survey","task"),
+           task = ifelse(grepl("holt",dv), "task", task))
+
+boot_df %>%
+  group_by(task) %>%
+  summarise(icc_median = quantile(icc, probs = 0.5),
+            icc_2.5 = quantile(icc, probs = 0.025),
+            icc_97.5 = quantile(icc, probs = 0.975),
+            spearman_median = quantile(spearman, probs = 0.5),
+            spearman_2.5 = quantile(spearman, probs = 0.025),
+            spearman_97.5 = quantile(spearman, probs = 0.975),
+            num_vars = n()/1000) %>%
+  datatable() %>%
+  formatRound(columns=c('icc_median', 'icc_2.5', 'icc_97.5', 'spearman_median', 'spearman_2.5', 'spearman_97.5'), digits=3)
+```
+
+
+```{r}
+summary(lmerTest::lmer(icc ~  task + (1|dv), boot_df))
+```
 
 ```{r warning=FALSE, message=FALSE}
 boot_df %>%
-  select(dv, task, spearman, pearson, icc) %>%
-  gather(key, value, -dv, -task) %>%
-  ggplot(aes(value, fill=task))+
-  geom_histogram(alpha = 0.5, position = 'identity')+
-  facet_wrap(~key)+
+  ggplot(aes(icc, fill = task))+
+  geom_histogram(alpha=0.5, position='identity')+
   theme_bw()+
-  theme(legend.position = 'bottom',
-        legend.title = element_blank())+
-  xlab("")
+  theme(legend.title = element_blank())+
+  xlab("ICC")
 
-ggsave('Booth_Rel_Histograms.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 12, height = 4, units = "in", limitsize = FALSE)
+ggsave('Hist_Boot_Rel.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 6, height = 4, units = "in", limitsize = FALSE, dpi = 72)
 ```
 
-### Relationship between reliability metrics (point estimates)
+### Variance breakdown
 
-Bootstrapped version is essentially the same.
+The quantiative explanation for the difference in reliability estimates between surveys and tasks, as recently detailed by Hedge et al. (2017), lies in the difference in sources of variance between these measures. This is because reliability is estimated as a ratio of these sources variance to each other. Specifically, the ICC is calculated as the ratio of variance between subjects variance to all sources of variance. Thus, measures with high between subjects variance would have high test-retest reliability. Intuitively, measures with high between subjects variance are also better suited for individual difference analyses as they would capture the differences between the subjects in a sample.
+
+Here we first plot the percentage of variance explained by the three sources of variance for the point estimates of measure reliabilities. The plot only includes raw measures (no DDM parameters) and the measures are ranked by percentage of between subject variability for each task/survey (i.e. the best to worst individual difference measure for each task/survey). Then we compare statistically whether the percentage of variance explained by these sources differ between tasks and surveys.
 
 ```{r warning=FALSE, message=FALSE}
-p1 = rel_df %>%
-  ggplot(aes(spearman, icc, col=task))+
-  geom_point()+
-  theme_bw()+
-  theme(legend.title = element_blank(),
-        legend.position = "none")+
-  geom_abline(intercept = 0, slope=1)
+tmp = rel_df %>%
+  mutate(var_subs_pct = var_subs/(var_subs+var_ind+var_resid)*100,
+         var_ind_pct = var_ind/(var_subs+var_ind+var_resid)*100, 
+         var_resid_pct = var_resid/(var_subs+var_ind+var_resid)*100) %>%
+  select(dv, task, var_subs_pct, var_ind_pct, var_resid_pct) %>%
+  mutate(dv = factor(dv, levels = dv[order(task)])) %>%
+  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
+  mutate(task_group = factor(task_group, levels = task_group[order(task)])) %>%
+  arrange(task_group, var_subs_pct) %>%
+  mutate(rank = row_number()) %>%
+  arrange(task, task_group, rank) %>%
+  gather(key, value, -dv, -task_group, -var, -task, -rank) %>%
+  ungroup()%>%
+  mutate(task_group = gsub("_", " ", task_group),
+         var = gsub("_", " ", var)) %>%
+  mutate(task_group = ifelse(task_group == "psychological refractory period two choices", "psychological refractory period", ifelse(task_group == "angling risk task always sunny", "angling risk task",task_group))) %>%
+  mutate(task_group = gsub("survey", "", task_group)) %>%
+  filter(task=="task",
+         !grepl("EZ|hddm", dv))%>%
+  arrange(task_group, rank)
+labels = tmp %>%
+  distinct(dv, .keep_all=T)
 
-p2 = rel_df %>%
-  ggplot(aes(pearson, icc, col=task))+
-  geom_point()+
-  theme_bw()+
-  theme(legend.title = element_blank(),
-        legend.position = "none")+
-  geom_abline(intercept = 0, slope=1)
+p1 <- tmp %>%
+  ggplot(aes(x=factor(rank), y=value, fill=factor(key, levels = c("var_resid_pct", "var_ind_pct", "var_subs_pct"))))+
+  geom_bar(stat='identity', alpha = 0.75, color='#00BFC4')+
+  scale_x_discrete(breaks = labels$rank,
+                       labels = labels$var)+
+  coord_flip()+
+  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
+  theme(panel.spacing = unit(0.5, "lines"), 
+        strip.placement = "outside",
+        strip.text.y = element_text(angle=180),
+        panel.background = element_rect(fill = NA),
+        panel.grid.major = element_line(colour = "grey85"),
+        legend.position = 'bottom')+
+  theme(legend.title = element_blank())+
+  scale_fill_manual(breaks = c("var_subs_pct", "var_ind_pct", "var_resid_pct"),
+                      labels = c("Variance between individuals",
+                                 "Variance between sessions",
+                                 "Error variance"),
+                  values=c("grey65", "grey45", "grey25"))+
+  ylab("")+
+  xlab("")
 
-p3 = rel_df %>%
-  ggplot(aes(pearson, spearman, col=task))+
-  geom_point()+
-  theme_bw()+
-  theme(legend.title = element_blank(),
-        legend.position = "none")+
-  geom_abline(intercept = 0, slope=1)
+tmp = rel_df %>%
+  mutate(var_subs_pct = var_subs/(var_subs+var_ind+var_resid)*100,
+         var_ind_pct = var_ind/(var_subs+var_ind+var_resid)*100, 
+         var_resid_pct = var_resid/(var_subs+var_ind+var_resid)*100) %>%
+  select(dv, task, var_subs_pct, var_ind_pct, var_resid_pct) %>%
+  mutate(dv = factor(dv, levels = dv[order(task)])) %>%
+  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
+  mutate(task_group = factor(task_group, levels = task_group[order(task)])) %>%
+  arrange(task_group, var_subs_pct) %>%
+  mutate(rank = row_number()) %>%
+  arrange(task, task_group, rank) %>%
+  gather(key, value, -dv, -task_group, -var, -task, -rank) %>%
+  ungroup()%>%
+  mutate(task_group = gsub("_", " ", task_group),
+         var = gsub("_", " ", var)) %>%
+  mutate(task_group = ifelse(task_group == "psychological refractory period two choices", "psychological refractory period", ifelse(task_group == "angling risk task always sunny", "angling risk task",task_group))) %>%
+  mutate(task_group = gsub("survey", "", task_group)) %>%
+  filter(task=="survey")%>%
+  arrange(task_group, rank)
+labels = tmp %>%
+  distinct(dv, .keep_all=T)
 
-grid.arrange(p1, p2, p3, nrow=1)
+p2 <- tmp %>%
+  ggplot(aes(x=factor(rank), y=value, fill=factor(key, levels = c("var_resid_pct", "var_ind_pct", "var_subs_pct"))))+
+  geom_bar(stat='identity', alpha = 0.75)+
+  geom_bar(stat='identity', color='#F8766D', show.legend=FALSE)+
+  scale_x_discrete(breaks = labels$rank,
+                       labels = labels$var)+
+  coord_flip()+
+  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
+  theme(panel.spacing = unit(0.5, "lines"), 
+        strip.placement = "outside",
+        strip.text.y = element_text(angle=180),
+        panel.background = element_rect(fill = NA),
+        panel.grid.major = element_line(colour = "grey85"),
+        legend.position = 'bottom')+
+  theme(legend.title = element_blank())+
+  scale_fill_manual(breaks = c("var_subs_pct", "var_ind_pct", "var_resid_pct"),
+                      labels = c("Variance between individuals",
+                                 "Variance between sessions",
+                                 "Error variance"),
+                  values=c("grey65", "grey45", "grey25"))+
+  ylab("")+
+  xlab("")
 
-ggsave('Metric_Scatterplots.jpg', plot = grid.arrange(p1, p2, p3, nrow=1), device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 12, height = 4, units = "in", limitsize = FALSE)
+mylegend<-g_legend(p2)
+
+p3 <- arrangeGrob(arrangeGrob(p1 +theme(legend.position="none"),
+                         p2 + theme(legend.position="none"),
+                         nrow=1),
+             mylegend, nrow=2,heights=c(10, 1))
+
+ggsave('Variance_Breakdown_Plot.jpg', plot = p3, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 24, height = 20, units = "in")
+rm(tmp, labels)
 ```
 
-```{r echo=FALSE}
-rm(p1,p2,p3)
+```{r echo=FALSE, out.width='100%'}
+knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/Variance_Breakdown_Plot.jpg')
 ```
 
-Note: Some variables have <0 ICC's. This would be the case if the $MS_{error}$>$MS_{between}$. Data for these variables have no relationship between the two time points.
+Comparing types of variance for survey vs task measures: Survey measures have higher between subject variability  
+
+Note: This analysis includes DDM variables too.
+
+```{r}
+tmp = boot_df %>%
+  mutate(var_subs_pct = var_subs/(var_subs+var_ind+var_resid)*100,
+         var_ind_pct = var_ind/(var_subs+var_ind+var_resid)*100, 
+         var_resid_pct = var_resid/(var_subs+var_ind+var_resid)*100) %>%
+  select(dv, task, var_subs_pct, var_ind_pct, var_resid_pct) %>%
+  gather(key, value, -dv, -task) 
+
+summary(lmer(value~key*task+(1|dv),tmp))
+```
+
+```{r}
+aggregate(value ~task+key, FUN=mean, data=tmp)
+
+tmp%>%
+  group_by(task, key) %>%
+  summarise(median = median(value),
+            sd = sd(value))
+```
+
+Summarizing for clearer presentation. This grap is currently using the bootstrapped reliabilities and is therefore messier than if just using the point estimates.
+
+```{r}
+tmp %>%
+  group_by(task, key) %>%
+  ggplot(aes(factor(task, levels=c("task","survey"), labels=c("Task", "Survey")), value, fill=key, color=task))+
+  geom_boxplot()+
+  theme_bw()+
+  theme(legend.title = element_blank())+
+  scale_fill_manual(breaks = c("var_subs_pct", "var_ind_pct", "var_resid_pct"),
+                    labels = c("Variance between individuals",
+                               "Variance between sessions",
+                               "Error variance"),
+                    values=c("grey65", "grey45", "grey25"))+
+  scale_color_discrete(guide = FALSE)+
+  xlab("")+
+  ylab("Percent")
+
+ggsave('Variance_Breakdown_Plot_Summary.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 10, height = 5, units = "in")
+```
 
 ## Task Reliabilities
 
@@ -710,6 +812,8 @@ tmp %>%
                         'max_spearman', 'max_icc'), digits=3)
 ```
 
+### Number of trials
+
 Does number of items in a task have a significant effect on the average ICC of (mostly) raw measures for all trials from a task? No. (no effect on Spearman either)
 
 ```{r warning=FALSE, message=FALSE}
@@ -741,6 +845,199 @@ measure_labels %>%
   theme_bw()+
   xlab("Number of trials")+
   ylab("ICC")
+```
+
+#### Trial number dependence intrameasure 
+
+The above analysis was looking at the effect of number of trials across tasks. But some tasks might be bad for individual difference measurement regardless of how many trials there are in them whereas for others fewer trials might be yielding a sufficiently reliable measure.
+
+For tasks for which dependent variables are estimated using many trials one can ask: Does the same measure get less reliable if fewer trials are used to estimate its reliability?
+
+This won't make sense for all tasks. For example to estimate a risk aversion parameter you need all trials for Holt and Laury. For Kirby and Bickel you have specific conditions looking at fewer trials. The Cognitive Reflection Task might be more appropriate to analyze each item seaprately. The writing task does not have trial numbers. For all others it might be interesting to investigate.
+
+That said this kind of analysis seems too in the weeds for a paper that is trying to give a global sense of the differences between self-regulation measures in their suitablity for individual difference analyses based on their stability across time. Such analyses would provide a detailed examination of how to extract the most reliable/best individual difference measure from tasks with a set of mediocre variables to begin with. So I am choosing to ignore this for now but this can be revisited.
+
+### Raw vs DDM
+
+Checking DDM results in the bootstrapped estimates. Variables using all trials are significantly more reliable compared to difference scores. Raw measures don't differ from DDM parameters. Which DDM is better depends on whether all trials are used.
+
+```{r warning=FALSE, message=FALSE}
+tmp = measure_labels %>%
+  mutate(dv = as.character(dv)) %>%
+  filter(ddm_task == 1, 
+         overall_difference != "condition") %>%
+  drop_na() %>%
+  left_join(boot_df[,c("dv", "icc", "spearman")], by = 'dv')
+
+tmp %>%
+  group_by(overall_difference, raw_fit, rt_acc) %>%
+  summarise(icc_median = quantile(icc, probs = 0.5),
+            icc_2.5 = quantile(icc, probs = 0.025),
+            icc_97.5 = quantile(icc, probs = 0.975),
+            spearman_median = quantile(spearman, probs = 0.5),
+            spearman_2.5 = quantile(spearman, probs = 0.025),
+            spearman_97.5 = quantile(spearman, probs = 0.975),
+            num_vars = n()/1000) %>%
+  datatable() %>%
+  formatRound(columns=c('icc_median', 'icc_2.5', 'icc_97.5', 'spearman_median', 'spearman_2.5', 'spearman_97.5'), digits=3)
+```
+
+```{r}
+summary(lmerTest::lmer(icc ~ overall_difference*raw_fit + (1|dv) ,tmp))
+```
+
+```{r}
+tmp %>%
+  ggplot(aes(factor(raw_fit, levels = c("raw", "EZ", "hddm"), labels=c("Raw", "EZ-diffusion", "Hierarchical diffusion")), icc, fill=factor(rt_acc, levels = c("rt","accuracy","other", "drift rate", "threshold", "non-decision"), labels=c("Response Time", "Accuracy", "Other","Drift Rate", "Threshold", "Non-decision"))))+
+  geom_boxplot()+
+  facet_wrap(~factor(overall_difference, levels=c("overall", "difference"), labels=c("Overall", "Difference")))+
+  theme_bw()+
+  ylab("ICC")+
+  xlab("")+
+  theme(legend.title = element_blank())
+
+ggsave('Bootstrap_DDM_Comp.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 24, height = 6, units = "in", limitsize = FALSE)
+```
+
+#### DDM Variance breakdown
+
+What does the variance breakdown look like for DDM variables separately?
+
+```{r warning=FALSE, message=FALSE}
+tmp = rel_df %>%
+  mutate(var_subs_pct = var_subs/(var_subs+var_ind+var_resid)*100,
+         var_ind_pct = var_ind/(var_subs+var_ind+var_resid)*100, 
+         var_resid_pct = var_resid/(var_subs+var_ind+var_resid)*100) %>%
+  select(dv, task, var_subs_pct, var_ind_pct, var_resid_pct) %>%
+  mutate(dv = factor(dv, levels = dv[order(task)])) %>%
+  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
+  mutate(task_group = factor(task_group, levels = task_group[order(task)])) %>%
+  arrange(task_group, var_subs_pct) %>%
+  mutate(rank = row_number()) %>%
+  arrange(task, task_group, rank) %>%
+  gather(key, value, -dv, -task_group, -var, -task, -rank) %>%
+  ungroup()%>%
+  mutate(task_group = gsub("_", " ", task_group),
+         var = gsub("_", " ", var)) %>%
+  mutate(task_group = ifelse(task_group == "psychological refractory period two choices", "psychological refractory period", ifelse(task_group == "angling risk task always sunny", "angling risk task",task_group))) %>%
+  mutate(task_group = gsub("survey", "", task_group)) %>%
+  filter(task=="task",
+         grepl("EZ|hddm", dv))%>%
+  arrange(task_group, rank)
+labels = tmp %>%
+  distinct(dv, .keep_all=T)
+
+p1 <- tmp %>%
+  ggplot(aes(x=factor(rank), y=value, fill=factor(key, levels = c("var_resid_pct", "var_ind_pct", "var_subs_pct"))))+
+  geom_bar(stat='identity', alpha = 0.75, color='#00BFC4')+
+  scale_x_discrete(breaks = labels$rank,
+                       labels = labels$var)+
+  coord_flip()+
+  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
+  theme(panel.spacing = unit(0.5, "lines"), 
+        strip.placement = "outside",
+        strip.text.y = element_text(angle=180),
+        panel.background = element_rect(fill = NA),
+        panel.grid.major = element_line(colour = "grey85"),
+        legend.position = 'bottom')+
+  theme(legend.title = element_blank())+
+  scale_fill_manual(breaks = c("var_subs_pct", "var_ind_pct", "var_resid_pct"),
+                      labels = c("Variance between individuals",
+                                 "Variance between sessions",
+                                 "Error variance"),
+                  values=c("grey65", "grey45", "grey25"))+
+  ylab("")+
+  xlab("")
+
+ggsave('Variance_Breakdown_Plot_DDM.jpg', plot = p1, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 12, height = 20, units = "in")
+```
+
+```{r echo=FALSE, out.width='100%'}
+knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/Variance_Breakdown_Plot_DDM.jpg')
+```
+
+Summarizing it by raw vs fit and for each parameter
+
+```{r warning=FALSE, message=FALSE}
+tmp = measure_labels %>%
+  mutate(dv = as.character(dv)) %>%
+  filter(ddm_task == 1, 
+         overall_difference != "condition") %>%
+  drop_na() %>%
+  left_join(boot_df[,c("dv", "icc", "var_subs", "var_ind", "var_resid")], by = 'dv') %>%
+  mutate(var_subs_pct = (var_subs/(var_subs+var_ind+var_resid))*100,
+         var_ind_pct= (var_ind/(var_subs+var_ind+var_resid))*100,
+         var_resid_pct = (var_resid/(var_subs+var_ind+var_resid))*100) %>%
+  select(-task, -ddm_task, -num_all_trials, -var_subs, -var_ind, -var_resid) %>%
+  gather(key, value, -dv, -overall_difference, -raw_fit, -rt_acc, -icc)
+
+tmp %>%
+  ggplot(aes(factor(raw_fit, levels = c("raw", "EZ", "hddm"), labels=c("Raw", "EZ-diffusion", "Hierarchical diffusion")), value, fill=factor(rt_acc, levels = c("rt","accuracy","other", "drift rate", "threshold", "non-decision"), labels=c("Response Time", "Accuracy", "Other","Drift Rate", "Threshold", "Non-decision"))))+
+  geom_boxplot()+
+  facet_grid(factor(key, levels = c("var_subs_pct", "var_ind_pct", "var_resid_pct"), labels=c("Variance between subjects", "Variance between individuals", "Error variance"))~factor(overall_difference, levels=c("overall", "difference"), labels=c("Overall", "Difference")))+
+  theme_bw()+
+  ylab("% of total variance")+
+  xlab("")+
+  theme(legend.title = element_blank())
+
+ggsave('Variance_Breakdown_Plot_DDM_summary.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 10, height = 8, units = "in")
+```
+
+Do these differ statistically?
+
+The plot does not suggest so but this model is giving a warning and very high t values. How else should I be checking for differences between these distributions?
+
+```{r}
+summary(lmer(value~key*overall_difference*raw_fit+(1|dv), tmp))
+```
+
+#### Change in parameter values depending on sample
+
+How much do parameter values change depending on whether the model was fit using the whole sample vs only the retest sample. Each point in these graphs is a subject's parameter estimates. There is almost no change for any of the EZ parameters (though shouldn't this have been 0?). For the HDDM parameters most of the changes are happening for drift rates but they don't appear to be systematically higher or lower.
+
+I'm not entirely sure what to make of this
+
+```{r warning=FALSE, message=FALSE}
+hddm_fullfits <- test_data_full_sample_hddm[,names(test_data_full_sample_hddm) %in% names(hddm_refits)]
+
+hddm_fullfits = hddm_fullfits %>%
+  gather(dv, value, -sub_id)
+
+hddm_refits %>%
+  gather(dv, value, -sub_id) %>%
+  left_join(hddm_fullfits, by = c("sub_id", "dv")) %>%
+  rename(fullfit = value.y, refit = value.x) %>%
+  left_join(measure_labels[,c("dv", "raw_fit", "rt_acc")], by="dv") %>%
+  filter(rt_acc %in% c("drift rate","non-decision", "threshold")) %>%
+  ggplot(aes(fullfit, refit))+
+  geom_point(aes(color=rt_acc))+
+  facet_wrap(~raw_fit)+
+  theme_bw()+
+  geom_abline(slope=1, intercept=0)+
+  xlab("Fit on full sample")+
+  ylab("Fit on retest sample")+
+  theme(legend.title = element_blank())
+```
+
+```{r message=FALSE}
+tmp = hddm_refits %>%
+  gather(dv, value, -sub_id) %>%
+  left_join(hddm_fullfits, by = c("sub_id", "dv")) %>%
+  rename(fullfit = value.y, refit = value.x) %>%
+  left_join(measure_labels[,c("dv", "raw_fit", "rt_acc")], by="dv") %>%
+  filter(rt_acc %in% c("drift rate","non-decision", "threshold"))
+```
+
+#### Parameter reliability depending on sample size
+
+```{r}
+
+```
+
+#### Is the H in HDDM important?
+
+```{r}
+
 ```
 
 ## Completion times
@@ -874,209 +1171,4 @@ t1_2_difference %>%
   ylab("Average difference between time points")
 ```
 
-## Variance breakdown
-
-```{r warning=FALSE, message=FALSE}
-tmp = rel_df %>%
-  mutate(var_subs_pct = var_subs/(var_subs+var_ind+var_resid)*100,
-         var_ind_pct = var_ind/(var_subs+var_ind+var_resid)*100, 
-         var_resid_pct = var_resid/(var_subs+var_ind+var_resid)*100) %>%
-  select(dv, task, var_subs_pct, var_ind_pct, var_resid_pct) %>%
-  # gather(key, value, -dv, -task) %>%
-  mutate(#key = factor(key, levels = c("var_subs_pct", "var_ind_pct", "var_resid_pct")),
-         dv = factor(dv, levels = dv[order(task)])) %>%
-  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
-  mutate(task_group = factor(task_group, levels = task_group[order(task)])) %>%
-  arrange(task_group, var_subs_pct) %>%
-  mutate(rank = row_number()) %>%
-  arrange(task, task_group, rank) %>%
-  gather(key, value, -dv, -task_group, -var, -task, -rank) %>%
-  ungroup()%>%
-  # separate(var, c("var"), sep="\\.",remove=TRUE,extra="drop") %>%
-  mutate(task_group = gsub("_", " ", task_group),
-         var = gsub("_", " ", var)) %>%
-         # var=gsub(".ReflogTr", "", var),
-         # var=gsub(".logTr", "", var)) %>%
-  mutate(task_group = ifelse(task_group == "psychological refractory period two choices", "psychological refractory period", ifelse(task_group == "angling risk task always sunny", "angling risk task",task_group))) %>%
-  mutate(task_group = gsub("survey", "", task_group)) %>%
-  filter(task=="task",
-         !grepl("EZ|hddm", dv))%>%
-  arrange(task_group, rank)
-labels = tmp %>%
-  distinct(dv, .keep_all=T)
-
-p1 <- tmp %>%
-  ggplot(aes(x=factor(rank), y=value, fill=factor(key, levels = c("var_resid_pct", "var_ind_pct", "var_subs_pct"))))+
-  geom_bar(stat='identity', alpha = 0.75, color='#00BFC4')+
-  scale_x_discrete(breaks = labels$rank,
-                       labels = labels$var)+
-  coord_flip()+
-  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
-  theme(panel.spacing = unit(0.5, "lines"), 
-        strip.placement = "outside",
-        strip.text.y = element_text(angle=180),
-        panel.background = element_rect(fill = NA),
-        panel.grid.major = element_line(colour = "grey85"),
-        legend.position = 'bottom')+
-  #theme_bw()+  
-  theme(legend.title = element_blank())+
-  scale_fill_manual(breaks = c("var_subs_pct", "var_ind_pct", "var_resid_pct"),
-                      labels = c("Variance between individuals",
-                                 "Variance between sessions",
-                                 "Error variance"),
-                  values=c("grey65", "grey45", "grey25"))+
-  ylab("")+
-  xlab("")
-
-tmp = rel_df %>%
-  mutate(var_subs_pct = var_subs/(var_subs+var_ind+var_resid)*100,
-         var_ind_pct = var_ind/(var_subs+var_ind+var_resid)*100, 
-         var_resid_pct = var_resid/(var_subs+var_ind+var_resid)*100) %>%
-  select(dv, task, var_subs_pct, var_ind_pct, var_resid_pct) %>%
-  # gather(key, value, -dv, -task) %>%
-  mutate(#key = factor(key, levels = c("var_subs_pct", "var_ind_pct", "var_resid_pct")),
-         dv = factor(dv, levels = dv[order(task)])) %>%
-  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
-  mutate(task_group = factor(task_group, levels = task_group[order(task)])) %>%
-  arrange(task_group, var_subs_pct) %>%
-  mutate(rank = row_number()) %>%
-  arrange(task, task_group, rank) %>%
-  gather(key, value, -dv, -task_group, -var, -task, -rank) %>%
-  ungroup()%>%
-  # separate(var, c("var"), sep="\\.",remove=TRUE,extra="drop") %>%
-  mutate(task_group = gsub("_", " ", task_group),
-         var = gsub("_", " ", var),
-         var=gsub(".ReflogTr", "", var),
-         var=gsub(".logTr", "", var)) %>%
-  mutate(task_group = ifelse(task_group == "psychological refractory period two choices", "psychological refractory period", ifelse(task_group == "angling risk task always sunny", "angling risk task",task_group))) %>%
-  mutate(task_group = gsub("survey", "", task_group)) %>%
-  filter(task=="survey")%>%
-  arrange(task_group, rank)
-labels = tmp %>%
-  distinct(dv, .keep_all=T)
-
-p2 <- tmp %>%
-  ggplot(aes(x=factor(rank), y=value, fill=factor(key, levels = c("var_resid_pct", "var_ind_pct", "var_subs_pct"))))+
-  geom_bar(stat='identity', alpha = 0.75)+
-  geom_bar(stat='identity', color='#F8766D', show.legend=FALSE)+
-  scale_x_discrete(breaks = labels$rank,
-                       labels = labels$var)+
-  coord_flip()+
-  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
-  theme(panel.spacing = unit(0.5, "lines"), 
-        strip.placement = "outside",
-        strip.text.y = element_text(angle=180),
-        panel.background = element_rect(fill = NA),
-        panel.grid.major = element_line(colour = "grey85"),
-        legend.position = 'bottom')+
-  #theme_bw()+  
-  theme(legend.title = element_blank())+
-  scale_fill_manual(breaks = c("var_subs_pct", "var_ind_pct", "var_resid_pct"),
-                      labels = c("Variance between individuals",
-                                 "Variance between sessions",
-                                 "Error variance"),
-                  values=c("grey65", "grey45", "grey25"))+
-  ylab("")+
-  xlab("")
-
-mylegend<-g_legend(p2)
-
-p3 <- arrangeGrob(arrangeGrob(p1 +theme(legend.position="none"),
-                         p2 + theme(legend.position="none"),
-                         nrow=1),
-             mylegend, nrow=2,heights=c(10, 1))
-
-ggsave('Variance_Breakdown_Plot.jpg', plot = p3, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 24, height = 20, units = "in")
-rm(tmp, labels)
-```
-
-```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/Variance_Breakdown_Plot.jpg')
-```
-
-Comparing types of variance for survey vs task measures: Survey measures have higher between subject variability  
-
-Note: This analysis includes DDM variables too.
-
-```{r}
-tmp = rel_df %>%
-  mutate(var_subs_pct = var_subs/(var_subs+var_ind+var_resid)*100,
-         var_ind_pct = var_ind/(var_subs+var_ind+var_resid)*100, 
-         var_resid_pct = var_resid/(var_subs+var_ind+var_resid)*100) %>%
-  select(dv, task, var_subs_pct, var_ind_pct, var_resid_pct) %>%
-  gather(key, value, -dv, -task) 
-  # do(tidy(lm(value~key*task, data=.)))
-
-summary(lm(value~key*task,tmp))
-```
-
-```{r}
-aggregate(value ~task+key, FUN=mean, data=tmp)
-```
-
-Summarizing for clearer presentation
-
-```{r}
-tmp %>%
-  group_by(task, key) %>%
-  ggplot(aes(factor(task, levels=c("task","survey"), labels=c("Task", "Survey")), value, fill=key, color=task))+
-  geom_boxplot()+
-  theme_bw()+
-  theme(legend.title = element_blank())+
-  scale_fill_manual(breaks = c("var_subs_pct", "var_ind_pct", "var_resid_pct"),
-                    labels = c("Variance between individuals",
-                               "Variance between sessions",
-                               "Error variance"),
-                    values=c("grey65", "grey45", "grey25"))+
-  scale_color_discrete(guide = FALSE)+
-  xlab("")+
-  ylab("Percent")
-
-ggsave('Variance_Breakdown_Plot_Summary.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 10, height = 5, units = "in")
-```
-
-
-What does it look like for DDM variables separately?
-
-```{r warning=FALSE, message=FALSE}
-p1_ddm = rel_df %>%
-  mutate(var_subs_pct = var_subs/(var_subs+var_ind+var_resid)*100,
-         var_ind_pct = var_ind/(var_subs+var_ind+var_resid)*100, 
-         var_resid_pct = var_resid/(var_subs+var_ind+var_resid)*100) %>%
-  select(dv, task, var_subs_pct, var_ind_pct, var_resid_pct) %>%
-  gather(key, value, -dv, -task) %>%
-  mutate(key = factor(key, levels = c("var_subs_pct", "var_ind_pct", "var_resid_pct")),
-         dv = factor(dv, levels = dv[order(task)])) %>%
-  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
-  mutate(task_group = factor(task_group, levels = task_group[order(task)])) %>%
-  # separate(var, c("var"), sep="\\.",remove=TRUE,extra="drop") %>%
-  mutate(task_group = gsub("_", " ", task_group),
-         var = gsub("_", " ", var),
-         var=gsub(".ReflogTr", "", var),
-         var=gsub(".logTr", "", var)) %>%
-  mutate(task_group = ifelse(task_group == "psychological refractory period two choices", "psychological refractory period", ifelse(task_group == "angling risk task always sunny", "angling risk task",task_group))) %>%
-  mutate(task_group = gsub("survey", "", task_group)) %>%
-  filter(task=="task",
-         grepl("EZ|hddm", dv))%>%
-  ggplot(aes(x=var, y=value, fill=key))+
-  geom_bar(stat='identity', alpha = 0.75)+
-  coord_flip()+
-  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
-  theme(panel.spacing = unit(0.5, "lines"), 
-        strip.placement = "outside",
-        strip.text.y = element_text(angle=180),
-        panel.background = element_rect(fill = NA),
-        panel.grid.major = element_line(colour = "grey80"),
-        legend.position = 'bottom')+
-  #theme_bw()+  
-  theme(legend.title = element_blank())+
-  scale_fill_discrete(breaks = c("var_subs_pct", "var_ind_pct", "var_resid_pct"),
-                    labels = c("Variance between individuals",
-                               "Variance between sessions",
-                               "Error variance"),
-                     h=c(100,500))+
-  ylab("")+
-  xlab("")
-
-ggsave('Variance_Breakdown_Plot_DDM.jpg', plot = p1_ddm, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 12, height = 20, units = "in")
-```
+## Transformation effects
