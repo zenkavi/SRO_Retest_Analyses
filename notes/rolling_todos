@@ -9,8 +9,6 @@ Order effects?
 ------------
 robust samwich for standard errors
 
-add 1 paragraph on what transformation effects are
-
 eta sq: SStime/SStotal
 partial eta sq: SStime+SSerror/SStotal
 

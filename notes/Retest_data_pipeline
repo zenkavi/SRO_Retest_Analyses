@@ -62,8 +62,14 @@ Script: concatenate_boostrap.sh
 Output: Local/bootstrap_merged.csv
 Run: Sherlock
 
+Get retest_subs_test_data_post.json for DDM refits
+Input:
+Script:
+Output:
+Run:
+
 DDM refit for original sample
-Input: calculate_hddm_refits.batch, calculate_hddm_refits.py, batch_output/hddm_refits, batch_output/hddm_refits/.err, batch_output/hddm_refits/.out
+Input: calculate_hddm_refits.batch, calculate_hddm_refits.py, batch_output/hddm_refits, batch_output/hddm_refits/.err, batch_output/hddm_refits/.out, retest_subs_test_data_post.json
 Script: run_hddm_refits.sh 
 Output: Sherlock
 

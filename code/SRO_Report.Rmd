@@ -226,7 +226,7 @@ knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Anal
 
 An interactive version of this plot could be find [here](https://zenkavi.github.io/SRO_Retest_Analyses/output/reports/Lit_Review_Figure.html)
 
-Takeaways from this review are: 
+Takeaways from this review are:   
 - Survey measures have been reported to higher reliability compared to task measures  
 - Survey measures have less variability in the reported reliabiltiy estimates compared to task measures' 
 
@@ -857,6 +857,8 @@ This won't make sense for all tasks. For example to estimate a risk aversion par
 
 That said this kind of analysis seems too in the weeds for a paper that is trying to give a global sense of the differences between self-regulation measures in their suitablity for individual difference analyses based on their stability across time. Such analyses would provide a detailed examination of how to extract the most reliable/best individual difference measure from tasks with a set of mediocre variables to begin with. So I am choosing to ignore this for now but this can be revisited.
 
+NOTE: DO THIS ON AN EXAMPLE TASK AND LEAVE TO THE READER TO DO
+
 ### Raw vs DDM
 
 Checking DDM results in the bootstrapped estimates. Variables using all trials are significantly more reliable compared to difference scores. Raw measures don't differ from DDM parameters. Which DDM is better depends on whether all trials are used.
@@ -1005,20 +1007,31 @@ hddm_fullfits <- test_data_full_sample_hddm[,names(test_data_full_sample_hddm) %
 hddm_fullfits = hddm_fullfits %>%
   gather(dv, value, -sub_id)
 
-hddm_refits %>%
+ggplotly(hddm_refits %>%
   gather(dv, value, -sub_id) %>%
   left_join(hddm_fullfits, by = c("sub_id", "dv")) %>%
   rename(fullfit = value.y, refit = value.x) %>%
   left_join(measure_labels[,c("dv", "raw_fit", "rt_acc")], by="dv") %>%
   filter(rt_acc %in% c("drift rate","non-decision", "threshold")) %>%
-  ggplot(aes(fullfit, refit))+
+  ggplot(aes(fullfit, refit, label=dv))+
   geom_point(aes(color=rt_acc))+
   facet_wrap(~raw_fit)+
   theme_bw()+
   geom_abline(slope=1, intercept=0)+
   xlab("Fit on full sample")+
   ylab("Fit on retest sample")+
-  theme(legend.title = element_blank())
+  theme(legend.title = element_blank()),
+  label=dv)
+```
+
+```{r}
+hddm_refits %>%
+  filter(adaptive_n_back.hddm_drift<0)
+  # ggplot(aes(adaptive_n_back.EZ_drift))+
+  # geom_histogram()
+
+hddm_fullfits %>%
+  filter(dv == "adaptive_n_back.hddm_drift" & value <0)
 ```
 
 #### Parameter reliability depending on sample size
@@ -1037,6 +1050,22 @@ ggplotly(tmp %>%
   theme(legend.position = 'none')+
   xlab("Sample Size")+
   ylab("Median ICC"))
+```
+
+The above graph suggests that the median reliability estimate does not change depending on the sample size. There is a degree of counterintuitiveness to that statement. One might expect less reliable parameter estimates for smaller sample sizes. 
+
+The reliability of a measure depends on the different sources of variability. It would be larger the larger the between subject variability (BSV) is (and the lower within subject, WSV, and error variances, ERV, are). Larger sample sizes do not necessarily imply larger BSV. If there is a true BSV for the whole sample then BSV's of subsamples would have distribution that would be centered around this value with some variance. This variance would be smaller the larger the sample size. Because the distribution is centered around the true BSV the median reliability estimate from 100 samples would not deviate much as we see in the above graph. But the variance of that reliability estimate would. Specifically the variance of the reliability estimates should decrease with increasing sample size. Below we plot this for one task (for visualization ease). The lower end of the error bars in the first quantile, the point is the median and the upper bound is the last quantile of the reliability estimates for varying sample sizes. Indeed, we find the predicted pattern of decreasing variance in reliability estimates depending on sample size.
+
+```{r}
+tmp %>%
+  select(dv, N, icc_median, icc_2.5, icc_97.5) %>%
+  filter(grepl("stroop", dv)) %>%
+  ggplot(aes(N, icc_median, color = dv))+
+  geom_point()+
+  geom_errorbar(aes(ymin = icc_2.5, ymax = icc_97.5))+
+  theme_bw()+
+  theme(legend.position = "none")+
+  ylab("ICC")
 ```
 
 ```{r}
