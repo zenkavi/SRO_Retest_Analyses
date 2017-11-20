@@ -357,7 +357,7 @@ Based on [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9
 numeric_cols = c()
 
 for(i in 1:length(names(test_data))){
-  if(is.numeric(test_data[,i])){
+  if(is.numeric(test_data[,i]) & names(test_data)[i] %in% names(retest_data)){
     numeric_cols <- c(numeric_cols, names(test_data)[i])
   }
 }
@@ -995,7 +995,9 @@ summary(lmer(value~key*overall_difference*raw_fit+(1|dv), tmp))
 
 How much do parameter values change depending on whether the model was fit using the whole sample vs only the retest sample. Each point in these graphs is a subject's parameter estimates. There is almost no change for any of the EZ parameters (though shouldn't this have been 0?). For the HDDM parameters most of the changes are happening for drift rates but they don't appear to be systematically higher or lower.
 
-I'm not entirely sure what to make of this
+I'm not entirely sure what to make of this. A systematic change would have meant that the ranking remained the same regardless of the sample size. When the change is non-systematic in this way then a given subject that has high higher drift rates than most of the people in the full sample can appear to have lower drift rates than the same people when fit on the retest sample only. (note that a t-test is not significant)
+
+Of course these parameter estimates themselves are not very interpretable in their 'goodness' as they don't reflect anything about model fits. What is the measure of fits here? The variance of the posterior?
 
 ```{r warning=FALSE, message=FALSE}
 hddm_fullfits <- test_data_full_sample_hddm[,names(test_data_full_sample_hddm) %in% names(hddm_refits)]
@@ -1019,26 +1021,31 @@ hddm_refits %>%
   theme(legend.title = element_blank())
 ```
 
-```{r message=FALSE}
-tmp = hddm_refits %>%
-  gather(dv, value, -sub_id) %>%
-  left_join(hddm_fullfits, by = c("sub_id", "dv")) %>%
-  rename(fullfit = value.y, refit = value.x) %>%
-  left_join(measure_labels[,c("dv", "raw_fit", "rt_acc")], by="dv") %>%
-  filter(rt_acc %in% c("drift rate","non-decision", "threshold"))
-```
-
 #### Parameter reliability depending on sample size
 
-```{r}
+There doesn't seem to be an effect looking at the graph but the multilevel model seems to show a very significant but tiny effect.
 
+```{r message=FALSE, warning=FALSE}
+tmp <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/all_ddm_sample_size_summary.csv')
+
+ggplotly(tmp %>%
+  select(dv, N, icc_median) %>%
+  left_join(measure_labels[,c("dv", "raw_fit", "rt_acc")], by="dv") %>%
+  ggplot(aes(N, icc_median, color=dv))+
+  geom_line()+
+  theme_bw()+
+  theme(legend.position = 'none')+
+  xlab("Sample Size")+
+  ylab("Median ICC"))
+```
+
+```{r}
+summary(lmer(icc_median ~ N + (1|dv), tmp))
 ```
 
 #### Is the H in HDDM important?
 
-```{r}
-
-```
+TBD. Still need to figure out how to turn off the H.
 
 ## Completion times
 
@@ -1172,3 +1179,60 @@ t1_2_difference %>%
 ```
 
 ## Transformation effects
+
+All results reported above were for non-transformed dependent variables.
+
+We could compare the reliability (point) estimates for meaningful variables that have been transformed in the full dataset and transformed the same way in the retest dataset as well.
+
+```{r}
+test_data_tmp <- test_data
+retest_data_tmp <- retest_data
+
+test_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/t1_data/meaningful_variables_clean.csv')
+test_data$X <- as.character(test_data$X)
+names(test_data)[which(names(test_data) == 'X')] <-'sub_id' 
+retest_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/meaningful_variables_clean.csv')
+retest_data$X <- as.character(retest_data$X)
+names(retest_data)[which(names(retest_data) == 'X')] <-'sub_id'
+retest_data = retest_data[retest_data$sub_id %in% test_data$sub_id,]
+```
+
+```{r}
+numeric_cols_mngfl = c()
+
+for(i in 1:length(names(test_data))){
+  if(is.numeric(test_data[,i]) & names(test_data)[i] %in% names(retest_data)){
+    numeric_cols_mngfl <- c(numeric_cols_mngfl, names(test_data)[i])
+  }
+}
+
+rel_df_mngfl <- data.frame(icc = rep(NA, length(numeric_cols_mngfl)))
+
+row.names(rel_df_mngfl) <- numeric_cols_mngfl
+
+for(i in 1:length(numeric_cols_mngfl)){
+  rel_df_mngfl[numeric_cols_mngfl[i], 'icc'] <- get_icc(numeric_cols_mngfl[i])
+}
+
+rel_df_mngfl$dv = row.names(rel_df_mngfl)
+row.names(rel_df_mngfl) = seq(1:nrow(rel_df_mngfl))
+rel_df_mngfl$task = 'task'
+rel_df_mngfl[grep('survey', rel_df_mngfl$dv), 'task'] = 'survey'
+rel_df_mngfl[grep('holt', rel_df_mngfl$dv), 'task'] = "task"
+rel_df_mngfl
+```
+
+```{r}
+ggplotly(rel_df_mngfl %>%
+  filter(grepl("logTr", dv)) %>%
+  mutate(dv = gsub(".ReflogTr", "", dv),
+         dv = gsub(".logTr", "", dv)) %>%
+  left_join(rel_df[,c("dv", "icc")], by="dv") %>%
+  ggplot(aes(icc.x, icc.y, color=task, label=dv))+
+  geom_point()+
+  theme_bw()+
+  xlab("Reliability for transformed variable")+
+  ylab("Reliability for raw variable")+
+  geom_abline(slope=1, intercept=0),
+  label=dv)
+```
