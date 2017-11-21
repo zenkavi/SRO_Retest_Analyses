@@ -1076,6 +1076,8 @@ summary(lmer(icc_median ~ N + (1|dv), tmp))
 
 TBD. Still need to figure out how to turn off the H.
 
+One way to solve this would be to feed data in manually.
+
 ## Completion times
 
 ### Subject level
@@ -1205,6 +1207,45 @@ t1_2_difference %>%
         axis.text.x = element_blank())+
   xlab("Dependent variable")+
   ylab("Average difference between time points")
+```
+
+```{r}
+t1_2_difference %>%
+  left_join(measure_labels[,c("dv", "overall_difference", "raw_fit", "rt_acc")], by= "dv") %>%
+  filter(overall_difference == "overall",
+         rt_acc %in% c("rt", "accuracy"),
+         task == "task") %>%
+  group_by(dv) %>%
+  summarise(mean_diff = mean(difference),
+            task_name = unique(task_name),
+            rt_acc = unique(rt_acc)) %>%  
+  ggplot(aes(dv,mean_diff, color=task_name))+
+  geom_point()+
+  theme_bw()+
+  facet_grid(~rt_acc)+
+  theme(legend.position = "none",
+        axis.text.x = element_blank())+
+  xlab("Dependent variable")+
+  ylab("Average difference between time points")
+```
+
+```{r}
+tmp = t1_2_difference %>%
+  left_join(measure_labels[,c("dv", "overall_difference", "raw_fit", "rt_acc")], by= "dv") %>%
+  filter(overall_difference == "overall",
+         rt_acc %in% c("accuracy"),
+         task == "task") %>%
+  group_by(dv) %>%
+  summarise(mean_diff = mean(difference),
+            task_name = unique(task_name))
+
+t.test(tmp$mean_diff)
+```
+
+Write new function to estimate reliability accounting for learning effect
+
+```{r}
+get
 ```
 
 ## Transformation effects
