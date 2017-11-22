@@ -12,6 +12,12 @@ tmp = data.frame(time_1=c(146, 148, 170, 90, 157, 156, 176, 205),
                  time_2=c(140, 152, 152, 99, 145, 153, 167, 218), 
                  people=c(1,2,3,4,5,6,7,8))
 tmp = tmp %>% gather(key, value,-people)
+tmp
+```
+
+
+
+```{r}
 summary(aov(value ~ factor(key)+Error(factor(people)), tmp))
 (30)/(30+400)#eta squared
 sd(tmp$value)
@@ -21,8 +27,15 @@ sd(tmp$value)
 (2099-57.1)/(2099+((2*(30.2-57.1))/8)) #ICC(2,k)
 (2099-57.1)/(2099+((2-1)*57.1)) #ICC(3,1)
 (2099-57.1)/(2099) #ICC(3,k)
-tmp = tmp %>% spread(key, value) %>% select(-people)
 # icc(tmp, model = 'twoway', type='agreement')
+```
+
+```{r}
+tmp = tmp %>% spread(key, value) %>% select(-people)
+tmp
+```
+
+```{r}
 ICC(tmp)
 ```
 

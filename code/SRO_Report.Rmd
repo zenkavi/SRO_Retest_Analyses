@@ -349,8 +349,10 @@ rm(test_demog, retest_demog, demog_rel_df, numeric_cols)
 
 Based on [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9d379b79de4f767740.pdf) ICC(3,k) does not take in to account within subject differences between two time points (i.e. the fixed effect of time/systematic error). Thus, it is well approximated by Pearson's r and subject to similar criticisms. [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9d379b79de4f767740.pdf) suggests reporting at least this systematic error effect size if one chooses to report with ICC(3,k). Based on his conclusions here I report:  
 - ICC(3,k): As Dave clarified this ranges from 1 to -1/(number of repeated measures -1) so in our case this range would be [-1, 1]; larger values would mean that the two scores of a subject for a given measure are more similar to each other than they are to scores of other people  
+- " ICC is reflective of the ability of a test to differentiate between different individuals"
 - partial $\eta^2$ for time ($SS_{time}/SS_{within}$): effect size of time   
-- SEM ($\sqrt(MS_{error})$): standard error of measurement; the smaller the better
+- SEM ($\sqrt(MS_{error})$): standard error of measurement; the smaller the better. It 
+"quantifies the precision of individual scores on a test" and is not dependent on the sample in the way ICC is since it doesn't depend on between subject reliability (at least in this formulation) but is unit-dependent.
 
 ```{r}
 #Create df of point estimate reliabilities
@@ -1190,63 +1192,18 @@ summary(lm(mean_diff ~ mean_days_btw*task, tmp))
 
 ## Learning effects
 
-Is the t2 score higher for task variables? Plotting the average difference between time points (for all subjects) for each dependent variable coloring by task. More positive on the y-axis means more improvement. Didn't want to summarize it at task level because not all measures might be things we'd expect learning effects on.
+For most of our tasks one might wonder about improvements in performance due to learning effects. 
 
-It's hard to detect any meaningful global changes/improvements from this graph. It seems that for each task there might be some variables that have improved at t2 but whether these are menaingful learning effects should be determined based on the variable.
+The type of ICC we have chosen does not take ... in to account. This is why Weir recommends checking whether there is a significant change based on time and examining the SEMs.
 
-```{r}
-t1_2_difference %>%
-  filter(task == "task") %>%
-  group_by(dv) %>%
-  summarise(mean_diff = mean(difference),
-            task_name = unique(task_name)) %>%
-  ggplot(aes(dv,mean_diff, color=task_name))+
-  geom_point()+
-  theme_bw()+
-  theme(legend.position = "none",
-        axis.text.x = element_blank())+
-  xlab("Dependent variable")+
-  ylab("Average difference between time points")
-```
+Had we chosen another kind of ICC taking ... into account could have suggested that tasks have ...(higher/lower) reliability.
 
-```{r}
-t1_2_difference %>%
-  left_join(measure_labels[,c("dv", "overall_difference", "raw_fit", "rt_acc")], by= "dv") %>%
-  filter(overall_difference == "overall",
-         rt_acc %in% c("rt", "accuracy"),
-         task == "task") %>%
-  group_by(dv) %>%
-  summarise(mean_diff = mean(difference),
-            task_name = unique(task_name),
-            rt_acc = unique(rt_acc)) %>%  
-  ggplot(aes(dv,mean_diff, color=task_name))+
-  geom_point()+
-  theme_bw()+
-  facet_grid(~rt_acc)+
-  theme(legend.position = "none",
-        axis.text.x = element_blank())+
-  xlab("Dependent variable")+
-  ylab("Average difference between time points")
-```
+Doing a simple t-test on the difference score alone would not be a very rigourous way of testing whether any change is meaningful because two distributions with error would be compared to each other. Fortunately there are ways to take the error for both measurements in to account. 
 
-```{r}
-tmp = t1_2_difference %>%
-  left_join(measure_labels[,c("dv", "overall_difference", "raw_fit", "rt_acc")], by= "dv") %>%
-  filter(overall_difference == "overall",
-         rt_acc %in% c("accuracy"),
-         task == "task") %>%
-  group_by(dv) %>%
-  summarise(mean_diff = mean(difference),
-            task_name = unique(task_name))
+To check whether a
 
-t.test(tmp$mean_diff)
-```
-
-Write new function to estimate reliability accounting for learning effect
-
-```{r}
-get
-```
+first check if the effect of time is significant
+compute confidence intervals and check what percent of participants have scores that fall out of this range 
 
 ## Transformation effects
 
