@@ -19,13 +19,13 @@ source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/SRO_Rep
 This sample consists of data for 150 subjects of the original sample of 522 that has completed the initial battery of 37 cognitive tasks, 23 surveys and 3 surveys on demographics. Details of the original sample as well as quality control (qc) procedures are described elsewhere (Eisenberg et al., 2017). Invited participants were chosen randomly and only subsets of them were invited for a given batch (instead of opening the battery to all qualified subjects) with the intention to avoid a potential oversampling and bias towards "high self regulators".
 
 ```{r warning=FALSE, message=FALSE}
-workers = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/Local/User_717570_workers.csv')
+workers = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/Local/User_717570_workers.csv')
 workers = workers %>% 
   group_by(Worker.ID) %>%
   mutate(Retest_worker=ifelse(sum(CURRENT.RetestWorker,CURRENT.RetestWorkerB2,CURRENT.RetestWorkerB3,CURRENT.RetestWorkerB4,CURRENT.RetestWorkerB5,na.rm=T)>0,1,0)) %>%
   ungroup()
 
-worker_counts <- fromJSON('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/Local/retest_worker_counts.json')
+worker_counts <- fromJSON('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/Local/retest_worker_counts.json')
 
 worker_counts = as.data.frame(unlist(worker_counts))
 names(worker_counts) = "task_count"
@@ -34,11 +34,11 @@ names(worker_counts) = "task_count"
 In total `r sum(workers$Retest_worker)` participants were invited, `r nrow(worker_counts)` began the battery, `r sum(worker_counts$task_count >= 62)` completed the battery and 150 provided data that passed qc for both time points. Our target sample size was determined in advance of data collection and data collection continued until this number of participants with data that survived qc was reached.
 
 ```{r warning=FALSE, message=FALSE}
-disc_comp_date = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/Local/discovery_completion_dates.csv', header=FALSE)
-val_comp_date = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/Local/validation_completion_dates.csv', header=FALSE)
+disc_comp_date = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/Local/discovery_completion_dates.csv', header=FALSE)
+val_comp_date = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/Local/validation_completion_dates.csv', header=FALSE)
 test_comp_date = rbind(disc_comp_date, val_comp_date)
 rm(disc_comp_date, val_comp_date)
-retest_comp_date = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/Local/retest_completion_dates.csv', header=FALSE)
+retest_comp_date = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/Local/retest_completion_dates.csv', header=FALSE)
 comp_dates = merge(retest_comp_date, test_comp_date, by="V1")
 names(comp_dates) <- c("sub_id", "retest_comp", "test_comp")
 comp_dates$retest_comp = as.Date(comp_dates$retest_comp)
@@ -51,9 +51,9 @@ Data collection took place on average `r round(mean(as.numeric(comp_dates$days_b
 ## Demographics
 
 ```{r}
-test_demog <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/t1_data/demographic_health.csv')
+test_demog <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/t1_data/demographic_health.csv')
 
-retest_demog <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/demographic_health.csv')
+retest_demog <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/demographic_health.csv')
 
 retest_demog = retest_demog[retest_demog$X %in% test_demog$X,]
 
@@ -240,9 +240,9 @@ The variables included in this report are:
 
 ```{r echo=FALSE}
 #Get variables of interest from Ian's release
-tmp1 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_10-08-2017/meaningful_variables.csv')
-tmp2 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_10-08-2017/meaningful_variables_noDDM.csv')
-tmp3 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_10-08-2017/meaningful_variables_EZ.csv')
+tmp1 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_11-22-2017/meaningful_variables.csv')
+tmp2 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_11-22-2017/meaningful_variables_noDDM.csv')
+tmp3 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_11-22-2017/meaningful_variables_EZ.csv')
 retest_report_vars = c(names(tmp1), names(tmp2), names(tmp3))
 retest_report_vars = unique(retest_report_vars)
 lit_rev_vars = as.character(unique(lit_review$dv)[which(unique(lit_review$dv) %in% retest_report_vars == FALSE)])
@@ -379,7 +379,7 @@ for(i in 1:length(numeric_cols)){
   rel_df[numeric_cols[i], 'spearman'] <- get_spearman(numeric_cols[i]) 
   rel_df[numeric_cols[i], 'icc'] <- get_icc(numeric_cols[i])
   rel_df[numeric_cols[i], 'pearson'] <- get_pearson(numeric_cols[i])
-  rel_df[numeric_cols[i], 'eta_sq'] <- get_eta(numeric_cols[i])
+  rel_df[numeric_cols[i], 'partial_eta_sq'] <- get_partial_eta(numeric_cols[i])
   rel_df[numeric_cols[i], 'sem'] <- get_sem(numeric_cols[i])
   rel_df[numeric_cols[i], 'var_subs'] <- get_var_breakdown(numeric_cols[i])$subs
   rel_df[numeric_cols[i], 'var_ind'] <- get_var_breakdown(numeric_cols[i])$ind

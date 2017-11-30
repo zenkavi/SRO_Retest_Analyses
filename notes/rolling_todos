@@ -1,4 +1,8 @@
-HDDM REFITS
+HDDM REFITS - BOOTSTRAP IS DONE ON FULL FITS!!
+hddm fit stats
+hddm turn off h
+learning effects
+transformation effects
 
 turn retest report to latex using papaja
 
@@ -8,11 +12,6 @@ Order effects?
 
 ------------
 robust samwich for standard errors
-
-eta sq: SStime/SStotal
-partial eta sq: SStime+SSerror/SStotal
-
-omega sq: ?? df correction
 
 difficult to compare sem's across measures because it's unit dependant
 

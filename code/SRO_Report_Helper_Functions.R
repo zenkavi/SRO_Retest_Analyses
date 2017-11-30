@@ -108,7 +108,7 @@ get_var_breakdown <- function(dv_var, t1_df = test_data, t2_df = retest_data, me
   return(var_breakdown)
 }
 
-get_eta <- function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 'sub_id', sample='full', sample_vec){
+get_partial_eta <- function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 'sub_id', sample='full', sample_vec){
   if(sample=='full'){
     df = match_t1_t2(dv_var, t1_df = t1_df, t2_df = t2_df, merge_var = merge_var)
   }
@@ -119,8 +119,8 @@ get_eta <- function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 
   mod = summary(aov(score~Error(sub_id)+time, df))
   ss_time = as.data.frame(unlist(mod$`Error: Within`))['Sum Sq1',]
   ss_error = as.data.frame(unlist(mod$`Error: Within`))['Sum Sq2',]
-  eta = ss_time/(ss_time+ss_error)
-  return(eta)
+  partial_eta = ss_time/(ss_time+ss_error)
+  return(partial_eta)
 }
 
 get_sem <- function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 'sub_id', sample='full', sample_vec){

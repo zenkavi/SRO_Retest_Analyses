@@ -234,11 +234,6 @@ shift_task.nonperseverative_errors,task,Number of errors that are not from respo
 shift_task.nonperseverative_errors,task,Number of errors that are not from responding to the previously rewarded category,0.8,Spearman,12,29,Ingram et al. (1999),overall,raw,accuracy,0,410
 shift_task.nonperseverative_errors,task,Number of errors that are not from responding to the previously rewarded category,0.39,Pearson,462,66,Greve et al. (2012),overall,raw,accuracy,0,410
 shift_task.nonperseverative_errors,task,Number of errors that are not from responding to the previously rewarded category,0.46,Pearson,462,66,Greve et al. (2012),overall,raw,accuracy,0,410
-shift_task.num_cat_achieved,task,Number of categories achieved,0.65,Kendall's Tau,360,87,"Paolo, Axelrod and Tröster (1996)",overall,raw,,0,410
-shift_task.num_cat_achieved,task,Number of categories achieved,0.7,Spearman,12,29,Ingram et al. (1999),overall,raw,,0,410
-shift_task.num_cat_achieved,task,Number of categories achieved,0.16,Pearson,30,90,Bird et al. (2004),overall,raw,,0,410
-shift_task.num_cat_achieved,task,Number of categories achieved,0.65,Pearson,56,41,Harvey et al. (2005),overall,raw,,0,410
-shift_task.num_cat_achieved,task,Number of categories achieved,0.67,Spearman,510,54,"Tröster, Woods and Morgan (2007)",overall,raw,,0,410
 shift_task.perseverative_errors,task,Number of errors that are from responding to the previously rewarded category,0.93,ICC,720,17,Ozonoff (1995),overall,raw,accuracy,0,410
 shift_task.perseverative_errors,task,Number of errors that are from responding to the previously rewarded category,0.94,ICC,720,17,Ozonoff (1995),overall,raw,accuracy,0,410
 shift_task.perseverative_errors,task,Number of errors that are from responding to the previously rewarded category,0.65,Pearson,360,87,"Paolo, Axelrod and Tröster (1996)",overall,raw,accuracy,0,410
@@ -260,8 +255,6 @@ shift_task.total_errors,task,Number of incorrect responses,0.9,ICC,720,17,Ozonof
 shift_task.total_errors,task,Number of incorrect responses,0.66,Pearson,360,87,"Paolo, Axelrod and Tröster (1996)",overall,raw,accuracy,0,410
 shift_task.total_errors,task,Number of incorrect responses,0.78,Pearson,462,66,Greve et al. (2012),overall,raw,accuracy,0,410
 shift_task.total_errors,task,Number of incorrect responses,0.78,Pearson,462,66,Greve et al. (2012),overall,raw,accuracy,0,410
-shift_task.trials_pre_first_cat,task,Trials to complete first category,0.16,Kendall's Tau,360,87,"Paolo, Axelrod and Tröster (1996)",overall,raw,,0,410
-shift_task.trials_pre_first_cat,task,Trials to complete first category,0.44,Spearman,12,29,Ingram et al. (1999),overall,raw,,0,410
 simon.congruent_acc,task,Accuracy on trials where the side of the screen the stimulus appeared matched the response button,0.68,ICC,66.5,23,Wöstmann et al. (2013),overall,raw,accuracy,1,100
 simon.incongruent_acc,task,Accuracy on trials where the side of the screen the stimulus appeared did not match the response button,0.85,ICC,66.5,23,Wöstmann et al. (2013),overall,raw,accuracy,1,100
 simon.acc,task,Proportion of correct responses (excluding non-response trials) where correct means pressing the correct button for the correct color regardless of where it appears on the screen,0.15,Pearson,540,208,Ven et al. (2013),overall,raw,accuracy,1,100
