@@ -1,8 +1,8 @@
 HDDM REFITS - BOOTSTRAP IS DONE ON FULL FITS!!
-hddm fit stats
-hddm turn off h
-learning effects
-transformation effects
+hddm fit stats - ready for sherlock testing!
+hddm turn off h - try fitting on two subjects with group off; if works then write patch reading from indiv measures
+learning effects - calculate 95% CI using SEMs and evaluate whether there is a meaningful changes using this and eta/omega_sq as described in Weir
+transformation effects - re do with old code
 
 turn retest report to latex using papaja
 
@@ -12,7 +12,5 @@ Order effects?
 
 ------------
 robust samwich for standard errors
-
-difficult to compare sem's across measures because it's unit dependant
 
 change retest data loading to pkl
