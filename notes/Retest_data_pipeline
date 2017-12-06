@@ -73,7 +73,8 @@ Input: calculate_hddm_refits.batch, calculate_hddm_refits.py, batch_output/hddm_
 Script: run_hddm_refits.sh 
 Output: Sherlock
 
-DDM Analyses
-Input:
-Script:
-Output:
+HDDM parameters without hierarchy
+Input: Retest_11-27-2017/batch_output/hddm_flat/, Retest_11-27-2017/batch_output/hddm_flat/.out, Retest_11-27-2017/batch_output/hddm_flat/.err, calculate_hddm_flat.py, calculate_hddm_flat.batch
+Script: run_hddm_flat.sh
+Output: 
+Run: Sherlock

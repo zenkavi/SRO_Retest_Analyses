@@ -1,6 +1,6 @@
 HDDM REFITS - BOOTSTRAP IS DONE ON FULL FITS!!
 hddm fit stats - ready for sherlock testing!
-hddm turn off h - try fitting on two subjects with group off; if works then write patch reading from indiv measures
+hddm turn off h - fitting with is_group_model = False doesn't seem to work. Fit for two subjects passing data from indiv measures individually
 learning effects - calculate 95% CI using SEMs and evaluate whether there is a meaningful changes using this and eta/omega_sq as described in Weir
 transformation effects - re do with old code
 
@@ -12,5 +12,5 @@ Order effects?
 
 ------------
 robust samwich for standard errors
-
+	
 change retest data loading to pkl
