@@ -30,13 +30,13 @@ DV creation
 Input: calculate_retest_DVs.batch, Data/Retest_11-27-2017/batch_output, Data/Retest_11-27-2017/batch_output/.err, Data/Retest_11-27-2017/batch_output/.out, calculate_retest_exp_DVs.py
 Script: /batch_file/retest/run_retest_exps.sh
 Output: /batch_files/retest/*.model, /batch_files/retest/*.db, /batch_files/retest/*.csv, ../../Data/Retest_11-27-2017/batch_output/*_retest_DV.json, ../../Data/Retest_11-27-2017/batch_output/*_retest_DV_valence.json 
-Run: On Sherlock 1 using ~/miniconda3/bin/python, on Sherlock 2 using ~/miniconda/bin/python with the SRO environment 
+Run: Sherlock 1 using ~/miniconda3/bin/python, Sherlock 2 using ~/miniconda/bin/python with the SRO environment 
 
 Post DV creation cleanup
 Input: change path in concatenate_retest_DVs.py
 Script: cleanup_retest.sh
 Output: ../../Data/Retest_11-27-2017/batch_output/hddm_models/*.model, ../../Data/Retest_11-27-2017/batch_output/hddm_models/*.db, ../../Data/Retest_11-27-2017/batch_output/hddm_data/*_data.csv, ../../Data/Retest_11-27-2017/Local/
-Run: On Sherlock from batch_files/retest
+Run: Sherlock from batch_files/retest
 
 Save data II (post dv calculation)
 Input: mturk_retest_DV.json, mturk_retest_DV_valence.json
@@ -63,18 +63,37 @@ Output: Local/bootstrap_merged.csv
 Run: Sherlock
 
 Get retest_subs_test_data_post.json for DDM refits
+Input: get_retest_worker_test_data.py
+Script: get_retest_worker_test_data.batch
+Output: Local/retest_subs_comp_data_post.json
+Run: Sherlock
+
+DDM refit for original sample
+Input: calculate_hddm_refits.batch, calculate_hddm_refits.py, batch_output/hddm_refits, batch_output/hddm_refits/.err, batch_output/hddm_refits/.out, retest_subs_test_data_post.json
+Script: run_hddm_refits.sh 
+Output: batch_output/hddm_refits/*_DV.json, batch_output/hddm_refits/*_DV_valence.json
+Run: Sherlock
+
+Concat DDM refits
 Input:
 Script:
 Output:
 Run:
 
-DDM refit for original sample
-Input: calculate_hddm_refits.batch, calculate_hddm_refits.py, batch_output/hddm_refits, batch_output/hddm_refits/.err, batch_output/hddm_refits/.out, retest_subs_test_data_post.json
-Script: run_hddm_refits.sh 
-Output: Sherlock
+Bootstrap DDM refits:
+Input:
+Script:
+Output:
+Run:
 
-HDDM parameters without hierarchy
+Fit HDDM parameters without hierarchy
 Input: Retest_11-27-2017/batch_output/hddm_flat/, Retest_11-27-2017/batch_output/hddm_flat/.out, Retest_11-27-2017/batch_output/hddm_flat/.err, calculate_hddm_flat.py, calculate_hddm_flat.batch
 Script: run_hddm_flat.sh
-Output: 
+Output: batch_output/hddm_flat/*_hddm_flat.csv
 Run: Sherlock
+
+HDDM sample size:
+Input:
+Script:
+Output:
+Run:

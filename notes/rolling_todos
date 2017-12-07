@@ -1,8 +1,18 @@
-HDDM REFITS - BOOTSTRAP IS DONE ON FULL FITS!!
-hddm fit stats - ready for sherlock testing!
-hddm turn off h - fitting with is_group_model = False doesn't seem to work. Fit for two subjects passing data from indiv measures individually
+hddm refits - submited run_hddm_refits.sh
+
+bootstrap of hddm refits - think about best way to do this without adding it in to full data. check data prep for concat script
+
+hddm fit stats - done for retest. waiting on test data
+
+hddm turn off h - submitted for initial testing. if works will submit run_hddm_flat.sh.
+
+hddm sample size - start with going over the code on sherlock tmp.
+
 learning effects - calculate 95% CI using SEMs and evaluate whether there is a meaningful changes using this and eta/omega_sq as described in Weir
+
 transformation effects - re do with old code
+
+--------
 
 turn retest report to latex using papaja
 
