@@ -15,13 +15,19 @@ General:
 - SRO conda environment can be built using environment.yml in the root directory (conda env create -f environment.yml)
 
 Download data + post process + QC
-Input: Self_Regulation_Retest_Settings.txt, expfactory_token.txt, worker_lookup.json
-Script: retest_download_data.py
-Output: mturk_retest_data.json, retest_worker_lookup.json, retest_worker_counts.json, mturk_retest_data_extras.pkl (or .json), retest_worker_pay.json, mturk_retest_data_post.json, mturk_retest_failed_data_post.json
-Run: local in case of debugging; takes a while
+Input: Self_Regulation_Retest_Settings.txt, expfactory_token.txt, 
+Script: retest_download_data.batch
+Output: mturk_retest_data.json, mturk_retest_data.pkl 
+Run: Sherlock batch script added but not yet tested
+
+Post process + QC
+Input: worker_lookup.json, retest_postprocess_data.py
+Script: retest_postprocess_data.batch
+Output: retest_worker_lookup.json, retest_worker_counts.json, mturk_retest_data_extras.pkl (or .json), retest_worker_pay.json, mturk_retest_data_post.json, mturk_retest_failed_data_post.json
+Run: Sherlock
 
 Save data I (pre dv calculation)
-Input: mturk_retest_data_post.json
+Input: mturk_retest_data_post.pkl
 Script: retest_save_data_pre.py
 Output: /Individual_Measures/, /metadata/, /references/, demographics.csv, demographics_ordinal.csv, alcohol_drugs.csv, alcohol_drugs_ordinal.csv, health.csv, health_ordinal.csv, demographic_health.csv, references/demographic_health_reference.csv, items.csv.gz, subject_x_items.csv, README.txt, metadata/alcohol_drugs.json, demographics.json, health.json
 Run: Sherlock (~13 minutes)
@@ -75,10 +81,16 @@ Output: batch_output/hddm_refits/*_DV.json, batch_output/hddm_refits/*_DV_valenc
 Run: Sherlock
 
 Concat DDM refits
-Input:
-Script:
-Output:
-Run:
+Input: Retest_11-27-2017/batch_output/hddm_refits/*hddm_refit*DV.json
+Script: batch_files/concatenate_hddm_refits.py
+Output: Retest_11-27-2017/Local/mturk_hddm_refit_DV.json, Retest_11-27-2017/Local/mturk_hddm_refit_DV_valence.json 
+Run: Sherlock
+
+Convert DDM refits to csv
+Input: Retest_11-27-2017/Local/mturk_hddm_refit_DV.json, Retest_11-27-2017/Local/mturk_hddm_refit_DV_valence.json
+Script: data_preparation/retest/retest_save_hddm_refits.py
+Output: hddm_refits_exhaustive.csv
+Run: Sherlock
 
 Bootstrap DDM refits:
 Input:

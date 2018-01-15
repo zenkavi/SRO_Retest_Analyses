@@ -291,7 +291,7 @@ retest_data = retest_data[retest_data$sub_id %in% test_data$sub_id,]
 Since HDDM parameters depend on the sample on which they are fit we refit the model on t1 data for the subjects that have t2 data. Here we replace the HDDM parameters in the current t1 dataset with these refitted values. 
 
 ```{r}
-hddm_refits <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-21-2017/hddm_refits_exhaustive.csv')
+hddm_refits <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/hddm_refits_exhaustive.csv')
 
 hddm_refits = hddm_refits[,names(hddm_refits) %in% retest_report_vars]
 
