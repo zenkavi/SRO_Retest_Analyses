@@ -240,9 +240,9 @@ The variables included in this report are:
 
 ```{r echo=FALSE}
 #Get variables of interest from Ian's release
-tmp1 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_11-22-2017/meaningful_variables.csv')
-tmp2 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_11-22-2017/meaningful_variables_noDDM.csv')
-tmp3 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_11-22-2017/meaningful_variables_EZ.csv')
+tmp1 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_01-15-2018/meaningful_variables.csv')
+tmp2 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_01-15-2018/meaningful_variables_noDDM.csv')
+tmp3 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_01-15-2018/meaningful_variables_EZ.csv')
 retest_report_vars = c(names(tmp1), names(tmp2), names(tmp3))
 retest_report_vars = unique(retest_report_vars)
 lit_rev_vars = as.character(unique(lit_review$dv)[which(unique(lit_review$dv) %in% retest_report_vars == FALSE)])
@@ -252,7 +252,7 @@ rm(tmp1, tmp2, tmp3, lit_rev_vars)
 
 ### Load time 1 data
 ```{r}
-test_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/t1_data/variables_exhaustive.csv')
+test_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/t1_data/variables_exhaustive.csv')
 
 test_data <- test_data[,names(test_data) %in% retest_report_vars]
 
@@ -263,7 +263,7 @@ names(test_data)[which(names(test_data) == 'X')] <-'sub_id'
 For reference here are the variables that are **not** included in the analyses of the remainder of this report because they were not of theoretical interest in factor structure analyses of this data so far. These include drift diffusion and other model parameters for specific conditions within a task; survey variables that are not part of the dependant variables for that survey in the literature and demographics (these are saved for prediction analyses).
 
 ```{r}
-test_data2 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/t1_data/variables_exhaustive.csv')
+test_data2 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/t1_data/variables_exhaustive.csv')
 
 df <- data.frame(names(test_data2)[which(names(test_data2) %in% names(test_data) == FALSE)])
 names(df) = c('vars')
@@ -277,7 +277,7 @@ rm(test_data2, df)
 
 ### Load time 2 data 
 ```{r}
-retest_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/variables_exhaustive.csv')
+retest_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/variables_exhaustive.csv')
 
 retest_data <- retest_data[,names(retest_data) %in% retest_report_vars]
 
@@ -291,7 +291,7 @@ retest_data = retest_data[retest_data$sub_id %in% test_data$sub_id,]
 Since HDDM parameters depend on the sample on which they are fit we refit the model on t1 data for the subjects that have t2 data. Here we replace the HDDM parameters in the current t1 dataset with these refitted values. 
 
 ```{r}
-hddm_refits <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/hddm_refits_exhaustive.csv')
+hddm_refits <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/Local/hddm_refits_exhaustive.csv')
 
 hddm_refits = hddm_refits[,names(hddm_refits) %in% retest_report_vars]
 
@@ -339,6 +339,10 @@ demog_rel_df %>%
   mutate(var = row.names(.)) %>%
   select(var, icc, spearman, pearson) %>%
   arrange(-icc)
+```
+
+```{r}
+summary(demog_rel_df)
 ```
 
 ```{r echo=FALSE}
@@ -425,7 +429,7 @@ p3 = rel_df %>%
 
 grid.arrange(p1, p2, p3, nrow=1)
 
-ggsave('Metric_Scatterplots.jpg', plot = grid.arrange(p1, p2, p3, nrow=1), device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 12, height = 4, units = "in", limitsize = FALSE)
+ggsave('Metric_Scatterplots.jpg', plot = grid.arrange(p1, p2, p3, nrow=1), device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 12, height = 4, units = "in", limitsize = FALSE, dpi = 100)
 ```
 
 ```{r echo=FALSE}
@@ -439,7 +443,7 @@ Note: Some variables have <0 ICC's. This would be the case if the $MS_{error}$>$
 Summarized bootstrapped reliabilities
 
 ```{r message=FALSE, warning=FALSE}
-boot_df <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/bootstrap_merged.csv')
+boot_df <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/bootstrap_merged.csv')
 
 boot_df = boot_df %>%
   drop_na() %>%
@@ -574,7 +578,7 @@ ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) +
   
 p6_t <- arrangeGrob(p4_t, p5_t,nrow=1)
 
-ggsave('Bootstrap_Poster_Plot_t.jpg', plot = p6_t, device = "jpeg", path = "../output/figures/", width = 27, height = 48, units = "in", limitsize = FALSE)
+ggsave('Bootstrap_Poster_Plot_t.jpg', plot = p6_t, device = "jpeg", path = "../output/figures/", width = 27, height = 48, units = "in", limitsize = FALSE, dpi = 100)
 ```
 
 ```{r echo=FALSE, out.width='100%'}
@@ -727,7 +731,7 @@ p3 <- arrangeGrob(arrangeGrob(p1 +theme(legend.position="none"),
                          nrow=1),
              mylegend, nrow=2,heights=c(10, 1))
 
-ggsave('Variance_Breakdown_Plot.jpg', plot = p3, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 24, height = 20, units = "in")
+ggsave('Variance_Breakdown_Plot.jpg', plot = p3, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 24, height = 20, units = "in", dpi = 100)
 rm(tmp, labels)
 ```
 
@@ -751,15 +755,13 @@ summary(lmer(value~key*task+(1|dv),tmp))
 ```
 
 ```{r}
-aggregate(value ~task+key, FUN=mean, data=tmp)
-
 tmp%>%
   group_by(task, key) %>%
   summarise(median = median(value),
             sd = sd(value))
 ```
 
-Summarizing for clearer presentation. This grap is currently using the bootstrapped reliabilities and is therefore messier than if just using the point estimates.
+Summarizing for clearer presentation. This graph is currently using the bootstrapped reliabilities and is therefore messier than if just using the point estimates.
 
 ```{r}
 tmp %>%
@@ -777,7 +779,7 @@ tmp %>%
   xlab("")+
   ylab("Percent")
 
-ggsave('Variance_Breakdown_Plot_Summary.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 10, height = 5, units = "in")
+ggsave('Variance_Breakdown_Plot_Summary.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 10, height = 5, units = "in", dpi = 100)
 ```
 
 ## Task Reliabilities
@@ -803,7 +805,7 @@ tmp = measure_labels %>%
             max_icc = max(icc),
             min_spearman = min(spearman),
             max_spearman = max(spearman),
-            num_measures = n(),
+            num_measures = n()/1000,
             num_trials = unique(num_all_trials))%>%
   arrange(-median_icc, -median_spearman)
 
@@ -812,6 +814,18 @@ tmp %>%
   formatRound(columns=c('median_spearman', 'median_icc',
                         'min_spearman', 'min_icc',
                         'max_spearman', 'max_icc'), digits=3)
+```
+
+
+```{r}
+tmp = tmp%>%
+  mutate(task_name = gsub("_", " ", task_name),
+         task_name = gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", task_name, perl=TRUE))
+
+names(tmp) = gsub("_", " ", names(tmp))
+names(tmp) = gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", names(tmp), perl=TRUE)
+
+sjt.df(tmp %>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.progress = TRUE, show.rownames = FALSE, file = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/task_rel_table.doc")
 ```
 
 ### Number of trials

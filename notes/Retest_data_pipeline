@@ -24,7 +24,7 @@ Post process + QC
 Input: worker_lookup.json, retest_postprocess_data.py
 Script: retest_postprocess_data.batch
 Output: retest_worker_lookup.json, retest_worker_counts.json, mturk_retest_data_extras.pkl (or .json), retest_worker_pay.json, mturk_retest_data_post.json, mturk_retest_failed_data_post.json
-Run: Sherlock
+Run: Sherlock (~30 mins)
 
 Save data I (pre dv calculation)
 Input: mturk_retest_data_post.pkl

@@ -13,6 +13,7 @@ library(plotly)
 library(DT)
 
 render_this <- function(){rmarkdown::render('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/SRO_Report.Rmd', output_dir = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/reports', html_notebook(toc = T, toc_float = T, toc_depth = 2, code_folding = 'hide'))}
+
 options(scipen = 1, digits = 4)
 
 sem <- function(x) {sd(x, na.rm=T) / sqrt(length(x))}
