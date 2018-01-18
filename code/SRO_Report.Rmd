@@ -936,36 +936,47 @@ calc_break_dvs = function(x, breaks=seq(0, 360, 10)[-1]){
 #get dv's for t1 and t2
 t1_dvs = t1_hr %>%
   group_by(worker_id) %>%
-  do(calc_break_dvs(.))
+  do(calc_break_dvs(.)) %>%
+  rename(sub_id = worker_id)
 
 t2_dvs = t2_hr %>%
   group_by(worker_id) %>%
-  do(calc_break_dvs(.))
+  do(calc_break_dvs(.)) %>%
+  rename(sub_id = worker_id)
 
 # merge to get same number of rows for each subject at both time points
 hr_merge = merge(t1_dvs, t2_dvs, by = c("worker_id", "breaks"))
 
-rm(t1_dvs, t2_dvs)
+# rm(t1_dvs, t2_dvs)
 
 hr_merge = hr_merge %>%
   gather(key, value, -worker_id, -breaks) %>%
   separate(key, c("dv", "time"), sep="\\.") %>%
-  mutate(time = ifelse(time == "x", 1, 2)) %>%
-  arrange(worker_id, time, as.numeric(breaks))
-
-hr_merge %>% 
-  spread(dv, value) %>%
-  group_by(breaks) 
-# calculate point estimates for reliability
-
-tmp = hr_merge %>% 
-  spread(dv, value) %>%
-  filter(breaks == 30) %>%
-  select(time, acc)
-
-ICC(tmp)$results['Average_fixed_raters', 'ICC']
+  mutate(time = ifelse(time == "x", 1, 2))
 
 hr_merge
+
+t1_dvs = hr_merge %>%
+  filter(time == 1) %>%
+  select(-time) %>%
+  spread(dv, value)
+
+t2_dvs = hr_merge %>%
+  filter(time == 2) %>%
+  select(-time) %>%
+  spread(dv, value)
+
+# calculate point estimates for reliability of each of the variables for each break
+# get_icc for each break of tmp_t1_dvs and tmp_t2_dvs
+trial_num_rel_df = data.frame()
+for(i in t1_dvs$breaks){
+  tmp_t1_dvs = t1_dvs %>% filter(i)
+  tmp_t2_dvs = t2_dvs %>% filter(i)
+  trial_num_rel_df$breaks[i] = i
+  trial_num_rel_df$acc_icc[i] = get_icc("acc", tmp_t1_dvs, tmp_t2_dvs)
+  trial_num_rel_df$avg_rt_icc[i] = get_icc("avg_rt", tmp_t1_dvs, tmp_t2_dvs)
+  trial_num_rel_df$score_icc[i] = get_icc("score", tmp_t1_dvs, tmp_t2_dvs)
+}
 ```
 
 ### Raw vs DDM
