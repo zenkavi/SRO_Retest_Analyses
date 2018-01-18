@@ -899,27 +899,73 @@ t2_hr = t2_hr %>% filter(rt != -1)
 #score: sum correct
 
 calc_break_dvs = function(x, breaks=seq(0, 360, 10)[-1]){
-  out = data.frame()
-  for(i in 1:length(breaks)){
-    tmp = x[1:breaks[i],]
-    dvs = tmp %>%
+  
+  calc_dvs = function(x){
+    out = x %>%
       summarise(acc = mean(correct),
                 avg_rt = median(rt[correct == 1]),
                 score = sum(correct))
+    return(out)
+  }
+  
+  out = data.frame()
+  
+  for(i in 1:length(breaks)){
+    tmp = x[1:breaks[i],]
+    dvs = calc_dvs(tmp)
     out = rbind(out, dvs)
   }
+  
+  # due to timeout trials exclusion not all subjects might have 360 rows
+  # this would lead to na's for later trial breaks
+  # first remove these
+  out = out %>% drop_na()
+  
+  # then calculate the dv's for the remaining trials
+  if(nrow(x)!=360 & nrow(x)%%10 != 0){
+    dvs = calc_dvs(x)
+    out = rbind(out, dvs)
+  }
+  
+  #to keep track for later merge
+  out$breaks = row.names(out)
+  
   return(out)
 }
 
-tmp = t1_hr%>% filter(worker_id == 's005')
-
-calc_break_dvs(tmp)
-
-t1_hr %>%
+#get dv's for t1 and t2
+t1_dvs = t1_hr %>%
   group_by(worker_id) %>%
-  summarise(acc = mean(correct),
-                avg_rt = median(rt[correct == 1]),
-                score = sum(correct))
+  do(calc_break_dvs(.))
+
+t2_dvs = t2_hr %>%
+  group_by(worker_id) %>%
+  do(calc_break_dvs(.))
+
+# merge to get same number of rows for each subject at both time points
+hr_merge = merge(t1_dvs, t2_dvs, by = c("worker_id", "breaks"))
+
+rm(t1_dvs, t2_dvs)
+
+hr_merge = hr_merge %>%
+  gather(key, value, -worker_id, -breaks) %>%
+  separate(key, c("dv", "time"), sep="\\.") %>%
+  mutate(time = ifelse(time == "x", 1, 2)) %>%
+  arrange(worker_id, time, as.numeric(breaks))
+
+hr_merge %>% 
+  spread(dv, value) %>%
+  group_by(breaks) 
+# calculate point estimates for reliability
+
+tmp = hr_merge %>% 
+  spread(dv, value) %>%
+  filter(breaks == 30) %>%
+  select(time, acc)
+
+ICC(tmp)$results['Average_fixed_raters', 'ICC']
+
+hr_merge
 ```
 
 ### Raw vs DDM
