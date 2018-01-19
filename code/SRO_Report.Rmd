@@ -873,7 +873,7 @@ This won't make sense for all tasks. For example to estimate a risk aversion par
 
 These kinds of analyses are too task-specific and in-depth for a paper that is trying to give a global sense of the differences between self-regulation measures in their suitablity for individual difference analyses based on their stability across time. Such analyses would provide a detailed examination of how to extract the most reliable/best individual difference measure from tasks with a set of mediocre variables to begin with. Though we do not provide such a comprehensive analysis of this sort in this paper we provide a single example of this approach and hope the open access we provide to the data spurs further work.
 
-For this example we look at the retest reliability of the ... measures from the ... task with ... trials. Here is a graph of how the point estimates of the retest reliability changes for each of the dependent measures using different numbers of trials to estimate them.
+For this example we look at the retest reliability of the three dependent measures (average accuracy, median response time, total score) from the hierarchical rule task with 360 trials. Here is a graph of how the point estimates of the retest reliability changes for each of the dependent measures using different numbers of trials to estimate them. While the reliability estimate for each of the variables respectively are ..., ... and ... using all of the trials, these values are independent of number of trials used in the task for only certain variables. Based on this analysis researchers might decide to use a version of the task with fewer trials or only measures with consistently high reliability estimates.
 
 target task: one without hddm variables, has dv's that are easily codable in r, a lot of trials, possibly multiple dependent measures  
 method: import raw response data for chosen task for both t1 and t2, calculate dv's for for both t's for different number of trials, calculate retest reliability point estimates for each of these dv's with different trial numbers  
@@ -989,6 +989,8 @@ trial_num_rel_df %>%
   xlab("Number of trials")+
   ylab("ICC")+
   theme(legend.title = element_blank())
+
+ggsave('Intrameasure_Trialnum_Dependendence.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 10, height = 5, units = "in", dpi = 100)
 ```
 
 ### Raw vs DDM
