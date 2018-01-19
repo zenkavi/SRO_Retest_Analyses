@@ -875,9 +875,9 @@ These kinds of analyses are too task-specific and in-depth for a paper that is t
 
 For this example we look at the retest reliability of the ... measures from the ... task with ... trials. Here is a graph of how the point estimates of the retest reliability changes for each of the dependent measures using different numbers of trials to estimate them.
 
-target task: one without hddm variables, has dv's that are easily codable in r, a lot of trials, possibly multiple dependent measures
-method: import raw response data for chosen task for both t1 and t2, calculate dv's for for both t's for different number of trials, calculate retest reliability point estimates for each of these dv's with different trial numbers
-candidates: angling risk task, columbia card task, dietary decision, hierarchical rule, keep track, probabilistic selection, psychological refractory period, two stage decision
+target task: one without hddm variables, has dv's that are easily codable in r, a lot of trials, possibly multiple dependent measures  
+method: import raw response data for chosen task for both t1 and t2, calculate dv's for for both t's for different number of trials, calculate retest reliability point estimates for each of these dv's with different trial numbers  
+candidates: angling risk task, columbia card task, dietary decision, hierarchical rule, keep track, probabilistic selection, psychological refractory period, two stage decision  
 
 ```{r}
 #read t1 data
@@ -945,16 +945,14 @@ t2_dvs = t2_hr %>%
   rename(sub_id = worker_id)
 
 # merge to get same number of rows for each subject at both time points
-hr_merge = merge(t1_dvs, t2_dvs, by = c("worker_id", "breaks"))
+hr_merge = merge(t1_dvs, t2_dvs, by = c("sub_id", "breaks"))
 
 # rm(t1_dvs, t2_dvs)
 
 hr_merge = hr_merge %>%
-  gather(key, value, -worker_id, -breaks) %>%
+  gather(key, value, -sub_id, -breaks) %>%
   separate(key, c("dv", "time"), sep="\\.") %>%
   mutate(time = ifelse(time == "x", 1, 2))
-
-hr_merge
 
 t1_dvs = hr_merge %>%
   filter(time == 1) %>%
@@ -968,15 +966,29 @@ t2_dvs = hr_merge %>%
 
 # calculate point estimates for reliability of each of the variables for each break
 # get_icc for each break of tmp_t1_dvs and tmp_t2_dvs
-trial_num_rel_df = data.frame()
-for(i in t1_dvs$breaks){
-  tmp_t1_dvs = t1_dvs %>% filter(i)
-  tmp_t2_dvs = t2_dvs %>% filter(i)
-  trial_num_rel_df$breaks[i] = i
+trial_num_rel_df = data.frame(breaks=rep(NA, length(unique(t1_dvs$breaks))), acc_icc=rep(NA, length(unique(t1_dvs$breaks))), avg_rt_icc=rep(NA, length(unique(t1_dvs$breaks))), score_icc=rep(NA, length(unique(t1_dvs$breaks))))
+for(i in 1:length(unique(t1_dvs$breaks))){
+  cur_break = unique(t1_dvs$breaks)[i]
+  tmp_t1_dvs = t1_dvs %>% filter(breaks == cur_break)
+  tmp_t2_dvs = t2_dvs %>% filter(breaks == cur_break)
+  trial_num_rel_df$breaks[i] = cur_break
   trial_num_rel_df$acc_icc[i] = get_icc("acc", tmp_t1_dvs, tmp_t2_dvs)
   trial_num_rel_df$avg_rt_icc[i] = get_icc("avg_rt", tmp_t1_dvs, tmp_t2_dvs)
   trial_num_rel_df$score_icc[i] = get_icc("score", tmp_t1_dvs, tmp_t2_dvs)
 }
+rm(i, cur_break, tmp_t1_dvs, tmp_t2_dvs)
+
+trial_num_rel_df$breaks = as.numeric(trial_num_rel_df$breaks)
+
+trial_num_rel_df %>%
+  gather(key, value, -breaks) %>%
+  ggplot(aes(breaks*10, value, color=factor(key, levels = c("acc_icc", "avg_rt_icc", "score_icc"), labels = c("Accuracy", "Average RT", "Score"))))+
+  geom_point()+
+  geom_line()+
+  theme_bw()+
+  xlab("Number of trials")+
+  ylab("ICC")+
+  theme(legend.title = element_blank())
 ```
 
 ### Raw vs DDM
