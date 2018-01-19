@@ -1006,6 +1006,7 @@ tmp = measure_labels %>%
   left_join(boot_df[,c("dv", "icc", "spearman")], by = 'dv')
 
 tmp %>%
+  drop_na() %>% #try removing this in final release
   group_by(overall_difference, raw_fit, rt_acc) %>%
   summarise(icc_median = quantile(icc, probs = 0.5),
             icc_2.5 = quantile(icc, probs = 0.025),
