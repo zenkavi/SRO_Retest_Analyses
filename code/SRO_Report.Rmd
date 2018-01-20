@@ -55,9 +55,9 @@ Data collection took place on average `r round(mean(as.numeric(comp_dates$days_b
 ## Demographics
 
 ```{r}
-test_demog <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/t1_data/demographic_health.csv')
+test_demog <- read.csv(paste0(retest_data_path, '/t1_data/demographic_health.csv'))
 
-retest_demog <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/demographic_health.csv')
+retest_demog <- read.csv(paste0(retest_data_path, 'demographic_health.csv'))
 
 retest_demog = retest_demog[retest_demog$X %in% test_demog$X,]
 
@@ -244,9 +244,9 @@ The variables included in this report are:
 
 ```{r echo=FALSE}
 #Get variables of interest from Ian's release
-tmp1 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_01-15-2018/meaningful_variables.csv')
-tmp2 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_01-15-2018/meaningful_variables_noDDM.csv')
-tmp3 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_01-15-2018/meaningful_variables_EZ.csv')
+tmp1 <- read.csv(paste0(test_data_path,'meaningful_variables.csv'))
+tmp2 <- read.csv(paste0(test_data_path,'meaningful_variables_noDDM.csv'))
+tmp3 <- read.csv(paste0(test_data_path,'meaningful_variables_EZ.csv'))
 retest_report_vars = c(names(tmp1), names(tmp2), names(tmp3))
 retest_report_vars = unique(retest_report_vars)
 lit_rev_vars = as.character(unique(lit_review$dv)[which(unique(lit_review$dv) %in% retest_report_vars == FALSE)])
@@ -256,7 +256,7 @@ rm(tmp1, tmp2, tmp3, lit_rev_vars)
 
 ### Load time 1 data
 ```{r}
-test_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/t1_data/variables_exhaustive.csv')
+test_data <- read.csv(paste0(retest_data_path,'t1_data/variables_exhaustive.csv'))
 
 test_data <- test_data[,names(test_data) %in% retest_report_vars]
 
@@ -267,7 +267,7 @@ names(test_data)[which(names(test_data) == 'X')] <-'sub_id'
 For reference here are the variables that are **not** included in the analyses of the remainder of this report because they were not of theoretical interest in factor structure analyses of this data so far. These include drift diffusion and other model parameters for specific conditions within a task; survey variables that are not part of the dependant variables for that survey in the literature and demographics (these are saved for prediction analyses).
 
 ```{r}
-test_data2 <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/t1_data/variables_exhaustive.csv')
+test_data2 <- read.csv(paste0(retest_data_path, 't1_data/variables_exhaustive.csv'))
 
 df <- data.frame(names(test_data2)[which(names(test_data2) %in% names(test_data) == FALSE)])
 names(df) = c('vars')
@@ -281,7 +281,7 @@ rm(test_data2, df)
 
 ### Load time 2 data 
 ```{r}
-retest_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/variables_exhaustive.csv')
+retest_data <- read.csv(paste0(retest_data_path,'variables_exhaustive.csv'))
 
 retest_data <- retest_data[,names(retest_data) %in% retest_report_vars]
 
@@ -295,7 +295,7 @@ retest_data = retest_data[retest_data$sub_id %in% test_data$sub_id,]
 Since HDDM parameters depend on the sample on which they are fit we refit the model on t1 data for the subjects that have t2 data. Here we replace the HDDM parameters in the current t1 dataset with these refitted values. 
 
 ```{r}
-hddm_refits <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/Local/hddm_refits_exhaustive.csv')
+hddm_refits <- read.csv(paste'/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/Local/hddm_refits_exhaustive.csv')
 
 hddm_refits = hddm_refits[,names(hddm_refits) %in% retest_report_vars]
 

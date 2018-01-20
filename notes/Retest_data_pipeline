@@ -16,14 +16,14 @@ General:
 
 Download data + post process + QC
 Input: Self_Regulation_Retest_Settings.txt, expfactory_token.txt, 
-Script: retest_download_data.batch
+Script: data_preparation/retest_download_data.batch
 Output: mturk_retest_data.json, mturk_retest_data.pkl 
 Run: Sherlock batch script added but not yet tested
 
 Post process + QC
 Input: worker_lookup.json, retest_postprocess_data.py
-Script: retest_postprocess_data.batch
-Output: retest_worker_lookup.json, retest_worker_counts.json, mturk_retest_data_extras.pkl (or .json), retest_worker_pay.json, mturk_retest_data_post.json, mturk_retest_failed_data_post.json
+Script: data_preparation/retest_postprocess_data.batch
+Output: retest_worker_lookup.json, retest_worker_counts.json, mturk_retest_data_extras.pkl, retest_worker_pay.json, mturk_retest_data_post.json, mturk_retest_failed_data_post.json
 Run: Sherlock (~30 mins)
 
 Save data I (pre dv calculation)
