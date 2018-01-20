@@ -8,6 +8,10 @@ toc_float: yes
 
 ```{r, message=FALSE, warning=FALSE, include=FALSE}
 source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/SRO_Report_Helper_Functions.R')
+
+test_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_01-17-2018/'
+
+retest_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_01-17-2018/'
 ```
 
 # Introduction
@@ -19,13 +23,13 @@ source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/SRO_Rep
 This sample consists of data for 150 subjects of the original sample of 522 that has completed the initial battery of 37 cognitive tasks, 23 surveys and 3 surveys on demographics. Details of the original sample as well as quality control (qc) procedures are described elsewhere (Eisenberg et al., 2017). Invited participants were chosen randomly and only subsets of them were invited for a given batch (instead of opening the battery to all qualified subjects) with the intention to avoid a potential oversampling and bias towards "high self regulators".
 
 ```{r warning=FALSE, message=FALSE}
-workers = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/Local/User_717570_workers.csv')
+workers = read.csv(paste0(retest_data_path,'Local/User_717570_workers.csv'))
 workers = workers %>% 
   group_by(Worker.ID) %>%
   mutate(Retest_worker=ifelse(sum(CURRENT.RetestWorker,CURRENT.RetestWorkerB2,CURRENT.RetestWorkerB3,CURRENT.RetestWorkerB4,CURRENT.RetestWorkerB5,na.rm=T)>0,1,0)) %>%
   ungroup()
 
-worker_counts <- fromJSON('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/Local/retest_worker_counts.json')
+worker_counts <- fromJSON(paste0(retest_data_path,'/Local/retest_worker_counts.json'))
 
 worker_counts = as.data.frame(unlist(worker_counts))
 names(worker_counts) = "task_count"
@@ -34,11 +38,11 @@ names(worker_counts) = "task_count"
 In total `r sum(workers$Retest_worker)` participants were invited, `r nrow(worker_counts)` began the battery, `r sum(worker_counts$task_count >= 62)` completed the battery and 150 provided data that passed qc for both time points. Our target sample size was determined in advance of data collection and data collection continued until this number of participants with data that survived qc was reached.
 
 ```{r warning=FALSE, message=FALSE}
-disc_comp_date = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/Local/discovery_completion_dates.csv', header=FALSE)
-val_comp_date = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/Local/validation_completion_dates.csv', header=FALSE)
+disc_comp_date = read.csv(paste0(retest_data_path,'Local/discovery_completion_dates.csv'), header=FALSE)
+val_comp_date = read.csv(paste0(retest_data_path,'Local/validation_completion_dates.csv'), header=FALSE)
 test_comp_date = rbind(disc_comp_date, val_comp_date)
 rm(disc_comp_date, val_comp_date)
-retest_comp_date = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/Local/retest_completion_dates.csv', header=FALSE)
+retest_comp_date = read.csv(paste0(retest_data_path,'Local/retest_completion_dates.csv'), header=FALSE)
 comp_dates = merge(retest_comp_date, test_comp_date, by="V1")
 names(comp_dates) <- c("sub_id", "retest_comp", "test_comp")
 comp_dates$retest_comp = as.Date(comp_dates$retest_comp)
