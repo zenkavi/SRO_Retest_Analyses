@@ -16,50 +16,51 @@ General:
 
 Download data + post process + QC
 Input: Self_Regulation_Retest_Settings.txt, expfactory_token.txt, 
-Script: data_preparation/retest_download_data.batch
+Script: data_preparation/retest/retest_download_data.batch
 Output: mturk_retest_data.json, mturk_retest_data.pkl 
 Run: Sherlock batch script added but not yet tested
 
 Post process + QC
 Input: worker_lookup.json, retest_postprocess_data.py
-Script: data_preparation/retest_postprocess_data.batch
+Script: data_preparation/retest/retest_postprocess_data.batch
 Output: retest_worker_lookup.json, retest_worker_counts.json, mturk_retest_data_extras.pkl, retest_worker_pay.json, mturk_retest_data_post.json, mturk_retest_failed_data_post.json
 Run: Sherlock (~30 mins)
 
-Save data I (pre dv calculation)
+Save data I (pre dv calculation)(refactored)
 Input: mturk_retest_data_post.pkl
-Script: retest_save_data_pre.py
+Script: data_preparation/retest/retest_save_data_pre.py
 Output: /Individual_Measures/, /metadata/, /references/, demographics.csv, demographics_ordinal.csv, alcohol_drugs.csv, alcohol_drugs_ordinal.csv, health.csv, health_ordinal.csv, demographic_health.csv, references/demographic_health_reference.csv, items.csv.gz, subject_x_items.csv, README.txt, metadata/alcohol_drugs.json, demographics.json, health.json
 Run: Sherlock (~13 minutes)
 
-DV creation
-Input: calculate_retest_DVs.batch, Data/Retest_11-27-2017/batch_output, Data/Retest_11-27-2017/batch_output/.err, Data/Retest_11-27-2017/batch_output/.out, calculate_retest_exp_DVs.py
-Script: /batch_file/retest/run_retest_exps.sh
-Output: /batch_files/retest/*.model, /batch_files/retest/*.db, /batch_files/retest/*.csv, ../../Data/Retest_11-27-2017/batch_output/*_retest_DV.json, ../../Data/Retest_11-27-2017/batch_output/*_retest_DV_valence.json 
+DV creation (refactored)
+Input: calculate_retest_DVs.batch, Data/Retest_01-17-2018/batch_output, Data/Retest_01-17-2018/batch_output/.err, Data/Retest_01-17-2018/batch_output/.out, calculate_retest_exp_DVs.py
+Script: /batch_files/retest/run_retest_exps.sh
+Output: /batch_files/retest/*.model, /batch_files/retest/*.db, /batch_files/retest/*.csv, ../../Data/Retest_01-17-2018/batch_output/*_retest_DV.json, ../../Data/Retest_01-17-2018/batch_output/*_retest_DV_valence.json 
 Run: Sherlock 1 using ~/miniconda3/bin/python, Sherlock 2 using ~/miniconda/bin/python with the SRO environment 
 
-Post DV creation cleanup
+Post DV creation cleanup (refactored)
 Input: change path in concatenate_retest_DVs.py
 Script: cleanup_retest.sh
-Output: ../../Data/Retest_11-27-2017/batch_output/hddm_models/*.model, ../../Data/Retest_11-27-2017/batch_output/hddm_models/*.db, ../../Data/Retest_11-27-2017/batch_output/hddm_data/*_data.csv, ../../Data/Retest_11-27-2017/Local/
+Output: ../../Data/Retest_01-17-2018/batch_output/hddm_models/*.model, ../../Data/Retest_01-17-2018/batch_output/hddm_models/*.db, ../../Data/Retest_01-17-2018/batch_output/hddm_data/*_data.csv, ../../Data/Retest_01-17-2018/Local/
 Run: Sherlock from batch_files/retest
 
-Save data II (post dv calculation)
+Save data II (post dv calculation)(refactored)
 Input: mturk_retest_DV.json, mturk_retest_DV_valence.json
 Script: retest_save_data_post.py
 Output: meaningful_variables.csv, meaningful_variables_EZ.csv, meaningful_variables_clean.csv, meaningful_variables_hddm.csv, meaningful_variables_imputed.csv, meaningful_variables_imputed_for_task_selection.csv, meaningful_variables_noDDM.csv, short_DV_valence.csv, short_meaningful_variables.csv, short_meaningful_variables_EZ.csv, short_meaningful_variables_clean.csv, short_meaningful_variables_hddm.csv, short_meaningful_variables_imputed.csv, short_meaningful_variables_imputed_for_task_selection.csv, short_meaningful_variables_noDDM.csv, short_subject_x_items.csv, short_taskdata.csv, short_taskdata_clean.csv, short_taskdata_imputed.csv, short_taskdata_imputed_for_task_selection.csv, short_variables_exhaustive.csv, taskdata.csv, taskdata_clean.csv, taskdata_imputed.csv, taskdata_imputed_for_task_selection.csv, variables_exhaustive.csv
 Run: Sherlock (~2 mins)
 
 Extract t1-data:
-Input: extract_t1_data.R, extract_t1_data.batch, Data/Complete_11-22-2017/, Data/Retest_11-27-2017/t1_data
+Input: extract_t1_data.R, extract_t1_data.batch, Data/Complete_01-17-2018/, Data/Retest_01-17-2018/t1_data
 Script: run_extract_t1_data.sh
-Output: Data/Retest_11-27-17/t1_data/*.csv
+Output: Data/Retest_01-17-18/t1_data/*.csv
 Run: Sherlock
+To copy over: rsync -avzh zenkavi@sherlock.stanford.edu:/oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_01-17-2018/t1_data ./
 
-Bootstrap 
-Input: Data/Retest_11-27-17/batch_output/bootstrap_output, Data/Retest_11-27-17/batch_output/bootstrap_output/.err, Data/Retest_11-27-17/batch_output/bootstrap_output/.out, batch_scripts/retest/bootstrap_retest.R, bootstrap_scripts/retest/bootstrap_retest.batch, retest_report_vars.txt,
+Bootstrap (refactored paths)
+Input: /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/bootstrap_output, /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/bootstrap_output/.err, /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/bootstrap_output/.out, batch_scripts/retest/bootstrap_retest.R, bootstrap_scripts/retest/bootstrap_retest.batch, retest_report_vars.txt,
 Script: run_bootstrap_retest.sh
-Output: batch_output/bootstrap_output/*.csv, batch_output/bootstrap_output/.err/*.err, batch_output/bootstrap_output/.out/*.out 
+Output: /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/bootstrap_output/*.csv, /.err/*.err, /.out/*.out 
 Run: Sherlock
 
 Bootstrap merge and cleanup
@@ -74,20 +75,20 @@ Script: get_retest_worker_test_data.batch
 Output: Local/retest_subs_comp_data_post.json
 Run: Sherlock
 
-DDM refit for original sample
+DDM refit for original sample (refactored paths)
 Input: calculate_hddm_refits.batch, calculate_hddm_refits.py, batch_output/hddm_refits, batch_output/hddm_refits/.err, batch_output/hddm_refits/.out, retest_subs_test_data_post.json
 Script: run_hddm_refits.sh 
 Output: batch_output/hddm_refits/*_DV.json, batch_output/hddm_refits/*_DV_valence.json
 Run: Sherlock
 
 Concat DDM refits
-Input: Retest_11-27-2017/batch_output/hddm_refits/*hddm_refit*DV.json
+Input: Retest_01-17-2018/batch_output/hddm_refits/*hddm_refit*DV.json
 Script: batch_files/concatenate_hddm_refits.py
-Output: Retest_11-27-2017/Local/mturk_hddm_refit_DV.json, Retest_11-27-2017/Local/mturk_hddm_refit_DV_valence.json 
+Output: Retest_01-17-2018/Local/mturk_hddm_refit_DV.json, Retest_01-17-2018/Local/mturk_hddm_refit_DV_valence.json 
 Run: Sherlock
 
 Convert DDM refits to csv
-Input: Retest_11-27-2017/Local/mturk_hddm_refit_DV.json, Retest_11-27-2017/Local/mturk_hddm_refit_DV_valence.json
+Input: Retest_01-17-2018/Local/mturk_hddm_refit_DV.json, Retest_01-17-2018/Local/mturk_hddm_refit_DV_valence.json
 Script: data_preparation/retest/retest_save_hddm_refits.py
 Output: hddm_refits_exhaustive.csv
 Run: Sherlock
@@ -99,7 +100,7 @@ Output:
 Run:
 
 Fit HDDM parameters without hierarchy
-Input: Retest_11-27-2017/batch_output/hddm_flat/, Retest_11-27-2017/batch_output/hddm_flat/.out, Retest_11-27-2017/batch_output/hddm_flat/.err, calculate_hddm_flat.py, calculate_hddm_flat.batch
+Input: Retest_01-17-2018/batch_output/hddm_flat/, Retest_01-17-2018/batch_output/hddm_flat/.out, Retest_01-17-2018/batch_output/hddm_flat/.err, calculate_hddm_flat.py, calculate_hddm_flat.batch
 Script: run_hddm_flat.sh
 Output: batch_output/hddm_flat/*_hddm_flat.csv
 Run: Sherlock
