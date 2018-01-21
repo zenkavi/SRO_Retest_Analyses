@@ -65,7 +65,7 @@ Run: Sherlock
 
 Bootstrap merge and cleanup
 Input: batch_output/boostrap_output/*.csv
-Script: concatenate_boostrap.sh
+Script: run_concatenate_boostrap.sh
 Output: Local/bootstrap_merged.csv
 Run: Sherlock
 
@@ -76,24 +76,24 @@ Output: Local/retest_subs_comp_data_post.json
 Run: Sherlock
 
 DDM refit for original sample (refactored paths)
-Input: calculate_hddm_refits.batch, calculate_hddm_refits.py, batch_output/hddm_refits, batch_output/hddm_refits/.err, batch_output/hddm_refits/.out, retest_subs_test_data_post.json
-Script: run_hddm_refits.sh 
-Output: batch_output/hddm_refits/*_DV.json, batch_output/hddm_refits/*_DV_valence.json
+Input: batch_output/hddm_refits, batch_output/hddm_refits/.err, batch_output/hddm_refits/.out, retest_subs_test_data_post.json, batch_files/calculate_hddm_refits.batch, /SRO/batch_files/helper_funcs/calculate_exp_DVs.py, singularity_config.txt (with correct singularity image)
+Script: batch_files/.run_mturk_retest_hddm_refits.sh
+Output: batch_output/hddm_refits/*_DV.json, batch_output/hddm_refits/*_DV_valence.json, batch_output/hddm_refits/*.model
 Run: Sherlock
 
 Concat DDM refits
-Input: Retest_01-17-2018/batch_output/hddm_refits/*hddm_refit*DV.json
-Script: batch_files/concatenate_hddm_refits.py
-Output: Retest_01-17-2018/Local/mturk_hddm_refit_DV.json, Retest_01-17-2018/Local/mturk_hddm_refit_DV_valence.json 
+Input: /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/hddm_refits/hddm_refits/*hddm_refit*DV.json
+Script: batch_files/retest/concatenate_hddm_refits.py
+Output: /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/hddm_refits/mturk_hddm_refit_DV.json, /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/hddm_refits/mturk_hddm_refit_DV_valence.json 
 Run: Sherlock
 
 Convert DDM refits to csv
-Input: Retest_01-17-2018/Local/mturk_hddm_refit_DV.json, Retest_01-17-2018/Local/mturk_hddm_refit_DV_valence.json
+Input: /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/hddm_refits/mturk_hddm_refit_DV.json, /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/hddm_refits/mturk_hddm_refit_DV_valence.json
 Script: data_preparation/retest/retest_save_hddm_refits.py
-Output: hddm_refits_exhaustive.csv
+Output: Retest_01-17-2018/hddm_refits_exhaustive.csv
 Run: Sherlock
 
-Bootstrap DDM refits:
+Bootstrap reliabilities of DDM refits:
 Input:
 Script:
 Output:
@@ -104,6 +104,12 @@ Input: Retest_01-17-2018/batch_output/hddm_flat/, Retest_01-17-2018/batch_output
 Script: run_hddm_flat.sh
 Output: batch_output/hddm_flat/*_hddm_flat.csv
 Run: Sherlock
+
+Get HDDM fitstats
+Input:
+Script:
+Output:
+Run:
 
 HDDM sample size:
 Input:
