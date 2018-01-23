@@ -89,10 +89,17 @@ Output: Retest_01-17-2018/t1_data/hddm_refits_exhaustive.csv
 Run: Sherlock
 
 Bootstrap reliabilities of DDM refits:
-Input: hddm_refit_vars.txt, bootstrap_hddm_refits.batch
+Input: hddm_refit_vars.txt, bootstrap_hddm_refits.batch, bootstrap_retest.R
 Script: batch_files/retest/run_bootstrap_refits.sh
-Output:
+Output: /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/bootstrap_output/hddm_refits/*_output.csv
 Run: Sherlock
+
+Merge refit bootstrap
+Input: /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/boostrap_output/hddm_refits/*.csv
+Script: batch_files/retest/run_concatenate_refit_boostrap.sh
+Output: Local/refits_bootstrap_merged.csv
+Run: Sherlock
+To copy over: rsync -avzh zenkavi@sherlock.stanford.edu:/oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_01-17-2018/Local/refits_bootstrap_merged.csv ./
 
 Fit HDDM parameters without hierarchy
 Input: Retest_01-17-2018/batch_output/hddm_flat/, Retest_01-17-2018/batch_output/hddm_flat/.out, Retest_01-17-2018/batch_output/hddm_flat/.err, calculate_hddm_flat.py, calculate_hddm_flat.batch
