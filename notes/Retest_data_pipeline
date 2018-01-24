@@ -13,6 +13,7 @@ General:
 - pip install -e expfactory-analysis
 - python setup.py install for selfregulation module
 - SRO conda environment can be built using environment.yml in the root directory (conda env create -f environment.yml)
+- To change data paths in all retest related batch files "find . -type f -exec sed -i '' -e 's/Retest_01-23-2018/Retest_01-23-2018/g' {} +"
 
 Download data + post process + QC
 Input: Self_Regulation_Retest_Settings.txt, expfactory_token.txt, 
@@ -45,11 +46,11 @@ Output: /Individual_Measures/, /metadata/, /references/, demographics.csv, demog
 Run: Sherlock 
 
 Extract t1-data:
-Input: extract_t1_data.R, extract_t1_data.batch, Data/Complete_01-17-2018/, Data/Retest_01-17-2018/t1_data
+Input: extract_t1_data.R, extract_t1_data.batch, Data/Complete_01-22-2018/, Data/Retest_01-23-2018/t1_data
 Script: run_extract_t1_data.sh
 Output: Data/Retest_01-17-18/t1_data/*.csv
 Run: Sherlock
-To copy over: rsync -avzh zenkavi@sherlock.stanford.edu:/oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_01-17-2018/t1_data ./
+To copy over: rsync -avzh zenkavi@sherlock.stanford.edu:/oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_01-23-2018/t1_data ./
 
 Bootstrap (can start before refits)
 Input: /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/bootstrap_output, /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/bootstrap_output/.err, /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/bootstrap_output/.out, batch_scripts/retest/bootstrap_retest.R, bootstrap_scripts/retest/bootstrap_retest.batch, retest_report_vars.txt,
@@ -62,7 +63,7 @@ Input: /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/beh
 Script: batch_files/retest/run_concatenate_boostrap.sh
 Output: Local/bootstrap_merged.csv
 Run: Sherlock
-To copy over: rsync -avzh zenkavi@sherlock.stanford.edu:/oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_01-17-2018/Local/bootstrap_merged.csv ./
+To copy over: rsync -avzh zenkavi@sherlock.stanford.edu:/oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_01-23-2018/Local/bootstrap_merged.csv ./
 
 Get retest_subs_test_data_post.json for DDM refits
 Input: get_retest_worker_test_data.py, mturk_complete_data_post.pkl
@@ -85,7 +86,7 @@ Run: Sherlock
 Convert DDM refits to csv
 Input: /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/hddm_refits/mturk_hddm_refit_DV.json, /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/hddm_refits/mturk_hddm_refit_DV_valence.json
 Script: data_preparation/retest/retest_save_hddm_refits.py
-Output: Retest_01-17-2018/t1_data/hddm_refits_exhaustive.csv
+Output: Retest_01-23-2018/t1_data/hddm_refits_exhaustive.csv
 Run: Sherlock
 
 Bootstrap reliabilities of DDM refits:
@@ -99,10 +100,10 @@ Input: /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/beh
 Script: batch_files/retest/run_concatenate_refit_boostrap.sh
 Output: Local/refits_bootstrap_merged.csv
 Run: Sherlock
-To copy over: rsync -avzh zenkavi@sherlock.stanford.edu:/oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_01-17-2018/Local/refits_bootstrap_merged.csv ./
+To copy over: rsync -avzh zenkavi@sherlock.stanford.edu:/oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_01-23-2018/Local/refits_bootstrap_merged.csv ./
 
 Fit HDDM parameters without hierarchy
-Input: Retest_01-17-2018/batch_output/hddm_flat/, Retest_01-17-2018/batch_output/hddm_flat/.out, Retest_01-17-2018/batch_output/hddm_flat/.err, calculate_hddm_flat.py, calculate_hddm_flat.batch
+Input: Retest_01-23-2018/batch_output/hddm_flat/, Retest_01-23-2018/batch_output/hddm_flat/.out, Retest_01-23-2018/batch_output/hddm_flat/.err, calculate_hddm_flat.py, calculate_hddm_flat.batch
 Script: run_hddm_flat.sh
 Output: batch_output/hddm_flat/*_hddm_flat.csv
 Run: Sherlock
