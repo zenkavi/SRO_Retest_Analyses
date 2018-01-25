@@ -295,7 +295,7 @@ retest_data = retest_data[retest_data$sub_id %in% test_data$sub_id,]
 Since HDDM parameters depend on the sample on which they are fit we refit the model on t1 data for the subjects that have t2 data. Here we replace the HDDM parameters in the current t1 dataset with these refitted values. 
 
 ```{r}
-hddm_refits <- read.csv(paste0('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/Local/hddm_refits_exhaustive.csv')
+hddm_refits <- read.csv(paste0(retest_data_path,'t1_data/hddm_refits_exhaustive.csv'))
 
 hddm_refits = hddm_refits[,names(hddm_refits) %in% retest_report_vars]
 
@@ -305,10 +305,13 @@ names(hddm_refits)[which(names(hddm_refits) == 'X')] <-'sub_id'
 #For later comparison of whether fitting the DDM parameters on full or retest sample makes a big difference
 test_data_full_sample_hddm <- test_data
 
+#drop hddm columns from test_data
 test_data = cbind(test_data$sub_id, test_data[,names(test_data) %in% names(hddm_refits) == FALSE])
 
+#fix naming before merging
 names(test_data)[which(names(test_data) == 'test_data$sub_id')] <-'sub_id'
 
+#merge hddm refits to test data
 test_data = merge(test_data, hddm_refits, by="sub_id")
 ```
 
@@ -447,7 +450,7 @@ Note: Some variables have <0 ICC's. This would be the case if the $MS_{error}$>$
 Summarized bootstrapped reliabilities
 
 ```{r message=FALSE, warning=FALSE}
-boot_df <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/bootstrap_merged.csv')
+boot_df <- read.csv(gzfile(paste0(retest_data_path,'bootstrap_merged.csv.gz')))
 
 boot_df = boot_df %>%
   drop_na() %>%
@@ -475,6 +478,9 @@ boot_df %>%
 ```{r echo=FALSE}
 measure_labels <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/measure_labels.csv')
 measure_labels = measure_labels %>% select(-measure_description,-measure_type,-measure_type_Ian,-measure_type_Russ,-notes,-Patrick_hates)
+
+# retest_report_vars[(retest_report_vars %in% measure_labels$dv == FALSE)]
+# measure_labels$dv[(measure_labels$dv %in% retest_report_vars == FALSE)]
 ```
 
 ```{r warning=FALSE, message=FALSE}

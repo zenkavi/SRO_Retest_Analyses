@@ -63,7 +63,7 @@ Input: /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/beh
 Script: batch_files/retest/run_concatenate_boostrap.sh
 Output: Local/bootstrap_merged.csv
 Run: Sherlock
-To copy over: rsync -avzh zenkavi@sherlock.stanford.edu:/oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_01-23-2018/Local/bootstrap_merged.csv ./
+To copy over: rsync -avzh zenkavi@sherlock.stanford.edu:/oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_01-23-2018/Local/bootstrap_merged.csv.gz ./
 
 Get retest_subs_test_data_post.json for DDM refits
 Input: get_retest_worker_test_data.py, mturk_complete_data_post.pkl
@@ -79,14 +79,14 @@ Run: Sherlock
 
 Concat DDM refits
 Input: /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/hddm_refits/hddm_refits/*hddm_refit*DV.json
-Script: batch_files/retest/concatenate_hddm_refits.py
+Script: source activate SRO; batch_files/retest/concatenate_hddm_refits.py
 Output: /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/hddm_refits/mturk_hddm_refit_DV.json, /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/hddm_refits/mturk_hddm_refit_DV_valence.json 
 Run: Sherlock
 
 Convert DDM refits to csv
 Input: /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/hddm_refits/mturk_hddm_refit_DV.json, /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/hddm_refits/mturk_hddm_refit_DV_valence.json
 Script: data_preparation/retest/retest_save_hddm_refits.py
-Output: Retest_01-23-2018/t1_data/hddm_refits_exhaustive.csv
+Output: Retest_01-23-2018/t1_data/hddm_refits_exhaustive.csv [Double check header columns]
 Run: Sherlock
 
 Bootstrap reliabilities of DDM refits:
@@ -98,9 +98,9 @@ Run: Sherlock
 Merge refit bootstrap
 Input: /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/boostrap_output/hddm_refits/*.csv
 Script: batch_files/retest/run_concatenate_refit_boostrap.sh
-Output: Local/refits_bootstrap_merged.csv
+Output: Local/refits_bootstrap_merged.csv.gz
 Run: Sherlock
-To copy over: rsync -avzh zenkavi@sherlock.stanford.edu:/oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_01-23-2018/Local/refits_bootstrap_merged.csv ./
+To copy over: rsync -avzh zenkavi@sherlock.stanford.edu:/oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_01-23-2018/Local/refits_bootstrap_merged.csv.gz ./
 
 Fit HDDM parameters without hierarchy
 Input: Retest_01-23-2018/batch_output/hddm_flat/, Retest_01-23-2018/batch_output/hddm_flat/.out, Retest_01-23-2018/batch_output/hddm_flat/.err, calculate_hddm_flat.py, calculate_hddm_flat.batch
