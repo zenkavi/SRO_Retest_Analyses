@@ -891,9 +891,9 @@ candidates: angling risk task, columbia card task, dietary decision, hierarchica
 
 ```{r}
 #read t1 data
-t1_hr = read.csv(gzfile('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_01-15-2018/Individual_Measures/hierarchical_rule.csv.gz', 'rt'))
+t1_hr = read.csv(gzfile(paste0(test_data_path,'Individual_Measures/hierarchical_rule.csv.gz'), 'rt'))
 
-t2_hr = read.csv(gzfile('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017//Individual_Measures/hierarchical_rule.csv.gz', 'rt'))
+t2_hr = read.csv(gzfile(paste0(retest_data_path,'Individual_Measures/hierarchical_rule.csv.gz'), 'rt'))
 
 #get only retest subjects
 t1_hr = t1_hr[as.character(t1_hr$worker_id) %in% as.character(test_data$sub_id),]
