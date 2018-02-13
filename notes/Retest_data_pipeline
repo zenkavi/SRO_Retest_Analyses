@@ -138,3 +138,9 @@ Input:
 Script:
 Output:
 Run:
+
+Get completion times (to be tested post path correction)
+Input: /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_complete_data_post.pkl, get_completion_time.py
+Script: get_completion_time.batch
+Output: Retest_02-03-2018/Local/complete_completion_dates.csv
+Run: Sherlock
