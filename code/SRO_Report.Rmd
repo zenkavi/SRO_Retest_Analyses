@@ -652,7 +652,7 @@ ggsave('Hist_Boot_Rel.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox
 
 ### Variance breakdown
 
-The quantiative explanation for the difference in reliability estimates between surveys and tasks, as recently detailed by Hedge et al. (2017), lies in the difference in sources of variance between these measures. This is because reliability is estimated as a ratio of these sources variance to each other. Specifically, the ICC is calculated as the ratio of variance between subjects variance to all sources of variance. Thus, measures with high between subjects variance would have high test-retest reliability. Intuitively, measures with high between subjects variance are also better suited for individual difference analyses as they would capture the differences between the subjects in a sample.
+The quantiative explanation for the difference in reliability estimates between surveys and tasks, as recently detailed by Hedge et al. (2017), lies in the difference in sources of variance between these measures. Specifically, the ICC is calculated as the ratio of variance between subjects variance to all sources of variance. Thus, measures with high between subjects variance would have high test-retest reliability. Intuitively, measures with high between subjects variance are also better suited for individual difference analyses as they would capture the differences between the subjects in a sample.
 
 Here we first plot the percentage of variance explained by the three sources of variance for the point estimates of measure reliabilities. The plot only includes raw measures (no DDM parameters) and the measures are ranked by percentage of between subject variability for each task/survey (i.e. the best to worst individual difference measure for each task/survey). Then we compare statistically whether the percentage of variance explained by these sources differ between tasks and surveys.
 
@@ -766,22 +766,45 @@ Comparing types of variance for survey vs task measures: Survey measures have hi
 
 Note: This analysis includes DDM variables too.
 
+Running separate models for different sources of variance because interactive model with variance type*task seemed too complicated.
+
+First we find that task measures have a smaller percentage of their overall variance explained by variability between subjects compared to survey measures.
+
 ```{r}
 tmp = boot_df %>%
   mutate(var_subs_pct = var_subs/(var_subs+var_ind+var_resid)*100,
          var_ind_pct = var_ind/(var_subs+var_ind+var_resid)*100, 
          var_resid_pct = var_resid/(var_subs+var_ind+var_resid)*100) %>%
-  select(dv, task, var_subs_pct, var_ind_pct, var_resid_pct) %>%
-  gather(key, value, -dv, -task) 
+  select(dv, task, var_subs_pct, var_ind_pct, var_resid_pct) 
 
-summary(lmer(value~key*task+(1|dv),tmp))
+summary(lmerTest::lmer(var_subs_pct~task+(1|dv),tmp%>%select(-var_ind_pct,-var_resid_pct)))
+```
+
+We also find that a significantly larger percentage of their variance is explained by between session variability. Larger between session variability suggests systematic differences between the two sessions. Such systematic effects can be due to e.g. learning effects as explored later.
+
+```{r}
+summary(lmerTest::lmer(var_ind_pct~task+(1|dv),tmp%>%select(-var_subs_pct,-var_resid_pct)))
 ```
 
 ```{r}
-tmp%>%
+summary(lmerTest::lmer(var_resid_pct~task+(1|dv),tmp%>%select(-var_subs_pct,-var_ind_pct)))
+```
+
+```{r}
+tmp_save = tmp%>%
+  gather(key, value, -dv, -task) %>%
   group_by(task, key) %>%
   summarise(median = median(value),
-            sd = sd(value))
+            sd = sd(value)) %>%
+  mutate(key = ifelse(key == 'var_ind_pct', 'Between session variance', ifelse(key == 'var_subs_pct', 'Between subjects variance', ifelse(key == 'var_resid_pct', 'Residual variance',NA)))) %>%
+  rename(Median = median, SD = sd) %>%
+  arrange(task, key)
+
+tmp_save
+```
+
+```{r}
+sjt.df(tmp_save %>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.progress = TRUE, show.rownames = FALSE, file = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/var_breakdown_summary.doc")
 ```
 
 Summarizing for clearer presentation. This graph is currently using the bootstrapped reliabilities and is therefore messier than if just using the point estimates.
