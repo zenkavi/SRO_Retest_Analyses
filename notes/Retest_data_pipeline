@@ -128,10 +128,10 @@ Output: batch_output/hddm_flat/subject_fits/*_hddm_flat.csv
 Run: Sherlock
 
 Concatenate HDDM parameter estimates without hierarchy
-Input:
-Script:
-Output:
-Run:
+Input: mturk_retest_outputs/hddm_flat/subject_fits, batch_files/retest/concatenate_hddm_flat.py
+Script: python concatenate_hddm_flat.py /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/hddm_flat/subject_fits/ all both /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/hddm_flat/
+Output: retest_hddm_flat.csv, t1_hddm_flat.csv
+Run: Commandline Sherlock
 
 Get HDDM fitstats (on hold)
 Input:
