@@ -16,6 +16,10 @@ retest_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulati
 
 # Introduction
 
+The psychological construct of self-regulation, or related concepts of impulsivity, self-control, inhibition and others correlate with problematic real-world behaviors such as disordered eating (Mobbs et al., 2010, Verbeken et al., 2009, Nederkoorn et al. 2006a, Nederkoorn et al., 2006b), gambling (Lawrence et al., 2009, Fuentes et al., 2006, Alessi and Petry, 2003), drug addiction (Coffey et al., 2003, de Wit, Crean and John, 2000, Sher, Bartholow and Wood, 2000, Kirby, Petry and Bickel, 1999) or bad financial decisions (Meier and Sprenger, 2015, Meier and Sprenger, 2013, Meier and Sprenger 2012). In these lines of work measures of self-regulation are used as behavioral assays for individual difference analyses. An underlying assumption of treating behavioral measures as reflective of person-specific characteristics is that the measures of self-regulation are stable across time. In other words, that they have high test-retest reliability (or high between- and low within-subject variability). This assumption is not extensively and equally tested in the literature for all measures of self-regulation.    
+Self-regulation measures can be grouped in two broad categories: Surveys and cognitive tasks. While the former typically goes through some form of psychometric testing often filtering out items with low test-retest reliability this is less frequently true for the latter. Though some empirical results on test-retest reliabilities of certain cognitive task measures are reported in pockets of the literature an exhaustive summary or systematic elimination of tasks or measures based on stability across time does not seem to exist. Test-retest reliability is, however, crucial for individual difference analyses (Hedge, Powell and Sumner, 2017).   
+To answer the question of reliability of self-regulation measures comprehensively we created a large battery consisting of both cognitive task and survey measures. In this paper we make two contributions: First we provide a review of these measures along with their reported reliabilities when available. Then we report results of a large study we conducted where we collected retest reliability data using all of these measures. This effort not only fills in a notable gap in the literature in clarifying which measures of self-regulation are stable across time but also provides guidance on factors to pay attention to when constructing new tasks for individual difference measures.  
+
 # Methods
 
 ## Data collection
@@ -70,7 +74,7 @@ summary(retest_demog %>%
 
 ## Literature
 
-One the major contributions of this project is a comprehensive literature review of the retest reliabilities of the surveys and tasks that were used. We reviewed the literature on a measure (as opposed to task level) paying attention to differences in sample size, the delay between the two measurements as well as the statistic that was used to assess reliabilities (e.g. Spearman vs. Pearson correlations). Here we present a table and a visualization summarizing our findings. References mentioned in the table below can be found [here](https://docs.google.com/spreadsheets/d/1hcED4_rWSGSE8Td0aqT0kWqlLCBAzRNKBXj3tSram58/edit?usp=sharing).  
+One of the major contributions of this project is a comprehensive literature review of the retest reliabilities of the surveys and tasks that were used. We reviewed the literature on a measure (as opposed to task level) paying attention to differences in sample size, the delay between the two measurements as well as the statistic that was used to assess reliabilities (e.g. Spearman vs. Pearson correlations). Here we present a table and a visualization summarizing our findings. References mentioned in the table below can be found [here](https://docs.google.com/spreadsheets/d/1hcED4_rWSGSE8Td0aqT0kWqlLCBAzRNKBXj3tSram58/edit?usp=sharing).  
 
 ```{r}
 lit_review <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/lit_review_figure.csv')
@@ -232,7 +236,7 @@ An interactive version of this plot could be find [here](https://zenkavi.github.
 
 Takeaways from this review are:   
 - Survey measures have been reported to higher reliability compared to task measures  
-- Survey measures have less variability in the reported reliabiltiy estimates compared to task measures' 
+- Survey measures have less variability in the reported reliabiltiy estimates compared to task measures   
 
 ## Loading datasets
 
@@ -360,7 +364,7 @@ rm(test_demog, retest_demog, demog_rel_df, numeric_cols)
 
 Based on [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9d379b79de4f767740.pdf) ICC(3,k) does not take in to account within subject differences between two time points (i.e. the fixed effect of time/systematic error). Thus, it is well approximated by Pearson's r and subject to similar criticisms. [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9d379b79de4f767740.pdf) suggests reporting at least this systematic error effect size if one chooses to report with ICC(3,k). Based on his conclusions here I report:  
 - ICC(3,k): As Dave clarified this ranges from 1 to -1/(number of repeated measures -1) so in our case this range would be [-1, 1]; larger values would mean that the two scores of a subject for a given measure are more similar to each other than they are to scores of other people  
-- " ICC is reflective of the ability of a test to differentiate between different individuals"
+- "ICC is reflective of the ability of a test to differentiate between different individuals"
 - partial $\eta^2$ for time ($SS_{time}/SS_{within}$): effect size of time   
 - SEM ($\sqrt(MS_{error})$): standard error of measurement; the smaller the better. It 
 "quantifies the precision of individual scores on a test" and is not dependent on the sample in the way ICC is since it doesn't depend on between subject reliability (at least in this formulation) but is unit-dependent.
@@ -378,7 +382,7 @@ for(i in 1:length(names(test_data))){
 rel_df <- data.frame(spearman = rep(NA, length(numeric_cols)),
                      icc = rep(NA, length(numeric_cols)),
                      pearson = rep(NA, length(numeric_cols)),
-                     eta_sq = rep(NA, length(numeric_cols)),
+                     partial_eta_sq = rep(NA, length(numeric_cols)),
                      sem = rep(NA, length(numeric_cols)),
                      var_subs = rep(NA, length(numeric_cols)),
                      var_ind = rep(NA, length(numeric_cols)),
@@ -403,9 +407,11 @@ rel_df$task = 'task'
 rel_df[grep('survey', rel_df$dv), 'task'] = 'survey'
 rel_df[grep('holt', rel_df$dv), 'task'] = "task"
 rel_df = rel_df %>%
-  select(dv, task, spearman, icc, pearson, eta_sq, sem, var_subs, var_ind, var_resid)
+  select(dv, task, spearman, icc, pearson, partial_eta_sq, sem, var_subs, var_ind, var_resid)
 # row.names(rel_df) = NULL
 ```
+
+We calculated `r as.numeric(table(rel_df$task)[1])` measures for surveys and `r as.numeric(table(rel_df$task)[2])` measures for cognitive tasks.  
 
 Though we are primarily reporting ICC's as our metric of reliability the results don't change depending on the metric chosen. Here we plot point estimates of three different reliability metrics against each other (ICC, Pearson, Spearman). The bootstrapped version is essentially the same but the plots are busier due to more datapoints.
 
@@ -439,6 +445,12 @@ grid.arrange(p1, p2, p3, nrow=1)
 ggsave('Metric_Scatterplots.jpg', plot = grid.arrange(p1, p2, p3, nrow=1), device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 12, height = 4, units = "in", limitsize = FALSE, dpi = 100)
 ```
 
+As the scatter plots depict the correlations between different types reliability metrics were very high.
+
+```{r}
+cor(rel_df[,c('spearman', 'icc', 'pearson')])
+```
+
 ```{r echo=FALSE}
 rm(p1,p2,p3)
 ```
@@ -461,6 +473,7 @@ boot_df = boot_df %>%
 
 boot_df = boot_df[boot_df$dv %in% retest_report_vars,]
 
+# Check if you hae all variables bootstrapped
 # retest_report_vars[which(retest_report_vars %in% boot_df$dv==FALSE)]
 
 boot_df %>%
@@ -477,8 +490,8 @@ boot_df %>%
 
 ```{r echo=FALSE}
 measure_labels <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/measure_labels.csv')
-measure_labels = measure_labels %>% select(-measure_description,-measure_type,-measure_type_Ian,-measure_type_Russ,-notes,-Patrick_hates)
-
+measure_labels = measure_labels %>% select(-measure_description)
+# Check if there are any missing variables
 # retest_report_vars[(retest_report_vars %in% measure_labels$dv == FALSE)]
 # measure_labels$dv[(measure_labels$dv %in% retest_report_vars == FALSE)]
 ```
