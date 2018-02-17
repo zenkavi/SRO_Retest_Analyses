@@ -1237,16 +1237,6 @@ ggplotly(hddm_refits %>%
   label=dv)
 ```
 
-```{r}
-hddm_refits %>%
-  filter(adaptive_n_back.hddm_drift<0)
-  # ggplot(aes(adaptive_n_back.EZ_drift))+
-  # geom_histogram()
-
-hddm_fullfits %>%
-  filter(dv == "adaptive_n_back.hddm_drift" & value <0)
-```
-
 #### Parameter reliability depending on sample size
 
 There doesn't seem to be an effect looking at the graph but the multilevel model seems to show a very significant but tiny effect.
@@ -1287,9 +1277,12 @@ summary(lmer(icc_median ~ N + (1|dv), tmp))
 
 #### Is the H in HDDM important?
 
-TBD. Still need to figure out how to turn off the H.
+Plot flat estimates against 
 
-One way to solve this would be to feed data in manually.
+```{r}
+retest_hddm_flat <- read.csv(paste0(retest_data_path, 'retest_hddm_flat.csv'))
+retest_hddm_flat
+```
 
 ## Completion times
 
