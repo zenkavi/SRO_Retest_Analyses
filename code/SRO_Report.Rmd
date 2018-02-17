@@ -811,6 +811,7 @@ Summarizing for clearer presentation. This graph is currently using the bootstra
 
 ```{r}
 tmp %>%
+  gather(key, value, -dv, -task) %>%
   group_by(task, key) %>%
   ggplot(aes(factor(task, levels=c("task","survey"), labels=c("Task", "Survey")), value, fill=key, color=task))+
   geom_boxplot()+
@@ -889,7 +890,7 @@ tmp = measure_labels %>%
   select(-extra_1, -extra_2)
 
 # summary(lm(icc ~ num_all_trials, data = tmp))
-summary(lmer(icc ~ num_all_trials + (1|dv), data = tmp))
+summary(lmerTest::lmer(icc ~ num_all_trials + (1|dv), data = tmp))
 ```
 
 ```{r warning=FALSE, message=FALSE}
@@ -925,7 +926,7 @@ target task: one without hddm variables, has dv's that are easily codable in r, 
 method: import raw response data for chosen task for both t1 and t2, calculate dv's for for both t's for different number of trials, calculate retest reliability point estimates for each of these dv's with different trial numbers  
 candidates: angling risk task, columbia card task, dietary decision, hierarchical rule, keep track, probabilistic selection, psychological refractory period, two stage decision  
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 #read t1 data
 t1_hr = read.csv(gzfile(paste0(test_data_path,'Individual_Measures/hierarchical_rule.csv.gz'), 'rt'))
 
@@ -949,8 +950,8 @@ calc_break_dvs = function(x, breaks=seq(0, 360, 10)[-1]){
   calc_dvs = function(x){
     out = x %>%
       summarise(acc = mean(correct),
-                avg_rt = median(rt[correct == 1]),
-                score = sum(correct))
+                avg_rt = median(rt[correct == 1]))
+                # score = sum(correct))
     return(out)
   }
   
@@ -1012,7 +1013,8 @@ t2_dvs = hr_merge %>%
 
 # calculate point estimates for reliability of each of the variables for each break
 # get_icc for each break of tmp_t1_dvs and tmp_t2_dvs
-trial_num_rel_df = data.frame(breaks=rep(NA, length(unique(t1_dvs$breaks))), acc_icc=rep(NA, length(unique(t1_dvs$breaks))), avg_rt_icc=rep(NA, length(unique(t1_dvs$breaks))), score_icc=rep(NA, length(unique(t1_dvs$breaks))))
+# trial_num_rel_df = data.frame(breaks=rep(NA, length(unique(t1_dvs$breaks))), acc_icc=rep(NA, length(unique(t1_dvs$breaks))), avg_rt_icc=rep(NA, length(unique(t1_dvs$breaks))), score_icc=rep(NA, length(unique(t1_dvs$breaks))))
+trial_num_rel_df = data.frame(breaks=rep(NA, length(unique(t1_dvs$breaks))), acc_icc=rep(NA, length(unique(t1_dvs$breaks))), avg_rt_icc=rep(NA, length(unique(t1_dvs$breaks))))
 for(i in 1:length(unique(t1_dvs$breaks))){
   cur_break = unique(t1_dvs$breaks)[i]
   tmp_t1_dvs = t1_dvs %>% filter(breaks == cur_break)
@@ -1020,7 +1022,7 @@ for(i in 1:length(unique(t1_dvs$breaks))){
   trial_num_rel_df$breaks[i] = cur_break
   trial_num_rel_df$acc_icc[i] = get_icc("acc", tmp_t1_dvs, tmp_t2_dvs)
   trial_num_rel_df$avg_rt_icc[i] = get_icc("avg_rt", tmp_t1_dvs, tmp_t2_dvs)
-  trial_num_rel_df$score_icc[i] = get_icc("score", tmp_t1_dvs, tmp_t2_dvs)
+  # trial_num_rel_df$score_icc[i] = get_icc("score", tmp_t1_dvs, tmp_t2_dvs)
 }
 rm(i, cur_break, tmp_t1_dvs, tmp_t2_dvs)
 
@@ -1028,7 +1030,8 @@ trial_num_rel_df$breaks = as.numeric(trial_num_rel_df$breaks)
 
 trial_num_rel_df %>%
   gather(key, value, -breaks) %>%
-  ggplot(aes(breaks*10, value, color=factor(key, levels = c("acc_icc", "avg_rt_icc", "score_icc"), labels = c("Accuracy", "Average RT", "Score"))))+
+  # ggplot(aes(breaks*10, value, color=factor(key, levels = c("acc_icc", "avg_rt_icc", "score_icc"), labels = c("Accuracy", "Average RT", "Score"))))+
+  ggplot(aes(breaks*10, value, color=factor(key, levels = c("acc_icc", "avg_rt_icc"), labels = c("Accuracy", "Average RT"))))+
   geom_point()+
   geom_line()+
   theme_bw()+
@@ -1037,6 +1040,10 @@ trial_num_rel_df %>%
   theme(legend.title = element_blank())
 
 ggsave('Intrameasure_Trialnum_Dependendence.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 10, height = 5, units = "in", dpi = 100)
+```
+
+```{r}
+rel_df[c(rel_df$dv %in% grep('hierarchical_rule', rel_df$dv, value = TRUE)),]
 ```
 
 ### Raw vs DDM
@@ -1066,7 +1073,38 @@ tmp %>%
 ```
 
 ```{r}
-summary(lmerTest::lmer(icc ~ overall_difference*raw_fit + (1|dv) ,tmp))
+tmp_save = tmp %>%
+  drop_na() %>% #try removing this in final release
+  group_by(overall_difference, raw_fit, rt_acc) %>%
+  summarise(icc_median = quantile(icc, probs = 0.5),
+            icc_2.5 = quantile(icc, probs = 0.025),
+            icc_97.5 = quantile(icc, probs = 0.975),
+            num_vars = n()/1000) %>%
+  ungroup() %>%
+  mutate(overall_difference = as.character(overall_difference),
+         raw_fit = as.character(raw_fit),
+         rt_acc = as.character(rt_acc)) %>%
+  arrange(-icc_median)
+
+sjt.df(tmp_save %>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.progress = TRUE, show.rownames = FALSE, file = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/ddm_rel_table.doc")
+```
+
+Comparing overall vs difference: overall has higher reliability than difference.
+
+```{r}
+summary(lmerTest::lmer(icc ~ overall_difference + (1|dv) ,tmp))
+```
+
+Comparing raw vs ddm in overall estimates: EZ is significantly better than HDDM and comparable to raw estimates.
+
+```{r}
+summary(lmerTest::lmer(icc ~ raw_fit + (1|dv) ,tmp %>% filter(overall_difference == "overall")))
+```
+
+Comparing raw vs ddm in difference scores: EZ is significantly worse than HDDM and comparable to raw estimates.
+
+```{r}
+summary(lmerTest::lmer(icc ~ raw_fit + (1|dv) ,tmp %>% filter(overall_difference == "difference")))
 ```
 
 ```{r}
@@ -1166,13 +1204,7 @@ tmp %>%
 ggsave('Variance_Breakdown_Plot_DDM_summary.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 10, height = 8, units = "in")
 ```
 
-Do these differ statistically?
-
-The plot does not suggest so but this model is giving a warning and very high t values. How else should I be checking for differences between these distributions?
-
-```{r}
-summary(lmer(value~key*overall_difference*raw_fit+(1|dv), tmp))
-```
+Not checking if these differ significantly because this seems to in the weeds for this paper.
 
 #### Change in parameter values depending on sample
 
