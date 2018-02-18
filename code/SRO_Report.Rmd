@@ -461,20 +461,51 @@ Note: Some variables have <0 ICC's. This would be the case if the $MS_{error}$>$
 
 Summarized bootstrapped reliabilities
 
+```{r}
+process_boot_df = function(df){
+  df = df %>%
+  drop_na() %>%
+  mutate(dv = as.character(dv),
+         icc = as.numeric(as.character(icc)),
+         spearman = as.numeric(as.character(spearman)),
+         eta_sq = as.numeric(as.character(eta_sq)),
+         sem = as.numeric(as.character(sem)),
+         partial_eta_sq = as.numeric(as.character(partial_eta_sq)),
+         omega_sq = as.numeric(as.character(omega_sq)),
+         var_subs = as.numeric(as.character(var_subs)),
+         var_ind = as.numeric(as.character(var_ind)),
+         var_resid = as.numeric(as.character(var_resid)),
+         F_time = as.numeric(as.character(F_time)),
+         p_time = as.numeric(as.character(p_time)),
+         df_time = as.numeric(as.character(df_time)),
+         df_resid = as.numeric(as.character(df_resid)))
+  return(df)} 
+```
+
 ```{r message=FALSE, warning=FALSE}
 boot_df <- read.csv(gzfile(paste0(retest_data_path,'bootstrap_merged.csv.gz')))
 
-boot_df = boot_df %>%
-  drop_na() %>%
-  mutate(icc = as.numeric(as.character(icc)),
-         spearman = as.numeric(as.character(spearman)),
-         eta_sq = as.numeric(as.character(eta_sq)),
-         sem = as.numeric(as.character(sem))) 
+boot_df = process_boot_df(boot_df)
 
 boot_df = boot_df[boot_df$dv %in% retest_report_vars,]
 
-# Check if you hae all variables bootstrapped
+# Check if you have all variables bootstrapped
 # retest_report_vars[which(retest_report_vars %in% boot_df$dv==FALSE)]
+
+# Boot df contains hddm parameters fit on the full sample in the t1 data
+# refits_bootstrap_merged.csv.gz contains bootstrapped reliabilities 
+
+refit_boot_df = read.csv(gzfile(paste0(retest_data_path,'refits_bootstrap_merged.csv.gz')))
+
+refit_boot_df = process_boot_df(refit_boot_df)
+
+fullfit_boot_df = boot_df[as.character(boot_df$dv) %in% unique(as.character(refit_boot_df$dv)),]
+
+boot_df = boot_df[!as.character(boot_df$dv) %in% unique(as.character(refit_boot_df$dv)),]
+
+boot_df = rbind(boot_df, refit_boot_df)
+
+rm(refit_boot_df)
 
 boot_df %>%
   group_by(dv) %>%
@@ -1277,7 +1308,9 @@ summary(lmer(icc_median ~ N + (1|dv), tmp))
 
 #### Is the H in HDDM important?
 
-Plot flat estimates against 
+Plot flat estimates against hierarhical estimates.
+
+Check the distributions of the flat and hierarchical estimates, transform if not normal and t-test to check if they are different than each other (alternatively get difference scores and check if they are different than 0/plot the distribution of the difference scores)
 
 ```{r}
 retest_hddm_flat <- read.csv(paste0(retest_data_path, 'retest_hddm_flat.csv'))

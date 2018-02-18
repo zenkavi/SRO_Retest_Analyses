@@ -68,7 +68,7 @@ Run: Sherlock
 Bootstrap merge and cleanup
 Input: /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/boostrap_output/*.csv
 Script: batch_files/retest/run_concatenate_boostrap.sh
-Output: Local/bootstrap_merged.csv
+Output: Local/bootstrap_merged.csv.gz
 Run: Sherlock
 To copy over: rsync -avzh zenkavi@sherlock.stanford.edu:/oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_02-03-2018/Local/bootstrap_merged.csv.gz ./
 
