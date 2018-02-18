@@ -468,6 +468,7 @@ process_boot_df = function(df){
   mutate(dv = as.character(dv),
          icc = as.numeric(as.character(icc)),
          spearman = as.numeric(as.character(spearman)),
+         pearson = as.numeric(as.character(pearson)),
          eta_sq = as.numeric(as.character(eta_sq)),
          sem = as.numeric(as.character(sem)),
          partial_eta_sq = as.numeric(as.character(partial_eta_sq)),
@@ -1348,10 +1349,34 @@ diff = tmp %>%
 t.test(diff$diff, rep(0, nrow(tmp)))
 ```
 
-Does this change reliability?
+```{r}
+rm(diff)
+```
+
+Does this change reliability? 18/33 of the bootstrapped reliability distributions for the refit hddm drift rates have different means than the reliability distributions using the fullfit drift rates. Only in 7/18 is the refit reliabilities higher. 
 
 ```{r}
+#Compare bootstrapped reliabilities for refits (replaced in boot_df) to bootstrapped reliabilities of full fits
+refit_ddm_drift_boot_df = boot_df[boot_df$dv %in% grep('hddm_drift',names(hddm_refits), value=T),]
+fullfit_ddm_drift_boot_df = fullfit_boot_df[fullfit_boot_df$dv %in% unique(refit_ddm_drift_boot_df$dv),]
 
+get_t_test_out <- function(df){
+  out = data.frame(p.value=NA, mean_x = NA, mean_y=NA)
+  mod = t.test(df$icc.x, df$icc.y)
+  out$p.value = mod$p.value
+  out$mean_x = as.numeric(mod$estimate[1])
+  out$mean_y = as.numeric(mod$estimate[2])  
+  return(out)
+}
+
+refit_ddm_drift_boot_df %>%
+  select(X, dv, icc) %>%
+  left_join(fullfit_ddm_drift_boot_df[,c('X', 'dv', 'icc')], by = c('X', 'dv')) %>%
+  group_by(dv) %>%
+  do(get_t_test_out(.)) %>%
+  mutate(sig_diff = ifelse(p.value<0.05, 1, 0),
+         refit_better = ifelse(mean_x>mean_y,1,0)) %>%
+  filter(sig_diff == 1, refit_better == 1)
 ```
 
 #### Parameter reliability depending on sample size
