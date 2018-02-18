@@ -1239,11 +1239,7 @@ Not checking if these differ significantly because this seems to in the weeds fo
 
 #### Change in parameter values depending on sample
 
-How much do parameter values change depending on whether the model was fit using the whole sample vs only the retest sample. Each point in these graphs is a subject's parameter estimates. There is almost no change for any of the EZ parameters (though shouldn't this have been 0?). For the HDDM parameters most of the changes are happening for drift rates but they don't appear to be systematically higher or lower.
-
-I'm not entirely sure what to make of this. A systematic change would have meant that the ranking remained the same regardless of the sample size. When the change is non-systematic in this way then a given subject that has high higher drift rates than most of the people in the full sample can appear to have lower drift rates than the same people when fit on the retest sample only. (note that a t-test is not significant)
-
-Of course these parameter estimates themselves are not very interpretable in their 'goodness' as they don't reflect anything about model fits. What is the measure of fits here? The variance of the posterior?
+How much do parameter values change depending on whether the model was fit using the whole sample vs only the retest sample. Each point in these graphs is a subject's parameter estimates. There is no change for any of the EZ parameters. For the HDDM parameters most of the changes are happening for drift rates but they don't appear to be systematically higher or lower.
 
 ```{r warning=FALSE, message=FALSE}
 hddm_fullfits <- test_data_full_sample_hddm[,names(test_data_full_sample_hddm) %in% names(hddm_refits)]
@@ -1251,12 +1247,14 @@ hddm_fullfits <- test_data_full_sample_hddm[,names(test_data_full_sample_hddm) %
 hddm_fullfits = hddm_fullfits %>%
   gather(dv, value, -sub_id)
 
-ggplotly(hddm_refits %>%
+tmp = hddm_refits %>%
   gather(dv, value, -sub_id) %>%
   left_join(hddm_fullfits, by = c("sub_id", "dv")) %>%
   rename(fullfit = value.y, refit = value.x) %>%
   left_join(measure_labels[,c("dv", "raw_fit", "rt_acc")], by="dv") %>%
-  filter(rt_acc %in% c("drift rate","non-decision", "threshold")) %>%
+  filter(rt_acc %in% c("drift rate","non-decision", "threshold")) 
+
+tmp %>%
   ggplot(aes(fullfit, refit, label=dv))+
   geom_point(aes(color=rt_acc))+
   facet_wrap(~raw_fit)+
@@ -1264,8 +1262,96 @@ ggplotly(hddm_refits %>%
   geom_abline(slope=1, intercept=0)+
   xlab("Fit on full sample")+
   ylab("Fit on retest sample")+
-  theme(legend.title = element_blank()),
-  label=dv)
+  theme(legend.title = element_blank())
+```
+
+```{r}
+tmp %>%
+  mutate(refit_diff = fullfit - refit) %>%
+  group_by(raw_fit, rt_acc) %>%
+  summarise(mean = mean(refit_diff, na.rm=T),
+            sd = sd(refit_diff, na.rm=T))
+```
+
+A simple way to compare the two distributions of the parameters using the full or the retest sample would be to run a t-test. Since this would have a normality assumption we first check the distributions of the parameters. Though the threshold and non-decision times look closer to normal the drift rates have a clear bimodal distribution. Since these are the estimates on which we find the greatest changes we should make sure to transform them somehow before running the test.
+
+```{r warning=FALSE, message=FALSE}
+tmp %>%
+  filter(raw_fit == 'hddm') %>%
+  gather(key, value, -sub_id, -dv, -raw_fit, -rt_acc) %>%
+  ggplot(aes(value))+
+  geom_histogram(position='identity', alpha=0.5)+
+  theme_bw()+
+  facet_grid(rt_acc~key, scales='free')
+```
+
+What if you log transform the drift rates? The bimodal distribution becomes one with a long left tail. Still not great to do a t-test on.
+
+```{r warning=FALSE, message=FALSE}
+tmp %>%
+  filter(raw_fit == 'hddm', rt_acc == 'drift rate') %>%
+  gather(key, value, -sub_id, -dv, -raw_fit, -rt_acc) %>%
+  mutate(value = log(value)) %>%
+  ggplot(aes(value))+
+  geom_histogram(alpha = 0.5)+
+  theme_bw()+
+  facet_wrap(~key)
+```
+
+How about the distribution of the difference scores? This looks better to do a t-test on.
+
+```{r message=FALSE}
+tmp %>%
+  filter(raw_fit == 'hddm', rt_acc == 'drift rate') %>%
+  mutate(diff = fullfit - refit) %>%
+  na.omit() %>%
+  ggplot(aes(diff))+
+  geom_histogram(alpha=0.5)+
+  theme_bw()
+```
+
+The distribution of the difference scores between the drift rates using the full and the retest sample differ from 0. The difference score distribution has a mean of 0.0016. This means that drift rate estimates using the full sample are significantly higher than those using the retest sample alone.
+
+```{r}
+diff = tmp %>%
+  filter(raw_fit == 'hddm', rt_acc == 'drift rate') %>%
+  mutate(diff = fullfit - refit) %>%
+  select(diff) %>%
+  na.omit()
+
+t.test(diff$diff, rep(0, nrow(tmp)))
+```
+
+Still the distribution of the difference scores does show negative values as well. The lack of clear systematicity in the changes of the parameter estimates can be difficult to interpret. A systematic change would have meant that the ranking remained the same regardless of the sample size. When the change is non-systematic in this way then a given subject that has high higher drift rates than most of the people in the full sample can appear to have lower drift rates than the same people when fit on the retest sample only. 
+
+Of course these parameter estimates themselves are not very interpretable in their 'goodness' as they don't reflect anything about model fits. To determine the model fits for both cases I have written functions to sample from the posterior predictive and calculate $R^2$'s for each subject. These currently run too slow, however, and have been deferred for now.
+
+Let's quickly look if the changes are different than 0 for non-decision times and thresholds as well. They are not.
+
+```{r}
+diff = tmp %>%
+  filter(raw_fit == 'hddm', rt_acc == 'non-decision') %>%
+  mutate(diff = fullfit - refit) %>%
+  select(diff) %>%
+  na.omit()
+
+t.test(diff$diff, rep(0, nrow(tmp)))
+```
+
+```{r}
+diff = tmp %>%
+  filter(raw_fit == 'hddm', rt_acc == 'threshold') %>%
+  mutate(diff = fullfit - refit) %>%
+  select(diff) %>%
+  na.omit()
+
+t.test(diff$diff, rep(0, nrow(tmp)))
+```
+
+Does this change reliability?
+
+```{r}
+
 ```
 
 #### Parameter reliability depending on sample size
