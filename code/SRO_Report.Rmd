@@ -1495,8 +1495,19 @@ test_hddm_flat %>%
 
 How does this affect reliability?
 
-```{r}
+```{r warning=FALSE, message=FALSE}
+flat_boot_df <- read.csv(gzfile(paste0(retest_data_path, 'flat_bootstrap_merged.csv.gz')))
 
+hier_boot_df = boot_df[c(boot_df$dv %in% unique(flat_boot_df$dv)),]
+
+flat_boot_df %>%
+  select(X, dv, icc) %>%
+  left_join(hier_boot_df[,c('X', 'dv', 'icc')], by = c('X', 'dv')) %>%
+  group_by(dv) %>%
+  do(get_t_test_out(.)) %>%
+  mutate(sig_diff = ifelse(p.value<0.05, 1, 0),
+         flat_better = ifelse(mean_x>mean_y,1,0)) %>%
+  filter(sig_diff == 1)
 ```
 
 ## Completion times
