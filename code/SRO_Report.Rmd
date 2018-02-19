@@ -1360,9 +1360,11 @@ Does this change reliability? 18/33 of the bootstrapped reliability distribution
 refit_ddm_drift_boot_df = boot_df[boot_df$dv %in% grep('hddm_drift',names(hddm_refits), value=T),]
 fullfit_ddm_drift_boot_df = fullfit_boot_df[fullfit_boot_df$dv %in% unique(refit_ddm_drift_boot_df$dv),]
 
-get_t_test_out <- function(df){
+get_t_test_out <- function(df, x = icc.x, y = icc.y){
   out = data.frame(p.value=NA, mean_x = NA, mean_y=NA)
-  mod = t.test(df$icc.x, df$icc.y)
+  attach(df)
+  mod = t.test(x, y)
+  detach(df)
   out$p.value = mod$p.value
   out$mean_x = as.numeric(mod$estimate[1])
   out$mean_y = as.numeric(mod$estimate[2])  
@@ -1381,10 +1383,14 @@ refit_ddm_drift_boot_df %>%
 
 #### Parameter reliability depending on sample size
 
+[NOT INCLUDED IN DRAFT FOR NOW]
+
 There doesn't seem to be an effect looking at the graph but the multilevel model seems to show a very significant but tiny effect.
 
 ```{r message=FALSE, warning=FALSE}
 tmp <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/all_ddm_sample_size_summary.csv')
+
+tmp
 
 ggplotly(tmp %>%
   select(dv, N, icc_median) %>%
@@ -1419,13 +1425,78 @@ summary(lmer(icc_median ~ N + (1|dv), tmp))
 
 #### Is the H in HDDM important?
 
-Plot flat estimates against hierarhical estimates.
+For retest data plotting hierarchical estimates over flat estimates.
 
-Check the distributions of the flat and hierarchical estimates, transform if not normal and t-test to check if they are different than each other (alternatively get difference scores and check if they are different than 0/plot the distribution of the difference scores)
+```{r message = FALSE, warning=FALSE}
+retest_hddm_flat <- read.csv(paste0(retest_data_path, 'retest_hddm_flat.csv'))
+retest_hddm_flat = retest_hddm_flat %>% select(-X) %>% rename(sub_id = subj_id)
+retest_hddm_hier = retest_data[,c(names(retest_data) %in% names(retest_hddm_flat))]
+retest_hddm_flat = retest_hddm_flat[,c(names(retest_hddm_flat) %in% names(retest_hddm_hier))]
+
+retest_hddm_hier = retest_hddm_hier %>% gather(key, value, -sub_id)
+retest_hddm_flat = retest_hddm_flat %>% gather(key, value, -sub_id)
+
+retest_hddm_flat %>%
+  left_join(retest_hddm_hier, by=c('sub_id', 'key')) %>%
+  ggplot(aes(value.x, value.y, color=key))+
+  geom_point()+
+  geom_abline(slope=1, intercept=0)+
+  theme_bw()+
+  theme(legend.position = 'none')+
+  xlab('Parameter estimate without hierarchy')+
+  ylab('Parameter estimate with hierarchy')
+```
+
+For the retest data 6/43 variables have significantly different distributions when they are fit with hierarchy versus without. For all of them the hiearchical estimate distributions have significantly higher means.
+
+```{r message=FALSE, warning=FALSE}
+retest_hddm_flat %>%
+  left_join(retest_hddm_hier, by=c('sub_id', 'key')) %>%
+  group_by(key) %>%
+  do(get_t_test_out(.,x=value.x, y=value.y)) %>%
+  mutate(flat_diff = ifelse(p.value<0.05, 1, 0)) %>%
+  filter(flat_diff == 1) %>%
+  mutate(flat_high = ifelse(mean_x>mean_y,1,0))
+```
+
+For t1 data plotting hierarchical estimates over flat estimates.
+
+```{r warning=FALSE, message=FALSE}
+test_hddm_flat <- read.csv(paste0(retest_data_path, 't1_data/t1_hddm_flat.csv'))
+test_hddm_flat = test_hddm_flat %>% select(-X) %>% rename(sub_id = subj_id)
+test_hddm_hier = test_data[,c(names(test_data) %in% names(test_hddm_flat))]
+test_hddm_flat = test_hddm_flat[,c(names(test_hddm_flat) %in% names(test_hddm_hier))]
+
+test_hddm_hier = test_hddm_hier %>% gather(key, value, -sub_id)
+test_hddm_flat = test_hddm_flat %>% gather(key, value, -sub_id)
+
+test_hddm_flat %>%
+  left_join(test_hddm_hier, by=c('sub_id', 'key')) %>%
+  ggplot(aes(value.x, value.y, color=key))+
+  geom_point()+
+  geom_abline(slope=1, intercept=0)+
+  theme_bw()+
+  theme(legend.position = 'none')+
+  xlab('Parameter estimate without hierarchy')+
+  ylab('Parameter estimate with hierarchy')
+```
+
+For the t1 data 3/43 variables have significantly different distributions when they are fit with hierarchy versus without. For all of them the hiearchical estimate distributions have significantly higher means.
+
+```{r message=FALSE, warning=FALSE}
+test_hddm_flat %>%
+  left_join(test_hddm_hier, by=c('sub_id', 'key')) %>%
+  group_by(key) %>%
+  do(get_t_test_out(.,x=value.x, y=value.y)) %>%
+  mutate(flat_diff = ifelse(p.value<0.05, 1, 0)) %>%
+  filter(flat_diff == 1) %>%
+  mutate(flat_high = ifelse(mean_x>mean_y,1,0))
+```
+
+How does this affect reliability?
 
 ```{r}
-retest_hddm_flat <- read.csv(paste0(retest_data_path, 'retest_hddm_flat.csv'))
-retest_hddm_flat
+
 ```
 
 ## Completion times
