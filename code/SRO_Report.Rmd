@@ -1635,6 +1635,48 @@ To check whether a
 first check if the effect of time is significant
 compute confidence intervals and check what percent of participants have scores that fall out of this range 
 
+```{r}
+boot_df
+```
+
+## Survey reliabilities
+
+```{r warning=FALSE, message=FALSE}
+tmp = measure_labels %>%
+  mutate(dv = as.character(dv)) %>%
+  filter(task == 'survey') %>%
+  left_join(boot_df[,c("dv", "icc", "spearman")], by = 'dv') %>%
+  filter(overall_difference != 'difference' & raw_fit %in% c('EZ', 'hddm') == FALSE)%>%
+  separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
+  select(-extra_1, -extra_2) %>%
+  group_by(task_name) %>%
+  summarise(median_icc = median(icc),
+            median_spearman = median(spearman),
+            min_icc = min(icc),
+            max_icc = max(icc),
+            min_spearman = min(spearman),
+            max_spearman = max(spearman),
+            num_measures = n()/1000)%>%
+  arrange(-median_icc, -median_spearman)
+
+tmp %>%
+  datatable() %>%
+  formatRound(columns=c('median_spearman', 'median_icc',
+                        'min_spearman', 'min_icc',
+                        'max_spearman', 'max_icc'), digits=3)
+```
+
+```{r}
+tmp = tmp%>%
+  mutate(task_name = gsub("_", " ", task_name),
+         task_name = gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", task_name, perl=TRUE))
+
+names(tmp) = gsub("_", " ", names(tmp))
+names(tmp) = gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", names(tmp), perl=TRUE)
+
+sjt.df(tmp %>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.progress = TRUE, show.rownames = FALSE, file = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/survey_rel_table.doc")
+```
+
 ## Transformation effects
 
 All results reported above were for non-transformed dependent variables.

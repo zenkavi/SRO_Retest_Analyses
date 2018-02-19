@@ -1,0 +1,243 @@
+<table style="border-collapse:collapse; border:none;">
+<tr>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black;">Task Name</th>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black;">Median Icc</th>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black;">Median Spearman</th>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black;">Min Icc</th>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black;">Max Icc</th>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black;">Min Spearman</th>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black;">Max Spearman</th>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black;">Num Measures</th>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Self Regulation Survey</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.95</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.905</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.924</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.965</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.858</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.942</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">1</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Grit Scale Survey</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.943</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.889</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.905</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.966</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.809</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.937</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">1</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Brief Self Control Survey</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.942</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.881</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.91</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.973</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.821</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.947</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">1</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Ten Item Personality Survey</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.937</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.866</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.782</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.977</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.685</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.949</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">5</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Time Perspective Survey</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.92</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.845</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.831</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.966</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.704</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.932</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">5</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Five Facet Mindfulness Survey</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.91</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.826</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.732</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.979</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.529</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.955</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">6</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Bis Bas Survey</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.904</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.804</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.81</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.969</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.635</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.936</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">5</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Dospert Rt Survey</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.902</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.82</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.782</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.972</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.64</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.944</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">5</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Sensation Seeking Survey</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.899</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.804</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.807</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.972</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.629</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.94</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">5</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Impulsive Venture Survey</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.897</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.81</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.713</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.96</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.614</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.928</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">2</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Erq Survey</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.895</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.797</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.771</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.957</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.618</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.913</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">2</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Mindful Attention Awareness Survey</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.894</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.797</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.84</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.943</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.698</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.885</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">1</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Upps Impulsivity Survey</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.885</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.8</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.662</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.976</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.632</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.962</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">5</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Mpq Control Survey</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.878</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.794</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.741</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.97</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.721</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.882</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">1</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Eating Survey</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.872</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.772</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.745</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.935</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.565</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.883</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">4</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Bis11 Survey</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.865</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.793</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.492</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.956</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.497</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.92</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">4</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Dickman Survey</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.853</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.683</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.636</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.926</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.375</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.853</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">2</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Future Time Perspective Survey</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.844</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.736</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.759</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.914</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.62</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.847</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">1</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Dospert Rp Survey</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.843</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.722</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.687</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.934</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.534</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.881</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">5</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Selection Optimization Compensation Survey</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.8</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.603</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.486</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.941</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.316</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.799</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">4</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Leisure Time Activity Survey</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.8</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.705</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.687</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.895</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.597</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.833</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">1</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Dospert Eb Survey</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.799</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.669</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.623</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.907</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.51</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.862</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">5</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Theories Of Willpower Survey</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.794</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.666</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.686</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.885</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.537</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.799</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">1</td>
+</tr>
+</table>
+
