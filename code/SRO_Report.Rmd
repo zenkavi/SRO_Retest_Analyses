@@ -1635,8 +1635,20 @@ To check whether a
 first check if the effect of time is significant
 compute confidence intervals and check what percent of participants have scores that fall out of this range 
 
+Which variables have significant time effects in more than 5% of the bootstrapped samples?
+
+22/74 survey measures
+135/335 task measures
+
 ```{r}
-boot_df
+boot_df %>%
+  select(dv, p_time, task) %>%
+  mutate(time_effect_sig = ifelse(p_time<0.05,1,0)) %>%
+  group_by(dv)%>%
+  summarise(pct_sig_time_effect = sum(time_effect_sig)/10,
+            task = unique(task))%>%
+  filter(pct_sig_time_effect>5) %>%
+  arrange(task,-pct_sig_time_effect)
 ```
 
 ## Survey reliabilities
