@@ -620,8 +620,8 @@ ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) +
 
 p5_t <- tmp %>%
   filter(task == 'survey') %>%
-ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) + 
-  geom_violin(fill='#F8766D')+
+ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc, group=dv)) + 
+  geom_violin(fill='#F8766D', position = 'identity')+
   theme_bw() + 
   theme(axis.text.y = element_text(size=43))+
   xlab("")+
@@ -642,6 +642,61 @@ knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Anal
 
 ```{r echo=FALSE}
 rm(p4_t, p5_t, p6_t)
+```
+
+Example of the overlaying procedure.
+
+```{r}
+p1<- tmp %>%
+  filter(grepl('selection_optimization', dv)) %>%
+ggplot(aes(x = var, y = icc)) + 
+  geom_violin(fill='#F8766D')+
+  theme_bw() + 
+  theme(axis.text.y = element_text(size=30))+
+  xlab("")+
+  ylab("")+
+  scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 15))+
+  geom_hline(yintercept = 0, color = "red", size = 1)+
+  coord_flip()
+
+p2<- tmp %>%
+  filter(grepl('selection_optimization', dv)) %>%
+ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc, group=dv)) + 
+  geom_violin(fill='#F8766D', position = 'identity')+
+  theme_bw() + 
+  theme(axis.text.y = element_text(size=30))+
+  xlab("")+
+  ylab("")+
+  scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 15))+
+  geom_hline(yintercept = 0, color = "red", size = 1)+
+  coord_flip()
+
+p3<- tmp %>%
+  filter(grepl('selection_optimization', dv)) %>%
+ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) + 
+  geom_violin(fill='#F8766D', position = 'identity')+
+  theme_bw() + 
+  theme(axis.text.y = element_text(size=30))+
+  xlab("")+
+  ylab("")+
+  scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 15))+
+  geom_hline(yintercept = 0, color = "red", size = 1)+
+  coord_flip()
+
+p4 <- arrangeGrob(p1,p2, p3,nrow=1)
+
+ggsave('Bootstrap_Example_Plot_t.jpg', plot = p4, device = "jpeg", path = "../output/figures/", width = 41, height = 5, units = "in", limitsize = FALSE, dpi = 100)
+```
+
+```{r echo=FALSE, out.width='100%'}
+knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/Bootstrap_Example_Plot_t.jpg')
+```
+
+```{r}
+rm(p1, p2, p3, p4)
 ```
 
 ## Survey vs Tasks
@@ -845,20 +900,30 @@ Summarizing for clearer presentation. This graph is currently using the bootstra
 tmp %>%
   gather(key, value, -dv, -task) %>%
   group_by(task, key) %>%
-  ggplot(aes(factor(task, levels=c("task","survey"), labels=c("Task", "Survey")), value, fill=key, color=task))+
+  ggplot(aes(factor(task, levels=c("task","survey"), labels=c("Task", "Survey")), value, fill=task, alpha=key))+
   geom_boxplot()+
   theme_bw()+
   theme(legend.title = element_blank())+
-  scale_fill_manual(breaks = c("var_subs_pct", "var_ind_pct", "var_resid_pct"),
+  scale_alpha_manual(breaks = c("var_subs_pct", "var_ind_pct", "var_resid_pct"),
                     labels = c("Variance between individuals",
                                "Variance between sessions",
                                "Error variance"),
-                    values=c("grey65", "grey45", "grey25"))+
-  scale_color_discrete(guide = FALSE)+
+                    values=c(0.1, 0.5, 1))+
+  scale_fill_discrete(guide = FALSE)+
+  guides(alpha=guide_legend(override.aes=list(fill=hcl(c(15,195),100,0,alpha=c(0.1,0.5, 1)),
+                                              colour=NA)))+
   xlab("")+
   ylab("Percent")
 
 ggsave('Variance_Breakdown_Plot_Summary.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 10, height = 5, units = "in", dpi = 100)
+```
+
+```{r}
+tmp %>%
+  gather(key, value, -dv, -task) %>%
+  group_by(task, key) %>%
+  summarise(mean_pct = mean(value),
+            sd_pct = sd(value))
 ```
 
 ## Task Reliabilities
@@ -1624,18 +1689,17 @@ summary(lm(mean_diff ~ mean_days_btw*task, tmp))
 
 For most of our tasks one might wonder about improvements in performance due to learning effects. 
 
-The type of ICC we have chosen does not take ... in to account. This is why Weir recommends checking whether there is a significant change based on time and examining the SEMs.
+The type of ICC we have chosen does not take within subject (between session/systematic) variance in to account. This is why Weir recommends checking whether there is a significant change based on time and examining the SEMs.
 
-Had we chosen another kind of ICC taking ... into account could have suggested that tasks have ...(higher/lower) reliability.
+Had we chosen another kind of ICC taking this source of variance into account (e.g. 2,1 or 2,k) they could have suggested that tasks have lower reliability.
 
 Doing a simple t-test on the difference score alone would not be a very rigourous way of testing whether any change is meaningful because two distributions with error would be compared to each other. Fortunately there are ways to take the error for both measurements in to account. 
 
-To check whether a
+To check whether a measure shows learning effects in a meaningful number of bootstrapped samples we can: check if the effect of time is significant in each bootstrapped sample and filter variables that have more than 5% of the boostrapped samples showing significant time effects.
 
-first check if the effect of time is significant
-compute confidence intervals and check what percent of participants have scores that fall out of this range 
+Another way might be to compute confidence intervals using SEMs as described in the second half of Weir (2005) and check what percent of participants have scores that fall out of this range. I haven't pursued this at least for now. 
 
-Which variables have significant time effects in more than 5% of the bootstrapped samples?
+Here we ask: Which variables have significant time effects in more than 5% of the bootstrapped samples?
 
 22/74 survey measures
 135/335 task measures
@@ -1648,7 +1712,10 @@ boot_df %>%
   summarise(pct_sig_time_effect = sum(time_effect_sig)/10,
             task = unique(task))%>%
   filter(pct_sig_time_effect>5) %>%
-  arrange(task,-pct_sig_time_effect)
+  arrange(task,-pct_sig_time_effect) %>%
+  ungroup()%>%
+  group_by(task) %>%
+  summarise(count=n())
 ```
 
 ## Survey reliabilities
