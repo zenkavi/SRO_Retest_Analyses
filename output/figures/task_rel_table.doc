@@ -8,7 +8,7 @@
 <th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black;">Min Spearman</th>
 <th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black;">Max Spearman</th>
 <th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black;">Num Measures</th>
-<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black;">Num Trials</th>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black;">Mean Num Trials</th>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Ravens</td>
@@ -30,7 +30,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.371</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.868</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">3</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">525</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">380</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Kirby</td>
@@ -41,7 +41,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.522</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.88</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">12</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">27</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">14</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Cognitive Reflection Survey</td>
@@ -52,7 +52,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.427</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.812</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">2</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">8</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">6</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Threebytwo</td>
@@ -63,7 +63,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.481</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.778</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">2</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">440</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">383</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Recent Probes</td>
@@ -74,7 +74,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.454</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.78</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">2</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">72</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">68</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Stroop</td>
@@ -85,7 +85,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.245</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.8</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">7</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">96</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">67</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Simple Reaction Time</td>
@@ -96,7 +96,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.546</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.785</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">1</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">150</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">149</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Psychological Refractory Period Two Choices</td>
@@ -107,7 +107,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.366</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.793</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">4</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">200</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">186</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Choice Reaction Time</td>
@@ -118,7 +118,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.11</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.747</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">2</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">50</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">150</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Hierbackground-color:#eaeaea;hical Rule</td>
@@ -129,7 +129,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.328</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.737</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">3</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">360</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">298</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Attention Network Task</td>
@@ -140,7 +140,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">-0.385</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.815</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">6</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">192</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">75</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Simon</td>
@@ -151,7 +151,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.009</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.741</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">8</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">100</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">61</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Directed Forgetting</td>
@@ -162,7 +162,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.285</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.732</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">2</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">24</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">67</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Digit Span</td>
@@ -173,7 +173,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.25</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.716</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">2</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">14</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">10</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Shape Matching</td>
@@ -184,7 +184,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.338</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.768</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">2</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">280</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">272</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Information Sampling Task</td>
@@ -195,7 +195,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">-0.1</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.819</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">8</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">20</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">10</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Stop Signal</td>
@@ -206,7 +206,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">-0.077</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.787</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">11</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">300</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">304</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Spatial Span</td>
@@ -217,7 +217,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.199</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.733</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">2</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">14</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">10</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Go Nogo</td>
@@ -228,7 +228,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.027</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.756</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">5</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">35</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">210</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Discount Titrate</td>
@@ -250,7 +250,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.237</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.559</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">1</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">135</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">9</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Tower Of London</td>
@@ -272,7 +272,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.076</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.793</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">5</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">54</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">24</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Dot Pattern Expectancy</td>
@@ -283,7 +283,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">-0.114</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.757</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">11</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">128</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">61</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Stim Selective Stop Signal</td>
@@ -294,7 +294,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.095</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.652</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">4</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">300</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">104</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Two Stage Decision</td>
@@ -305,7 +305,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">-0.014</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.711</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">4</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">200</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">198</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Local Global Letter</td>
@@ -316,7 +316,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.091</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.723</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">12</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">27</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">31</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Dietary Decision</td>
@@ -327,7 +327,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">-0.016</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.717</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">3</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">49</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">48</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Columbia Card Task Cold</td>
@@ -338,7 +338,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.056</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.591</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">5</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">54</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">24</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Holt Laury Survey</td>
@@ -360,7 +360,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">-0.214</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.808</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">13</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">410</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">401</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Angling Risk Task Always Sunny</td>
@@ -371,7 +371,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">-0.098</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.575</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">6</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">60</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">21</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Motor Selective Stop Signal</td>
@@ -382,7 +382,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">-0.37</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.769</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">4</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">300</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">63</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Writing Task</td>
@@ -404,7 +404,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">-0.207</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.723</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">7</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">150</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">54</td>
 </tr>
 <tr>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Bickel Titrator</td>
@@ -415,7 +415,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.392</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.787</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">4</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">31</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">30</td>
 </tr>
 </table>
 
