@@ -1007,148 +1007,10 @@ These kinds of analyses are too task-specific and in-depth for a paper that is t
 
 For this example we look at the retest reliability of the three dependent measures (average accuracy, median response time, total score) from the hierarchical rule task with 360 trials. Here is a graph of how the point estimates of the retest reliability changes for each of the dependent measures using different numbers of trials to estimate them. While the reliability estimate for each of the variables respectively are ..., ... and ... using all of the trials, these values are independent of number of trials used in the task for only certain variables. Based on this analysis researchers might decide to use a version of the task with fewer trials or only measures with consistently high reliability estimates.
 
-target task: one without hddm variables, has dv's that are easily codable in r, a lot of trials, possibly multiple dependent measures  
-method: import raw response data for chosen task for both t1 and t2, calculate dv's for for both t's for different number of trials, calculate retest reliability point estimates for each of these dv's with different trial numbers  
-candidates: angling risk task, columbia card task, dietary decision, hierarchical rule, keep track, probabilistic selection, psychological refractory period, two stage decision  
+Example task: three by two
 
 ```{r warning=FALSE, message=FALSE}
-#read t1 data
-t1_tbt = read.csv(gzfile(paste0(test_data_path,'Individual_Measures/threebytwo.csv.gz'), 'rt'))
-
-t2_tbt = read.csv(gzfile(paste0(retest_data_path,'Individual_Measures/threebytwo.csv.gz'), 'rt'))
-
-#get only retest subjects
-t1_tbt = t1_tbt[as.character(t1_tbt$worker_id) %in% as.character(test_data$sub_id),]
-t2_tbt = t2_tbt[as.character(t2_tbt$worker_id) %in% as.character(retest_data$sub_id),]
-
-#dv's
-calc_break_dvs = function(df, breaks=c(seq(0, 440, 10)[c(-1, -45)], 439)){
-  
-  df = df %>%
-      filter(exp_stage != "practice")
-  
-  calc_dvs = function(df){
-    
-    df = df %>%
-      mutate(correct_shift = lag(correct),
-             task_switch_shift = lag(task_switch))
-    
-    missed_percent = mean(df$rt == -1)
-    
-     df = df %>%
-      filter(rt != -1)
-    
-     df_correct = df %>%
-       filter(correct == "True" & correct_shift == "True") 
-     
-     dvs = data.frame(acc = mean(ifelse(df$correct == "True",1,0)),
-                      avg_rt_error = median(df$rt[df$correct == "False"]),
-                      std_rt_error = sd(df$rt[df$correct == "False"]),
-                      avg_rt = median(df_correct$rt),
-                      std_rt = sd(df_correct$rt),
-                      missed_percent = missed_percent)
-     
-     cue_switch_cost_rt_df = df_correct %>% group_by(CTI, cue_switch) %>% summarise(cue_switch_cost = median(rt)) %>% complete(cue_switch, CTI) %>% filter(cue_switch %in% c("stay", "switch")) %>% ungroup() %>% spread(cue_switch,cue_switch_cost) %>% group_by(CTI) %>% summarise(cue_switch_cost_rt = switch-stay)
-     
-     dvs$cue_switch_cost_rt_100 = cue_switch_cost_rt_df$cue_switch_cost_rt[cue_switch_cost_rt_df$CTI == 100]
-     dvs$cue_switch_cost_rt_900 = cue_switch_cost_rt_df$cue_switch_cost_rt[cue_switch_cost_rt_df$CTI == 900]
-     
-     task_switch_rt = df_correct %>% mutate(task_switch = factor(ifelse(grepl("switch",task_switch), T, F))) %>% group_by(CTI, task_switch) %>% summarise(rt = median(rt)) %>% complete(task_switch, CTI) %>% ungroup() %>% filter(task_switch == T)
-     
-     cue_switch_rt = df_correct %>% group_by(CTI, cue_switch) %>% summarise(rt = median(rt)) %>% complete(cue_switch, CTI) %>% ungroup() %>% filter(cue_switch == "switch")
-     
-     dvs$task_switch_cost_rt_100 = task_switch_rt$rt[task_switch_rt$CTI == 100] - cue_switch_rt$rt[cue_switch_rt$CTI == 100]
-     
-     dvs$task_switch_cost_rt_900 = task_switch_rt$rt[task_switch_rt$CTI == 900] - cue_switch_rt$rt[cue_switch_rt$CTI == 900]
-     
-     cue_switch_cost_acc_df = df %>% group_by(CTI, cue_switch) %>% summarise(acc = mean(ifelse(correct == "True",1, 0))) %>% complete(cue_switch, CTI) %>% filter(cue_switch %in% c("stay", "switch")) %>% spread(cue_switch, acc) %>% ungroup() %>% group_by(CTI) %>% summarise(cue_switch_cost_acc = switch-stay)
-     
-     dvs$cue_switch_cost_acc_100 = cue_switch_cost_acc_df$cue_switch_cost_acc[cue_switch_cost_acc_df$CTI == 100]
-     dvs$cue_switch_cost_acc_900 = cue_switch_cost_acc_df$cue_switch_cost_acc[cue_switch_cost_acc_df$CTI == 900]
-     
-     task_switch_acc = df %>% mutate(task_switch = factor(ifelse(grepl("switch",task_switch), T, F))) %>% group_by(CTI, task_switch) %>% summarise(acc = mean(ifelse(correct == "True",1,0))) %>% complete(task_switch, CTI) %>%  ungroup() %>% filter(task_switch == T)
-     
-     cue_switch_acc = df %>% group_by(CTI, cue_switch) %>% summarise(acc = mean(ifelse(correct == "True",1,0))) %>% complete(cue_switch, CTI) %>% ungroup() %>% filter(cue_switch == "switch")
-     
-     dvs$task_switch_cost_acc_100 = task_switch_acc$acc[task_switch_acc$CTI == 100] - cue_switch_acc$acc[cue_switch_acc$CTI == 100]
-     
-     dvs$task_switch_cost_acc_900 = task_switch_acc$acc[task_switch_acc$CTI == 900] - cue_switch_acc$acc[cue_switch_acc$CTI == 900]
-    
-    return(dvs)
-  }
-  
-  out = data.frame()
-  
-  for(i in 1:length(breaks)){
-    tmp = df[1:breaks[i],]
-    dvs = calc_dvs(tmp)
-    out = rbind(out, dvs)
-  }
-  
-  # due to timeout trials exclusion not all subjects might have 360 rows
-  # this would lead to na's for later trial breaks
-  # first remove these
-  # out = out %>% drop_na()
-  
-  # then calculate the dv's for the remaining trials
-  if(nrow(df)!=440 & nrow(df)%%10 != 0){
-    dvs = calc_dvs(df)
-    out = rbind(out, dvs)
-  }
-  
-  #to keep track for later merge
-  out$breaks = row.names(out)
-  
-  return(out)
-}
-
-#get dv's for t1 and t2
-t1_dvs = t1_tbt %>%
-  group_by(worker_id) %>%
-  do(calc_break_dvs(.)) %>%
-  rename(sub_id = worker_id)
-
-t2_dvs = t2_tbt %>%
-  group_by(worker_id) %>%
-  do(calc_break_dvs(.)) %>%
-  rename(sub_id = worker_id)
-
-# merge to get same number of rows for each subject at both time points
-hr_merge = merge(t1_dvs, t2_dvs, by = c("sub_id", "breaks"))
-
-# rm(t1_dvs, t2_dvs)
-
-hr_merge = hr_merge %>%
-  gather(key, value, -sub_id, -breaks) %>%
-  separate(key, c("dv", "time"), sep="\\.") %>%
-  mutate(time = ifelse(time == "x", 1, 2))
-
-t1_dvs = hr_merge %>%
-  filter(time == 1) %>%
-  select(-time) %>%
-  spread(dv, value)
-
-t2_dvs = hr_merge %>%
-  filter(time == 2) %>%
-  select(-time) %>%
-  spread(dv, value)
-
-# calculate point estimates for reliability of each of the variables for each break
-# get_icc for each break of tmp_t1_dvs and tmp_t2_dvs
-# trial_num_rel_df = data.frame(breaks=rep(NA, length(unique(t1_dvs$breaks))), acc_icc=rep(NA, length(unique(t1_dvs$breaks))), avg_rt_icc=rep(NA, length(unique(t1_dvs$breaks))), score_icc=rep(NA, length(unique(t1_dvs$breaks))))
-trial_num_rel_df = data.frame(breaks=rep(NA, length(unique(t1_dvs$breaks))), acc_icc=rep(NA, length(unique(t1_dvs$breaks))), avg_rt_icc=rep(NA, length(unique(t1_dvs$breaks))))
-for(i in 1:length(unique(t1_dvs$breaks))){
-  cur_break = unique(t1_dvs$breaks)[i]
-  tmp_t1_dvs = t1_dvs %>% filter(breaks == cur_break)
-  tmp_t2_dvs = t2_dvs %>% filter(breaks == cur_break)
-  trial_num_rel_df$breaks[i] = cur_break
-  trial_num_rel_df$acc_icc[i] = get_icc("acc", tmp_t1_dvs, tmp_t2_dvs)
-  trial_num_rel_df$avg_rt_icc[i] = get_icc("avg_rt", tmp_t1_dvs, tmp_t2_dvs)
-  # trial_num_rel_df$score_icc[i] = get_icc("score", tmp_t1_dvs, tmp_t2_dvs)
-}
-rm(i, cur_break, tmp_t1_dvs, tmp_t2_dvs)
-
-trial_num_rel_df$breaks = as.numeric(trial_num_rel_df$breaks)
+trial_num_rel_df = read.csv(paste0(retest_data_path, 'trial_num_rel_df_tbt.csv'))
 
 trial_num_rel_df %>%
   gather(key, value, -breaks) %>%
@@ -1165,7 +1027,7 @@ ggsave('Intrameasure_Trialnum_Dependendence.jpg', device = "jpeg", path = "/User
 ```
 
 ```{r}
-rel_df[c(rel_df$dv %in% grep('hierarchical_rule', rel_df$dv, value = TRUE)),]
+rel_df[c(rel_df$dv %in% grep('threebytwo', rel_df$dv, value = TRUE)),]
 ```
 
 ### Raw vs DDM
