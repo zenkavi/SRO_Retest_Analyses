@@ -1012,16 +1012,19 @@ Example task: three by two
 ```{r warning=FALSE, message=FALSE}
 trial_num_rel_df = read.csv(paste0(retest_data_path, 'trial_num_rel_df_tbt.csv'))
 
+cols <- c("Accuracy" = '#084594', "Average RT error" = '#99000d', "SD RT error" = '#cb181d', "Average RT correct" = '#ef3b2c', "SD RT correct" = '#fb6a4a', "Missed percentage" = '#2171b5', "Cue switch cost RT (100)" = '#fc9272', "Cue switch cost RT (900)" = '#fcbba1', "Task switch cost RT (100)" = '#fee0d2', "Task switch cost RT (900)" = '#fff5f0', "Cue switch cost Acc (100)" = '#4292c6', "Cue switch cost Acc (900)" = '#6baed6', "Task switch cost Acc (100)" = '#9ecae1', "Task switch cost Acc (900)" = '#c6dbef')
+
 trial_num_rel_df %>%
   gather(key, value, -breaks) %>%
-  # ggplot(aes(breaks*10, value, color=factor(key, levels = c("acc_icc", "avg_rt_icc", "score_icc"), labels = c("Accuracy", "Average RT", "Score"))))+
-  ggplot(aes(breaks*10, value, color=factor(key, levels = c("acc_icc", "avg_rt_icc"), labels = c("Accuracy", "Average RT"))))+
+  ggplot(aes(breaks*10, value, color=factor(key, levels = c("acc_icc", "avg_rt_error_icc", "std_rt_error_icc", "avg_rt_icc", "std_rt_icc", "missed_percent_icc", "cue_switch_cost_rt_100_icc", "cue_switch_cost_rt_900_icc", "task_switch_cost_rt_100_icc", "task_switch_cost_rt_900_icc", "cue_switch_cost_acc_100_icc", "cue_switch_cost_acc_900_icc", "task_switch_cost_acc_100_icc", "task_switch_cost_acc_900_icc"), labels = c("Accuracy", "Average RT error", "SD RT error", "Average RT correct", "SD RT correct", "Missed percentage", "Cue switch cost RT (100)", "Cue switch cost RT (900)", "Task switch cost RT (100)", "Task switch cost RT (900)", "Cue switch cost Acc (100)", "Cue switch cost Acc (900)", "Task switch cost Acc (100)", "Task switch cost Acc (900)"))))+
   geom_point()+
   geom_line()+
   theme_bw()+
   xlab("Number of trials")+
   ylab("ICC")+
-  theme(legend.title = element_blank())
+  theme(legend.title = element_blank())+
+  scale_color_manual(values = cols,
+                     breaks = c("Accuracy", "Missed percentage", "Cue switch cost Acc (100)", "Cue switch cost Acc (900)", "Task switch cost Acc (100)", "Task switch cost Acc (900)", "Average RT error", "SD RT error", "Average RT correct", "SD RT correct",  "Cue switch cost RT (100)", "Cue switch cost RT (900)", "Task switch cost RT (100)", "Task switch cost RT (900)"))
 
 ggsave('Intrameasure_Trialnum_Dependendence.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 10, height = 5, units = "in", dpi = 100)
 ```
@@ -1700,4 +1703,116 @@ ggplotly(rel_df_mngfl %>%
   ylab("Reliability for raw variable")+
   geom_abline(slope=1, intercept=0),
   label=dv)
+```
+
+## Comparison to prior literature
+
+```{r}
+var_boot_df = boot_df %>%
+  group_by(dv) %>%
+  summarise(icc_median = quantile(icc, probs = 0.5),
+            icc_2.5 = quantile(icc, probs = 0.025),
+            icc_97.5 = quantile(icc, probs = 0.975)
+            )
+
+boot_lit_rel = function(df, samples = 100, rel_col = 'retest_reliability'){
+  
+  boot_once = function(df){
+    #get number of rows in df
+    data_amount = nrow(df)
+    #sample as many reliability estimates as there are rows in the df
+    boot_sample = sample(c(1:data_amount), size=data_amount, replace=TRUE)
+    boot_sample = df[boot_sample,]
+    #calculate median reliability estimate for the sampled estimates
+    return(median(boot_sample[,rel_col])) 
+  }
+  
+  out = replicate(samples, boot_once(df))
+  
+  return(data.frame(median_lit_rel=out))
+}
+
+var_lit_review = lit_review %>%
+  group_by(dv)%>%
+  do(boot_lit_rel(.))
+  summarise(median_reliability=median(retest_reliability),
+            task = unique(task)) %>%
+  mutate(dv = as.character(dv))
+
+var_boot_df = boot_df %>%
+  group_by(dv) %>%
+  summarise(median_icc = quantile(icc, probs = 0.5))  
+
+var_lit_review = lit_review %>%
+  # filter(sample_size > 100) %>%
+  group_by(dv)%>%
+  summarise(median_reliability=median(retest_reliability),
+            task = unique(task),
+            mean_sample = mean(sample_size)) %>%
+  mutate(dv = as.character(dv))
+  
+rel_comp = var_lit_review %>%
+  left_join(var_boot_df, by = 'dv') 
+
+rel_comp
+```
+
+Correlation between our median estimates from bootstrapped samples and the literature review for task variables
+```{r}
+with(rel_comp %>% filter(task == "task"), cor(median_icc, median_reliability))
+```
+
+```{r}
+with(rel_comp %>% filter(task == "survey"), cor(median_icc, median_reliability))
+```
+
+Potential problems in this graph: 
+- not all metrics are ICC's
+- difference in delay between completion of two tests (does it make a difference in the lit review?)
+
+```{r}
+rel_comp %>%
+  ggplot(aes(median_reliability, median_icc, color=task))+
+  geom_point()+
+  geom_abline(slope=1, intercept=0)+
+  theme_bw()+
+  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  theme(legend.title = element_blank())+
+  xlab('Median reliability from literature')+
+  ylab('Median ICC from bootstrapped samples')
+```
+
+```{r}
+lit_review %>%
+  ggplot(aes(sample_size, retest_reliability, color=task))+
+  geom_point()
+summary(lmer(retest_reliability~sample_size+task+(1|dv), data=lit_review))
+
+#sd by average sample size
+lit_review %>%
+  group_by(dv) %>%
+  summarise(sd_rel = sd(retest_reliability),
+            avg_sample_size = mean(sample_size)) %>%
+  ggplot(aes(avg_sample_size, sd_rel))+
+  geom_point()+
+  xlim(0,200)
+```
+
+x = deviance between our data and literature
+y = average sample size
+
+```{r}
+rel_comp %>%
+  mutate(diff_sq = (median_icc - median_reliability)^2) %>%
+  ggplot(aes(diff_sq, mean_sample, color=task))+
+  geom_point()+
+  geom_smooth()
+```
+
+```{r}
+lit_review %>%
+  ggplot(aes(sample_size))+
+  geom_histogram()+
+  theme_bw()
 ```
