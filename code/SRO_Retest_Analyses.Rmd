@@ -1,5 +1,5 @@
 ---
-title: 'Self Regulation Ontology Retest Data Report'
+title: 'Self Regulation Ontology Retest Analyses'
 output:
 github_document:
 toc: yes
@@ -7,7 +7,7 @@ toc_float: yes
 ---
 
 ```{r, message=FALSE, warning=FALSE, include=FALSE}
-source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/SRO_Report_Helper_Functions.R')
+source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/SRO_Retest_Analyses_Helper_Functions.R')
 
 test_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_02-03-2018/'
 
