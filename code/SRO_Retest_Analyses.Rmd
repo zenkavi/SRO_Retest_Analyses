@@ -393,7 +393,7 @@ for(i in 1:length(numeric_cols)){
 
 t1_2_difference$difference = as.data.frame(t1_2_difference$difference)$V1
 
-t1_2_difference = t1_2_difference %>% separate(dv, c("task", "dv"), sep="\\.")
+t1_2_difference = t1_2_difference %>% separate(dv, c("task", "dv2"), sep="\\.", remove=FALSE)
 ```
 
 ```{r echo=FALSE}
@@ -423,42 +423,98 @@ t1_2_difference = merge(t1_2_difference, task_comp_times[,c('sub_id', 'task','da
 rm(task_comp_times)
 ```
 
-The effect of number of days in between in the full model where the difference scores are regressed on a fixed effect for measure and days between the two scores and random intercepts for each subject (*Should this model include the interaction between the fixed effects?*). Since there are over 400 measures the output of the full model is not presented here. Instead below are the coefficient for the fixed effect of days between completion times and its t value.
-
-```{r}
-mod = lmer(difference ~ dv + scale(days_btw) + (1|sub_id), data = t1_2_difference)
-
-data.frame(estimate=coef(summary(mod))["scale(days_btw)","Estimate"], tval=coef(summary(mod))["scale(days_btw)","t value"])
-```
-
-For visualization purposes I summarized the difference scores per person by looking at the average difference and plot that against the number of days between completion.
+What does the distribution of differences look like: The distribution of differences between two time points for each measure 
 
 ```{r warning=FALSE, message=FALSE}
-tmp = t1_2_difference %>%
-  group_by(sub_id, task) %>%
-  summarise(mean_diff = mean(difference, na.rm=T),
-            sem_diff = sem(difference),
-            days_btw = unique(days_btw))
-tmp %>%
-  ggplot(aes(days_btw, mean_diff))+
-  geom_point()+
-  geom_errorbar(aes(ymin = mean_diff-(1.96*sem_diff), ymax = mean_diff+(1.96*sem_diff)))+
+t1_2_difference %>%
+  ggplot(aes(difference, alpha=dv))+
+  geom_histogram(position='identity')+
   theme_bw()+
-  xlab("Days between completion")+
-  ylab("Mean standardized difference between two time points")+
-  geom_smooth(method="lm")+
   theme(legend.position = 'none')
 ```
 
-To confirm: the slope of this line is not significant. That is, there doesn't seem to be a systematic difference between the two measurements depending on the number of days between the two measurements.
+Are the means of these distributions different than 0? Or more specifically are each of these distributions different than distributions with mean 0 an sd 1?
+When calculating the difference scores I scaled them to have an sd of 1 but did not center them to have a mean of 0. So if there is a meaningful difference the mean of the distribution would differ from 0.
 
-```{r warning=FALSE, message=FALSE}
-summary(lm(mean_diff ~ scale(days_btw), data=tmp))
+```{r}
+diff_from_zero = function(df, samples=100){
+  
+  one_diff = function(df){
+    comp_vec = rnorm(nrow(df))
+    test = t.test(df$difference, comp_vec, var.equal = T) #both should have var=1
+    out = data.frame(t_val = test$statistic, df = test$parameter, p_val = test$p.value)
+    out = out %>% mutate(sig = ifelse(p_val < 0.05, 1, 0))
+    return(out)
+  }
+  return(plyr::rdply(samples, one_diff(df)))
+}
+
+diff_from_zero_df = t1_2_difference %>%
+  group_by(dv) %>%
+  do(diff_from_zero(.))
+
+diff_from_zero_summary = diff_from_zero_df %>%
+  summarise(sum_sig=sum(sig)) %>%
+  filter(sum_sig>5) %>% 
+  arrange(sum_sig) %>%
+  mutate(task = ifelse(grepl("survey", dv),"survey","task")) %>%
+  arrange(task) %>%
+  ungroup() %>%
+  group_by(task) %>%
+  summarise(n = n())
+
+diff_from_zero_summary
 ```
 
-```{r echo=FALSE}
-rm(tmp)
+Chi sq test to see if survey/task has an effect on number of variables with sig difference: It doesn't. So comparable proportions of survey and task variables show systematic differences between the two time points (note that this doesn't necessarily whether the performance has improved or not).
+
+```{r}
+sig_survey = (diff_from_zero_summary %>% filter(task=="survey"))$n
+sig_task = (diff_from_zero_summary %>% filter(task=="task"))$n
+chisq.test(data.frame(survey = c(sig_survey, 74-sig_survey), task=c(sig_task, 366-sig_task)))
 ```
+
+```{r}
+rm(sig_survey, sig_task, diff_from_zero_summary)
+```
+
+Before I was using subjects as a random effect but days between the two time points for each measure depends on subj id. What varies randomly is which dv we are looking for its distribution of differences in relation to the days between the time points. So I changed the model to have fixed effect for the days between and a random effect for dependent variable.
+
+```{r}
+summary(lmerTest::lmer(difference ~ scale(days_btw)+(scale(days_btw) | dv), data=t1_2_difference)) 
+```
+
+But if I just run one mixed effects model then we don't get a sense of the simple effects. I can run it separately for each dv to see if comparable proportions show a dependence on the delay for surveys and tasks.
+
+```{r}
+get_delay_effect
+
+df = t1_2_difference %>% filter(dv == "adaptive_n_back.EZ_drift")
+
+mod = lm(difference ~ scale(days_btw), data = df)
+
+str(summary(mod))
+mod$coefficients['scale(days_btw)']
+
+data.frame(estimate=coef(summary(mod))["dv","Estimate"], tval=coef(summary(mod))["dv","t value"])
+
+```
+
+For visualization I used to summarize the difference scores per person by looking at the average difference per task per subject and plot that against the number of days between completion. This yields multiple points for each value on x representing the average difference per task for each subject. But variables within a task could go in different directions (e.g. if patient proportion increases discount rate decreases) so this doesn't seem like a good idea) 
+
+Instead I now plot all the data coloring by dependant variable.
+
+```{r}
+t1_2_difference %>%
+  ggplot(aes(as.numeric(days_btw), difference,col=dv))+
+  geom_smooth(method='lm', show.legend = FALSE, se=FALSE)+
+  theme(legend.position = 'none')+
+  theme_bw()
+```
+
+Does the delay between the two time points make a difference in how different the performance at each time point is from each other. Is the difference larger depending on the delay
+
+Is a measure less reliable if the average delay between the two time points is larger? 
 
 ### Measure level
 
