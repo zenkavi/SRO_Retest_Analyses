@@ -1,12 +1,4 @@
-hddm refits - submited run_hddm_refits.sh. done except for one tasks. next: check difference parameters (e.g. stroop drift) and then concat before bootstrap
-
-bootstrap of hddm refits - think about best way to do this without adding it in to full data. check data prep for concat script
-
 hddm fit stats - done for retest. began testing on test next: 1. run on rest of test models 2. compare full to partial
-
-hddm flat - submitted run_hddm_flat.sh. next: 1. compare changes from full and refit 2. check reliability
-
-hddm sample size - start with going over the code on sherlock.
 
 learning effects - calculate 95% CI using SEMs and evaluate whether there is a meaningful changes using this and eta/omega_sq as described in Weir
 
@@ -16,11 +8,7 @@ transformation effects - re do with old code
 
 turn retest report to latex using papaja
 
-SURVEY LABELING
-
 Order effects?
 
 ------------
 robust samwich for standard errors
-	
-change retest data loading to pkl
