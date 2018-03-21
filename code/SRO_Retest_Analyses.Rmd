@@ -8,6 +8,7 @@ toc_float: yes
 
 ```{r, message=FALSE, warning=FALSE, include=FALSE}
 source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/SRO_Retest_Analyses_Helper_Functions.R')
+theme_set(theme_bw())
 
 test_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_02-03-2018/'
 
@@ -171,7 +172,6 @@ p1_t_legend <- lit_review %>%
   filter(task == 'task') %>%
 ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_reliability)) + 
   geom_point(aes(size=sample_size, shape = type), color='black')+
-  theme_bw()+
   theme(axis.text.y = element_text(size=43),
         legend.position = 'bottom',
         axis.text.x = element_text(size=23),
@@ -194,7 +194,6 @@ p1_t <- lit_review %>%
   filter(task == 'task') %>%
 ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_reliability)) + 
   geom_point(aes(size=sample_size, shape = type), color='#00BFC4')+
-  theme_bw()+
   theme(axis.text.y = element_text(size=43),
         legend.position = 'none',
         axis.text.x = element_text(size=23),
@@ -211,7 +210,6 @@ p2_t <- lit_review %>%
   filter(task == 'survey') %>%
 ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_reliability)) + 
   geom_point(aes(size=sample_size, shape = type), color='#F8766D')+
-  theme_bw()+
   theme(axis.text.y = element_text(size=43),
         legend.position = 'none',
         axis.text.x = element_text(size=23),
@@ -438,7 +436,6 @@ What does the distribution of differences look like: The distribution of differe
 t1_2_difference %>%
   ggplot(aes(difference, alpha=dv))+
   geom_histogram(position='identity')+
-  theme_bw()+
   theme(legend.position = 'none')
 ```
 
@@ -449,7 +446,6 @@ t1_2_difference %>%
   ggplot()+
   geom_smooth(aes(as.numeric(days_btw), abs(difference), group=factor(dv)), method='lm', se=FALSE)+
   geom_smooth(aes(as.numeric(days_btw), abs(difference)), method='lm', color = "black", se=FALSE)+
-  theme_bw()+
   theme(legend.title = element_blank())+
   xlab('Days between completion')+
   ylab('Absolute Scaled difference score')
@@ -496,7 +492,6 @@ t1_2_difference %>%
                   group=factor(dv, levels=unique(dv[order(sig_days_effect)]), ordered=TRUE), 
                   color=factor(sig_days_effect, levels = c(1,0))),geom="line", alpha=0.5, method='lm')+
   geom_smooth(aes(as.numeric(days_btw), abs(difference)), method='lm', color = "black", se=FALSE)+
-  theme_bw()+
   theme(legend.title = element_blank())+
   xlab('Days between completion')+
   ylab('Scaled difference score')+
@@ -547,95 +542,155 @@ rel_df = rel_df %>%
 sig_days_effect %>%
   left_join(rel_df, by='dv') %>%
   ggplot(aes(estimate, icc))+
-  geom_point()+
-  theme_bw()
+  geom_point()
 ```
 
+`Plot differences for the measures with differences as examples`
 
 ## Comparison to prior literature
 
+Read in and process bootstrapped results.
+
+```{r}
+process_boot_df = function(df){
+  df = df %>%
+  drop_na() %>%
+  mutate(dv = as.character(dv),
+         icc = as.numeric(as.character(icc)),
+         spearman = as.numeric(as.character(spearman)),
+         pearson = as.numeric(as.character(pearson)),
+         eta_sq = as.numeric(as.character(eta_sq)),
+         sem = as.numeric(as.character(sem)),
+         partial_eta_sq = as.numeric(as.character(partial_eta_sq)),
+         omega_sq = as.numeric(as.character(omega_sq)),
+         var_subs = as.numeric(as.character(var_subs)),
+         var_ind = as.numeric(as.character(var_ind)),
+         var_resid = as.numeric(as.character(var_resid)),
+         F_time = as.numeric(as.character(F_time)),
+         p_time = as.numeric(as.character(p_time)),
+         df_time = as.numeric(as.character(df_time)),
+         df_resid = as.numeric(as.character(df_resid)))
+  return(df)} 
+
+boot_df <- read.csv(gzfile(paste0(retest_data_path,'bootstrap_merged.csv.gz')))
+
+boot_df = process_boot_df(boot_df)
+
+boot_df = boot_df[boot_df$dv %in% retest_report_vars,]
+
+# Check if you have all variables bootstrapped
+# retest_report_vars[which(retest_report_vars %in% boot_df$dv==FALSE)]
+
+# Boot df contains hddm parameters fit on the full sample in the t1 data
+# refits_bootstrap_merged.csv.gz contains bootstrapped reliabilities 
+
+refit_boot_df = read.csv(gzfile(paste0(retest_data_path,'refits_bootstrap_merged.csv.gz')))
+
+refit_boot_df = process_boot_df(refit_boot_df)
+
+fullfit_boot_df = boot_df[as.character(boot_df$dv) %in% unique(as.character(refit_boot_df$dv)),]
+
+boot_df = boot_df[!as.character(boot_df$dv) %in% unique(as.character(refit_boot_df$dv)),]
+
+boot_df = rbind(boot_df, refit_boot_df)
+
+rm(refit_boot_df)
+```
+
+Summarize bootstrapped results and merge to lit review data
+
 ```{r}
 var_boot_df = boot_df %>%
   group_by(dv) %>%
-  summarise(icc_median = quantile(icc, probs = 0.5),
-            icc_2.5 = quantile(icc, probs = 0.025),
-            icc_97.5 = quantile(icc, probs = 0.975)
-            )
+  summarise(mean_icc = mean(icc))
 
-boot_lit_rel = function(df, samples = 100, rel_col = 'retest_reliability'){
-  
-  boot_once = function(df){
-    #get number of rows in df
-    data_amount = nrow(df)
-    #sample as many reliability estimates as there are rows in the df
-    boot_sample = sample(c(1:data_amount), size=data_amount, replace=TRUE)
-    boot_sample = df[boot_sample,]
-    #calculate median reliability estimate for the sampled estimates
-    return(median(boot_sample[,rel_col])) 
-  }
-  
-  out = replicate(samples, boot_once(df))
-  
-  return(data.frame(median_lit_rel=out))
-}
+rel_comp = lit_review %>%
+  left_join(var_boot_df, by = 'dv')
+```
 
-var_lit_review = lit_review %>%
-  group_by(dv)%>%
-  do(boot_lit_rel(.))
-  summarise(median_reliability=median(retest_reliability),
-            task = unique(task)) %>%
-  mutate(dv = as.character(dv))
+Here's what our data looks like: (583 data points for 171 measures)
 
-var_boot_df = boot_df %>%
-  group_by(dv) %>%
-  summarise(median_icc = quantile(icc, probs = 0.5))  
-
-var_lit_review = lit_review %>%
-  # filter(sample_size > 100) %>%
-  group_by(dv)%>%
-  summarise(median_reliability=median(retest_reliability),
-            task = unique(task),
-            mean_sample = mean(sample_size)) %>%
-  mutate(dv = as.character(dv))
-  
-rel_comp = var_lit_review %>%
-  left_join(var_boot_df, by = 'dv') 
-
+```{r}
 rel_comp
 ```
 
-Correlation between our median estimates from bootstrapped samples and the literature review for task variables
+### Lit review results
+
+Distribution of reliabilities, sample sizes and delays
+
 ```{r}
-with(rel_comp %>% filter(task == "task"), cor(median_icc, median_reliability))
+rel_comp %>% 
+  select(dv, task, retest_reliability, sample_size, days) %>%
+  filter(days < 3600) %>%
+  gather(key, value, -dv, -task) %>%
+  ggplot(aes(value, fill=task))+
+  geom_density(alpha=0.5, position='identity')+
+  facet_wrap(~key, scales='free')+
+  theme(legend.title = element_blank())
+```
+
+What predicts retest reliability in the literature?
+Task, sample size, days
+
+```{r}
+mod1 = lmer(retest_reliability ~ task + (1|dv), rel_comp)
+mod2 = lmer(retest_reliability ~ task + sample_size + (1|dv), rel_comp)
+
+anova(mod1, mod2)
 ```
 
 ```{r}
-with(rel_comp %>% filter(task == "survey"), cor(median_icc, median_reliability))
+mod3 = lmer(retest_reliability ~ task + sample_size + days+ (1|dv), rel_comp)
+
+anova(mod2, mod3)
 ```
 
-Potential problems in this graph: 
-- not all metrics are ICC's
-- difference in delay between completion of two tests (does it make a difference in the lit review?)
+```{r}
+summary(mod2)
+```
 
 ```{r}
-rel_comp %>%
-  ggplot(aes(median_reliability, median_icc, color=task))+
-  geom_point()+
-  geom_abline(slope=1, intercept=0)+
-  theme_bw()+
-  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
-  scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+rel_comp %>% 
+  ggplot(aes(sample_size, retest_reliability, color=task))+
+  geom_smooth(method='lm')+
+  geom_point(alpha = 0.2)+
   theme(legend.title = element_blank())+
-  xlab('Median reliability from literature')+
-  ylab('Median ICC from bootstrapped samples')
+  xlab("Sample Size")+
+  ylab("Retest reliability")
+```
+
+Compare effect sizes of effect of task on reliability estimates in literature vs our results (just looking at the variables you find in the literature)
+
+### Conceptual replications 
+- Larger reliability estimates for surveys
+- Larger variance in reliability estimates for tasks
+
+### Sample size effects/publication bias
+
+Deviance between our mean estimate and the reliability from the literature decreases exponentially with sample size. The smaller the sample size in the literature the more the reliability estimate differs from our results.
+
+```{r}
+rel_comp = rel_comp %>%
+  mutate(diff_sq = abs(mean_icc - retest_reliability)^2) 
+
+rel_comp %>%
+  ggplot(aes(sample_size,diff_sq, color=task))+
+  # geom_point()+
+  #exponential decay (linearized by taking logs of both sides)
+  geom_smooth(method="glm",se=FALSE, method.args=list(family=gaussian(link="log")))+
+  theme_bw()
 ```
 
 ```{r}
 lit_review %>%
   ggplot(aes(sample_size, retest_reliability, color=task))+
-  geom_point()
-summary(lmer(retest_reliability~sample_size+task+(1|dv), data=lit_review))
+  geom_smooth(method='lm')
 
+mod1 = lmer(retest_reliability~sample_size+(1|dv), data=lit_review)
+
+```
+
+```{r}
 #sd by average sample size
 lit_review %>%
   group_by(dv) %>%
@@ -646,23 +701,82 @@ lit_review %>%
   xlim(0,200)
 ```
 
-x = deviance between our data and literature
-y = average sample size
+### Direct relation to our results
+
+Correlation between our mean estimates from bootstrapped samples and the literature review for task variables
+
+```{r}
+with(rel_comp %>% filter(task == "task"), cor(mean_icc, mean_reliability))
+```
+
+```{r}
+with(rel_comp %>% filter(task == "survey"), cor(mean_icc, mean_reliability))
+```
+
+Model comparisons building model to predict the reliabilities in the literature from our results.
+
+```{r}
+mod1 = lmer(retest_reliability ~ mean_icc + (1|dv), data=rel_comp)
+mod2 = lmer(retest_reliability ~ mean_icc + (mean_icc|dv), data=rel_comp)
+
+anova(mod1, mod2)
+```
+
+```{r}
+mod3 = lmer(retest_reliability ~ mean_icc + scale(sample_size) + (mean_icc|dv), data=rel_comp)
+
+anova(mod2, mod3)
+```
+
+```{r}
+mod4 = lmer(retest_reliability ~ mean_icc + scale(days) + scale(sample_size) + (mean_icc|dv), data=rel_comp)
+
+anova(mod3, mod4)
+```
+
+Selected model: fixed effect for mean icc and sample size of study, random slope with respect to mean icc and random intercept for each measure
+
+What does it say?
+
+```{r}
+summary(mod3)
+```
+
+How well does the model fit? (squared correlation between predictions of model and data)
+
+```{r}
+cor(predict(mod3), rel_comp$retest_reliability)^2
+```
+
+Same result if you do flat model without random slopes for dv's
+
+```{r}
+summary(lm(retest_reliability ~ mean_icc+scale(sample_size), data=rel_comp))
+```
+
+Visualize hierarchical model:
+How would I show random intercepts/slopes? Does the fact that I can't think of how means that there is something wrong with the model?
 
 ```{r}
 rel_comp %>%
-  mutate(diff_sq = (median_icc - median_reliability)^2) %>%
-  ggplot(aes(diff_sq, mean_sample, color=task))+
-  geom_point()+
-  geom_smooth()
+  ggplot()+  
+  geom_boxplot(aes(mean_icc, retest_reliability, group=dv))+
+  geom_smooth(aes(mean_icc, retest_reliability), method= 'lm')+
+  theme_bw()+
+  theme(legend.position = 'none')+
+  geom_abline(slope=1, intercept=0)+
+  # geom_abline(slope=0, intercept=0.3, linetype='dashed')+
+  xlim(-0.2, 1)+
+  ylim(-0.2, 1)+
+  facet_grid(task~.)+
+  xlab('Mean bootstrapped ICC')+
+  ylab('Reliability estimate from literature')
+
 ```
 
-```{r}
-lit_review %>%
-  ggplot(aes(sample_size))+
-  geom_histogram()+
-  theme_bw()
-```
+Potential problems in this graph: 
+- not all metrics are ICC's
+- difference in delay between completion of two tests (does it make a difference in the lit review?)
 
 ## Relationship between reliability metrics (point estimates)
 
@@ -723,52 +837,7 @@ Note: Some variables have <0 ICC's. This would be the case if the $MS_{error}$>$
 
 Summarized bootstrapped reliabilities
 
-```{r}
-process_boot_df = function(df){
-  df = df %>%
-  drop_na() %>%
-  mutate(dv = as.character(dv),
-         icc = as.numeric(as.character(icc)),
-         spearman = as.numeric(as.character(spearman)),
-         pearson = as.numeric(as.character(pearson)),
-         eta_sq = as.numeric(as.character(eta_sq)),
-         sem = as.numeric(as.character(sem)),
-         partial_eta_sq = as.numeric(as.character(partial_eta_sq)),
-         omega_sq = as.numeric(as.character(omega_sq)),
-         var_subs = as.numeric(as.character(var_subs)),
-         var_ind = as.numeric(as.character(var_ind)),
-         var_resid = as.numeric(as.character(var_resid)),
-         F_time = as.numeric(as.character(F_time)),
-         p_time = as.numeric(as.character(p_time)),
-         df_time = as.numeric(as.character(df_time)),
-         df_resid = as.numeric(as.character(df_resid)))
-  return(df)} 
-```
-
 ```{r message=FALSE, warning=FALSE}
-boot_df <- read.csv(gzfile(paste0(retest_data_path,'bootstrap_merged.csv.gz')))
-
-boot_df = process_boot_df(boot_df)
-
-boot_df = boot_df[boot_df$dv %in% retest_report_vars,]
-
-# Check if you have all variables bootstrapped
-# retest_report_vars[which(retest_report_vars %in% boot_df$dv==FALSE)]
-
-# Boot df contains hddm parameters fit on the full sample in the t1 data
-# refits_bootstrap_merged.csv.gz contains bootstrapped reliabilities 
-
-refit_boot_df = read.csv(gzfile(paste0(retest_data_path,'refits_bootstrap_merged.csv.gz')))
-
-refit_boot_df = process_boot_df(refit_boot_df)
-
-fullfit_boot_df = boot_df[as.character(boot_df$dv) %in% unique(as.character(refit_boot_df$dv)),]
-
-boot_df = boot_df[!as.character(boot_df$dv) %in% unique(as.character(refit_boot_df$dv)),]
-
-boot_df = rbind(boot_df, refit_boot_df)
-
-rm(refit_boot_df)
 
 boot_df %>%
   group_by(dv) %>%
