@@ -649,6 +649,8 @@ anova(mod2, mod3)
 summary(mod2)
 ```
 
+Tasks have significantly lower reliability and reliability decreases with increasing sample size.
+
 ```{r}
 rel_comp %>% 
   ggplot(aes(sample_size, retest_reliability, color=task))+
@@ -659,15 +661,105 @@ rel_comp %>%
   ylab("Retest reliability")
 ```
 
-Compare effect sizes of effect of task on reliability estimates in literature vs our results (just looking at the variables you find in the literature)
+Conceptual replication 1: Compare effect sizes of effect of task on reliability estimates in literature vs our results (just looking at the variables you find in the literature)
 
-### Conceptual replications 
-- Larger reliability estimates for surveys
-- Larger variance in reliability estimates for tasks
+```{r}
+m1 = rel_comp %>% filter(task == "task") %>% summarise(m1 = mean(retest_reliability))
+m2 = rel_comp %>% filter(task == "survey") %>% summarise(m2 = mean(retest_reliability))
+n1 = nrow(rel_comp %>% filter(task == "task"))
+n2 = nrow(rel_comp %>% filter(task == "survey"))
+var1 = rel_comp %>% filter(task == "task") %>% summarise(var1 = var(retest_reliability))
+var2 = rel_comp %>% filter(task == "survey") %>% summarise(var1 = var(retest_reliability))
+sd_pooled = sqrt(((n1-1)*var1+(n2-1)*var2)/(n1+n2-2))
+d_lit = abs(m1-m2)/sd_pooled
+d_lit
+```
 
-### Sample size effects/publication bias
+The literature review conceptually replicates our finding of lower reliability estimates for task measures but with a much smaller effect size.
 
-Deviance between our mean estimate and the reliability from the literature decreases exponentially with sample size. The smaller the sample size in the literature the more the reliability estimate differs from our results.
+```{r}
+n_df = rel_comp %>% 
+  group_by(dv) %>%
+  tally()
+
+boot_comp = data.frame()
+
+for(i in 1:length(unique(rel_comp$dv)) ){
+  cur_dv = unique(rel_comp$dv)[i]
+  n = n_df$n[n_df$dv == cur_dv]
+  sample_df = boot_df %>% filter(dv == cur_dv)
+  tmp = sample_n(sample_df, n)
+  boot_comp = rbind(boot_comp, tmp)
+}  
+  
+rm(cur_dv, n, sample_df, tmp)
+
+boot_comp = boot_comp %>%
+  mutate(task=ifelse(grepl("survey", dv), "task", "survey"))
+
+m1 = boot_comp %>% filter(task == "task") %>% summarise(m1 = mean(icc))
+m2 = boot_comp %>% filter(task == "survey") %>% summarise(m2 = mean(icc))
+n1 = nrow(boot_comp %>% filter(task == "task"))
+n2 = nrow(boot_comp %>% filter(task == "survey"))
+var1 = boot_comp %>% filter(task == "task") %>% summarise(var1 = var(icc))
+var2 = boot_comp %>% filter(task == "survey") %>% summarise(var1 = var(icc))
+sd_pooled = sqrt(((n1-1)*var1+(n2-1)*var2)/(n1+n2-2))
+d_boot = abs(m1-m2)/sd_pooled
+d_boot
+```
+
+Conceptual replication 2: Larger variance in reliability estimates for tasks
+
+```{r}
+tmp = rel_comp %>%
+  group_by(dv) %>%
+  summarise(rel_var = var(retest_reliability), 
+            task=unique(task)) %>%
+  na.omit()
+tmp %>%
+  ggplot(aes(rel_var, fill=task))+
+  geom_density(alpha=0.5, position='identity')+
+  theme(legend.title = element_blank())+
+  xlab('Variance of reliability estimates')
+```
+
+```{r}
+summary(lm(rel_var ~ task, tmp))
+```
+
+Effect sizes of task on variance in reliability estimates in literature vs our results are comparable
+
+```{r}
+m1 = tmp %>% filter(task == "task") %>% summarise(m1 = mean(rel_var))
+m2 = tmp %>% filter(task == "survey") %>% summarise(m2 = mean(rel_var))
+n1 = nrow(tmp %>% filter(task == "task"))
+n2 = nrow(tmp %>% filter(task == "survey"))
+var1 = tmp %>% filter(task == "task") %>% summarise(var1 = var(rel_var))
+var2 = tmp %>% filter(task == "survey") %>% summarise(var2 = var(rel_var))
+sd_pooled = sqrt(((n1-1)*var1+(n2-1)*var2)/(n1+n2-2))
+d_lit = abs(m1-m2)/sd_pooled
+d_lit
+```
+
+```{r}
+tmp = boot_comp %>%
+  group_by(dv) %>%
+  summarise(rel_var = var(icc), 
+            task=unique(task)) %>%
+  na.omit()
+
+m1 = tmp %>% filter(task == "task") %>% summarise(m1 = mean(rel_var))
+m2 = tmp %>% filter(task == "survey") %>% summarise(m2 = mean(rel_var))
+n1 = nrow(tmp %>% filter(task == "task"))
+n2 = nrow(tmp %>% filter(task == "survey"))
+var1 = tmp %>% filter(task == "task") %>% summarise(var1 = var(rel_var))
+var2 = tmp %>% filter(task == "survey") %>% summarise(var2 = var(rel_var))
+sd_pooled = sqrt(((n1-1)*var1+(n2-1)*var2)/(n1+n2-2))
+d_boot = abs(m1-m2)/sd_pooled
+d_boot
+```
+
+Square difference between our mean estimate and the reliability from the literature decreases exponentially with sample size. The smaller the sample size in the literature the more the reliability estimate differs from our results.
 
 ```{r}
 rel_comp = rel_comp %>%
@@ -679,26 +771,6 @@ rel_comp %>%
   #exponential decay (linearized by taking logs of both sides)
   geom_smooth(method="glm",se=FALSE, method.args=list(family=gaussian(link="log")))+
   theme_bw()
-```
-
-```{r}
-lit_review %>%
-  ggplot(aes(sample_size, retest_reliability, color=task))+
-  geom_smooth(method='lm')
-
-mod1 = lmer(retest_reliability~sample_size+(1|dv), data=lit_review)
-
-```
-
-```{r}
-#sd by average sample size
-lit_review %>%
-  group_by(dv) %>%
-  summarise(sd_rel = sd(retest_reliability),
-            avg_sample_size = mean(sample_size)) %>%
-  ggplot(aes(avg_sample_size, sd_rel))+
-  geom_point()+
-  xlim(0,200)
 ```
 
 ### Direct relation to our results
