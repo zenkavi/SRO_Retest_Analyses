@@ -545,7 +545,29 @@ sig_days_effect %>%
   geom_point()
 ```
 
-`Plot differences for the measures with differences as examples`
+`Plot difference score distributions for the measures with significant differences as examples`
+
+```{r}
+t1_2_difference %>% 
+  filter(dv == sig_days_effect$dv[1]) %>%
+  mutate(days_btw = as.numeric(days_btw),
+         days_bins = ifelse(days_btw < quantile(days_btw, probs=0.33), "short", 
+                                                ifelse(days_btw>quantile(days_btw, probs=0.66), "large", "medium"))) %>%
+  ggplot(aes(factor(days_bins, levels = c("short", "medium", "large")), difference))+
+  geom_boxplot()+
+  xlab('delay between two measurements')
+```
+
+```{r}
+t1_2_difference %>% 
+  filter(dv == sig_days_effect$dv[4]) %>%
+  mutate(days_btw = as.numeric(days_btw),
+         days_bins = ifelse(days_btw < quantile(days_btw, probs=0.33), "short", 
+                                                ifelse(days_btw>quantile(days_btw, probs=0.66), "large", "medium"))) %>%
+  ggplot(aes(factor(days_bins, levels = c("short", "medium", "large")), difference))+
+  geom_boxplot()+
+  xlab('delay between two measurements')
+```
 
 ## Comparison to prior literature
 
@@ -629,6 +651,12 @@ rel_comp %>%
   theme(legend.title = element_blank())
 ```
 
+The literature has smaller sized samples for task measures compared to survey measures that report retest reliability.
+
+```{r}
+summary(lm(sample_size ~ task,rel_comp))
+```
+
 What predicts retest reliability in the literature?
 Task, sample size, days
 
@@ -661,21 +689,27 @@ rel_comp %>%
   ylab("Retest reliability")
 ```
 
-Conceptual replication 1: Compare effect sizes of effect of task on reliability estimates in literature vs our results (just looking at the variables you find in the literature)
+Compare effect sizes of effect of task on reliability estimates in literature vs our results (just looking at the variables you find in the literature)
 
 ```{r}
-m1 = rel_comp %>% filter(task == "task") %>% summarise(m1 = mean(retest_reliability))
-m2 = rel_comp %>% filter(task == "survey") %>% summarise(m2 = mean(retest_reliability))
+rel_comp = rel_comp %>%
+  mutate(retest_reliability_ft = 0.5*log((1+retest_reliability)/(1-retest_reliability))) %>%
+  filter(is.finite(retest_reliability_ft)==TRUE)
+
+m1 = rel_comp %>% filter(task == "task") %>% summarise(m1 = mean(retest_reliability_ft))
+m2 = rel_comp %>% filter(task == "survey") %>% summarise(m2 = mean(retest_reliability_ft))
 n1 = nrow(rel_comp %>% filter(task == "task"))
 n2 = nrow(rel_comp %>% filter(task == "survey"))
-var1 = rel_comp %>% filter(task == "task") %>% summarise(var1 = var(retest_reliability))
-var2 = rel_comp %>% filter(task == "survey") %>% summarise(var1 = var(retest_reliability))
+var1 = rel_comp %>% filter(task == "task") %>% summarise(var1 = var(retest_reliability_ft))
+var2 = rel_comp %>% filter(task == "survey") %>% summarise(var1 = var(retest_reliability_ft))
 sd_pooled = sqrt(((n1-1)*var1+(n2-1)*var2)/(n1+n2-2))
 d_lit = abs(m1-m2)/sd_pooled
 d_lit
 ```
 
-The literature review conceptually replicates our finding of lower reliability estimates for task measures but with a much smaller effect size.
+`Add column for turk vs lab study`
+
+The literature review conceptually replicates our finding of lower reliability estimates for task measures but with a much smaller effect size (for Fisher transformed reliability estimates).
 
 ```{r}
 n_df = rel_comp %>% 
@@ -695,65 +729,15 @@ for(i in 1:length(unique(rel_comp$dv)) ){
 rm(cur_dv, n, sample_df, tmp)
 
 boot_comp = boot_comp %>%
-  mutate(task=ifelse(grepl("survey", dv), "task", "survey"))
+  mutate(task=ifelse(grepl("survey", dv), "task", "survey"),
+         icc_ft = 0.5*log((1+icc)/(1-icc)))
 
-m1 = boot_comp %>% filter(task == "task") %>% summarise(m1 = mean(icc))
-m2 = boot_comp %>% filter(task == "survey") %>% summarise(m2 = mean(icc))
+m1 = boot_comp %>% filter(task == "task") %>% summarise(m1 = mean(icc_ft))
+m2 = boot_comp %>% filter(task == "survey") %>% summarise(m2 = mean(icc_ft))
 n1 = nrow(boot_comp %>% filter(task == "task"))
 n2 = nrow(boot_comp %>% filter(task == "survey"))
-var1 = boot_comp %>% filter(task == "task") %>% summarise(var1 = var(icc))
-var2 = boot_comp %>% filter(task == "survey") %>% summarise(var1 = var(icc))
-sd_pooled = sqrt(((n1-1)*var1+(n2-1)*var2)/(n1+n2-2))
-d_boot = abs(m1-m2)/sd_pooled
-d_boot
-```
-
-Conceptual replication 2: Larger variance in reliability estimates for tasks
-
-```{r}
-tmp = rel_comp %>%
-  group_by(dv) %>%
-  summarise(rel_var = var(retest_reliability), 
-            task=unique(task)) %>%
-  na.omit()
-tmp %>%
-  ggplot(aes(rel_var, fill=task))+
-  geom_density(alpha=0.5, position='identity')+
-  theme(legend.title = element_blank())+
-  xlab('Variance of reliability estimates')
-```
-
-```{r}
-summary(lm(rel_var ~ task, tmp))
-```
-
-Effect sizes of task on variance in reliability estimates in literature vs our results are comparable
-
-```{r}
-m1 = tmp %>% filter(task == "task") %>% summarise(m1 = mean(rel_var))
-m2 = tmp %>% filter(task == "survey") %>% summarise(m2 = mean(rel_var))
-n1 = nrow(tmp %>% filter(task == "task"))
-n2 = nrow(tmp %>% filter(task == "survey"))
-var1 = tmp %>% filter(task == "task") %>% summarise(var1 = var(rel_var))
-var2 = tmp %>% filter(task == "survey") %>% summarise(var2 = var(rel_var))
-sd_pooled = sqrt(((n1-1)*var1+(n2-1)*var2)/(n1+n2-2))
-d_lit = abs(m1-m2)/sd_pooled
-d_lit
-```
-
-```{r}
-tmp = boot_comp %>%
-  group_by(dv) %>%
-  summarise(rel_var = var(icc), 
-            task=unique(task)) %>%
-  na.omit()
-
-m1 = tmp %>% filter(task == "task") %>% summarise(m1 = mean(rel_var))
-m2 = tmp %>% filter(task == "survey") %>% summarise(m2 = mean(rel_var))
-n1 = nrow(tmp %>% filter(task == "task"))
-n2 = nrow(tmp %>% filter(task == "survey"))
-var1 = tmp %>% filter(task == "task") %>% summarise(var1 = var(rel_var))
-var2 = tmp %>% filter(task == "survey") %>% summarise(var2 = var(rel_var))
+var1 = boot_comp %>% filter(task == "task") %>% summarise(var1 = var(icc_ft))
+var2 = boot_comp %>% filter(task == "survey") %>% summarise(var1 = var(icc_ft))
 sd_pooled = sqrt(((n1-1)*var1+(n2-1)*var2)/(n1+n2-2))
 d_boot = abs(m1-m2)/sd_pooled
 d_boot
@@ -761,17 +745,25 @@ d_boot
 
 Square difference between our mean estimate and the reliability from the literature decreases exponentially with sample size. The smaller the sample size in the literature the more the reliability estimate differs from our results.
 
+This plot (weakly) supports that point that our results diverge most from studies with smaller sample sizes.
+
 ```{r}
 rel_comp = rel_comp %>%
-  mutate(diff_sq = (mean_icc - retest_reliability)^2) 
+  mutate(diff_sq = abs(mean_icc - retest_reliability)) 
 
 rel_comp %>%
   ggplot(aes(sample_size,diff_sq, color=task))+
-  # geom_point()+
+  geom_point()+
   #exponential decay (linearized by taking logs of both sides)
   geom_smooth(method="glm",se=FALSE, method.args=list(family=gaussian(link="log")))+
   theme_bw()+
   theme(legend.title = element_blank())
+```
+
+But as the plot suggests these are not significant effects overall.
+
+```{r}
+summary(lmer(diff_sq ~ sample_size*task + (1|dv), rel_comp))
 ```
 
 ### Direct relation to our results
@@ -779,50 +771,63 @@ rel_comp %>%
 Correlation between our mean estimates from bootstrapped samples and the literature review for task variables
 
 ```{r}
-with(rel_comp %>% filter(task == "task"), cor(mean_icc, retest_reliability))
+with(rel_comp %>% filter(task == "task"), cor(mean_icc, retest_reliability, method="spearman"))
 ```
 
 ```{r}
-with(rel_comp %>% filter(task == "survey"), cor(mean_icc, retest_reliability))
+with(rel_comp %>% filter(task == "survey"), cor(mean_icc, retest_reliability, method="spearman"))
 ```
 
 Model comparisons building model to predict the reliabilities in the literature from our results.
 
+sample one row per measure out of lit review
+r^2 of retest_reliability ~ sampled_reliability vs. 
+r^2 of retest_reliability ~ mean_icc
+
+coef of retest_reliability ~ sampled_reliability vs. 
+coef of retest_reliability ~ mean_icc
+
+```{r}
+tmp  = rel_comp %>% filter(dv == unique(rel_comp$dv)[10])
+
+sample_from_dv <- function(df){
+  if(nrow(df)>1){
+    row_num = sample(1:nrow(df),1)
+    sample_row = df[row_num,]
+    df = df[-row_num,]
+    df$lit_predictor = sample_row$retest_reliability
+  }
+  return(df)
+}
+
+sample_from_dv(tmp)
+
+sampled_df = rel_comp %>%
+  group_by(dv) %>%
+  do(sample_from_dv(.))
+
+summary(lm(retest_reliability ~ lit_predictor, data=sampled_df))
+summary(lm(retest_reliability ~ mean_icc, data=sampled_df))
+```
+
 ```{r}
 mod1 = lmer(retest_reliability ~ mean_icc + (1|dv), data=rel_comp)
-mod2 = lmer(retest_reliability ~ mean_icc + (mean_icc|dv), data=rel_comp)
+mod1a = lm(retest_reliability ~ mean_icc, data=rel_comp)
+
+cor(predict(mod1), rel_comp$retest_reliability)^2
+cor(predict(mod1a), rel_comp$retest_reliability)^2
+
+# mod2 = lmer(retest_reliability ~ mean_icc + (mean_icc|dv), data=rel_comp)
+
+rel_comp %>%
+  select(dv, retest_reliability, mean_icc)
+
+summary(mod1a)
+
+summary(lm(retest_reliability ~ mean_icc*scale(sample_size), data=rel_comp))
 
 anova(mod1, mod2)
 ```
-
-```{r}
-mod3 = lmer(retest_reliability ~ mean_icc + scale(sample_size) + (mean_icc|dv), data=rel_comp)
-
-anova(mod2, mod3)
-```
-
-Selected model: fixed effect for mean icc and sample size of study, random slope with respect to mean icc and random intercept for each measure
-
-```{r}
-mod4 = lmer(retest_reliability ~ mean_icc + task + scale(sample_size) + (mean_icc|dv), data=rel_comp)
-
-anova(mod3, mod4)
-```
-
-What does it say?
-
-```{r}
-summary(mod3)
-```
-
-How well does the model fit? (squared correlation between predictions of model and data)
-
-```{r}
-cor(predict(mod3), rel_comp$retest_reliability)^2
-```
-
-Visualize hierarchical model:
-How would I show random intercepts/slopes?
 
 ```{r}
 rel_comp %>%
@@ -842,6 +847,10 @@ rel_comp %>%
 ```
 
 NOTE: not all metrics are ICC's
+
+```{r echo=FALSE}
+rm(tmp, rel_comp, boot_comp, d_boot, d_lit, mod1, mod2, mod3, mod4, n_df, m1, m2, var1, var2, sd_pooled, task, i, n1, n2)
+```
 
 ## Relationship between reliability metrics (point estimates)
 
