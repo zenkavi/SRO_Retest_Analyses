@@ -763,14 +763,15 @@ Square difference between our mean estimate and the reliability from the literat
 
 ```{r}
 rel_comp = rel_comp %>%
-  mutate(diff_sq = abs(mean_icc - retest_reliability)^2) 
+  mutate(diff_sq = (mean_icc - retest_reliability)^2) 
 
 rel_comp %>%
   ggplot(aes(sample_size,diff_sq, color=task))+
   # geom_point()+
   #exponential decay (linearized by taking logs of both sides)
   geom_smooth(method="glm",se=FALSE, method.args=list(family=gaussian(link="log")))+
-  theme_bw()
+  theme_bw()+
+  theme(legend.title = element_blank())
 ```
 
 ### Direct relation to our results
@@ -778,11 +779,11 @@ rel_comp %>%
 Correlation between our mean estimates from bootstrapped samples and the literature review for task variables
 
 ```{r}
-with(rel_comp %>% filter(task == "task"), cor(mean_icc, mean_reliability))
+with(rel_comp %>% filter(task == "task"), cor(mean_icc, retest_reliability))
 ```
 
 ```{r}
-with(rel_comp %>% filter(task == "survey"), cor(mean_icc, mean_reliability))
+with(rel_comp %>% filter(task == "survey"), cor(mean_icc, retest_reliability))
 ```
 
 Model comparisons building model to predict the reliabilities in the literature from our results.
@@ -800,13 +801,13 @@ mod3 = lmer(retest_reliability ~ mean_icc + scale(sample_size) + (mean_icc|dv), 
 anova(mod2, mod3)
 ```
 
+Selected model: fixed effect for mean icc and sample size of study, random slope with respect to mean icc and random intercept for each measure
+
 ```{r}
-mod4 = lmer(retest_reliability ~ mean_icc + scale(days) + scale(sample_size) + (mean_icc|dv), data=rel_comp)
+mod4 = lmer(retest_reliability ~ mean_icc + task + scale(sample_size) + (mean_icc|dv), data=rel_comp)
 
 anova(mod3, mod4)
 ```
-
-Selected model: fixed effect for mean icc and sample size of study, random slope with respect to mean icc and random intercept for each measure
 
 What does it say?
 
@@ -820,14 +821,8 @@ How well does the model fit? (squared correlation between predictions of model a
 cor(predict(mod3), rel_comp$retest_reliability)^2
 ```
 
-Same result if you do flat model without random slopes for dv's
-
-```{r}
-summary(lm(retest_reliability ~ mean_icc+scale(sample_size), data=rel_comp))
-```
-
 Visualize hierarchical model:
-How would I show random intercepts/slopes? Does the fact that I can't think of how means that there is something wrong with the model?
+How would I show random intercepts/slopes?
 
 ```{r}
 rel_comp %>%
@@ -837,18 +832,16 @@ rel_comp %>%
   theme_bw()+
   theme(legend.position = 'none')+
   geom_abline(slope=1, intercept=0)+
-  # geom_abline(slope=0, intercept=0.3, linetype='dashed')+
+  geom_abline(slope=0, intercept=0.3, linetype='dashed')+
   xlim(-0.2, 1)+
   ylim(-0.2, 1)+
-  facet_grid(task~.)+
+  # facet_grid(task~.)+
   xlab('Mean bootstrapped ICC')+
   ylab('Reliability estimate from literature')
 
 ```
 
-Potential problems in this graph: 
-- not all metrics are ICC's
-- difference in delay between completion of two tests (does it make a difference in the lit review?)
+NOTE: not all metrics are ICC's
 
 ## Relationship between reliability metrics (point estimates)
 
