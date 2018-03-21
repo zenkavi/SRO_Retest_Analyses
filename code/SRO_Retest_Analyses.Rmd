@@ -788,26 +788,44 @@ coef of retest_reliability ~ sampled_reliability vs.
 coef of retest_reliability ~ mean_icc
 
 ```{r}
-tmp  = rel_comp %>% filter(dv == unique(rel_comp$dv)[10])
-
-sample_from_dv <- function(df){
-  if(nrow(df)>1){
-    row_num = sample(1:nrow(df),1)
-    sample_row = df[row_num,]
-    df = df[-row_num,]
-    df$lit_predictor = sample_row$retest_reliability
+comp_lit_pred <- function(df){
+  
+  sample_from_dv <- function(df){
+    if(nrow(df)>1){
+      row_num = sample(1:nrow(df),1)
+      sample_row = df[row_num,]
+      df = df[-row_num,]
+      df$lit_predictor = sample_row$retest_reliability
+    }
+    return(df)
   }
-  return(df)
+  
+  sampled_df = df %>%
+    group_by(dv) %>%
+    do(sample_from_dv(.)) 
+  
+  mod_lit = lm(retest_reliability ~ lit_predictor, data=sampled_df)
+  mod_boot = lm(retest_reliability ~ mean_icc, data=sampled_df)
+  
+  out = data.frame(r2_lit = summary(mod_lit)$r.squared,
+                   r2_boot = summary(mod_boot)$r.squared,
+                   m_lit = coef(summary(mod_lit))["lit_predictor","Estimate"],
+                   m_boot = coef(summary(mod_boot))["mean_icc","Estimate"])
+  
+  return(out)
 }
 
-sample_from_dv(tmp)
+comp_lit_pred_out = plyr::rdply(1000, comp_lit_pred(rel_comp))
 
-sampled_df = rel_comp %>%
-  group_by(dv) %>%
-  do(sample_from_dv(.))
-
-summary(lm(retest_reliability ~ lit_predictor, data=sampled_df))
-summary(lm(retest_reliability ~ mean_icc, data=sampled_df))
+comp_lit_pred_out %>%
+  select(-.n) %>%
+  gather(key, value) %>%
+  separate(key, c("stat", "sample"), sep = "_") %>%
+  ggplot(aes(value, fill=sample))+
+  geom_density(alpha = 0.5, position='identity')+
+  facet_wrap(~stat, scales='free')+
+  theme(legend.title = element_blank())+
+  xlab('')
 ```
 
 ```{r}
