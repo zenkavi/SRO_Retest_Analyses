@@ -323,7 +323,9 @@ test_data = merge(test_data, hddm_refits, by="sub_id")
 
 # Results
 
-## Demographics reliability
+## Data quality checks
+
+### Demographics reliability
 
 Point estimates of reliability for the demographic variabels.
 
@@ -362,7 +364,7 @@ summary(demog_rel_df)
 rm(test_demog, retest_demog, demog_rel_df, numeric_cols)
 ```
 
-## Effect of delays between the two measurements
+### Effect of delays between the two measurements
 
 Due to our data collection strategy we did not strictly control for the delay between the two measurements as standard psychometrics studies measuring retest reliability might. 
 
@@ -374,11 +376,9 @@ So if you regress the average difference for each measure on average delay betwe
 
 Instead of the summary metric like the retest reliability estimate for each measure we can check whether the difference score distribution for each measure depends on the delay between the two measurements. Since the difference score distribution is at subject level we can check whether the order of subjects in this distribution depends on their order in the distribution of days between completing the two tests.
 
-Make data frame with difference between two scores for each measure for each subject. Since the scores for different measures are on different scales for comparability the difference scores are normalized (ie demeaned and dividied by the sd of the difference score distribution.) Note that the variance of the difference score distribution accounts for the variance in both time points by summing them. Normalization equates the means of each difference score distribution to 0 which would mask any meaningful change between the two time points but the analysis here does not interpret the mean of the difference score distributions but is interested in its relation to the days between completion. We check if the variables show systematic differences between the two points later and can investigate whether
+Make data frame with difference between two scores for each measure for each subject. Since the scores for different measures are on different scales for comparability the difference scores are normalized (ie demeaned and dividied by the sd of the difference score distribution.) Note that the variance of the difference score distribution accounts for the variance in both time points by summing them. Normalization equates the means of each difference score distribution to 0 which would mask any meaningful change between the two time points but the analysis here does not interpret the mean of the difference score distributions but is interested in its relation to the days between completion. We check if the variables show systematic differences between the two points later.
 
 Here we check if the difference is larger the longer the delay
-What is the threshold for a meaningful difference between the two points for each variable? 
-For standardized difference scores does it cross 2 on the y axis?
 
 ```{r warning=FALSE}
 numeric_cols = c()
@@ -497,12 +497,16 @@ t1_2_difference %>%
   ylab('Scaled difference score')+
   scale_color_discrete(breaks=c(0,1),
                        labels=c("NS", "Sig"))
+
+ggsave('DaysBtwEffect.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 6, height = 4, units = "in", limitsize = FALSE, dpi = 100)
 ```
 
 Conclusion: The average difference between the scores of a measure if anything decreases with the increased delay. This fixed effect masks the simple effect for each dv. When looked at individually only 10 variables show a dependence on days between completion. While 7 of them show decreasing differences depending on days between 3 do show increasing differences.
 This suggests that the lack of stricter control over the days between completion of the measurement does not have a large effect on the stability of most measures.
 
 effect of whether days between leads to a sig difference on reliability of that variable? plot coef of sig_day_effect over rel_df point estimate
+
+Do the variables that show significant dependence on the delay between the completion times have systematically lower/higher reliability? Looking at the reliability point estimate over the size of the delay effect. There are very few variables to compare anyway but regardless doesn't look conclusive/concerning.
 
 ```{r}
 #Create df of point estimate reliabilities
@@ -545,28 +549,104 @@ sig_days_effect %>%
   geom_point()
 ```
 
-`Plot difference score distributions for the measures with significant differences as examples`
+### Overlapping survery questions
+
+Some surveys have overlapping questions. Do these correlate within and across sessions?
+
+First determine the overlapping questions.
 
 ```{r}
-t1_2_difference %>% 
-  filter(dv == sig_days_effect$dv[1]) %>%
-  mutate(days_btw = as.numeric(days_btw),
-         days_bins = ifelse(days_btw < quantile(days_btw, probs=0.33), "short", 
-                                                ifelse(days_btw>quantile(days_btw, probs=0.66), "large", "medium"))) %>%
-  ggplot(aes(factor(days_bins, levels = c("short", "medium", "large")), difference))+
-  geom_boxplot()+
-  xlab('delay between two measurements')
+tmp = read.csv(gzfile(paste0(retest_data_path, 'items.csv.gz')))
+tmp = tmp %>% 
+  filter(worker == 's005') %>% 
+  select(item_ID, item_text) %>% 
+  mutate(item_text = trimws(as.character(item_text))) %>%
+  unite(item, c("item_ID", "item_text"), sep = "___")
+
+comb = as.data.frame(t(combn(unique(tmp$item),2)))
+
+duplicate_items = comb %>% 
+  filter(grepl('dospert', V1)==FALSE) %>%
+  filter(grepl('selection_optimization', V1)==FALSE) %>%
+  filter(grepl('sensation_seeking', V1)==FALSE) %>%
+  separate(V1, c("item1_ID", "item1_text"), sep="___") %>%
+  separate(V2, c("item2_ID", "item2_text"), sep="___") %>%
+  mutate(similarity = levenshteinSim(item1_text, item2_text)) %>%
+  filter(similarity>0.8) %>%
+  select(item1_ID, item2_ID, item1_text, item2_text)
+
+duplicate_items
+```
+
+```{r warning=FALSE, message=FALSE}
+#surveys to read in
+extract_items = c('worker',unique(with(duplicate_items, c(item1_ID, item2_ID))))
+
+#correlations to compute:
+#item1_t1 - item2_t1, 
+#item1_t2 - item2_t2, 
+#item1_t1 - item2_t2, 
+#item1_t2 - item2_t1
+
+duplicate_items_data_t1 = read.csv(paste0(test_data_path, 'subject_x_items.csv'))
+duplicate_items_data_t2 = read.csv(paste0(retest_data_path, 'subject_x_items.csv'))
+
+duplicate_items_data_t1 = duplicate_items_data_t1 %>%
+  filter(worker %in% duplicate_items_data_t2$worker) %>%
+  select(extract_items)
+
+duplicate_items_data_t2=duplicate_items_data_t2 %>%
+  filter(worker %in% duplicate_items_data_t1$worker) %>%
+  select(extract_items)
+
+duplicate_items = duplicate_items %>%
+  mutate(t1_t1_cor = NA,
+         t2_t2_cor = NA,
+         t1_t2_cor = NA,
+         t2_t1_cor = NA,
+         t1_t1_polycor = NA,
+         t2_t2_polycor = NA,
+         t1_t2_polycor = NA,
+         t2_t1_polycor = NA)
+
+for(i in 1:nrow(duplicate_items)){
+  duplicate_items$t1_t1_cor[i] = abs(cor(duplicate_items_data_t1[,c(duplicate_items$item1_ID[i])],
+                                  duplicate_items_data_t1[,c(duplicate_items$item2_ID[i])]))
+  
+  duplicate_items$t2_t2_cor[i] = abs(cor(duplicate_items_data_t2[,c(duplicate_items$item1_ID[i])],
+                                  duplicate_items_data_t2[,c(duplicate_items$item2_ID[i])]))
+  
+  duplicate_items$t1_t2_cor[i] = abs(cor(duplicate_items_data_t1[,c(duplicate_items$item1_ID[i])],
+                                  duplicate_items_data_t2[,c(duplicate_items$item2_ID[i])]))
+  
+  duplicate_items$t2_t1_cor[i] = abs(cor(duplicate_items_data_t2[,c(duplicate_items$item1_ID[i])],
+                                  duplicate_items_data_t1[,c(duplicate_items$item2_ID[i])]))
+  
+  duplicate_items$t1_t1_polycor[i] = abs(polychoric(data.frame(duplicate_items_data_t1[,c(duplicate_items$item1_ID[i])],
+                      duplicate_items_data_t1[,c(duplicate_items$item2_ID[i])]))$rho[2])
+
+  duplicate_items$t2_t2_polycor[i] = abs(polychoric(data.frame(duplicate_items_data_t2[,c(duplicate_items$item1_ID[i])],
+                      duplicate_items_data_t2[,c(duplicate_items$item2_ID[i])]))$rho[2])
+
+  duplicate_items$t1_t2_polycor[i] = abs(polychoric(data.frame(duplicate_items_data_t1[,c(duplicate_items$item1_ID[i])],
+                      duplicate_items_data_t2[,c(duplicate_items$item2_ID[i])]))$rho[2])
+
+  duplicate_items$t2_t1_polycor[i] = abs(polychoric(data.frame(duplicate_items_data_t2[,c(duplicate_items$item1_ID[i])],
+                      duplicate_items_data_t1[,c(duplicate_items$item2_ID[i])]))$rho[2])
+}
+
+duplicate_items
 ```
 
 ```{r}
-t1_2_difference %>% 
-  filter(dv == sig_days_effect$dv[4]) %>%
-  mutate(days_btw = as.numeric(days_btw),
-         days_bins = ifelse(days_btw < quantile(days_btw, probs=0.33), "short", 
-                                                ifelse(days_btw>quantile(days_btw, probs=0.66), "large", "medium"))) %>%
-  ggplot(aes(factor(days_bins, levels = c("short", "medium", "large")), difference))+
-  geom_boxplot()+
-  xlab('delay between two measurements')
+summary(duplicate_items$t1_t1_polycor)
+summary(duplicate_items$t2_t2_polycor)
+summary(duplicate_items$t1_t2_polycor)
+summary(duplicate_items$t2_t1_polycor)
+```
+
+```{r echo=FALSE}
+rm(tmp, comb)
 ```
 
 ## Comparison to prior literature
@@ -649,6 +729,10 @@ rel_comp %>%
   geom_density(alpha=0.5, position='identity')+
   facet_wrap(~key, scales='free')+
   theme(legend.title = element_blank())
+```
+
+```{r}
+summary(lm(retest_reliability ~ task,rel_comp))
 ```
 
 The literature has smaller sized samples for task measures compared to survey measures that report retest reliability.
@@ -804,8 +888,8 @@ comp_lit_pred <- function(df){
     group_by(dv) %>%
     do(sample_from_dv(.)) 
   
-  mod_lit = lm(retest_reliability ~ lit_predictor, data=sampled_df)
-  mod_boot = lm(retest_reliability ~ mean_icc, data=sampled_df)
+  mod_lit = lm(retest_reliability ~ lit_predictor+scale(sample_size), data=sampled_df)
+  mod_boot = lm(retest_reliability ~ mean_icc+scale(sample_size), data=sampled_df)
   
   out = data.frame(r2_lit = summary(mod_lit)$r.squared,
                    r2_boot = summary(mod_boot)$r.squared,
@@ -826,6 +910,11 @@ comp_lit_pred_out %>%
   facet_wrap(~stat, scales='free')+
   theme(legend.title = element_blank())+
   xlab('')
+```
+
+
+```{r}
+with(comp_lit_pred_out, t.test(r2_lit, r2_boot))
 ```
 
 ```{r}
