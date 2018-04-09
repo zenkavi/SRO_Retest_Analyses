@@ -10,9 +10,9 @@ toc_float: yes
 source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/SRO_Retest_Analyses_Helper_Functions.R')
 theme_set(theme_bw())
 
-test_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_02-03-2018/'
+test_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_03-29-2018/'
 
-retest_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_02-03-2018/'
+retest_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-29-2018/'
 ```
 
 # Introduction
@@ -87,9 +87,7 @@ lit_review <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analy
 lit_review
 ```
 
-Measure level plot
-
-```{r warning=FALSE, message=FALSE}
+```{r message=FALSE}
 lit_review = lit_review %>%
   separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
   mutate(task_group = factor(task_group, levels = task_group[order(task)]),
@@ -99,7 +97,25 @@ lit_review = lit_review %>%
   arrange(task_group, raw_fit, var) %>%
   mutate(task_group = ifelse(task_group == "psychological refractory period two choices", "psychological refractory period", ifelse(task_group == "angling risk task always sunny", "angling risk task",task_group))) %>%
   mutate(task_group = gsub("survey", "", task_group)) %>%
-    select(-measure_description, -reference)
+  select(-measure_description)
+
+
+tmp = lit_review[duplicated(lit_review$reference)==FALSE,]
+
+nrow(tmp)
+sum(tmp$sample_size)
+nrow(lit_review)
+```
+
+```{r}
+rm(tmp)
+```
+
+Measure level plot
+
+```{r warning=FALSE, message=FALSE}
+lit_review = lit_review %>%
+  select(-reference)
 ```
 
 ```{r warning= FALSE, message =FALSE, echo=FALSE}
@@ -646,7 +662,7 @@ summary(duplicate_items$t2_t1_polycor)
 ```
 
 ```{r echo=FALSE}
-rm(tmp, comb)
+rm(tmp, comb, sig_days_effect, t1_2_difference, duplicate_items, duplicate_items_data_t1, duplicate_items_data_t2, extract_items, get_delay_effect)
 ```
 
 ## Comparison to prior literature
@@ -701,10 +717,11 @@ rm(refit_boot_df)
 
 Summarize bootstrapped results and merge to lit review data
 
-```{r}
+```{r message=FALSE}
 var_boot_df = boot_df %>%
   group_by(dv) %>%
-  summarise(mean_icc = mean(icc))
+  summarise(mean_icc = mean(icc),
+            mean_pearson = mean(pearson))
 
 rel_comp = lit_review %>%
   left_join(var_boot_df, by = 'dv')
@@ -780,7 +797,6 @@ I used to compare effect sizes of effect of task on reliability estimates in lit
 
 Despite these problems the main result was that the effect size was much larger in our dataset compared to the literature but given the problems I think the sampling analyses below are more informative than this.
 
-
 We also checked whether our results diverge most from studies with smaller sample sizes. Square difference between our mean estimate and the reliability from the literature decreases exponentially with sample size. The smaller the sample size in the literature the more the reliability estimate differs from our results. But this was a weak result because most of the studies in the literature have smaller sample sizes and you see both small and large deviations for these studies (these were not significant either).
 
 ### Direct relation to our results
@@ -832,7 +848,9 @@ summary(lit_emp_cor_out)
 
 ```
 
-Model comparisons building model to predict the reliabilities in the literature from our results.
+### Noise ceiling
+
+Model comparisons building model to predict the reliabilities in the literature from a sample from our results versus a sample form the literature.
 
 sample one row per measure out of lit review
 r^2 of retest_reliability ~ sampled_reliability vs. 
@@ -858,75 +876,55 @@ comp_lit_pred <- function(df){
     group_by(dv) %>%
     do(sample_from_dv(.)) 
   
-  mod_lit = lm(retest_reliability ~ lit_predictor+scale(sample_size), data=sampled_df)
-  mod_boot = lm(retest_reliability ~ mean_icc+scale(sample_size), data=sampled_df)
+  mod_lit = lm(retest_reliability ~ lit_predictor+scale(sample_size)+task, data=sampled_df)
+  mod_boot = lm(retest_reliability ~ mean_pearson+scale(sample_size)+task, data=sampled_df)
   
   out = data.frame(r2_lit = summary(mod_lit)$r.squared,
                    r2_boot = summary(mod_boot)$r.squared,
                    m_lit = coef(summary(mod_lit))["lit_predictor","Estimate"],
-                   m_boot = coef(summary(mod_boot))["mean_icc","Estimate"])
+                   m_boot = coef(summary(mod_boot))["mean_pearson","Estimate"])
   
   return(out)
 }
 
 comp_lit_pred_out = plyr::rdply(1000, comp_lit_pred(rel_comp))
+```
 
-comp_lit_pred_out %>%
+
+```{r}
+tmp = comp_lit_pred_out %>%
   select(-.n) %>%
   gather(key, value) %>%
-  separate(key, c("stat", "sample"), sep = "_") %>%
+  separate(key, c("stat", "sample"), sep = "_")
+ 
+tmp$stat = as.factor(tmp$stat)
+levels(tmp$stat) <- c("coefficient", expression(r^"2"))
+
+
+tmp %>%  
   ggplot(aes(value, fill=sample))+
-  geom_density(alpha = 0.5, position='identity')+
-  facet_wrap(~stat, scales='free')+
-  theme(legend.title = element_blank())+
-  xlab('')
+  geom_density(alpha = 0.5, position='identity', color=NA)+
+  facet_grid(.~stat, scales='free', labeller = label_parsed)+
+  scale_fill_discrete(breaks=c("boot","lit"),
+                       labels=c("Empirical", "Literature"),
+                      name="Prediction")+
+  xlab('')+
+  ylab('')
+
+ggsave('Lit_Noise_Ceiling.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 10, height = 4, units = "in", limitsize = FALSE, dpi = 100)
 ```
 
 
 ```{r}
-with(comp_lit_pred_out, t.test(r2_lit, r2_boot))
+with(comp_lit_pred_out, t.test(r2_lit, r2_boot, paired=T))
 ```
 
 ```{r}
-mod1 = lmer(retest_reliability ~ mean_icc + (1|dv), data=rel_comp)
-mod1a = lm(retest_reliability ~ mean_icc, data=rel_comp)
-
-cor(predict(mod1), rel_comp$retest_reliability)^2
-cor(predict(mod1a), rel_comp$retest_reliability)^2
-
-# mod2 = lmer(retest_reliability ~ mean_icc + (mean_icc|dv), data=rel_comp)
-
-rel_comp %>%
-  select(dv, retest_reliability, mean_icc)
-
-summary(mod1a)
-
-summary(lm(retest_reliability ~ mean_icc*scale(sample_size), data=rel_comp))
-
-anova(mod1, mod2)
+with(comp_lit_pred_out, t.test(m_lit, m_boot))
 ```
-
-```{r}
-rel_comp %>%
-  ggplot()+  
-  geom_boxplot(aes(mean_icc, retest_reliability, group=dv))+
-  geom_smooth(aes(mean_icc, retest_reliability), method= 'lm')+
-  theme_bw()+
-  theme(legend.position = 'none')+
-  geom_abline(slope=1, intercept=0)+
-  geom_abline(slope=0, intercept=0.3, linetype='dashed')+
-  xlim(-0.2, 1)+
-  ylim(-0.2, 1)+
-  # facet_grid(task~.)+
-  xlab('Mean bootstrapped ICC')+
-  ylab('Reliability estimate from literature')
-
-```
-
-NOTE: not all metrics are ICC's
 
 ```{r echo=FALSE}
-rm(tmp, rel_comp, boot_comp, d_boot, d_lit, mod1, mod2, mod3, mod4, n_df, m1, m2, var1, var2, sd_pooled, task, i, n1, n2)
+rm(tmp, rel_comp, boot_comp, mod1, mod2, mod3, mod4, n_df, i, lit_emp_cor, lit_emp_cor_out, comp_lit_pred, comp_lit_pred_out)
 ```
 
 ## Relationship between reliability metrics (point estimates)
@@ -989,7 +987,6 @@ Note: Some variables have <0 ICC's. This would be the case if the $MS_{error}$>$
 Summarized bootstrapped reliabilities
 
 ```{r message=FALSE, warning=FALSE}
-
 boot_df %>%
   group_by(dv) %>%
   summarise(icc_median = quantile(icc, probs = 0.5),
