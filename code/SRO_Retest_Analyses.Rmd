@@ -10,9 +10,9 @@ toc_float: yes
 source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/SRO_Retest_Analyses_Helper_Functions.R')
 theme_set(theme_bw())
 
-test_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_03-29-2018/'
+test_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_02-03-2018/'
 
-retest_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-29-2018/'
+retest_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_02-03-2018/'
 ```
 
 # Introduction
@@ -1393,6 +1393,39 @@ tmp %>%
 ggsave('Variance_Breakdown_DotPlot.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 6, height = 5, units = "in", dpi = 100)
 ```
 
+## Learning effects
+
+For most of our tasks one might wonder about improvements in performance due to learning effects. 
+The type of ICC we have chosen does not take within subject (between session/systematic) variance in to account. This is why Weir recommends checking whether there is a significant change based on time and examining the SEMs.
+
+Had we chosen another kind of ICC taking this source of variance into account (e.g. 2,1 or 2,k) they could have suggested that tasks have lower reliability.
+
+Doing a simple t-test on the difference score alone would not be a very rigourous way of testing whether any change is meaningful because two distributions with error would be compared to each other. Fortunately there are ways to take the error for both measurements in to account. 
+
+To check whether a measure shows learning effects in a meaningful number of bootstrapped samples we can: check if the effect of time is significant in each bootstrapped sample and filter variables that have more than 5% of the boostrapped samples showing significant time effects.
+
+Another way might be to compute confidence intervals using SEMs as described in the second half of Weir (2005) and check what percent of participants have scores that fall out of this range. I haven't pursued this at least for now. 
+
+Here we ask: Which variables have significant time effects in more than 5% of the bootstrapped samples?
+
+22/74 survey measures
+135/335 task measures
+
+```{r}
+boot_df %>%
+  select(dv, p_time, task) %>%
+  mutate(time_effect_sig = ifelse(p_time<0.05,1,0)) %>%
+  group_by(dv)%>%
+  summarise(pct_sig_time_effect = sum(time_effect_sig)/10,
+            task = unique(task))%>%
+  filter(pct_sig_time_effect>5) %>%
+  arrange(task,-pct_sig_time_effect) %>%
+  ungroup()%>%
+  group_by(task) %>%
+  summarise(count=n())
+```
+
+
 ## Task Reliabilities
 
 Here we summarize the results on a task level to make it more digestable and easier to make contact with the literature.  
@@ -1654,39 +1687,6 @@ tmp %>%
   theme(legend.title = element_blank())
 
 ggsave('Bootstrap_DDM_Comp.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 24, height = 6, units = "in", limitsize = FALSE)
-```
-
-## Learning effects
-
-For most of our tasks one might wonder about improvements in performance due to learning effects. 
-
-The type of ICC we have chosen does not take within subject (between session/systematic) variance in to account. This is why Weir recommends checking whether there is a significant change based on time and examining the SEMs.
-
-Had we chosen another kind of ICC taking this source of variance into account (e.g. 2,1 or 2,k) they could have suggested that tasks have lower reliability.
-
-Doing a simple t-test on the difference score alone would not be a very rigourous way of testing whether any change is meaningful because two distributions with error would be compared to each other. Fortunately there are ways to take the error for both measurements in to account. 
-
-To check whether a measure shows learning effects in a meaningful number of bootstrapped samples we can: check if the effect of time is significant in each bootstrapped sample and filter variables that have more than 5% of the boostrapped samples showing significant time effects.
-
-Another way might be to compute confidence intervals using SEMs as described in the second half of Weir (2005) and check what percent of participants have scores that fall out of this range. I haven't pursued this at least for now. 
-
-Here we ask: Which variables have significant time effects in more than 5% of the bootstrapped samples?
-
-22/74 survey measures
-135/335 task measures
-
-```{r}
-boot_df %>%
-  select(dv, p_time, task) %>%
-  mutate(time_effect_sig = ifelse(p_time<0.05,1,0)) %>%
-  group_by(dv)%>%
-  summarise(pct_sig_time_effect = sum(time_effect_sig)/10,
-            task = unique(task))%>%
-  filter(pct_sig_time_effect>5) %>%
-  arrange(task,-pct_sig_time_effect) %>%
-  ungroup()%>%
-  group_by(task) %>%
-  summarise(count=n())
 ```
 
 ## Survey reliabilities
