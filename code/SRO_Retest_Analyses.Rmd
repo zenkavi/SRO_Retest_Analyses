@@ -1359,7 +1359,7 @@ tmp_save
 ```
 
 ```{r}
-sjt.df(tmp_save %>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.progress = TRUE, show.rownames = FALSE, file = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/var_breakdown_summary.doc")
+sjt.df(tmp_save %>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.progress = TRUE, show.rownames = FALSE, file = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/var_breakdown_summary.doc")
 ```
 
 Summarizing for clearer presentation. This graph is currently using the bootstrapped reliabilities and is therefore messier than if just using the point estimates.
@@ -1469,7 +1469,7 @@ tmp = tmp%>%
 names(tmp) = gsub("_", " ", names(tmp))
 names(tmp) = gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", names(tmp), perl=TRUE)
 
-sjt.df(tmp %>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.progress = TRUE, show.rownames = FALSE, file = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/task_rel_table.doc")
+sjt.df(tmp %>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.progress = TRUE, show.rownames = FALSE, file = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/task_rel_table.doc")
 ```
 
 ### Number of trials
@@ -1655,7 +1655,7 @@ tmp_save = tmp %>%
          rt_acc = as.character(rt_acc)) %>%
   arrange(-icc_median)
 
-sjt.df(tmp_save %>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.progress = TRUE, show.rownames = FALSE, file = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/ddm_rel_table.doc")
+sjt.df(tmp_save %>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.progress = TRUE, show.rownames = FALSE, file = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/ddm_rel_table.doc")
 ```
 
 Comparing overall vs difference: overall has higher reliability than difference.
@@ -1724,7 +1724,7 @@ tmp = tmp%>%
 names(tmp) = gsub("_", " ", names(tmp))
 names(tmp) = gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", names(tmp), perl=TRUE)
 
-sjt.df(tmp %>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.progress = TRUE, show.rownames = FALSE, file = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/survey_rel_table.doc")
+sjt.df(tmp %>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.progress = TRUE, show.rownames = FALSE, file = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/survey_rel_table.doc")
 ```
 
 ## Transformation effects

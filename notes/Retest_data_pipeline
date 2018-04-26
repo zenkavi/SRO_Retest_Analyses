@@ -107,7 +107,7 @@ Input: /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/beh
 Script: batch_files/retest/run_concatenate_refit_bootstrap.sh
 Output: Local/refits_bootstrap_merged.csv.gz
 Run: Sherlock
-To copy over: rsync -avzh zenkavi@sherlock.stanford.edu:/oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_03-29-2018/Local/refits_bootstrap_merged.csv.gz ./
+To copy over to Retest_03-29-2018: rsync -avzh zenkavi@sherlock.stanford.edu:/oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_03-29-2018/Local/refits_bootstrap_merged.csv.gz ./
 
 Get completion times (to be tested post path correction)
 Input: /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_complete_data_post.pkl, get_completion_time.py
