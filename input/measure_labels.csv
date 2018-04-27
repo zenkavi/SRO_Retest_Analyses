@@ -192,6 +192,11 @@ local_global_letter.switch_cost_EZ_thresh,task,Difference in EZ ddm threshold pa
 local_global_letter.switch_cost_hddm_drift,task,Difference in hddm drift rate parameter between switch and stay trials (where switch trials are preceded by trials that different conflict conditions changes and stay trials are those that are preceded by the same conflict condition),difference,hddm,drift rate,1,43
 local_global_letter.switch_cost_rt,task,Difference in median response time between switch and stay trials (where switch trials are preceded by trials that different conflict conditions changes and stay trials are those that are preceded by the same conflict condition),difference,raw,rt,1,39
 local_global_letter.global_bias_hddm_drift,task,,difference,hddm,drift rate,1,47
+local_global_letter.global_bias_acc,task,,difference,raw,accuracy,1,66
+local_global_letter.global_bias_rt,task,,difference,raw,rt,1,66
+local_global_letter.global_bias_EZ_drift,task,,difference,EZ,drift rate,1,66
+local_global_letter.global_bias_EZ_non_decision,task,,difference,EZ,non-decision,1,66
+local_global_letter.global_bias_EZ_thresh,task,,difference,EZ,threshold,1,66
 motor_selective_stop_signal.EZ_drift,task,EZ ddm drift rate parameter for all go trials (excluding no response trials),overall,EZ,drift rate,1,168
 motor_selective_stop_signal.EZ_non_decision,task,EZ ddm non-decision time parameter for all go trials (excluding no response trials),overall,EZ,non-decision,1,168
 motor_selective_stop_signal.EZ_thresh,task,EZ ddm threshold parameter for all go trials (excluding no response trials),overall,EZ,threshold,1,168
@@ -201,10 +206,11 @@ motor_selective_stop_signal.hddm_thresh,task,Hddm threshold parameter for all go
 motor_selective_stop_signal.reactive_control_rt,task,Difference between median response times in noncritical signal and go trials,difference,raw,rt,1,67
 motor_selective_stop_signal.proactive_control_rt,task,Difference between median response times in critical and noncritical signal trials,difference,raw,rt,1,84
 motor_selective_stop_signal.SSRT,task,Difference between mean go rt at the percentile specified by the failed stop percentage and mean stop signal delay for stop trials for critical trials only,overall,raw,rt,1,90
-motor_selective_stop_signal.proactive_slowing_hddm_drift,task,,overall,hddm,drift rate,1,131
 motor_selective_stop_signal.ignore_acc,task,,condition,raw,accuracy,1,60
 motor_selective_stop_signal.ignore_rt_error,task,,condition,raw,rt,1,51
 motor_selective_stop_signal.ignore_rt_error_std,task,,condition,raw,rt,1,51
+motor_selective_stop_signal.proactive_control_hddm_drift,task,,difference,hddm,drift rate,1,67
+motor_selective_stop_signal.reactive_control_hddm_drift,task,,difference,hddm,drift rate,1,84
 probabilistic_selection.approach_trial_acc,task,,condition,raw,accuracy,0,29
 probabilistic_selection.approach_trial_rt,task,,condition,raw,rt,0,29
 probabilistic_selection.avoid_trial_acc,task,,condition,raw,accuracy,0,29
@@ -297,8 +303,10 @@ stop_signal.EZ_non_decision,task,EZ ddm non-decision time parameter for all go t
 stop_signal.EZ_thresh,task,EZ ddm threshold parameter for all go trials (excluding no response trials),overall,EZ,threshold,1,420
 stop_signal.go_rt,task,,condition,raw,rt,1,392
 stop_signal.go_rt_std_error,task,,condition,raw,rt,1,392
+stop_signal.hddm_drift,task,,overall,hddm,drift rate,1,420
+stop_signal.hddm_non_decision,task,,overall,hddm,non-decision,1,420
+stop_signal.hddm_thresh,task,,overall,hddm,threshold,1,420
 stop_signal.proactive_slowing_hddm_drift,task,,difference,hddm,drift rate,1,210
-stop_signal.proactive_slowing_hddm_non_decision,task,,difference,hddm,non-decision,1,210
 stop_signal.proactive_slowing_hddm_thresh,task,,difference,hddm,threshold,1,210
 stop_signal.inhibition_slope,task,,condition,fit,other,1,180
 stop_signal.omission_errors,task,,condition,raw,accuracy,1,420

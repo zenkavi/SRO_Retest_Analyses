@@ -842,7 +842,7 @@ lit_emp_cor = function(){
 
 lit_emp_cor_out = plyr::rdply(100, lit_emp_cor)
 
-# write.csv(lit_emp_cor_out,'/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/lit_emp_cor_out.csv')
+write.csv(lit_emp_cor_out,'/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/lit_emp_cor_out.csv')
 
 summary(lit_emp_cor_out)
 
@@ -924,7 +924,7 @@ with(comp_lit_pred_out, t.test(m_lit, m_boot))
 ```
 
 ```{r echo=FALSE}
-rm(tmp, rel_comp, boot_comp, mod1, mod2, mod3, mod4, n_df, i, lit_emp_cor, lit_emp_cor_out, comp_lit_pred, comp_lit_pred_out)
+rm(tmp, rel_comp, mod1, mod2, mod3, n_df, i, lit_emp_cor, lit_emp_cor_out, comp_lit_pred, comp_lit_pred_out)
 ```
 
 ## Relationship between reliability metrics (point estimates)
@@ -939,6 +939,10 @@ Based on [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9
 We calculated `r as.numeric(table(rel_df$task)[1])` measures for surveys and `r as.numeric(table(rel_df$task)[2])` measures for cognitive tasks.  
 
 Though we are primarily reporting ICC's as our metric of reliability the results don't change depending on the metric chosen. Here we plot point estimates of three different reliability metrics against each other (ICC, Pearson, Spearman). The bootstrapped version is essentially the same but the plots are busier due to more datapoints.
+
+```{r}
+table(rel_df$task)
+```
 
 ```{r warning=FALSE, message=FALSE}
 p1 = rel_df %>%
@@ -1099,8 +1103,8 @@ ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) +
 
 p5_t <- tmp %>%
   filter(task == 'survey') %>%
-ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc, group=dv)) + 
-  geom_violin(fill='#F8766D', position = 'identity')+
+ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) + 
+  geom_violin(fill='#F8766D')+
   theme_bw() + 
   theme(axis.text.y = element_text(size=43))+
   xlab("")+
@@ -1379,13 +1383,15 @@ tmp %>%
                     labels = c("Variance between individuals",
                                "Variance between sessions",
                                "Error variance")), mean_pct, color=task))+
-  geom_point(position=position_dodge(width = 0.25), size=5)+
-  geom_errorbar(aes(ymin=mean_pct-sd_pct, ymax=mean_pct+sd_pct), position=position_dodge(width = 0.25), width=0, size=2)+
+  # geom_point(position=position_dodge(width = 0.25), size=5)+
+  # geom_errorbar(aes(ymin=mean_pct-sd_pct, ymax=mean_pct+sd_pct), position=position_dodge(width = 0.25), width=0, size=2)+
+  geom_errorbar(aes(ymin=cil, ymax=ciu), position=position_dodge(width = 0.25), width=0, size=2)+
   theme_bw()+
   xlab('')+
   ylab('Percent')+
   theme(legend.title = element_blank(),
         legend.text = element_text(size=14),
+        legend.position = 'bottom',
         axis.text = element_text(size=12),
         axis.title.y = element_text(size=12))+
   scale_x_discrete(labels = function(x) str_wrap(x, width = 15))
