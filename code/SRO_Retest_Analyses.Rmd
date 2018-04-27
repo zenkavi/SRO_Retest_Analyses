@@ -1378,14 +1378,15 @@ tmp %>%
   mutate(cvl = qt(0.025, n-1),
          cvu = qt(0.975, n-1),
          cil = mean_pct+(sd_pct*cvl)/sqrt(n),
-         ciu = mean_pct+(sd_pct*cvu)/sqrt(n)) %>%
+         ciu = mean_pct+(sd_pct*cvu)/sqrt(n),
+         sem_pct = sd_pct/sqrt(n)) %>%
   ggplot(aes(factor(key, levels = c("var_subs_pct", "var_ind_pct", "var_resid_pct"),
                     labels = c("Variance between individuals",
                                "Variance between sessions",
                                "Error variance")), mean_pct, color=task))+
-  # geom_point(position=position_dodge(width = 0.25), size=5)+
+  geom_point(position=position_dodge(width = 0.25), size = 4)+
   # geom_errorbar(aes(ymin=mean_pct-sd_pct, ymax=mean_pct+sd_pct), position=position_dodge(width = 0.25), width=0, size=2)+
-  geom_errorbar(aes(ymin=cil, ymax=ciu), position=position_dodge(width = 0.25), width=0, size=2)+
+  geom_errorbar(aes(ymin=cil, ymax=ciu), position=position_dodge(width = 0.25), width=0.25, size=2)+
   theme_bw()+
   xlab('')+
   ylab('Percent')+
@@ -1399,23 +1400,22 @@ tmp %>%
 ggsave('Variance_Breakdown_DotPlot.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 6, height = 5, units = "in", dpi = 100)
 ```
 
-## Learning effects
+## Systematic effects between time points
 
-For most of our tasks one might wonder about improvements in performance due to learning effects. 
-The type of ICC we have chosen does not take within subject (between session/systematic) variance in to account. This is why Weir recommends checking whether there is a significant change based on time and examining the SEMs.
+The type of ICC we have chosen does not take within subject (between session/systematic) variance in to account. This is why Weir recommends checking whether there is a significant change based on time and examining the SEMs. These systematic effects could be meaningful and important to account for for some measures (e.g. task measures that show learning effects).
 
 Had we chosen another kind of ICC taking this source of variance into account (e.g. 2,1 or 2,k) they could have suggested that tasks have lower reliability.
 
-Doing a simple t-test on the difference score alone would not be a very rigourous way of testing whether any change is meaningful because two distributions with error would be compared to each other. Fortunately there are ways to take the error for both measurements in to account. 
+Doing a simple t-test on the difference score alone would not be a very rigourous way of testing whether any change is meaningful because two distributions from both time points with error would be compared to each other. Fortunately there are ways to take the error for both measurements in to account. 
 
-To check whether a measure shows learning effects in a meaningful number of bootstrapped samples we can: check if the effect of time is significant in each bootstrapped sample and filter variables that have more than 5% of the boostrapped samples showing significant time effects.
+To check whether a measure shows systematic differences between the two time points in a meaningful number of bootstrapped samples we can: check if the effect of time is significant in each bootstrapped sample and filter variables that have more than 5% of the boostrapped samples showing significant time effects.
 
-Another way might be to compute confidence intervals using SEMs as described in the second half of Weir (2005) and check what percent of participants have scores that fall out of this range. I haven't pursued this at least for now. 
+Another way might be to compute confidence intervals using SEMs as described in the second half of Weir (2005) and check what percent of participants have scores that fall out of this range. I haven't pursued this for now. 
 
 Here we ask: Which variables have significant time effects in more than 5% of the bootstrapped samples?
 
-22/74 survey measures
-135/335 task measures
+23/74 survey measures
+133/372 task measures
 
 ```{r}
 boot_df %>%
@@ -1431,6 +1431,33 @@ boot_df %>%
   summarise(count=n())
 ```
 
+Are these significantly different between surveys and tasks? No.
+
+```{r}
+chisq.test(matrix(data = c(23,74-23,133, 372-133), nrow=2))
+```
+
+Are they predominantly in one or the other direction and does that differ depending on survey vs task?
+
+```{r}
+boot_df %>%
+  select(dv, p_time, task, pearson) %>%
+  mutate(time_effect_sig = ifelse(p_time<0.05,1,0)) %>%
+  group_by(dv)%>%
+  summarise(pct_sig_time_effect = sum(time_effect_sig)/10,
+            task = unique(task),
+            mean_pearson = mean(pearson))%>%
+  filter(pct_sig_time_effect>5) %>%
+  arrange(task,-pct_sig_time_effect) %>%
+  arrange(mean_pearson) %>%
+  
+```
+
+SEM CI calculation
+
+```{r}
+boot_df
+```
 
 ## Task Reliabilities
 
