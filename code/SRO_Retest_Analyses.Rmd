@@ -1455,8 +1455,55 @@ boot_df %>%
 
 SEM CI calculation
 
+Step 1: T = Grand mean + ICC * (Subject score - Grand mean)
+Step 2: SEP = SD of both measurements * sqrt(1-ICC^2)
+
 ```{r}
-boot_df
+get_ind_ci = function(dv_var){
+  matched = match_t1_t2(dv_var)
+  grand_mean = mean(matched$score)
+  grand_sd = sd(matched$score)
+  dv_icc = get_icc(dv_var)
+  sep = grand_sd * sqrt(1-dv_icc^2)
+  matched = matched %>% 
+    spread(time, score) %>%
+    rename("t1"="1", "t2"="2") %>%
+    mutate(true_score = grand_mean+dv_icc*(t1-grand_mean),
+           ci_up = true_score+sep,
+           ci_low = true_score-sep,
+           t2_out_ci = ifelse(t2>ci_up|t2<ci_low,1,0),
+           prop_dist = abs(t1-t2)/sep,
+           large_dist = ifelse(prop_dist>1,1,0))
+    return(matched)
+}
+
+get_prop_out_ci = function(dv_var){
+  get_ind_ci(dv_var) %>%
+  summarise(prop_out_ci=sum(t2_out_ci)/n())
+}
+
+#Create df of point estimate reliabilities
+ind_ci_df <- data.frame(prop_out_ci = rep(NA, length(numeric_cols)))
+
+row.names(ind_ci_df) <- numeric_cols
+
+for(i in 1:length(numeric_cols)){
+  ind_ci_df[numeric_cols[i], 'prop_out_ci'] <- get_spearman(numeric_cols[i]) 
+}
+
+ind_ci_df$dv = row.names(ind_ci_df)
+row.names(ind_ci_df) = seq(1:nrow(ind_ci_df))
+ind_ci_df$task = 'task'
+ind_ci_df[grep('survey', ind_ci_df$dv), 'task'] = 'survey'
+ind_ci_df[grep('holt', ind_ci_df$dv), 'task'] = "task"
+ind_ci_df = ind_ci_df %>%
+  select(dv, task, prop_out_ci)
+
+ind_ci_df %>%
+  filter(prop_out_ci>0.05) %>%
+  arrange(-prop_out_ci)
+
+get_ind_ci("five_facet_mindfulness_survey.total")
 ```
 
 ## Task Reliabilities
