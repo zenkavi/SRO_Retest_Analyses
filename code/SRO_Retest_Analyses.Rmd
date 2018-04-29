@@ -1402,6 +1402,8 @@ ggsave('Variance_Breakdown_DotPlot.jpg', device = "jpeg", path = "/Users/zeynepe
 
 ## Systematic effects between time points
 
+### Anova time effects
+
 The type of ICC we have chosen does not take within subject (between session/systematic) variance in to account. This is why Weir recommends checking whether there is a significant change based on time and examining the SEMs. These systematic effects could be meaningful and important to account for for some measures (e.g. task measures that show learning effects).
 
 Had we chosen another kind of ICC taking this source of variance into account (e.g. 2,1 or 2,k) they could have suggested that tasks have lower reliability.
@@ -1453,7 +1455,7 @@ boot_df %>%
   
 ```
 
-SEM CI calculation
+### SEM CI calculation
 
 Step 1: T = Grand mean + ICC * (Subject score - Grand mean)
 Step 2: SEP = SD of both measurements * sqrt(1-ICC^2)
@@ -1461,6 +1463,11 @@ Step 2: SEP = SD of both measurements * sqrt(1-ICC^2)
 Here I calculate the proportion of subjects that move more than one standard error of prediction (SEP) in t2 compared to t1 for each measure. 
 
 This is odd to think about because the larger the ICC of a measure the smaller the SEP. So very small differences between the two time points can be categorized as 'meaningful' based on the tiny SEP.
+
+What you are interested in is not necessarily whether individuals change at all between the two time points though. You want to know if this change is systematic in one direction.
+
+Here I calculate the proportion of people showing 'meaningful' changes in one direction or the other. To integrate both of these direction I subtracted one from the other and filtered the variables that have more than 5% of the participants showing meaningful change in one direction over the other (so if a variable has 10 participants showing difference in one and 10 in the other direction this would cancel out but a variables with 15 people showing a positive and 5 negative change would remain).
+
 
 ```{r}
 get_ind_ci = function(dv_var){
@@ -1475,22 +1482,26 @@ get_ind_ci = function(dv_var){
     mutate(true_score = grand_mean+(dv_icc*(t1-grand_mean)),
            ci_up = true_score+(1.96*sep),
            ci_low = true_score-(1.96*sep),
-           t2_out_ci = ifelse((t2>ci_up)|(t2<ci_low),1,0))
+           t2_above_ci = ifelse(t2>ci_up,1,0),
+           t2_below_ci = ifelse(t2<ci_low,1, 0))
     return(matched)
 }
 
 get_prop_out_ci = function(dv_var){
   get_ind_ci(dv_var) %>%
-  summarise(prop_out_ci=sum(t2_out_ci)/n())
+    summarise(prop_above_ci = sum(t2_above_ci)/n(),
+              prop_below_ci = sum(t2_below_ci/n()))
 }
 
 #Create df of point estimate reliabilities
-ind_ci_df <- data.frame(prop_out_ci = rep(NA, length(numeric_cols)))
+ind_ci_df <- data.frame(prop_above_ci = rep(NA, length(numeric_cols)),
+                        prop_below_ci = rep(NA, length(numeric_cols)))
 
 row.names(ind_ci_df) <- numeric_cols
 
 for(i in 1:length(numeric_cols)){
-  ind_ci_df[numeric_cols[i], 'prop_out_ci'] <- get_spearman(numeric_cols[i]) 
+    ind_ci_df[numeric_cols[i], 'prop_above_ci'] <- get_prop_out_ci(numeric_cols[i])$prop_above_ci 
+    ind_ci_df[numeric_cols[i], 'prop_below_ci'] <- get_prop_out_ci(numeric_cols[i])$prop_below_ci 
 }
 
 ind_ci_df$dv = row.names(ind_ci_df)
@@ -1499,13 +1510,47 @@ ind_ci_df$task = 'task'
 ind_ci_df[grep('survey', ind_ci_df$dv), 'task'] = 'survey'
 ind_ci_df[grep('holt', ind_ci_df$dv), 'task'] = "task"
 ind_ci_df = ind_ci_df %>%
-  select(dv, task, prop_out_ci)
+  select(dv, task, prop_above_ci, prop_below_ci)
 
-ind_ci_df %>%
-  filter(prop_out_ci>0.05) %>%
-  arrange(-prop_out_ci)
+mean_diff_df = ind_ci_df %>%
+  mutate(prop_one_direction = prop_above_ci-prop_below_ci) %>%
+  filter(abs(prop_one_direction)>0.05) %>%
+  arrange(-abs(prop_one_direction))
 
-get_ind_ci("ten_item_personality_survey.extraversion")
+mean_diff_df
+
+write.csv(mean_diff_df, '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/mean_diff_df.csv')
+```
+
+This doesn't make it easier to interpret whether it is a performance improvement or decline. In fact 'performance' isn't even necessarily the correct term here. Using the valence assignments of the measures look at whether it translates to an increase or decrease in self-regulation. Of the 66 this makes sense for 54 variables.
+
+```{r warning=FALSE, message=FALSE}
+mean_diff_df = read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/mean_diff_df.csv')
+
+table(as.character(mean_diff_df$valence), useNA = "ifany")
+
+mean_diff_df %>%
+  mutate(sc_increase = ifelse(prop_one_direction>0&valence=="Pos",1,ifelse(prop_one_direction<0&valence=="Neg",1,0)),
+         sc_decrease = ifelse(prop_one_direction>0&valence=="Neg",1,ifelse(prop_one_direction<0&valence=="Pos",1,0))) %>%
+summarise(sum_sc_increase = sum(sc_increase,na.rm=T),
+          sum_sc_decrease = sum(sc_decrease,na.rm=T))
+
+```
+
+Variables that show more than 5% difference in a direction do not depend on whether they translate to a self control increase or decrease.
+
+```{r}
+chisq.test(matrix(data = c(23,54-23,31,54-31), nrow=2))
+```
+
+Do they differ depending on whether they are task or survey variables? No.
+
+```{r}
+chisq.test(matrix(data = c(5,74-5,61,372-61), nrow=2))
+```
+
+```{r}
+rm(mean_diff_df)
 ```
 
 ## Task Reliabilities
