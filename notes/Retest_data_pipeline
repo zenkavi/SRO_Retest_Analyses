@@ -115,6 +115,13 @@ Script: get_completion_time.batch
 Output: Retest_03-29-2018/Local/complete_completion_dates.csv
 Run: Sherlock
 
+Intratrial reliability df's for three by two
+Input: /oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_03-29-2018/batch_output/.out/, /oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_03-29-2018/batch_output/.err/, /oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Complete_03-29-2018/Individual_Measures/threebytwo.csv.gz,/oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_03-29-2018/Individual_Measures/threebytwo.csv.gz, intratrial_reliability.R
+Script: intratrial_reliability.batch
+Output: /oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_03-29-2018/Local/t1_tbt_dvs.csv, /oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_03-29-2018/Local/t2_tbt_dvs.csv
+Run: Sherlock
+To copy over to Retest_03-29-2018: rsync -avzh zenkavi@sherlock.stanford.edu:/oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_03-29-2018/Local/t1_tbt_dvs.csv ./
+
 ----------- FOR DDM PAPER -----------------------
 Create task list for HDDM flat job arrays
 Input: None
