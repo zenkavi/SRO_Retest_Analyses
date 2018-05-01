@@ -1811,9 +1811,41 @@ tmp %>%
   theme_bw()+
   ylab("ICC")+
   xlab("")+
-  theme(legend.title = element_blank())
+  theme(legend.title = element_blank(),
+        legend.position = 'bottom',
+        legend.text = element_text(size=16),
+        strip.text = element_text(size=16),
+        axis.text = element_text(size = 16),
+        text = element_text(size=16))+
+  guides(fill = guide_legend(ncol = 2))
 
-ggsave('Bootstrap_DDM_Comp.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 24, height = 6, units = "in", limitsize = FALSE)
+ggsave('Bootstrap_DDM_Comp.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 14, height = 10, units = "in", limitsize = FALSE)
+```
+
+```{r}
+tmp2 = measure_labels %>%
+  mutate(dv = as.character(dv)) %>%
+  filter(ddm_task == 1, 
+         overall_difference != "condition") %>%
+  drop_na() %>%
+  left_join(rel_df[,c("dv", "icc", "spearman")], by = 'dv')
+
+tmp2 %>%
+  ggplot(aes(factor(raw_fit, levels = c("raw", "EZ", "hddm"), labels=c("Raw", "EZ-diffusion", "Hierarchical diffusion")), icc, fill=factor(rt_acc, levels = c("rt","accuracy","other", "drift rate", "threshold", "non-decision"), labels=c("Response Time", "Accuracy", "Other","Drift Rate", "Threshold", "Non-decision"))))+
+  geom_boxplot()+
+  facet_wrap(~factor(overall_difference, levels=c("overall", "difference"), labels=c("Overall", "Difference")))+
+  theme_bw()+
+  ylab("ICC")+
+  xlab("")+
+  theme(legend.title = element_blank(),
+        legend.position = 'bottom',
+        legend.text = element_text(size=16),
+        strip.text = element_text(size=16),
+        axis.text = element_text(size = 16),
+        text = element_text(size=16))+
+  guides(fill = guide_legend(ncol = 2))
+
+ggsave('PointEst_DDM_Comp.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 14, height = 10, units = "in", limitsize = FALSE)
 ```
 
 ## Survey reliabilities
