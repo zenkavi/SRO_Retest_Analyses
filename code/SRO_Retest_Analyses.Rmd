@@ -1458,7 +1458,7 @@ boot_df %>%
             mean_pearson = mean(pearson))%>%
   filter(pct_sig_time_effect>5) %>%
   arrange(task,-pct_sig_time_effect) %>%
-  arrange(mean_pearson) %>%
+  arrange(mean_pearson) 
   
 ```
 
@@ -1526,7 +1526,7 @@ mean_diff_df = ind_ci_df %>%
 
 mean_diff_df
 
-write.csv(mean_diff_df, '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/mean_diff_df.csv')
+# write.csv(mean_diff_df, '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/mean_diff_df.csv')
 ```
 
 This doesn't make it easier to interpret whether it is a performance improvement or decline. In fact 'performance' isn't even necessarily the correct term here. Using the valence assignments of the measures look at whether it translates to an increase or decrease in self-regulation. Of the 66 this makes sense for 54 variables.
@@ -1658,18 +1658,10 @@ Example task: three by two
 Post process dv's from cluster to calculate reliabilities
 ```{r}
 t1_dvs = read.csv(paste0(retest_data_path, 't1_tbt_dvs.csv'))
-t1_dvs = t1_dvs %>% select(-X) 
 t2_dvs = read.csv(paste0(retest_data_path, 't2_tbt_dvs.csv'))
+
+t1_dvs = t1_dvs %>% select(-X)
 t2_dvs = t2_dvs %>% select(-X)
-
-t1_dvs = t1_dvs %>% mutate(sub_id = as.character(sub_id))
-t2_dvs = t2_dvs %>% mutate(sub_id = as.character(sub_id))
-
-unique(t2_dvs$sub_id)
-
-t1_dvs[,c("acc","sub_id", "breaks")] %>%
-  left_join(t2_dvs[,c("acc","sub_id", "breaks")], by = c("sub_id", "breaks")) %>%
-  distinct()
 ```
 
 ```{r}
@@ -1737,7 +1729,7 @@ write.csv(trial_num_rel_df, paste0(retest_data_path, 'trial_num_rel_df_tbt.csv')
 ```
 
 ```{r warning=FALSE, message=FALSE}
-trial_num_rel_df = read.csv(paste0(retest_data_path, 'trial_num_rel_df_tbt.csv'))
+# trial_num_rel_df = read.csv(paste0(retest_data_path, 'trial_num_rel_df_tbt.csv'))
 
 cols <- c("Accuracy" = '#084594', "Average RT error" = '#99000d', "SD RT error" = '#cb181d', "Average RT correct" = '#ef3b2c', "SD RT correct" = '#fb6a4a', "Missed percentage" = '#2171b5', "Cue switch cost RT (100)" = '#fc9272', "Cue switch cost RT (900)" = '#fcbba1', "Task switch cost RT (100)" = '#fee0d2', "Task switch cost RT (900)" = '#fff5f0', "Cue switch cost Acc (100)" = '#4292c6', "Cue switch cost Acc (900)" = '#6baed6', "Task switch cost Acc (100)" = '#9ecae1', "Task switch cost Acc (900)" = '#c6dbef')
 
