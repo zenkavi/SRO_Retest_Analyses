@@ -1,0 +1,453 @@
+<table style="border-collapse:collapse; border:none;">
+<tr>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black;">var</th>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black;">icc</th>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black;">spearman</th>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black;">pearson</th>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">HispanicLatino</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">1</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">1</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">1</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Age</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.998</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.996</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.997</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Sex</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.993</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.987</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.987</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">HouseholdIncome</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.988</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.955</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.977</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">ArrestedChargedLifeCount</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.958</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.829</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.92</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">HighestEducation</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.951</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.895</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.908</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">WeightPounds</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.951</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.936</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.907</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">ChildrenNumber</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.95</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.971</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.907</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">HowLongSmoked</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.949</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.877</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.904</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">RelationshipNumber</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.948</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.9</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.901</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">CigsPerDay</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.945</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.841</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.895</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">LifetimeSmoke100Cigs</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.944</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.894</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.894</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">AlcoholHowManyDrinksDay</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.936</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.871</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.881</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">MortgageDebt</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.93</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.833</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.87</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">RetirementPercentStocks</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.928</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.863</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.867</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">LongestRelationship</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.928</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.853</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.867</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">HowOftenFailedActivitiesDrinking</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.927</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.782</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.866</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">CoffeeCupsPerDay</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.926</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.876</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.863</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">RentOwn</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.926</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.862</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.862</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">HowOftenMemoryConcentrationProblemCannabis</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.925</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.594</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.863</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">SmokeEveryDay</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.916</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.802</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.846</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">HeightInches</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.907</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.888</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.83</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">DivorceCount</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.905</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.935</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.836</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">CannabisHowOften</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.903</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.856</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.823</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">EducationDebt</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.901</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.837</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.821</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">HowOftenDevotedTimeCannabis</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.898</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.814</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.814</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">MedicalProblemsDueToDrugUse</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.888</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.814</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.814</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">AlcoholHowOften</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.881</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.788</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.79</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">RelationshipStatus</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.87</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.788</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.77</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">HowSoonSmokeAfterWaking</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.868</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.787</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.767</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">RetirementAccount</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.86</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.756</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.756</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">AlcoholHowOften6Drinks</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.853</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.766</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.747</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">CreditCardDebt</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.846</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.808</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.733</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">RelativeFriendConcernedDrinking</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.844</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.71</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.733</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">CannabisPast6Months</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.84</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.725</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.725</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">TeaCupsPerDay</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.834</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.633</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.715</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">HowOftenCantStopDrinking</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.833</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.704</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.716</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">CaffienatedSodaCansPerDay</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.832</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.711</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.723</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">HowOftenGuiltRemorseDrinking</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.829</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.564</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.708</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">CannabisHoursStoned</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.825</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.698</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.703</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">DoctorVisitsLastMonth</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.815</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.351</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.701</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">HowOftenDrinkMorning</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.809</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.39</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.692</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">CannabisConsideredReduction</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.806</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.638</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.675</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">NeurologicalDiagnoses</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.795</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.66</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.66</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">HowOftenUnableRememberDrinking</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.786</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.61</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.651</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">FeelBadGuiltyDrugUse</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.782</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.642</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.642</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">TrafficAccidentsLifeCount</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.781</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.585</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.643</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">HowOftenCantStopCannabis</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.748</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.732</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.598</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">InjuredDrinking</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.734</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.626</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.592</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">CarDebt</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.716</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.698</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.559</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">DaysHalfLastMonth</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.715</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.552</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.559</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Worthless</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.709</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.632</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.549</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">DaysPhysicalHealthFeelings</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.705</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.533</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.545</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Depressed</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.689</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.561</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.527</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">EverythingIsEffort</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.682</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.553</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.517</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Hopeless</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.678</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.579</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.516</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">OtherDrugs</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.658</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.492</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.492</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">RestlessFidgety</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.621</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.507</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.451</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">TrafficTicketsLastYearCount</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.621</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.438</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.45</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Nervous</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.615</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.473</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.445</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">NeglectedFamilyDrugUse</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.488</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.342</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.342</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">DaysLostLastMonth</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.475</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.604</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.312</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">EngagedInIllegalActsToObtainDrugs</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.468</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.306</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.306</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">AbleToStopDrugs</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.458</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.306</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.306</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">BlackoutFlashbackDrugUse</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.424</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.272</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.272</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">HowOftenFailedActivitiesCannabis</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.423</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.636</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.378</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">WidthdrawalSymptoms</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.403</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.254</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.254</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Last30DaysUsual</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.395</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.285</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.248</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">GamblingProblem</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.317</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.38</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.195</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">AbuseMoreThanOneDrugAtATime</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.294</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.173</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.173</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">HowOftenHazardousCannabis</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.057</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.369</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.029</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">CaffieneOtherSourcesDayMG</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.363</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">-0.033</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">SpouseParentsComplainDrugUse</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">-0.033</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">-0.017</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">-0.017</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">OtherDebtAmount</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">-0.083</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.005</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">-0.041</td>
+</tr>
+</table>
+

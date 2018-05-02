@@ -366,11 +366,18 @@ for(i in 1:length(numeric_cols)){
   demog_rel_df[numeric_cols[i], 'pearson'] <- get_pearson(numeric_cols[i], t1_df = test_demog, t2_df = retest_demog)
 }
 
-demog_rel_df %>%
+demog_rel_df = demog_rel_df %>%
   mutate(var = row.names(.)) %>%
   select(var, icc, spearman, pearson) %>%
   arrange(-icc)
+
+demog_rel_df
 ```
+
+```{r}
+sjt.df(demog_rel_df %>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.progress = TRUE, show.rownames = FALSE, file = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/demog_rel_table.doc")
+```
+
 
 ```{r}
 summary(demog_rel_df)
@@ -1651,7 +1658,18 @@ Example task: three by two
 Post process dv's from cluster to calculate reliabilities
 ```{r}
 t1_dvs = read.csv(paste0(retest_data_path, 't1_tbt_dvs.csv'))
+t1_dvs = t1_dvs %>% select(-X) 
 t2_dvs = read.csv(paste0(retest_data_path, 't2_tbt_dvs.csv'))
+t2_dvs = t2_dvs %>% select(-X)
+
+t1_dvs = t1_dvs %>% mutate(sub_id = as.character(sub_id))
+t2_dvs = t2_dvs %>% mutate(sub_id = as.character(sub_id))
+
+unique(t2_dvs$sub_id)
+
+t1_dvs[,c("acc","sub_id", "breaks")] %>%
+  left_join(t2_dvs[,c("acc","sub_id", "breaks")], by = c("sub_id", "breaks")) %>%
+  distinct()
 ```
 
 ```{r}
