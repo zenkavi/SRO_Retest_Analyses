@@ -1597,6 +1597,7 @@ tmp %>%
 
 ```{r}
 tmp = tmp%>%
+  select(-median_spearman, -min_spearman, -max_spearman) %>%
   mutate(task_name = gsub("_", " ", task_name),
          task_name = gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", task_name, perl=TRUE))
 
@@ -1741,15 +1742,14 @@ trial_num_rel_df %>%
   theme_bw()+
   xlab("Number of trials")+
   ylab("ICC")+
-  theme(legend.title = element_blank())+
+  theme(legend.title = element_blank(),
+        legend.position = 'bottom')+
   scale_color_manual(values = cols,
-                     breaks = c("Accuracy", "Missed percentage", "Cue switch cost Acc (100)", "Cue switch cost Acc (900)", "Task switch cost Acc (100)", "Task switch cost Acc (900)", "Average RT error", "SD RT error", "Average RT correct", "SD RT correct",  "Cue switch cost RT (100)", "Cue switch cost RT (900)", "Task switch cost RT (100)", "Task switch cost RT (900)"))
+                     breaks = c("Average RT error", "Accuracy", "SD RT error", "Missed percentage", "Average RT correct", "Cue switch cost Acc (100)", "SD RT correct", "Cue switch cost Acc (900)", "Cue switch cost RT (100)", "Task switch cost Acc (100)", "Task switch cost RT (100)", "Task switch cost Acc (900)", "Task switch cost RT (900)"))+
+  ylim(-1,1)+
+  guides(color = guide_legend(ncol=2, byrow=T))
 
 ggsave('Intrameasure_Trialnum_Dependendence.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 10, height = 5, units = "in", dpi = 100)
-```
-
-```{r}
-rel_df[c(rel_df$dv %in% grep('threebytwo', rel_df$dv, value = TRUE)),]
 ```
 
 ### Raw vs DDM
@@ -1760,7 +1760,8 @@ Checking DDM results in the bootstrapped estimates. Variables using all trials a
 tmp = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(ddm_task == 1, 
-         overall_difference != "condition") %>%
+         overall_difference != "condition",
+         rt_acc != 'other') %>%
   drop_na() %>%
   left_join(boot_df[,c("dv", "icc", "spearman")], by = 'dv')
 
@@ -1815,7 +1816,7 @@ summary(lmerTest::lmer(icc ~ raw_fit + (1|dv) ,tmp %>% filter(overall_difference
 
 ```{r}
 tmp %>%
-  ggplot(aes(factor(raw_fit, levels = c("raw", "EZ", "hddm"), labels=c("Raw", "EZ-diffusion", "Hierarchical diffusion")), icc, fill=factor(rt_acc, levels = c("rt","accuracy","other", "drift rate", "threshold", "non-decision"), labels=c("Response Time", "Accuracy", "Other","Drift Rate", "Threshold", "Non-decision"))))+
+  ggplot(aes(factor(raw_fit, levels = c("raw", "EZ", "hddm"), labels=c("Raw", "EZ-diffusion", "Hierarchical diffusion")), icc, fill=factor(rt_acc, levels = c("rt","accuracy", "drift rate", "threshold", "non-decision"), labels=c("Response Time", "Accuracy","Drift Rate", "Threshold", "Non-decision"))))+
   geom_boxplot()+
   facet_wrap(~factor(overall_difference, levels=c("overall", "difference"), labels=c("Overall", "Difference")))+
   theme_bw()+
@@ -1827,7 +1828,8 @@ tmp %>%
         strip.text = element_text(size=16),
         axis.text = element_text(size = 16),
         text = element_text(size=16))+
-  guides(fill = guide_legend(ncol = 2))
+  guides(fill = guide_legend(ncol = 2))+
+  scale_fill_discrete(breaks=c("Drift Rate", "Threshold", "Non-decision", "Response Time", "Accuracy"))
 
 ggsave('Bootstrap_DDM_Comp.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 14, height = 10, units = "in", limitsize = FALSE)
 ```
@@ -1836,12 +1838,13 @@ ggsave('Bootstrap_DDM_Comp.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dr
 tmp2 = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(ddm_task == 1, 
-         overall_difference != "condition") %>%
+         overall_difference != "condition",
+         rt_acc != "other") %>%
   drop_na() %>%
   left_join(rel_df[,c("dv", "icc", "spearman")], by = 'dv')
 
 tmp2 %>%
-  ggplot(aes(factor(raw_fit, levels = c("raw", "EZ", "hddm"), labels=c("Raw", "EZ-diffusion", "Hierarchical diffusion")), icc, fill=factor(rt_acc, levels = c("rt","accuracy","other", "drift rate", "threshold", "non-decision"), labels=c("Response Time", "Accuracy", "Other","Drift Rate", "Threshold", "Non-decision"))))+
+  ggplot(aes(factor(raw_fit, levels = c("raw", "EZ", "hddm"), labels=c("Raw", "EZ-diffusion", "Hierarchical diffusion")), icc, fill=factor(rt_acc, levels = c("rt","accuracy", "drift rate", "threshold", "non-decision"), labels=c("Response Time", "Accuracy","Drift Rate", "Threshold", "Non-decision"))))+
   geom_boxplot()+
   facet_wrap(~factor(overall_difference, levels=c("overall", "difference"), labels=c("Overall", "Difference")))+
   theme_bw()+
@@ -1853,7 +1856,8 @@ tmp2 %>%
         strip.text = element_text(size=16),
         axis.text = element_text(size = 16),
         text = element_text(size=16))+
-  guides(fill = guide_legend(ncol = 2))
+  guides(fill = guide_legend(ncol = 2))+
+  scale_fill_discrete(breaks=c("Drift Rate", "Threshold", "Non-decision", "Response Time", "Accuracy"))
 
 ggsave('PointEst_DDM_Comp.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 14, height = 10, units = "in", limitsize = FALSE)
 ```
@@ -1875,7 +1879,8 @@ tmp = measure_labels %>%
             max_icc = max(icc),
             min_spearman = min(spearman),
             max_spearman = max(spearman),
-            num_measures = n()/1000)%>%
+            num_measures = n()/1000,
+            mean_num_trials = round(mean(num_all_trials)))%>%
   arrange(-median_icc, -median_spearman)
 
 tmp %>%
@@ -1887,8 +1892,10 @@ tmp %>%
 
 ```{r}
 tmp = tmp%>%
+  select(-min_spearman, -max_spearman,-median_spearman) %>%
   mutate(task_name = gsub("_", " ", task_name),
-         task_name = gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", task_name, perl=TRUE))
+         task_name = gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", task_name, perl=TRUE),
+         task_name = gsub("Survey", "", task_name))
 
 names(tmp) = gsub("_", " ", names(tmp))
 names(tmp) = gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", names(tmp), perl=TRUE)
