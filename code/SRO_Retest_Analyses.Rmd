@@ -73,6 +73,9 @@ retest_demog = retest_demog[retest_demog$X %in% test_demog$X,]
 names(test_demog)[which(names(test_demog) == 'X')] <-'sub_id'
 names(retest_demog)[which(names(retest_demog) == 'X')] <-'sub_id'
 
+summary(test_demog %>%
+          select(Sex, Age))
+
 summary(retest_demog %>%
           select(Sex, Age))
 ```
@@ -198,7 +201,7 @@ ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_re
         legend.spacing.x = unit(0.5, "inches")) + 
   guides(size = guide_legend(override.aes = list(size=c(9,18,28))),
          shape = guide_legend(override.aes = list(size=18)))+
-  xlab("Reliability")+
+  xlab("Retest Reliability")+
   ylab("")+
   scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
   scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
@@ -214,7 +217,7 @@ ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_re
         legend.position = 'none',
         axis.text.x = element_text(size=23),
         axis.title.x = element_text(size=30)) + 
-  xlab("Reliability")+
+  xlab("Retest Reliability")+
   ylab("")+
   scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
   scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
@@ -230,7 +233,7 @@ ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_re
         legend.position = 'none',
         axis.text.x = element_text(size=23),
         axis.title.x = element_text(size=30)) + 
-  xlab("Reliability")+
+  xlab("Retest Reliability")+
   ylab("")+
   scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
   scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
@@ -756,7 +759,8 @@ rel_comp %>%
 ```
 
 ```{r}
-summary(lm(retest_reliability ~ task,rel_comp))
+summary(rel_comp$sample_size[rel_comp$task == "survey"])
+summary(rel_comp$sample_size[rel_comp$task == "task"])
 ```
 
 The literature has smaller sized samples for task measures compared to survey measures that report retest reliability.
@@ -1579,8 +1583,8 @@ tmp = measure_labels %>%
   group_by(task_name) %>%
   summarise(median_icc = median(icc),
             median_spearman = median(spearman),
-            min_icc = min(icc),
-            max_icc = max(icc),
+            icc_2.5 = quantile(icc, probs = 0.025),
+            icc_97.5 = quantile(icc, probs = 0.975),
             min_spearman = min(spearman),
             max_spearman = max(spearman),
             num_measures = n()/1000,
@@ -1590,8 +1594,8 @@ tmp = measure_labels %>%
 tmp %>%
   datatable() %>%
   formatRound(columns=c('median_spearman', 'median_icc',
-                        'min_spearman', 'min_icc',
-                        'max_spearman', 'max_icc'), digits=3)
+                        'min_spearman', 'icc_2.5',
+                        'max_spearman', 'icc_97.5'), digits=3)
 ```
 
 
@@ -1802,6 +1806,76 @@ Comparing overall vs difference: overall has higher reliability than difference.
 summary(lmerTest::lmer(icc ~ overall_difference + (1|dv) ,tmp))
 ```
 
+"consistent with the summing of variance in the difference score"
+
+```{r}
+tmp = measure_labels %>%
+  mutate(dv = as.character(dv)) %>%
+  filter(ddm_task == 1, 
+         overall_difference != "condition",
+         rt_acc != 'other') %>%
+  drop_na() %>%
+  left_join(boot_df[,c("dv", "icc", "var_subs","var_ind", "var_resid")], by = 'dv') %>%
+  mutate(var_subs_pct = var_subs/(var_subs+var_ind+var_resid),
+         var_ind_pct = var_ind/(var_subs+var_ind+var_resid), 
+         var_resid_pct = var_resid/(var_subs+var_ind+var_resid)) %>%
+  select(-task, -ddm_task, -num_all_trials, -var_resid, -var_subs, -var_ind) %>%
+  gather(key, value, -dv, -overall_difference, -raw_fit, -rt_acc, -icc)
+
+tmp %>%
+  filter(key == "var_resid_pct") %>%
+  ggplot(aes(raw_fit, value, fill=overall_difference))+
+  geom_boxplot()
+  
+summary(lmer(value  ~ overall_difference*raw_fit + (1|dv), data=tmp %>% filter(key=="var_resid_pct")))
+
+#Simple effects
+summary(lmer(value  ~ overall_difference + (1|dv), data=tmp %>% filter(key=="var_resid_pct", raw_fit== "EZ")))
+
+summary(lmer(value  ~ overall_difference + (1|dv), data=tmp %>% filter(key=="var_resid_pct", raw_fit== "raw")))
+
+summary(lmer(value  ~ overall_difference + (1|dv), data=tmp %>% filter(key=="var_resid_pct", raw_fit== "hddm")))
+```
+
+Checking Rogosa's claim that ‘Difference scores are reliable when individual differences in true change exist.’
+How do we measure ‘individual difference in true change’ 
+1.between subject variability in difference score distributions
+2.within subject variance in icc
+Using 2 (because comparable between subject variance across different measures would be hard)
+Expecting to see: positive correlation between mean icc and mean var_ind_pct
+Result: The correlation between mean icc and mean var ind pct is NOT significant BUT looking at the distribution of mean var ind pct there is not a lot of variability t
+
+```{r}
+tmp = tmp %>%
+  spread(key, value) %>%
+  group_by(dv) %>%
+  summarise(mean_var_ind_pct = mean(var_ind_pct),
+            mean_var_subs_pct = mean(var_subs_pct),
+            mean_icc = mean(icc)) %>%
+  left_join(measure_labels, by='dv')
+
+tmp %>%
+  filter(overall_difference == 'difference') %>%
+  ggplot(aes(mean_var_ind_pct, mean_icc))+
+  geom_point()+
+  geom_abline(slope=1, intercept=0)+
+  geom_smooth(method = "lm")
+
+summary(lm(mean_icc ~ mean_var_ind_pct,data=tmp %>%
+  filter(overall_difference == 'difference')))
+
+tmp %>%
+  filter(overall_difference == 'difference') %>%
+  ggplot(aes(mean_var_ind_pct))+
+  geom_density()
+
+summary(tmp$mean_var_ind_pct[tmp$overall_difference == "difference"])
+summary(tmp$mean_var_subs_pct[tmp$overall_difference == "difference"])
+
+tmp = tmp %>% filter(overall_difference == 'difference')
+t.test(tmp$mean_var_ind_pct, tmp$mean_var_subs_pct, paired=T)
+```
+
 Comparing raw vs ddm in overall estimates: EZ is significantly better than HDDM and comparable to raw estimates.
 
 ```{r}
@@ -1875,8 +1949,8 @@ tmp = measure_labels %>%
   group_by(task_name) %>%
   summarise(median_icc = median(icc),
             median_spearman = median(spearman),
-            min_icc = min(icc),
-            max_icc = max(icc),
+            icc_2.5 = quantile(icc, probs = 0.025),
+            icc_97.5 = quantile(icc, probs = 0.975),
             min_spearman = min(spearman),
             max_spearman = max(spearman),
             num_measures = n()/1000,
@@ -1886,8 +1960,8 @@ tmp = measure_labels %>%
 tmp %>%
   datatable() %>%
   formatRound(columns=c('median_spearman', 'median_icc',
-                        'min_spearman', 'min_icc',
-                        'max_spearman', 'max_icc'), digits=3)
+                        'min_spearman', 'icc_2.5',
+                        'max_spearman', 'icc_97.5'), digits=3)
 ```
 
 ```{r}
@@ -1903,6 +1977,41 @@ names(tmp) = gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", names(tmp), perl=
 sjt.df(tmp %>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.progress = TRUE, show.rownames = FALSE, file = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/survey_rel_table.doc")
 ```
 
+### Number of items
+
+Does number of items in a survey have a significant effect on the average ICC of survey measures? No. 
+
+```{r warning=FALSE, message=FALSE}
+tmp = measure_labels %>%
+  mutate(dv = as.character(dv)) %>%
+  filter(task == 'survey') %>%
+  # left_join(rel_df[,c("dv", "spearman","icc")], by='dv') %>%
+  left_join(boot_df[,c("dv", "spearman","icc")], by='dv') %>%
+  filter(overall_difference != 'difference' & raw_fit %in% c('EZ', 'hddm') == FALSE)%>%
+  separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
+  select(-extra_1, -extra_2)
+
+# summary(lm(icc ~ num_all_trials, data = tmp))
+summary(lmerTest::lmer(icc ~ num_all_trials + (1|dv), data = tmp))
+```
+
+```{r warning=FALSE, message=FALSE}
+measure_labels %>%
+  mutate(dv = as.character(dv)) %>%
+  filter(task == 'task') %>%
+  # left_join(rel_df[,c("dv", "spearman","icc")], by='dv') %>%
+  left_join(boot_df[,c("dv", "spearman","icc")], by='dv') %>%
+  filter(overall_difference != 'difference' & raw_fit %in% c('EZ', 'hddm') == FALSE)%>%
+  separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
+  select(-extra_1, -extra_2) %>%
+  ggplot(aes(num_all_trials, icc))+
+  geom_point()+
+  geom_smooth(method="lm")+
+  theme_bw()+
+  xlab("Number of trials")+
+  ylab("ICC")
+```
+
 ## Transformation effects
 
 All results reported above were for non-transformed dependent variables.
@@ -1913,10 +2022,10 @@ We could compare the reliability (point) estimates for meaningful variables that
 test_data_tmp <- test_data
 retest_data_tmp <- retest_data
 
-test_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/t1_data/meaningful_variables_clean.csv')
+test_data <- read.csv(paste0(retest_data_path,'t1_data/meaningful_variables_clean.csv'))
 test_data$X <- as.character(test_data$X)
 names(test_data)[which(names(test_data) == 'X')] <-'sub_id' 
-retest_data <- read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_09-27-2017/meaningful_variables_clean.csv')
+retest_data <- read.csv(paste0(retest_data_path,'meaningful_variables_clean.csv'))
 retest_data$X <- as.character(retest_data$X)
 names(retest_data)[which(names(retest_data) == 'X')] <-'sub_id'
 retest_data = retest_data[retest_data$sub_id %in% test_data$sub_id,]
@@ -1947,7 +2056,7 @@ rel_df_mngfl[grep('holt', rel_df_mngfl$dv), 'task'] = "task"
 rel_df_mngfl
 ```
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 ggplotly(rel_df_mngfl %>%
   filter(grepl("logTr", dv)) %>%
   mutate(dv = gsub(".ReflogTr", "", dv),
