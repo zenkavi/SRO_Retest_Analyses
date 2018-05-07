@@ -1876,6 +1876,16 @@ tmp = tmp %>% filter(overall_difference == 'difference')
 t.test(tmp$mean_var_ind_pct, tmp$mean_var_subs_pct, paired=T)
 ```
 
+```{r}
+tmp = measure_labels %>%
+  mutate(dv = as.character(dv)) %>%
+  filter(ddm_task == 1, 
+         overall_difference != "condition",
+         rt_acc != 'other') %>%
+  drop_na() %>%
+  left_join(boot_df[,c("dv", "icc", "spearman")], by = 'dv')
+```
+
 Comparing raw vs ddm in overall estimates: EZ is significantly better than HDDM and comparable to raw estimates.
 
 ```{r}
