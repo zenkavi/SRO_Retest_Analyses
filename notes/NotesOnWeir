@@ -1,0 +1,82 @@
+Notes on Weir
+
+Abstract: "Inferential tests of mean differences, which are performed
+in the process of deriving the necessary variance components
+for the calculation of ICC values, are useful to determine
+if systematic error is present. If so, the measurement
+schedule should be modified (removing trials where learning
+and/or fatigue effects are present) to remove systematic error,
+and ICC equations that only consider random error may be safely
+used."
+
+SEM can be used to create a confidence interval for scores (from both time points?) and calculate the size of the difference necessary for a meaningful difference between the two time points.
+
+Psychology is more often interested in relative consistency, the ranking of individuals in a group with respect to others. This can be quantified using ICCs. Absolute consistency, consistency of individuals scores is quantified using SEMs.
+
+The primary argument against using Pearson's r for retest reliability is its inability to capture systematic error.
+
+ICC's can be calculated from the mean square values of a within-subjects, SINGLE factor ANOVA (repeated-measures ANOVA).
+
+Due its relative nature (i.e. the fact that it is a proportion) ICC's are context specific: If a measure has low between subjects variability it would have low ICC even if the error variance is small and vice versa even if the error variance is large.
+
+From the ANOVA "the inferential test of mean differences across trials is an assessment of systematic error (trend)." (e.g. learning effects)
+
+The error term in the anova reflects the interaction of the subject and trial (i.e. time point effect). When subjects change similarly across trials this is small, when they change differently from each other it is large. If the change is similar across trials and the error small then even small changes across trials can be significant. This is because the F value is ratio of the trial (time point) mean square (MS_w) to error mean square (MS_e). If MS_e is too small then the ratio (F value) is more likely to be large.
+
+The significance of the systematic error (i.e. trial error like learning effects) depends both on the error, as described above AND the sample size. Smaller sample sizes decrease the power of the test and make it harder to detect systematic effects.
+
+On how to think of learning effects if choosing ICC 3: "At the least, it needs to be established that
+the effect for trials (bias) is trivial if reporting an ICC
+derived from model 3. Use of effect size for the trials effect
+in the ANOVA would provide information in this regard.
+With respect to ICC 3,1, Alexander (1) notes that it ‘‘may
+be regarded as an estimate of the value that would have
+been obtained if the fluctuation [systematic error] had
+been avoided."
+
+Based on p216 I think ICC(3,k) might be immune to learning effects because it only considers random error (not systematic error under which learning effects fall). ICC's that do consider systematic error in their calculation are ICC type 2. This doesn't necessarily mean that learning effects should be ignored but perhaps mentioned in another way. (Note that if there are significant systematic effects like learning effects then ICC type 2's would be lower than ICC type 3's)
+
+Based on the analysis of dataset C: "Thus, an analysis that only focuses
+on the ICC without consideration of the trials effect
+is incomplete (31). If the effect for trials is significant, the
+most straightforward approach is to develop a measurement
+schedule that will attenuate systematic error (2,
+50). For example, if learning effects are present, one
+might add trials until a plateau in performance occurs.
+Then the ICC could be calculated only on the trials in the
+plateau region. The identification of such a measurement
+schedule would be especially helpful for random-effects
+situations where others might be using the test being
+evaluated. For simplicity, all the examples here have
+been with only 2 levels for trials. If a trials effect is significant,
+however, 2 trials are insufficient to identify a
+plateau. The possibility of a significant trials effect should
+be considered in the design of the reliability study. Fortunately,
+the ANOVA procedures require no modification
+to accommodate any number of trials."
+(Remember that trial here refers to time point) In our case it would be difficult to go back to the sample and collect data again for more time points for tasks with learning effects until they reach a plateau performance. That said an alternative approach might be to try to detect plateau performance within session and calculate ICC's based on only a subset of trials (here referring to number of trials within a task). This, however, is unlikely to be a good solution if the learning effects are not limited to the first few trials (which likely would be that case)
+
+"An ICC of 0.95 means sigma_t that an estimated 95% of the observed score variance is due to sigma_t" where sigma_t is between subjects variability. The reason why retest reliability as measured by ICC provides useful information in choosing individual difference variables is because it hinges directly on how good the measure is in distinguishing between subjects despite differences across time.
+
+The comparison between datasets A and B show how low between subject variability despite having the same systematic (between trial/session) variability.
+So for our data the question is: do the tasks have lower reliability because they have low between subjects variability, high systematic variability (though since the ICC 3 does not consider this in the error I don't think this could be the case) or both?
+
+On the other hand: "A large ICC can mask poor trial-to-trial consistency when between-subjects variability is high."
+So we should whether the high ICC's of surveys mask a low trial-to-trial consistency
+
+Why is the SEM needed in addition to ICC? Because the ICC's might low even when the absolute measurement error is low if the between subjects variability is low. So a measure might not be a good individual difference measure because it has low between subjects variability but that doesn't necessarily mean that the measurements themselves are bad/inconsistent/error-prone as a low ICC might suggest. It could be that everyone just performs similar to each other and similar across time as well. The SEM allows the delineation of the error-proneness/inconsistency of a measurement.
+
+So I think I should compare the percentages of all sources of variance (between subject, between sessions/systematic and error) for both tasks and surveys.
+
+SEM is the 'typical error' associated with a measurement but it is scale dependent. It is, however, independent of the between subject variability and therefore thought of as a property of the measurement irrespective of the sample.
+
+How does one determine if a difference between the two measurements for a subject is 'real'? One way is to  calculate the 95% CI for the true score using equation 12. But this only takes in to account error associated with the first measurement and not the second one. Therefore one can calculate a 'meaningful difference' using equation 13 which takes in to account both errors from both measurements as the SEM is multiplied by sqrt(2) which give the standard deviation of the difference scores.
+
+Additionally the SEM might not be the correct SE to use for a confidence interval around obseved scores. For this it might be more appropriate to use SEP (equation 15).
+
+How to use the SEM, MD and SEP does not seem as obvious to me to make global comparisons between surveys and tasks (or any other kind of group comparison). My conclusion is that I should
+- Compare ICC's
+- Compare the 'inferential test' of checking whether there are systematic effects of trial (time point e.g. learning effects) - get F/p value for each measure (should I add this to the bootstrapping?)
+- Compare the percentage of the three sources of variance across groups
+
+Check out table 8 again from McGrow and Wong to see what additional pieces of information you might want to store from the anova output to calculate F statistics for various hypothesis testings later on
