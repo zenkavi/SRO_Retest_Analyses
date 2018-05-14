@@ -708,7 +708,7 @@ Time 2 item 1 - time 1 item 2
 Time 2: item 1 - item 2
 
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 tmp = duplicate_items_data_t1 %>%
   gather(key, value, -worker)
 
@@ -727,7 +727,9 @@ tmp = duplicate_items %>%
   mutate(item1_time1 = scale(item1_time1),
          item1_time2 = scale(item1_time2),
          item2_time1 = scale(item2_time1),
-         item2_time2 = scale(item2_time2)) %>%
+         item2_time2 = scale(item2_time2),
+         item1_time1 = ifelse(item1_ID == "mpq_control_survey.13", item1_time1*-1, item1_time1),
+         item1_time2 = ifelse(item1_ID == "mpq_control_survey.13", item1_time2*-1, item1_time2)) %>%
   ungroup()
 
 p1 = tmp %>%
@@ -766,11 +768,11 @@ p4 = tmp %>%
   xlab("Item 1 T2")+
   ylab("Item 2 T2")
 
-ggplotly(p1)
+p5 = arrangeGrob(p1, p2, p3, p4, ncol=2)
 
-grid.arrange(p1, p2, p3, p4, ncol=2)
+ggsave('DataCheckOverlappingItems.jpg', p5, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 8, height = 5, units = "in", limitsize = FALSE, dpi = 300)
 
-rm(tmp, tmp2)
+rm(tmp, tmp2, p1, p2, p3, p4, p5)
 ```
 
 ```{r echo=FALSE}
@@ -863,6 +865,21 @@ rel_comp %>%
 ```{r}
 summary(rel_comp$sample_size[rel_comp$task == "survey"])
 summary(rel_comp$sample_size[rel_comp$task == "task"])
+
+rel_comp %>%
+  group_by(task) %>%
+  summarise(mean_sample_size = mean(sample_size),
+            sem_sample_size = sem(sample_size)) %>%
+  ggplot(aes(task,mean_sample_size,col=task))+
+  geom_point(size=5)+
+  geom_errorbar(aes(ymin=mean_sample_size-sem_sample_size, ymax=mean_sample_size+sem_sample_size), width = 0, size=2)+
+  xlab("")+
+  ylab("Sample size")+
+  theme(legend.position = 'none',
+        axis.text.x = element_text(size=14),
+        axis.title.y = element_text(size=14))
+
+ggsave('LitReviewSampleSize.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 3, height = 5, units = "in", limitsize = FALSE, dpi = 300)
 ```
 
 The literature has smaller sized samples for task measures compared to survey measures that report retest reliability.
@@ -901,6 +918,8 @@ rel_comp %>%
   theme(legend.title = element_blank())+
   xlab("Sample Size")+
   ylab("Retest reliability")
+
+ggsave('LitReviewRelBySampleSize.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 8, height = 5, units = "in", limitsize = FALSE, dpi = 300)
 ```
 
 I used to compare effect sizes of effect of task on reliability estimates in literature vs our results (just looking at the variables you find in the literature) but removed this analysis because   
@@ -1543,7 +1562,19 @@ boot_df %>%
   arrange(task,-pct_sig_time_effect) %>%
   ungroup()%>%
   group_by(task) %>%
-  summarise(count=n())
+  summarise(count=n()) %>%
+  mutate(total_num_vars = c(74, 372),
+         prop = count/total_num_vars) %>%
+  ggplot(aes(task, prop, fill=task))+
+  geom_bar(stat="identity", alpha=0.5, width=0.5)+
+  theme(legend.position = "none", 
+        axis.text.x = element_text(size=14),
+        axis.title.y = element_text(size=14))+
+  ylab("Proportiono of samples")+
+  xlab("")
+
+ggsave('PropTimeEffects.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 3, height = 5, units = "in", limitsize = FALSE, dpi = 300)
+
 ```
 
 Are these significantly different between surveys and tasks? No.
