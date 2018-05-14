@@ -1571,7 +1571,8 @@ boot_df %>%
         axis.text.x = element_text(size=14),
         axis.title.y = element_text(size=14))+
   ylab("Proportiono of samples")+
-  xlab("")
+  xlab("")+
+  ylim(0,1)
 
 ggsave('PropTimeEffects.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 3, height = 5, units = "in", limitsize = FALSE, dpi = 300)
 
@@ -1662,23 +1663,45 @@ mean_diff_df = ind_ci_df %>%
   arrange(-abs(prop_one_direction))
 
 mean_diff_df
-
-# write.csv(mean_diff_df, '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/mean_diff_df.csv')
 ```
 
 This doesn't make it easier to interpret whether it is a performance improvement or decline. In fact 'performance' isn't even necessarily the correct term here. Using the valence assignments of the measures look at whether it translates to an increase or decrease in self-regulation. Of the 66 this makes sense for 54 variables.
 
-```{r warning=FALSE, message=FALSE}
-mean_diff_df = read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/mean_diff_df.csv')
+```{r}
+valence_df = read.csv(paste0(retest_data_path, 'DV_valence.csv'), header = F)
+valence_df = valence_df %>% rename(dv = V1, valence = V2)
+valence_df$task = 'task'
+valence_df[grep('survey', valence_df$dv), 'task'] = 'survey'
+valence_df[grep('holt', valence_df$dv), 'task'] = "task"
 
-table(as.character(mean_diff_df$valence), useNA = "ifany")
+valence_df = valence_df %>% filter(dv %in% retest_report_vars)
+with(valence_df, table(task, valence))
+#Comparable level of valences for task and survey measures
+chisq.test(with(valence_df, table(task, valence)))
+```
+
+```{r warning=FALSE, message=FALSE}
 
 mean_diff_df %>%
-  mutate(sc_increase = ifelse(prop_one_direction>0&valence=="Pos",1,ifelse(prop_one_direction<0&valence=="Neg",1,0)),
-         sc_decrease = ifelse(prop_one_direction>0&valence=="Neg",1,ifelse(prop_one_direction<0&valence=="Pos",1,0))) %>%
+  left_join(valence_df, by = c("dv", "task")) %>%
+  mutate(sc_increase = ifelse(prop_one_direction>0&valence==1,1,ifelse(prop_one_direction<0&valence==-1,1,0)),
+         sc_decrease = ifelse(prop_one_direction>0&valence==-1,1,ifelse(prop_one_direction<0&valence==1,1,0))) %>%
+  group_by(task) %>%
 summarise(sum_sc_increase = sum(sc_increase,na.rm=T),
-          sum_sc_decrease = sum(sc_decrease,na.rm=T))
+          sum_sc_decrease = sum(sc_decrease,na.rm=T)) %>%
+  gather(key, value, -task) %>%
+  mutate(total_vars = c(74, 372, 74, 372),
+         prop = value/total_vars) %>%
+  ggplot(aes(key, prop, group=task, fill=task))+
+  geom_bar(stat = "identity", position = position_dodge(), alpha = 0.5)+
+  theme(legend.title = element_blank())+
+  xlab("")+
+  ylab("Proportion")+
+  ylim(0, 1)+
+  scale_x_discrete(breaks = c("sum_sc_decrease", "sum_sc_increase"),
+                   labels = c("Self-control decrease", "Self-control increase"))
 
+ggsave('PropTimeEffectsValence.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 5, height = 5, units = "in", limitsize = FALSE, dpi = 300)
 ```
 
 Variables that show more than 5% difference in a direction do not depend on whether they translate to a self control increase or decrease.
@@ -1690,7 +1713,7 @@ chisq.test(matrix(data = c(23,54-23,31,54-31), nrow=2))
 Do they differ depending on whether they are task or survey variables? No.
 
 ```{r}
-chisq.test(matrix(data = c(5,74-5,61,372-61), nrow=2))
+chisq.test(matrix(data = c(5,74-5,60,372-60), nrow=2))
 ```
 
 ```{r}
