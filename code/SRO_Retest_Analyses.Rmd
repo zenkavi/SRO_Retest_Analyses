@@ -661,14 +661,116 @@ for(i in 1:nrow(duplicate_items)){
                       duplicate_items_data_t1[,c(duplicate_items$item2_ID[i])]))$rho[2])
 }
 
+for(i in 1:nrow(duplicate_items)){
+  duplicate_items$t1_t1_cor[i] = abs(cor(scale(duplicate_items_data_t1[,c(duplicate_items$item1_ID[i])]),
+                                  scale(duplicate_items_data_t1[,c(duplicate_items$item2_ID[i])])))
+  
+  duplicate_items$t2_t2_cor[i] = abs(cor(scale(duplicate_items_data_t2[,c(duplicate_items$item1_ID[i])]),
+                                  scale(duplicate_items_data_t2[,c(duplicate_items$item2_ID[i])])))
+  
+  duplicate_items$t1_t2_cor[i] = abs(cor(scale(duplicate_items_data_t1[,c(duplicate_items$item1_ID[i])]),
+                                  scale(duplicate_items_data_t2[,c(duplicate_items$item2_ID[i])])))
+  
+  duplicate_items$t2_t1_cor[i] = abs(cor(scale(duplicate_items_data_t2[,c(duplicate_items$item1_ID[i])]),
+                                  scale(duplicate_items_data_t1[,c(duplicate_items$item2_ID[i])])))
+  
+  duplicate_items$t1_t1_polycor[i] = abs(polychoric(data.frame(duplicate_items_data_t1[,c(duplicate_items$item1_ID[i])],
+                      duplicate_items_data_t1[,c(duplicate_items$item2_ID[i])]))$rho[2])
+
+  duplicate_items$t2_t2_polycor[i] = abs(polychoric(data.frame(duplicate_items_data_t2[,c(duplicate_items$item1_ID[i])],
+                      duplicate_items_data_t2[,c(duplicate_items$item2_ID[i])]))$rho[2])
+
+  duplicate_items$t1_t2_polycor[i] = abs(polychoric(data.frame(duplicate_items_data_t1[,c(duplicate_items$item1_ID[i])],
+                      duplicate_items_data_t2[,c(duplicate_items$item2_ID[i])]))$rho[2])
+
+  duplicate_items$t2_t1_polycor[i] = abs(polychoric(data.frame(duplicate_items_data_t2[,c(duplicate_items$item1_ID[i])],
+                      duplicate_items_data_t1[,c(duplicate_items$item2_ID[i])]))$rho[2])
+}
+
 duplicate_items
 ```
 
 ```{r}
+summary(duplicate_items$t1_t1_cor)
+summary(duplicate_items$t2_t2_cor)
+summary(duplicate_items$t1_t2_cor)
+summary(duplicate_items$t2_t1_cor)
+
 summary(duplicate_items$t1_t1_polycor)
 summary(duplicate_items$t2_t2_polycor)
 summary(duplicate_items$t1_t2_polycor)
 summary(duplicate_items$t2_t1_polycor)
+```
+
+Time 1: item 1 - item 2
+Time 1 item 1 - time 2 item 2
+Time 2 item 1 - time 1 item 2
+Time 2: item 1 - item 2
+
+
+```{r}
+tmp = duplicate_items_data_t1 %>%
+  gather(key, value, -worker)
+
+tmp2 = duplicate_items_data_t2 %>%
+  gather(key, value, -worker)
+
+tmp = duplicate_items %>%
+  select(item1_ID, item2_ID) %>%
+  left_join(tmp, by = c("item1_ID" = "key")) %>%
+  left_join(tmp, by = c("item2_ID" = "key", "worker" = "worker")) %>%
+  rename(item1_time1 = value.x, item2_time1 = value.y) %>%
+  left_join(tmp2, by = c("item1_ID" = "key", "worker" = "worker")) %>%
+  left_join(tmp2, by = c("item2_ID" = "key", "worker" = "worker")) %>%
+  rename(item1_time2 = value.x, item2_time2 = value.y) %>%
+  group_by(item1_ID) %>%
+  mutate(item1_time1 = scale(item1_time1),
+         item1_time2 = scale(item1_time2),
+         item2_time1 = scale(item2_time1),
+         item2_time2 = scale(item2_time2)) %>%
+  ungroup()
+
+p1 = tmp %>%
+  ggplot(aes(item1_time1, item2_time1, col=item1_ID))+
+  geom_smooth (alpha=0.3, size=0, span=0.5, method = "lm")+
+  stat_smooth (geom="line", alpha=1, size=1, span=0.5, method= "lm")+
+  theme(legend.position = "none")+
+  geom_abline(slope=1, intercept=0, size = 2, linetype = "dashed")+
+  xlab("Item 1 T1")+
+  ylab("Item 2 T1")
+ 
+p2 = tmp %>%
+  ggplot(aes(item1_time1, item2_time2, col=item1_ID))+
+  geom_smooth (alpha=0.3, size=0, span=0.5, method = "lm")+
+  stat_smooth (geom="line", alpha=1, size=1, span=0.5, method= "lm")+
+  theme(legend.position = "none")+
+  geom_abline(slope=1, intercept=0, size = 2, linetype = "dashed")+
+  xlab("Item 1 T1")+
+  ylab("Item 2 T2")
+
+p3 = tmp %>%
+  ggplot(aes(item1_time2, item2_time1, col=item1_ID))+
+  geom_smooth (alpha=0.3, size=0, span=0.5, method = "lm")+
+  stat_smooth (geom="line", alpha=1, size=1, span=0.5, method= "lm")+
+  theme(legend.position = "none")+
+  geom_abline(slope=1, intercept=0, size = 2, linetype = "dashed")+
+  xlab("Item 1 T2")+
+  ylab("Item 2 T1")
+
+p4 = tmp %>%
+  ggplot(aes(item1_time2, item2_time2, col=item1_ID))+
+  geom_smooth (alpha=0.3, size=0, span=0.5, method = "lm")+
+  stat_smooth (geom="line", alpha=1, size=1, span=0.5, method= "lm")+
+  theme(legend.position = "none")+
+  geom_abline(slope=1, intercept=0, size = 2, linetype = "dashed")+
+  xlab("Item 1 T2")+
+  ylab("Item 2 T2")
+
+ggplotly(p1)
+
+grid.arrange(p1, p2, p3, p4, ncol=2)
+
+rm(tmp, tmp2)
 ```
 
 ```{r echo=FALSE}
