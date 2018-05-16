@@ -357,24 +357,35 @@ for(i in 1:length(names(test_demog))){
   }
 }
 
-demog_rel_df <- data.frame(spearman = rep(NA, length(numeric_cols)),
-                     icc = rep(NA, length(numeric_cols)),
-                     pearson = rep(NA, length(numeric_cols)))
+demog_rel_df <- data.frame(icc = rep(NA, length(numeric_cols)))
 
 row.names(demog_rel_df) <- numeric_cols
 
 for(i in 1:length(numeric_cols)){
-  demog_rel_df[numeric_cols[i], 'spearman'] <- get_spearman(numeric_cols[i], t1_df = test_demog, t2_df = retest_demog) 
   demog_rel_df[numeric_cols[i], 'icc'] <- get_icc(numeric_cols[i], t1_df = test_demog, t2_df = retest_demog)
-  demog_rel_df[numeric_cols[i], 'pearson'] <- get_pearson(numeric_cols[i], t1_df = test_demog, t2_df = retest_demog)
 }
 
 demog_rel_df = demog_rel_df %>%
   mutate(var = row.names(.)) %>%
-  select(var, icc, spearman, pearson) %>%
+  select(var, icc) %>%
   arrange(-icc)
 
 demog_rel_df
+```
+
+
+```{r}
+test_demog$HowOftenHazardousCannabis
+retest_demog$HowOftenHazardousCannabis
+
+test_demog$CaffieneOtherSourcesDayMG
+retest_demog$CaffieneOtherSourcesDayMG
+
+test_demog$SpouseParentsComplainDrugUse
+retest_demog$SpouseParentsComplainDrugUse
+
+test_demog$OtherDebtAmount
+retest_demog$OtherDebtAmount
 ```
 
 ```{r}
@@ -384,6 +395,17 @@ sjt.df(demog_rel_df %>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hi
 
 ```{r}
 summary(demog_rel_df)
+```
+
+
+```{r}
+demog_rel_df %>%
+  ggplot(aes(icc))+
+  geom_density(fill = 'grey', alpha = 0.7, color = NA)+
+  xlab("ICC")+
+  ylab("Density")
+
+ggsave('DemogRelDist.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 6, height = 5, units = "in", dpi=300)
 ```
 
 ```{r echo=FALSE}
