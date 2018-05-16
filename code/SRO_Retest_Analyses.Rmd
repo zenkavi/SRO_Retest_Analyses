@@ -476,6 +476,7 @@ t1_2_difference %>%
   xlab('Days between completion')+
   ylab('Absolute Scaled difference score')
 
+ggsave('DaysBtwEffect.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 6, height = 4, units = "in", limitsize = FALSE, dpi = 300)
 ```
 
 To test if the slope of the black is significant we would run a mixed effects model with a fixed effect for days between completion, random slope for each dv depending on the days between and random intercept for each dv.
@@ -911,13 +912,13 @@ summary(mod2)
 Tasks have significantly lower reliability and reliability decreases with increasing sample size.
 
 ```{r}
-rel_comp %>% 
+ggplotly(rel_comp %>% 
   ggplot(aes(sample_size, retest_reliability, color=task))+
   geom_smooth(method='lm')+
   geom_point(alpha = 0.2)+
   theme(legend.title = element_blank())+
   xlab("Sample Size")+
-  ylab("Retest reliability")
+  ylab("Retest reliability"))
 
 ggsave('LitReviewRelBySampleSize.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 8, height = 5, units = "in", limitsize = FALSE, dpi = 300)
 ```
@@ -1025,25 +1026,43 @@ comp_lit_pred_out = plyr::rdply(1000, comp_lit_pred(rel_comp))
 
 ```{r}
 tmp = comp_lit_pred_out %>%
-  select(-.n) %>%
+  select(-.n, -m_lit, -m_boot) %>%
   gather(key, value) %>%
   separate(key, c("stat", "sample"), sep = "_")
  
-tmp$stat = as.factor(tmp$stat)
-levels(tmp$stat) <- c("coefficient", expression(r^"2"))
+# tmp$stat = as.factor(tmp$stat)
+# levels(tmp$stat) <- c("coefficient", expression(r^"2"))
 
 
 tmp %>%  
   ggplot(aes(value, fill=sample))+
   geom_density(alpha = 0.5, position='identity', color=NA)+
-  facet_grid(.~stat, scales='free', labeller = label_parsed)+
-  scale_fill_discrete(breaks=c("boot","lit"),
+  # facet_grid(.~stat, scales='free', labeller = label_parsed)+
+  scale_fill_manual(breaks=c("boot","lit"),
                        labels=c("Empirical", "Literature"),
-                      name="Prediction")+
-  xlab('')+
-  ylab('')
+                      name="Predictor",
+                      values = c("white", "orange"))+
+  xlab('Variance Explained')+
+  ylab('Density')+
+  xlim(0,1)+
+  ylim(0,40)
 
-ggsave('Lit_Noise_Ceiling.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 10, height = 4, units = "in", limitsize = FALSE, dpi = 100)
+ggsave('LitOnly_Noise_Ceiling.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 6, height = 4, units = "in", limitsize = FALSE, dpi = 300)
+
+tmp %>%  
+  ggplot(aes(value, fill=sample))+
+  geom_density(alpha = 0.5, position='identity', color=NA)+
+  # facet_grid(.~stat, scales='free', labeller = label_parsed)+
+  scale_fill_manual(breaks=c("boot","lit"),
+                       labels=c("Empirical", "Literature"),
+                      name="Predictor",
+                      values = c("purple", "orange"))+
+  xlab('Variance Explained')+
+  ylab('Density')+
+  xlim(0,1)+
+  ylim(0,40)
+
+ggsave('LitAndBoot_Noise_Ceiling.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 6, height = 4, units = "in", limitsize = FALSE, dpi = 300)
 ```
 
 
