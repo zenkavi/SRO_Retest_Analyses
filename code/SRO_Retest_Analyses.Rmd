@@ -489,7 +489,7 @@ Significant fixed effect suggests that on average the longer the delay the small
 summary(lmerTest::lmer(abs(difference) ~ scale(days_btw)+(scale(days_btw) | dv), data=t1_2_difference)) 
 ```
 
-But if I just run one mixed effects model then we don't get a sense of the simple effects (how many of the variables this effect of the days between is significant and in which direction). I can run it separately for each dv to see if all difference score distributions are affected the same way depending on the days between completion.
+But if I just run one mixed effects model then we don't get a sense of the simple effects (how many of the variables this effect of the days between is significant and in which direction). I can run it separately for each dv to see if all difference score distributions are affected the same way depending on the days between completion. But since we are running so many tests we need to correct for multiple comparisons. How many of these tests are significant FDR correcting? None.
 
 ```{r}
 get_delay_effect = function(df){
@@ -498,12 +498,12 @@ get_delay_effect = function(df){
   return(out)
 }
 
-sig_days_effect = t1_2_difference %>%
+days_effect  = t1_2_difference %>%
   group_by(dv) %>%
-  do(get_delay_effect(.)) %>%
-  filter(pval<0.05)
+  do(get_delay_effect(.))
 
-sig_days_effect
+#Correct p-values for multiple comparisons
+sum(p.adjust(days_effect$pval, method = "fdr") < 0.05)
 ```
 
 For visualization I used to summarize the difference scores per person by looking at the average difference per task per subject and plot that against the number of days between completion. This yields multiple points for each value on x representing the average difference per task for each subject. But variables within a task could go in different directions (e.g. if patient proportion increases discount rate decreases) so this doesn't seem like a good idea) 
