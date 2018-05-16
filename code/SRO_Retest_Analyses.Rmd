@@ -1570,7 +1570,7 @@ boot_df %>%
   theme(legend.position = "none", 
         axis.text.x = element_text(size=14),
         axis.title.y = element_text(size=14))+
-  ylab("Proportiono of samples")+
+  ylab("Proportiono of bootstrap samples")+
   xlab("")+
   ylim(0,1)
 
@@ -1698,7 +1698,7 @@ summarise(sum_sc_increase = sum(sc_increase,na.rm=T),
         axis.title.y = element_text(size=14),
         axis.text.x = element_text(size=14))+
   xlab("")+
-  ylab("Proportion")+
+  ylab("Proportion of measures")+
   ylim(0, 1)+
   scale_x_discrete(breaks = c("sum_sc_decrease", "sum_sc_increase"),
                    labels = c("Self-control decrease", "Self-control increase"))
