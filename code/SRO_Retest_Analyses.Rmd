@@ -470,7 +470,7 @@ How do the difference score distributions look like with respect to the days bet
 ```{r}
 t1_2_difference %>%
   ggplot()+
-  geom_smooth(aes(as.numeric(days_btw), abs(difference), group=factor(dv)), method='lm', se=FALSE)+
+  geom_smooth(aes(as.numeric(days_btw), abs(difference), group=factor(dv)), method='lm', se=FALSE, color = 'grey', alpha = 0.5)+
   geom_smooth(aes(as.numeric(days_btw), abs(difference)), method='lm', color = "black", se=FALSE)+
   theme(legend.title = element_blank())+
   xlab('Days between completion')+
@@ -506,75 +506,7 @@ days_effect  = t1_2_difference %>%
 sum(p.adjust(days_effect$pval, method = "fdr") < 0.05)
 ```
 
-For visualization I used to summarize the difference scores per person by looking at the average difference per task per subject and plot that against the number of days between completion. This yields multiple points for each value on x representing the average difference per task for each subject. But variables within a task could go in different directions (e.g. if patient proportion increases discount rate decreases) so this doesn't seem like a good idea) 
-
-Instead I now plot all the data grouping by dependant variable and coloring depending on whether the difference score distribution for that variable has a significant slope when regressed over days between. The black is the main effect for the large multilevel model (this is the same plot as above colored by whether the difference score distribution for each dv has a significant slope depending on days between).
-
-```{r}
-t1_2_difference %>%
-  mutate(sig_days_effect = ifelse(dv %in% sig_days_effect$dv, 1, 0))%>%
-  arrange(-sig_days_effect) %>%
-  ggplot()+
-  stat_smooth (aes(as.numeric(days_btw), abs(difference), 
-                  group=factor(dv, levels=unique(dv[order(sig_days_effect)]), ordered=TRUE), 
-                  color=factor(sig_days_effect, levels = c(1,0))),geom="line", alpha=0.5, method='lm')+
-  geom_smooth(aes(as.numeric(days_btw), abs(difference)), method='lm', color = "black", se=FALSE)+
-  theme(legend.title = element_blank())+
-  xlab('Days between completion')+
-  ylab('Scaled difference score')+
-  scale_color_discrete(breaks=c(0,1),
-                       labels=c("NS", "Sig"))
-
-ggsave('DaysBtwEffect.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 6, height = 4, units = "in", limitsize = FALSE, dpi = 100)
-```
-
-Conclusion: The average difference between the scores of a measure if anything decreases with the increased delay. This fixed effect masks the simple effect for each dv. When looked at individually only 10 variables show a dependence on days between completion. While 7 of them show decreasing differences depending on days between 3 do show increasing differences.
-This suggests that the lack of stricter control over the days between completion of the measurement does not have a large effect on the stability of most measures.
-
-effect of whether days between leads to a sig difference on reliability of that variable? plot coef of sig_day_effect over rel_df point estimate
-
-Do the variables that show significant dependence on the delay between the completion times have systematically lower/higher reliability? Looking at the reliability point estimate over the size of the delay effect. There are very few variables to compare anyway but regardless doesn't look conclusive/concerning.
-
-```{r}
-#Create df of point estimate reliabilities
-rel_df <- data.frame(spearman = rep(NA, length(numeric_cols)),
-                     icc = rep(NA, length(numeric_cols)),
-                     pearson = rep(NA, length(numeric_cols)),
-                     partial_eta_sq = rep(NA, length(numeric_cols)),
-                     sem = rep(NA, length(numeric_cols)),
-                     var_subs = rep(NA, length(numeric_cols)),
-                     var_ind = rep(NA, length(numeric_cols)),
-                     var_resid = rep(NA, length(numeric_cols)))
-
-row.names(rel_df) <- numeric_cols
-
-for(i in 1:length(numeric_cols)){
-  rel_df[numeric_cols[i], 'spearman'] <- get_spearman(numeric_cols[i]) 
-  rel_df[numeric_cols[i], 'icc'] <- get_icc(numeric_cols[i])
-  rel_df[numeric_cols[i], 'pearson'] <- get_pearson(numeric_cols[i])
-  rel_df[numeric_cols[i], 'partial_eta_sq'] <- get_partial_eta(numeric_cols[i])
-  rel_df[numeric_cols[i], 'sem'] <- get_sem(numeric_cols[i])
-  rel_df[numeric_cols[i], 'var_subs'] <- get_var_breakdown(numeric_cols[i])$subs
-  rel_df[numeric_cols[i], 'var_ind'] <- get_var_breakdown(numeric_cols[i])$ind
-  rel_df[numeric_cols[i], 'var_resid'] <- get_var_breakdown(numeric_cols[i])$resid
-}
-
-rel_df$dv = row.names(rel_df)
-row.names(rel_df) = seq(1:nrow(rel_df))
-rel_df$task = 'task'
-rel_df[grep('survey', rel_df$dv), 'task'] = 'survey'
-rel_df[grep('holt', rel_df$dv), 'task'] = "task"
-rel_df = rel_df %>%
-  select(dv, task, spearman, icc, pearson, partial_eta_sq, sem, var_subs, var_ind, var_resid)
-# row.names(rel_df) = NULL
-```
-
-```{r}
-sig_days_effect %>%
-  left_join(rel_df, by='dv') %>%
-  ggplot(aes(estimate, icc))+
-  geom_point()
-```
+Conclusion: The average difference between the scores of a measure doesn't change with the increased delay. 
 
 ### Overlapping survery questions
 
@@ -777,7 +709,7 @@ rm(tmp, tmp2, p1, p2, p3, p4, p5)
 ```
 
 ```{r echo=FALSE}
-rm(tmp, comb, sig_days_effect, t1_2_difference, duplicate_items, duplicate_items_data_t1, duplicate_items_data_t2, extract_items, get_delay_effect)
+rm(tmp, comb, t1_2_difference, duplicate_items, duplicate_items_data_t1, duplicate_items_data_t2, extract_items, get_delay_effect)
 ```
 
 ## Comparison to prior literature

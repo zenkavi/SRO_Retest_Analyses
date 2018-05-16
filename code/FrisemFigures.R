@@ -68,3 +68,79 @@ tmp %>%
 
 ggsave('VarBreakdown_Example.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 12, height = 6, units = "in", dpi=300)
 
+#######################################################
+#######################################################
+#######################################################
+
+tmp = duplicate_items_data_t1 %>%
+  gather(key, value, -worker)
+
+tmp2 = duplicate_items_data_t2 %>%
+  gather(key, value, -worker)
+
+tmp = duplicate_items %>%
+  select(item1_ID, item2_ID) %>%
+  left_join(tmp, by = c("item1_ID" = "key")) %>%
+  left_join(tmp, by = c("item2_ID" = "key", "worker" = "worker")) %>%
+  rename(item1_time1 = value.x, item2_time1 = value.y) %>%
+  left_join(tmp2, by = c("item1_ID" = "key", "worker" = "worker")) %>%
+  left_join(tmp2, by = c("item2_ID" = "key", "worker" = "worker")) %>%
+  rename(item1_time2 = value.x, item2_time2 = value.y) %>%
+  group_by(item1_ID) %>%
+  mutate(item1_time1 = scale(item1_time1),
+         item1_time2 = scale(item1_time2),
+         item2_time1 = scale(item2_time1),
+         item2_time2 = scale(item2_time2),
+         item1_time1 = ifelse(item1_ID == "mpq_control_survey.13", item1_time1*-1, item1_time1),
+         item1_time2 = ifelse(item1_ID == "mpq_control_survey.13", item1_time2*-1, item1_time2)) %>%
+  ungroup()
+
+p1 = tmp %>%
+  filter(grepl("bis_bas", item1_ID)) %>%
+  ggplot(aes(item1_time1, item2_time1, col=item1_ID))+
+  geom_smooth (alpha=0.3, size=0, span=0.5, method = "lm")+
+  stat_smooth (geom="line", alpha=1, size=1, span=0.5, method= "lm")+
+  theme(legend.position = "none")+
+  geom_abline(slope=1, intercept=0, size = 2, linetype = "dashed")+
+  xlab("BIS BAS T1")+
+  ylab("BIS-11 T1")+
+  ylim(-1,2)
+
+p2 = tmp %>%
+  filter(grepl("bis_bas", item1_ID)) %>%
+  ggplot(aes(item1_time1, item2_time2, col=item1_ID))+
+  geom_smooth (alpha=0.3, size=0, span=0.5, method = "lm")+
+  stat_smooth (geom="line", alpha=1, size=1, span=0.5, method= "lm")+
+  theme(legend.position = "none")+
+  geom_abline(slope=1, intercept=0, size = 2, linetype = "dashed")+
+  xlab("BIS BAS T1")+
+  ylab("BIS-11 T2")+
+  ylim(-1,2)
+
+p3 = tmp %>%
+  filter(grepl("bis_bas", item1_ID)) %>%
+  ggplot(aes(item1_time2, item2_time1, col=item1_ID))+
+  geom_smooth (alpha=0.3, size=0, span=0.5, method = "lm")+
+  stat_smooth (geom="line", alpha=1, size=1, span=0.5, method= "lm")+
+  theme(legend.position = "none")+
+  geom_abline(slope=1, intercept=0, size = 2, linetype = "dashed")+
+  xlab("BIS BAS T2")+
+  ylab("BIS-11 T1")+
+  ylim(-1,2)
+
+p4 = tmp %>%
+  filter(grepl("bis_bas", item1_ID)) %>%
+  ggplot(aes(item1_time2, item2_time2, col=item1_ID))+
+  geom_smooth (alpha=0.3, size=0, span=0.5, method = "lm")+
+  stat_smooth (geom="line", alpha=1, size=1, span=0.5, method= "lm")+
+  theme(legend.position = "none")+
+  geom_abline(slope=1, intercept=0, size = 2, linetype = "dashed")+
+  xlab("BIS BAS T2")+
+  ylab("BIS-BAS T2")+
+  ylim(-1,2)
+
+p5 = arrangeGrob(p1, p2, p3, p4, ncol=2)
+
+ggsave('DataCheckOverlappingItemsExample.jpg', p5, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 8, height = 5, units = "in", limitsize = FALSE, dpi = 300)
+
+rm(tmp, tmp2, p1, p2, p3, p4, p5)
