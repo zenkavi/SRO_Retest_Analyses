@@ -16,6 +16,54 @@ lit_review %>%
   scale_shape_manual(breaks = sort(lit_review$type), values = c(15, 16, 17, 3))
 ggsave('Lit_Review_Example.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 12, height = 4, units = "in", dpi=300)
 
+#######################################################
+#######################################################
+#######################################################
+
+tmp = measure_labels %>%
+  mutate(dv = as.character(dv)) %>%
+  left_join(boot_df[,c("dv", "icc", "spearman")], by = 'dv')
+
+tmp = tmp %>%
+  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
+  mutate(task_group = factor(task_group, levels = task_group[order(task)])) %>%
+  separate(var, c("var"), sep="\\.",remove=TRUE,extra="drop") %>%
+  mutate(task_group = gsub("_", " ", task_group),
+         var = gsub("_", " ", var)) %>%
+  arrange(task_group, var)
+
+tmp = tmp %>%
+  left_join(rel_df[,c("dv", "icc")], by = "dv") %>%
+  rename(icc = icc.x, point_est = icc.y)
+
+#Manual correction
+tmp = tmp %>%
+  mutate(task = ifelse(task_group == 'holt laury survey', "task", as.character(task))) %>%
+  mutate(task_group = ifelse(task_group == "psychological refractory period two choices", "psychological refractory period", ifelse(task_group == "angling risk task always sunny", "angling risk task",task_group))) %>%
+  mutate(task_group = gsub("survey", "", task_group))
+
+tmp %>%
+  filter(task_group == 'stroop',
+         raw_fit == 'raw') %>%
+  ggplot(aes(y = var, x = icc)) +
+  geom_point(color = '#00BFC4')+
+  geom_point(aes(y = var, x = point_est), color = "black")+
+  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y", labeller = label_wrap_gen(width=20)) +
+  theme(panel.spacing = unit(0.75, "lines"),
+        strip.placement = "outside",
+        strip.text.y = element_text(angle=180, size=36),
+        axis.text.y = element_text(size=20),
+        axis.text.x = element_text(size=20),
+        panel.background = element_rect(fill = NA),
+        panel.grid.major = element_line(colour = "grey80")) +
+  xlab("ICC")+
+  ylab("")+
+  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
+  geom_vline(xintercept = 0, color = "red", size = 1)
+
+ggsave('Boot_Example.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 12, height = 8, units = "in", dpi=300)
+
 
 
 #######################################################
@@ -136,8 +184,7 @@ p4 = tmp %>%
   theme(legend.position = "none")+
   geom_abline(slope=1, intercept=0, size = 2, linetype = "dashed")+
   xlab("BIS BAS T2")+
-  ylab("BIS-BAS T2")+
-  ylim(-1,2)
+  ylab("BIS-BAS T2")
 
 p5 = arrangeGrob(p1, p2, p3, p4, ncol=2)
 
