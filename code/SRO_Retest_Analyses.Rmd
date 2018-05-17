@@ -399,13 +399,20 @@ summary(demog_rel_df)
 
 
 ```{r}
-demog_rel_df %>%
-  ggplot(aes(icc))+
-  geom_histogram(fill = 'grey', alpha = 0.7, color = NA)+
-  xlab("ICC")+
-  ylab("Count")
+timed_demogs <- c("DoctorVisitsLastMonth","DaysHalfLastMonth","Worthless","DaysPhysicalHealthFeelings","Depressed","EverythingIsEffort","Hopeless","RestlessFidgety","Nervous","DaysLostLastMonth","Last30DaysUsual")
 
-ggsave('DemogRelDist.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 6, height = 5, units = "in", dpi=300)
+demog_rel_df %>%
+  mutate(timed = ifelse(var %in% timed_demogs, 1, 0)) %>%
+  ggplot(aes(icc, fill = factor(timed)))+
+  geom_histogram(position = "identity", alpha = 0.7, color = NA)+
+  xlab("ICC")+
+  ylab("Count")+
+  scale_fill_manual(values = c("grey", "grey25"))+
+  theme(legend.position = "none")
+
+demog_rel_df
+
+ggsave('DemogRelDist.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 6, height = 5, units = "in", dpi=500)
 ```
 
 ```{r echo=FALSE}
@@ -496,9 +503,9 @@ t1_2_difference %>%
   geom_smooth(aes(as.numeric(days_btw), abs(difference)), method='lm', color = "black", se=FALSE)+
   theme(legend.title = element_blank())+
   xlab('Days between completion')+
-  ylab('Absolute Scaled difference score')
+  ylab('Scaled difference score')
 
-ggsave('DaysBtwEffect.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 6, height = 4, units = "in", limitsize = FALSE, dpi = 300)
+ggsave('DaysBtwEffect.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 6, height = 4, units = "in", limitsize = FALSE, dpi = 500)
 ```
 
 To test if the slope of the black is significant we would run a mixed effects model with a fixed effect for days between completion, random slope for each dv depending on the days between and random intercept for each dv.
@@ -725,7 +732,7 @@ p4 = tmp %>%
 
 p5 = arrangeGrob(p1, p2, p3, p4, ncol=2)
 
-ggsave('DataCheckOverlappingItems.jpg', p5, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 8, height = 5, units = "in", limitsize = FALSE, dpi = 300)
+ggsave('DataCheckOverlappingItems.jpg', p5, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 8, height = 5, units = "in", limitsize = FALSE, dpi = 500)
 
 rm(tmp, tmp2, p1, p2, p3, p4, p5)
 ```
@@ -1016,9 +1023,14 @@ tmp %>%
   xlab('Variance Explained')+
   ylab('Density')+
   xlim(0,1)+
-  ylim(0,40)
+  ylim(0,40)+
+  theme(axis.title.x  = element_text(size=16),
+        axis.text.x  = element_text(size=14),
+        axis.title.y  = element_text(size=16),
+        legend.title  = element_text(size=16),
+        legend.text  = element_text(size=16))
 
-ggsave('LitOnly_Noise_Ceiling.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 6, height = 4, units = "in", limitsize = FALSE, dpi = 300)
+ggsave('LitOnly_Noise_Ceiling.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 6, height = 4, units = "in", limitsize = FALSE, dpi = 500)
 
 tmp %>%  
   ggplot(aes(value, fill=sample))+
@@ -1031,9 +1043,14 @@ tmp %>%
   xlab('Variance Explained')+
   ylab('Density')+
   xlim(0,1)+
-  ylim(0,40)
+  ylim(0,40)+
+  theme(axis.title.x  = element_text(size=16),
+        axis.text.x  = element_text(size=14),
+        axis.title.y  = element_text(size=16),
+        legend.title  = element_text(size=16),
+        legend.text  = element_text(size=16))
 
-ggsave('LitAndBoot_Noise_Ceiling.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 6, height = 4, units = "in", limitsize = FALSE, dpi = 300)
+ggsave('LitAndBoot_Noise_Ceiling.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 6, height = 4, units = "in", limitsize = FALSE, dpi = 500)
 ```
 
 

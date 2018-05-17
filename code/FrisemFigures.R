@@ -193,7 +193,7 @@ p4 = tmp %>%
 
 p5 = arrangeGrob(p1, p2, p3, p4, ncol=2)
 
-ggsave('DataCheckOverlappingItemsExample.jpg', p5, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 8, height = 5, units = "in", limitsize = FALSE, dpi = 300)
+ggsave('DataCheckOverlappingItemsExample.jpg', p5, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 8, height = 5, units = "in", limitsize = FALSE, dpi = 500)
 
 rm(tmp, tmp2, p1, p2, p3, p4, p5)
 
