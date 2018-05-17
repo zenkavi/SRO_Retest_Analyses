@@ -8,10 +8,13 @@ lit_review %>%
         strip.text.y = element_text(angle=180, size = 36),
         axis.text.y = element_text(size = 26),
         axis.text.x = element_text(size = 16),
+        axis.title.x = element_text(size = 16),
         legend.text = element_text(size = 16),
+        legend.title  = element_text(size = 16),
         panel.background = element_rect(fill = NA),
         panel.grid.major = element_line(colour = "grey80"),
         legend.position = 'bottom') +
+  guides(shape = guide_legend(override.aes = list(size=16))) +
   xlab("")+
   ylab("")+
   scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
@@ -54,8 +57,9 @@ tmp %>%
   theme(panel.spacing = unit(0.75, "lines"),
         strip.placement = "outside",
         strip.text.y = element_text(angle=180, size=36),
-        axis.text.y = element_text(size=20),
+        axis.text.y = element_text(size=26),
         axis.text.x = element_text(size=20),
+        axis.title.x = element_text(size=18),
         panel.background = element_rect(fill = NA),
         panel.grid.major = element_line(colour = "grey80")) +
   xlab("ICC")+
@@ -64,7 +68,7 @@ tmp %>%
   scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
   geom_vline(xintercept = 0, color = "red", size = 1)
 
-ggsave('Boot_Example.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 12, height = 8, units = "in", dpi=300)
+ggsave('Boot_Example.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 12, height = 8, units = "in", dpi=500)
 
 #######################################################
 #######################################################
