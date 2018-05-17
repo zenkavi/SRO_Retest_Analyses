@@ -105,8 +105,10 @@ tmp %>%
   facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
   theme(panel.spacing = unit(0.5, "lines"), 
         strip.placement = "outside",
-        strip.text.y = element_text(angle=180),
-        axis.text.y = element_text(size = 11),
+        strip.text.y = element_text(angle=180, size = 36),
+        axis.text.y = element_text(size = 16),
+        axis.text.x = element_text(size  = 16),
+        legend.text = element_text(size = 16),
         panel.background = element_rect(fill = NA),
         panel.grid.major = element_line(colour = "grey85"),
         legend.position = 'bottom')+
@@ -119,7 +121,8 @@ tmp %>%
   ylab("")+
   xlab("")
 
-ggsave('VarBreakdown_Example.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 12, height = 6, units = "in", dpi=300)
+ggsave('VarBreakdown_Example.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", 
+       width = 14, height = 10, units = "in", dpi=400)
 
 #######################################################
 #######################################################
@@ -232,3 +235,18 @@ rel_df %>%
   theme(legend.title = element_blank())
 
 ggsave('AllVarsPointEstDist.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 7, height = 5, units = "in", limitsize = FALSE, dpi = 300)
+
+
+#######################################################
+#######################################################
+#######################################################
+rel_df %>%
+  ggplot(aes(task, icc, fill=task))+
+  geom_boxplot()+
+  theme(legend.position = 'none',
+        axis.text.x = element_text(size=14),
+        axis.title.y = element_text(size=14))+
+  xlab("")+
+  ylab("Mean ICC")+
+  ylim(-0.4,1)
+ggsave('TaskVsSurvey.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 3, height = 5, units = "in", limitsize = FALSE, dpi = 500)

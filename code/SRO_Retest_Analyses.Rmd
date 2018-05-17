@@ -901,6 +901,20 @@ rel_comp %>%
 ggsave('LitReviewRelBySampleSize.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 8, height = 5, units = "in", limitsize = FALSE, dpi = 500)
 ```
 
+```{r}
+rel_comp %>% 
+  ggplot(aes(task, retest_reliability, fill = task))+
+  geom_boxplot()+
+  theme(legend.position = 'none',
+        axis.text.x = element_text(size=14),
+        axis.title.y = element_text(size=14))+
+  xlab("")+
+  ylab("Mean ICC")+
+  ylim(-0.4,1)
+
+ggsave('LitTaskVsSurvey.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 3, height = 5, units = "in", limitsize = FALSE, dpi = 500)
+```
+
 I used to compare effect sizes of effect of task on reliability estimates in literature vs our results (just looking at the variables you find in the literature) but removed this analysis because   
 1. the estimates in the literature are not all the same statistic
 2. from our data I was only using ICC's
