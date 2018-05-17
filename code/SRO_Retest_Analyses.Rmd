@@ -1478,7 +1478,7 @@ tmp %>%
   gather(key, value, -dv, -task) %>%
   group_by(task, key) %>%
   summarise(mean_pct = mean(value),
-            sd_pct = sd(value),
+            sd_pct = sd(value, na.rm=T),
             n = n()) %>%
   mutate(cvl = qt(0.025, n-1),
          cvu = qt(0.975, n-1),
@@ -1486,23 +1486,25 @@ tmp %>%
          ciu = mean_pct+(sd_pct*cvu)/sqrt(n),
          sem_pct = sd_pct/sqrt(n)) %>%
   ggplot(aes(factor(key, levels = c("var_subs_pct", "var_ind_pct", "var_resid_pct"),
-                    labels = c("Variance between individuals",
-                               "Variance between sessions",
-                               "Error variance")), mean_pct, color=task))+
-  geom_point(position=position_dodge(width = 0.25), size = 4)+
+                    labels = c("Between subject variance",
+                               "Within subject variance",
+                               "Error variance")), mean_pct))+
+  # geom_point(position=position_dodge(width = 0.25), size = 3, aes(color=task))+
+  geom_bar(position=position_dodge(width = 0.5), width=0.5, aes(fill=task), stat='identity', alpha=0.5)+
   # geom_errorbar(aes(ymin=mean_pct-sd_pct, ymax=mean_pct+sd_pct), position=position_dodge(width = 0.25), width=0, size=2)+
-  geom_errorbar(aes(ymin=cil, ymax=ciu), position=position_dodge(width = 0.25), width=0.25, size=2)+
+  geom_errorbar(aes(ymin=cil, ymax=ciu, color=task), position=position_dodge(width = 0.5), width=0.1)+
   theme_bw()+
   xlab('')+
-  ylab('Percent')+
+  ylab('Percent of total variance')+
   theme(legend.title = element_blank(),
         legend.text = element_text(size=14),
-        legend.position = 'bottom',
+        # legend.position = 'bottom',
         axis.text = element_text(size=12),
         axis.title.y = element_text(size=12))+
-  scale_x_discrete(labels = function(x) str_wrap(x, width = 15))
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 15))+
+  ylim(0,100)
 
-ggsave('Variance_Breakdown_DotPlot.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 6, height = 5, units = "in", dpi = 100)
+ggsave('Variance_Breakdown_BarPlot.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 6, height = 5, units = "in", dpi = 300)
 ```
 
 ## Systematic effects between time points
@@ -2059,10 +2061,10 @@ tmp2 = measure_labels %>%
   left_join(rel_df[,c("dv", "icc", "spearman")], by = 'dv')
 
 tmp2 %>%
-  filter(overall_difference == "overall") %>%
+  # filter(overall_difference == "overall") %>%
   ggplot(aes(factor(raw_fit, levels = c("raw", "EZ", "hddm"), labels=c("Raw", "EZ-diffusion", "Hierarchical diffusion")), icc, fill=factor(rt_acc, levels = c("rt","accuracy", "drift rate", "threshold", "non-decision"), labels=c("Response Time", "Accuracy","Drift Rate", "Threshold", "Non-decision"))))+
   geom_boxplot()+
-  # facet_wrap(~factor(overall_difference, levels=c("overall", "difference"), labels=c("Overall", "Difference")))+
+  facet_wrap(~factor(overall_difference, levels=c("overall", "difference"), labels=c("Overall", "Difference")))+
   theme_bw()+
   ylab("ICC")+
   xlab("")+
@@ -2073,9 +2075,10 @@ tmp2 %>%
         axis.text = element_text(size = 16),
         text = element_text(size=16))+
   guides(fill = guide_legend(ncol = 2))+
-  scale_fill_discrete(breaks=c("Drift Rate", "Threshold", "Non-decision", "Response Time", "Accuracy"))
+  scale_fill_discrete(breaks=c("Drift Rate", "Threshold", "Non-decision", "Response Time", "Accuracy"))+
+  ylim(-0.4, 1)
 
-ggsave('PointEst_DDM_Comp_OverallOnly.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 12, height = 5, units = "in", limitsize = FALSE)
+ggsave('PointEst_DDM_Comp.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 15, height = 7, units = "in", limitsize = FALSE)
 ```
 
 ## Survey reliabilities

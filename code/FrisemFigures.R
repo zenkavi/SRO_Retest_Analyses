@@ -64,11 +64,10 @@ tmp %>%
 
 ggsave('Boot_Example.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 12, height = 8, units = "in", dpi=300)
 
+#######################################################
+#######################################################
+#######################################################
 
-
-#######################################################
-#######################################################
-#######################################################
 tmp = rel_df %>%
   mutate(var_subs_pct = var_subs/(var_subs+var_ind+var_resid)*100,
          var_ind_pct = var_ind/(var_subs+var_ind+var_resid)*100, 
@@ -191,3 +190,39 @@ p5 = arrangeGrob(p1, p2, p3, p4, ncol=2)
 ggsave('DataCheckOverlappingItemsExample.jpg', p5, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 8, height = 5, units = "in", limitsize = FALSE, dpi = 300)
 
 rm(tmp, tmp2, p1, p2, p3, p4, p5)
+
+#######################################################
+#######################################################
+#######################################################
+
+rel_df %>%
+  ggplot(aes(icc, fill=task))+
+  geom_density(alpha = 0.5, color=NA)+
+  xlim(-0.4,1)+
+  xlab("ICC")+
+  ylab("Density")+
+  theme(legend.title = element_blank())+
+  scale_fill_manual(values = c("white", "#00BFC4"))
+
+ggsave('TaskVarsPointEstDist.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 7, height = 5, units = "in", limitsize = FALSE, dpi = 300)
+
+rel_df %>%
+  ggplot(aes(icc, fill=factor(task, levels = c("task", "survey"), labels = c("task", "survey"))))+
+  geom_density(alpha = 0.5, color=NA)+
+  xlim(-0.4,1)+
+  xlab("ICC")+
+  ylab("Density")+
+  theme(legend.title = element_blank())+
+  scale_fill_manual(values = c("white", "#F8766D"))
+
+ggsave('SurveyVarsPointEstDist.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 7, height = 5, units = "in", limitsize = FALSE, dpi = 300)
+
+rel_df %>%
+  ggplot(aes(icc, fill=task))+
+  geom_density(alpha = 0.5, color=NA)+
+  xlim(-0.4,1)+
+  xlab("ICC")+
+  ylab("Density")+
+  theme(legend.title = element_blank())
+
+ggsave('AllVarsPointEstDist.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 7, height = 5, units = "in", limitsize = FALSE, dpi = 300)
