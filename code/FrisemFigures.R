@@ -5,8 +5,10 @@ lit_review %>%
   facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
   theme(panel.spacing = unit(0.5, "lines"),
         strip.placement = "outside",
-        strip.text.y = element_text(angle=180, size = 12),
-        axis.text.y = element_text(size = 11),
+        strip.text.y = element_text(angle=180, size = 36),
+        axis.text.y = element_text(size = 26),
+        axis.text.x = element_text(size = 16),
+        legend.text = element_text(size = 16),
         panel.background = element_rect(fill = NA),
         panel.grid.major = element_line(colour = "grey80"),
         legend.position = 'bottom') +
@@ -14,7 +16,7 @@ lit_review %>%
   ylab("")+
   scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
   scale_shape_manual(breaks = sort(lit_review$type), values = c(15, 16, 17, 3))
-ggsave('Lit_Review_Example.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 12, height = 4, units = "in", dpi=300)
+ggsave('Lit_Review_Example.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 12, height = 7, units = "in", dpi=500)
 
 #######################################################
 #######################################################
