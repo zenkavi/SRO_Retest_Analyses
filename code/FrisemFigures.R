@@ -95,8 +95,11 @@ tmp = rel_df %>%
 labels = tmp %>%
   distinct(dv, .keep_all=T)
 
+tmp = tmp %>% 
+  left_join(measure_labels[,c("dv", "raw_fit")])
+
 tmp %>%
-  filter(task_group == "stroop") %>%
+  filter(task_group == "stroop", raw_fit == "raw") %>%
   ggplot(aes(x=factor(rank), y=value, fill=factor(key, levels = c("var_resid_pct", "var_ind_pct", "var_subs_pct"))))+
   geom_bar(stat='identity', alpha = 0.75, color='#00BFC4')+
   scale_x_discrete(breaks = labels$rank,
@@ -106,9 +109,9 @@ tmp %>%
   theme(panel.spacing = unit(0.5, "lines"), 
         strip.placement = "outside",
         strip.text.y = element_text(angle=180, size = 36),
-        axis.text.y = element_text(size = 16),
-        axis.text.x = element_text(size  = 16),
-        legend.text = element_text(size = 16),
+        axis.text.y = element_text(size = 26),
+        axis.text.x = element_text(size  = 20),
+        legend.text = element_text(size = 24),
         panel.background = element_rect(fill = NA),
         panel.grid.major = element_line(colour = "grey85"),
         legend.position = 'bottom')+
@@ -119,7 +122,8 @@ tmp %>%
                                "Error variance"),
                     values=c("grey65", "grey45", "grey25"))+
   ylab("")+
-  xlab("")
+  xlab("")+
+  guides(fill = guide_legend(ncol = 1))
 
 ggsave('VarBreakdown_Example.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", 
        width = 14, height = 10, units = "in", dpi=400)

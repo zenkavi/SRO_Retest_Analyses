@@ -2104,7 +2104,8 @@ tmp2 = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(ddm_task == 1, 
          overall_difference != "condition",
-         rt_acc != "other") %>%
+         rt_acc != "other",
+         raw_fit != "hddm") %>%
   drop_na() %>%
   left_join(rel_df[,c("dv", "icc", "spearman")], by = 'dv')
 
@@ -2112,7 +2113,7 @@ tmp2 %>%
   # filter(overall_difference == "overall") %>%
   ggplot(aes(factor(raw_fit, levels = c("raw", "EZ", "hddm"), labels=c("Raw", "EZ-diffusion", "Hierarchical diffusion")), icc, fill=factor(rt_acc, levels = c("rt","accuracy", "drift rate", "threshold", "non-decision"), labels=c("Response Time", "Accuracy","Drift Rate", "Threshold", "Non-decision"))))+
   geom_boxplot()+
-  facet_wrap(~factor(overall_difference, levels=c("overall", "difference"), labels=c("Overall", "Difference")))+
+  facet_wrap(~factor(overall_difference, levels=c("overall", "difference"), labels=c("Overall (all trials)", "Difference (contrasting conditions)")))+
   theme_bw()+
   ylab("ICC")+
   xlab("")+
