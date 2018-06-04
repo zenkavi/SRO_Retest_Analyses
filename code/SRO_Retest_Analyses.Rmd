@@ -880,7 +880,7 @@ anova(mod2, mod3)
 summary(mod2)
 ```
 
-Are the residuals of this model heteroscedasticity
+Are the residuals of this model heteroscedastic? Yes the residuals do not depend on the predictor.
 
 ```{r}
 tmp = data.frame(rel_comp$sample_size, resid(mod2)) %>%
@@ -910,6 +910,8 @@ rel_comp %>%
 
 ggsave('LitReviewRelBySampleSize.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 8, height = 5, units = "in", limitsize = FALSE, dpi = 500)
 ```
+
+Highlighting the difference between survey and task reliability for comparability to our results.
 
 ```{r}
 rel_comp %>% 
@@ -975,9 +977,11 @@ lit_emp_cor = function(){
   return(out)
 }
 
-lit_emp_cor_out = plyr::rdply(100, lit_emp_cor)
+#lit_emp_cor_out = plyr::rdply(100, lit_emp_cor)
 
-write.csv(lit_emp_cor_out,'/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/lit_emp_cor_out.csv')
+#write.csv(lit_emp_cor_out,'/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/lit_emp_cor_out.csv')
+
+lit_emp_cor_out = read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/lit_emp_cor_out.csv')
 
 summary(lit_emp_cor_out)
 
@@ -1009,10 +1013,17 @@ comp_lit_pred <- function(df){
   
   sampled_df = df %>%
     group_by(dv) %>%
-    do(sample_from_dv(.)) 
+    do(sample_from_dv(.))
   
-  mod_lit = lm(retest_reliability ~ lit_predictor+scale(sample_size)+task, data=sampled_df)
-  mod_boot = lm(retest_reliability ~ mean_pearson+scale(sample_size)+task, data=sampled_df)
+  if(length(unique(sampled_df$task))>1){
+    mod_lit = lm(retest_reliability ~ lit_predictor+scale(sample_size)+task, data=sampled_df)
+    mod_boot = lm(retest_reliability ~ mean_pearson+scale(sample_size)+task, data=sampled_df)
+  }
+  else{
+    mod_lit = lm(retest_reliability ~ lit_predictor+scale(sample_size), data=sampled_df)
+    mod_boot = lm(retest_reliability ~ mean_pearson+scale(sample_size), data=sampled_df)
+  }
+  
   
   out = data.frame(r2_lit = summary(mod_lit)$r.squared,
                    r2_boot = summary(mod_boot)$r.squared,
@@ -1034,27 +1045,6 @@ tmp = comp_lit_pred_out %>%
  
 # tmp$stat = as.factor(tmp$stat)
 # levels(tmp$stat) <- c("coefficient", expression(r^"2"))
-
-
-tmp %>%  
-  ggplot(aes(value, fill=sample))+
-  geom_density(alpha = 0.5, position='identity', color=NA)+
-  # facet_grid(.~stat, scales='free', labeller = label_parsed)+
-  scale_fill_manual(breaks=c("boot","lit"),
-                       labels=c("Empirical", "Literature"),
-                      name="Predictor",
-                      values = c("white", "orange"))+
-  xlab('Variance Explained')+
-  ylab('Density')+
-  xlim(0,1)+
-  ylim(0,40)+
-  theme(axis.title.x  = element_text(size=16),
-        axis.text.x  = element_text(size=14),
-        axis.title.y  = element_text(size=16),
-        legend.title  = element_text(size=16),
-        legend.text  = element_text(size=16))
-
-ggsave('LitOnly_Noise_Ceiling.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 6, height = 4, units = "in", limitsize = FALSE, dpi = 500)
 
 tmp %>%  
   ggplot(aes(value, fill=sample))+
@@ -1082,12 +1072,37 @@ ggsave('LitAndBoot_Noise_Ceiling.jpg', device = "jpeg", path = "/Users/zeynepenk
 with(comp_lit_pred_out, t.test(r2_lit, r2_boot, paired=T))
 ```
 
-```{r}
-with(comp_lit_pred_out, t.test(m_lit, m_boot))
-```
-
 ```{r echo=FALSE}
 rm(tmp, rel_comp, mod1, mod2, mod3, n_df, i, lit_emp_cor, lit_emp_cor_out, comp_lit_pred, comp_lit_pred_out)
+```
+
+Are you at noise ceiling for suveys vs. tasks?
+
+```{r}
+comp_lit_pred_out_task = plyr::rdply(1000, comp_lit_pred(rel_comp %>% filter(task=="task")))
+comp_lit_pred_out_task$task = "task"
+comp_lit_pred_out_survey = plyr::rdply(1000, comp_lit_pred(rel_comp %>% filter(task=="survey")))
+comp_lit_pred_out_survey$task = "survey"
+comp_lit_pred_out_both = rbind(comp_lit_pred_out_task, comp_lit_pred_out_task)
+
+```
+
+What does it look like if you estimate the left one out using the remaining ones for the noise ceiling model?
+
+```{r}
+
+```
+
+Literature vs. our data on a  measure basis
+
+```{r}
+
+```
+
+Are you better in estimating the literature using our data for surveys vs tasks?
+
+```{r}
+
 ```
 
 ## Relationship between reliability metrics (point estimates)

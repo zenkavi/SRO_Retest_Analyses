@@ -25,6 +25,32 @@ ggsave('Lit_Review_Example.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dr
 #######################################################
 #######################################################
 
+
+tmp %>%  
+  ggplot(aes(value, fill=sample))+
+  geom_density(alpha = 0.5, position='identity', color=NA)+
+  # facet_grid(.~stat, scales='free', labeller = label_parsed)+
+  scale_fill_manual(breaks=c("boot","lit"),
+                    labels=c("Empirical", "Literature"),
+                    name="Predictor",
+                    values = c("white", "orange"))+
+  xlab('Variance Explained')+
+  ylab('Density')+
+  xlim(0,1)+
+  ylim(0,40)+
+  theme(axis.title.x  = element_text(size=16),
+        axis.text.x  = element_text(size=14),
+        axis.title.y  = element_text(size=16),
+        legend.title  = element_text(size=16),
+        legend.text  = element_text(size=16))
+
+ggsave('LitOnly_Noise_Ceiling.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 6, height = 4, units = "in", limitsize = FALSE, dpi = 500)
+
+#######################################################
+#######################################################
+#######################################################
+
+
 tmp = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   left_join(boot_df[,c("dv", "icc", "spearman")], by = 'dv')
