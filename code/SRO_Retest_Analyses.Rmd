@@ -349,6 +349,48 @@ test_data = merge(test_data, hddm_refits, by="sub_id")
 Point estimates of reliability for the demographic variabels.
 
 ```{r}
+process_boot_df = function(df){
+  df = df %>%
+  drop_na() %>%
+  mutate(dv = as.character(dv),
+         icc = as.numeric(as.character(icc)),
+         spearman = as.numeric(as.character(spearman)),
+         pearson = as.numeric(as.character(pearson)),
+         eta_sq = as.numeric(as.character(eta_sq)),
+         sem = as.numeric(as.character(sem)),
+         partial_eta_sq = as.numeric(as.character(partial_eta_sq)),
+         omega_sq = as.numeric(as.character(omega_sq)),
+         var_subs = as.numeric(as.character(var_subs)),
+         var_ind = as.numeric(as.character(var_ind)),
+         var_resid = as.numeric(as.character(var_resid)),
+         F_time = as.numeric(as.character(F_time)),
+         p_time = as.numeric(as.character(p_time)),
+         df_time = as.numeric(as.character(df_time)),
+         df_resid = as.numeric(as.character(df_resid)))
+  return(df)} 
+
+demog_boot_df <- read.csv(gzfile(paste0(retest_data_path,'demog_boot_merged.csv.gz')))
+
+demog_boot_df = process_boot_df(demog_boot_df)
+```
+
+```{r}
+tmp = demog_boot_df %>%
+  group_by(dv) %>%
+  summarise(median_icc = quantile(icc, probs=0.5),
+            icc_2.5 = quantile(icc, probs = 0.025),
+            icc_97.5 = quantile(icc, probs = 0.975)) %>%
+  arrange(-median_icc)
+tmp
+```
+
+```{r}
+sjt.df(tmp%>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.progress = TRUE, show.rownames = FALSE, file = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/demog_rel_table.doc")
+```
+
+Point estimates of reliability for demog items
+
+```{r}
 numeric_cols = c()
 
 for(i in 1:length(names(test_demog))){
@@ -369,10 +411,9 @@ demog_rel_df = demog_rel_df %>%
   mutate(var = row.names(.)) %>%
   select(var, icc) %>%
   arrange(-icc)
-
-demog_rel_df
 ```
 
+Checking low reliability demog vars: Mostly NA's
 
 ```{r}
 test_demog$HowOftenHazardousCannabis
@@ -388,17 +429,9 @@ test_demog$OtherDebtAmount
 retest_demog$OtherDebtAmount
 ```
 
-```{r}
-sjt.df(demog_rel_df %>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.progress = TRUE, show.rownames = FALSE, file = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/demog_rel_table.doc")
-```
+Plotting point estimates of reliability for demographic items coloring those that have a time limit darker in the histogram.
 
-
-```{r}
-summary(demog_rel_df)
-```
-
-
-```{r}
+```{r warning=FALSE, message=FALSE}
 timed_demogs <- c("DoctorVisitsLastMonth","DaysHalfLastMonth","Worthless","DaysPhysicalHealthFeelings","Depressed","EverythingIsEffort","Hopeless","RestlessFidgety","Nervous","DaysLostLastMonth","Last30DaysUsual")
 
 demog_rel_df %>%
@@ -409,8 +442,6 @@ demog_rel_df %>%
   ylab("Count")+
   scale_fill_manual(values = c("grey", "grey25"))+
   theme(legend.position = "none")
-
-demog_rel_df
 
 ggsave('DemogRelDist.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 6, height = 5, units = "in", dpi=500)
 ```
@@ -669,7 +700,6 @@ Time 1 item 1 - time 2 item 2
 Time 2 item 1 - time 1 item 2
 Time 2: item 1 - item 2
 
-
 ```{r warning=FALSE, message=FALSE}
 tmp = duplicate_items_data_t1 %>%
   gather(key, value, -worker)
@@ -746,26 +776,6 @@ rm(tmp, comb, t1_2_difference, duplicate_items, duplicate_items_data_t1, duplica
 Read in and process bootstrapped results.
 
 ```{r}
-process_boot_df = function(df){
-  df = df %>%
-  drop_na() %>%
-  mutate(dv = as.character(dv),
-         icc = as.numeric(as.character(icc)),
-         spearman = as.numeric(as.character(spearman)),
-         pearson = as.numeric(as.character(pearson)),
-         eta_sq = as.numeric(as.character(eta_sq)),
-         sem = as.numeric(as.character(sem)),
-         partial_eta_sq = as.numeric(as.character(partial_eta_sq)),
-         omega_sq = as.numeric(as.character(omega_sq)),
-         var_subs = as.numeric(as.character(var_subs)),
-         var_ind = as.numeric(as.character(var_ind)),
-         var_resid = as.numeric(as.character(var_resid)),
-         F_time = as.numeric(as.character(F_time)),
-         p_time = as.numeric(as.character(p_time)),
-         df_time = as.numeric(as.character(df_time)),
-         df_resid = as.numeric(as.character(df_resid)))
-  return(df)} 
-
 boot_df <- read.csv(gzfile(paste0(retest_data_path,'bootstrap_merged.csv.gz')))
 
 boot_df = process_boot_df(boot_df)
