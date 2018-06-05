@@ -1166,10 +1166,10 @@ Plot difference between prediction and value of either the lit estimate or the a
 tmp = pred_sample_out %>%
   select(task,pred, retest_reliability, mean_pearson) %>%
   gather(key, value, -task, -pred) %>%
-  mutate(diff = (pred - value)^2)
+  mutate(sq_diff = (pred - value)^2)
 
 tmp%>%  
-  ggplot(aes(diff, fill=key))+
+  ggplot(aes(sq_diff, fill=key))+
   geom_density(position = "identity", color=NA, alpha=0.5)+
   scale_fill_manual(breaks=c("mean_pearson","retest_reliability"),
                        labels=c("Empirical", "Literature"),
@@ -1177,20 +1177,17 @@ tmp%>%
                       values = c("purple", "orange"))
 ```
 
-Are the means of these distributions different? Yes: the difference is larger when predicting the left-out value from the literature versus predicting the left-out average from our data
+Are the means of these distributions different? Yes: the difference is larger when predicting the left-out value from our data versus predicting left out value from literature. The difference seems pretty small though.
 
 ```{r}
-with(tmp, t.test(diff ~ key))
+with(tmp, t.test(sq_diff ~ key))
 ```
 
 Plot difference between prediction and value broken down by measure type.
-Looks like there might be an interaction between the measure type and whether the left out sample is a value from the literature versus the average from our data.
-The difference between the prediction and left value seems smaller on average for survey measures compared to survey measures.
-Moreover, for survey measures predictions of the literature are better compared to predictions of our data but the opposite is true for task measures.
 
 ```{r}
 tmp%>%
-  ggplot(aes(diff, fill=key, color=task, alpha=task))+
+  ggplot(aes(sq_diff, fill=key, color=task, alpha=task))+
   geom_density(position = "identity", size=2)+
   scale_fill_manual(breaks=c("mean_pearson","retest_reliability"),
                        labels=c("Empirical", "Literature"),
@@ -1199,26 +1196,49 @@ tmp%>%
   scale_alpha_manual(breaks=c("survey", "task"),
                      values = c(0.4, 0.7),
                      name="Measure type")+
-  scale_color_discrete(name="Measure type")+
-  
+  scale_color_discrete(name="Measure type")
 ```
 
-Can we capture this interaction in a single model?
+Can we capture this interaction in a single model? Yes. The significant interaction suggests that the squared difference is larger for predicting the literature compared to predicting our data for surveys while for tasks the squared difference is larger when predicting our data compared to predicting the literature. (This fits with other results too: our results differ from the literature more for the survey measures)
 
 ```{r}
-summary(lm(value ~ key*task,tmp))
+aggregate(sq_diff ~ key*task,tmp, FUN=mean)
 ```
 
-Data versus model prediction plot
+```{r}
+summary(lm(sq_diff ~ key*task,tmp))
+```
+
+Data versus model prediction plot: The predictions are not veriable so they don't really capture the variability neither in the literature nor in our data very well.
 
 ```{r}
-
+tmp %>%
+  ggplot(aes(value, pred, color=task))+
+  geom_point()+
+  facet_wrap(~key)
 ```
 
 Distributions of sum squared residual
 
 ```{r}
-
+pred_sample_out %>%
+  mutate(sq_diff_lit = (pred - retest_reliability)^2,
+         sq_diff_emp = (pred - mean_icc)^2) %>%
+  group_by(.n, task) %>%
+  summarise(sum_sq_diff_lit = sum(sq_diff_lit),
+            sum_sq_diff_emp = sum(sq_diff_emp)) %>%
+  # select(-'.n') %>%
+  gather(key, value, -task, -.n) %>%
+  ggplot(aes(value, fill=key, color=task))+
+  geom_density(size=1)+
+  scale_fill_manual(breaks=c("sum_sq_diff_emp","sum_sq_diff_lit"),
+                       labels=c("Empirical", "Literature"),
+                      name="Predicting",
+                      values = c("purple", "orange"))+
+  scale_alpha_manual(breaks=c("survey", "task"),
+                     values = c(0.4, 0.7),
+                     name="Measure type")+
+  scale_color_discrete(name="Measure type")
 ```
 
 ### Measure level comparison
