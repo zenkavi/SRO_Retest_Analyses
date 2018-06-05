@@ -1083,11 +1083,49 @@ comp_lit_pred_out_task = plyr::rdply(1000, comp_lit_pred(rel_comp %>% filter(tas
 comp_lit_pred_out_task$task = "task"
 comp_lit_pred_out_survey = plyr::rdply(1000, comp_lit_pred(rel_comp %>% filter(task=="survey")))
 comp_lit_pred_out_survey$task = "survey"
-comp_lit_pred_out_both = rbind(comp_lit_pred_out_task, comp_lit_pred_out_task)
+comp_lit_pred_out_both = rbind(comp_lit_pred_out_task, comp_lit_pred_out_survey)
 
+comp_lit_pred_out_both %>%
+  select(-.n, -m_lit, -m_boot) %>%
+  gather(key, value, -task) %>%
+  separate(key, c("stat", "sample"), sep = "_") %>%
+  ggplot(aes(value, fill=sample, alpha=task, color=task))+
+  geom_density(position='identity', size=2)+
+  # facet_grid(~task)+
+  scale_fill_manual(breaks=c("boot","lit"),
+                       labels=c("Empirical", "Literature"),
+                      name="Predictor",
+                      values = c("purple", "orange"))+
+  scale_alpha_manual(breaks=c("survey", "task"),
+                     values = c(0.4, 0.7),
+                     name="Measure type")+
+  scale_color_discrete(name="Measure type")+
+  xlab('Variance Explained')+
+  ylab('Density')
+```
+
+Is this because of less data on surveys? Should I be using a different metric for goodness of fit?
+
+```{r}
+table(rel_comp$task)
+```
+
+Are the differences in the distributions significant?
+The literature does a better job in predicting itself for tasks compared to surveys. s
+
+```{r}
+with(comp_lit_pred_out_both, t.test(r2_lit ~ task))
+```
+
+Our data is better in predicting the literature for the surveys that it is in predicting tasks.
+
+```{r}
+with(comp_lit_pred_out_both, t.test(r2_lit-r2_boot ~ task))
 ```
 
 What does it look like if you estimate the left one out using the remaining ones for the noise ceiling model?
+What is the distance measure?
+Sample one row of literature, fit model of sample size+task on remaining data, use that model to predict the reliability estimate plugging in the sample size and task for the sampled row in the model
 
 ```{r}
 
