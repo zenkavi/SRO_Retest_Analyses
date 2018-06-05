@@ -1116,8 +1116,7 @@ with(comp_lit_pred_out_both, t.test(r2_lit-r2_boot ~ task))
 ### LOOCV predicting lit vs our data
 
 What does it look like if you estimate the left one out using the remaining ones for the noise ceiling model?
-What is the distance measure?
-Sample one row of literature, fit model of sample size+task on remaining data, use that model to predict the reliability estimate plugging in the sample size and task for the sampled row in the model
+Sample one row of literature, fit model of sample size+task on remaining data, use that model to predict the reliability estimates, compare those to the left out reliability estimate from the literature versus the average reliability estimate from our data
 
 ```{r}
 pred_sample <- function(df){
@@ -1155,35 +1154,43 @@ pred_sample <- function(df){
 }
 ```
 
+Why did I have to run it separately for the function before but can run it on all data once here? Before the output was model fits for all measures. Here the output is measure level prediction.
+
 ```{r message=FALSE}
 pred_sample_out = plyr::rdply(1000, pred_sample(rel_comp))
 ```
 
-Plot difference between 
+Plot difference between prediction and value of either the lit estimate or the average estimate from our data
 
 ```{r}
+tmp = pred_sample_out %>%
+  select(task,pred, retest_reliability, mean_pearson) %>%
+  gather(key, value, -task, -pred) %>%
+  mutate(diff = (pred - value)^2)
 
-pred_sample_out %>%
-  select(pred, retest_reliability, mean_pearson) %>%
-  gather(key, value, -pred) %>%
-  mutate(diff = pred - value) %>%
-  ggplot(aes(value, fill=key))+
+tmp%>%  
+  ggplot(aes(diff, fill=key))+
   geom_density(position = "identity", color=NA, alpha=0.5)+
   scale_fill_manual(breaks=c("mean_pearson","retest_reliability"),
                        labels=c("Empirical", "Literature"),
                       name="Predicting",
                       values = c("purple", "orange"))
-
 ```
 
-Plot difference between prediction and value broken down by measure type
+Are the means of these distributions different? Yes: the difference is larger when predicting the left-out value from the literature versus predicting the left-out average from our data
 
 ```{r}
-pred_sample_out %>%
-  select(task, pred, retest_reliability, mean_pearson) %>%
-  gather(key, value, -task, -pred) %>%
-  mutate(diff = pred - value) %>%
-  ggplot(aes(value, fill=key, color=task, alpha=task))+
+with(tmp, t.test(diff ~ key))
+```
+
+Plot difference between prediction and value broken down by measure type.
+Looks like there might be an interaction between the measure type and whether the left out sample is a value from the literature versus the average from our data.
+The difference between the prediction and left value seems smaller on average for survey measures compared to survey measures.
+Moreover, for survey measures predictions of the literature are better compared to predictions of our data but the opposite is true for task measures.
+
+```{r}
+tmp%>%
+  ggplot(aes(diff, fill=key, color=task, alpha=task))+
   geom_density(position = "identity", size=2)+
   scale_fill_manual(breaks=c("mean_pearson","retest_reliability"),
                        labels=c("Empirical", "Literature"),
@@ -1192,7 +1199,14 @@ pred_sample_out %>%
   scale_alpha_manual(breaks=c("survey", "task"),
                      values = c(0.4, 0.7),
                      name="Measure type")+
-  scale_color_discrete(name="Measure type")
+  scale_color_discrete(name="Measure type")+
+  
+```
+
+Can we capture this interaction in a single model?
+
+```{r}
+summary(lm(value ~ key*task,tmp))
 ```
 
 Data versus model prediction plot
