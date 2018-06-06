@@ -2057,12 +2057,17 @@ The above averaging of reliability estimates for all measures of tasks might not
 
 Not all measures for which we have calculated reliability estimates are measures that are used in the literature for these tasks
 
-Dealing with this:
-using the measures you found in the literature
-using ian's function
+We have a list of measures we extracted from the literature as the canonical ones used for analyses.
 
 ```{r}
+meaningful_vars = read.table('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/meaningful_vars.txt')
+meaningful_vars = as.character(meaningful_vars$V1)
 
+tmp = as.character(unique(lit_review$dv)[which(unique(lit_review$dv) %in% meaningful_vars == FALSE)])
+tmp = tmp[-grep('survey', tmp)]
+
+meaningful_vars = c(meaningful_vars, tmp)
+meaningful_vars = sort(meaningful_vars)
 ```
 
 ### Number of trials
