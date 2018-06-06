@@ -1218,7 +1218,9 @@ tmp %>%
   facet_wrap(~key)
 ```
 
-Distributions of sum squared residual
+Distributions of sum squared residual: Residuals are larger for tasks compared to surveys (i.e. predictions are worse when predicting task variables - possibly because their variability is higher?). For surveys the predictions of the literature are better than predictions of our data while the opposite is true for task measures.
+
+Does this make sense with the results above? Figure out how to think of the noise ceiling analyses and LOOCV results together.
 
 ```{r}
 pred_sample_out %>%
@@ -1229,7 +1231,7 @@ pred_sample_out %>%
             sum_sq_diff_emp = sum(sq_diff_emp)) %>%
   # select(-'.n') %>%
   gather(key, value, -task, -.n) %>%
-  ggplot(aes(value, fill=key, color=task))+
+  ggplot(aes(value, fill=key, color=task, alpha=task))+
   geom_density(size=1)+
   scale_fill_manual(breaks=c("sum_sq_diff_emp","sum_sq_diff_lit"),
                        labels=c("Empirical", "Literature"),
