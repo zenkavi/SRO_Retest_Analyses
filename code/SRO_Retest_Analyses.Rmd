@@ -568,7 +568,7 @@ sum(p.adjust(days_effect$pval, method = "fdr") < 0.05)
 
 Conclusion: The average difference between the scores of a measure doesn't change with the increased delay. 
 
-### Overlapping survery questions
+### Overlapping survey questions
 
 Some surveys have overlapping questions. Do these correlate within and across sessions?
 
@@ -1309,6 +1309,49 @@ We calculated `r as.numeric(table(rel_df$task)[1])` measures for surveys and `r 
 
 Though we are primarily reporting ICC's as our metric of reliability the results don't change depending on the metric chosen. Here we plot point estimates of three different reliability metrics against each other (ICC, Pearson, Spearman). The bootstrapped version is essentially the same but the plots are busier due to more datapoints.
 
+
+```{r}
+numeric_cols = c()
+
+for(i in 1:length(names(test_data))){
+  if(is.numeric(test_data[,i]) & names(test_data)[i] %in% names(retest_data)){
+    numeric_cols <- c(numeric_cols, names(test_data)[i])
+  }
+}
+#Create df of point estimate reliabilities
+rel_df <- data.frame(spearman = rep(NA, length(numeric_cols)),
+                     icc = rep(NA, length(numeric_cols)),
+                     pearson = rep(NA, length(numeric_cols)),
+                     partial_eta_sq = rep(NA, length(numeric_cols)),
+                     sem = rep(NA, length(numeric_cols)),
+                     var_subs = rep(NA, length(numeric_cols)),
+                     var_ind = rep(NA, length(numeric_cols)),
+                     var_resid = rep(NA, length(numeric_cols)))
+
+row.names(rel_df) <- numeric_cols
+
+for(i in 1:length(numeric_cols)){
+  rel_df[numeric_cols[i], 'spearman'] <- get_spearman(numeric_cols[i]) 
+  rel_df[numeric_cols[i], 'icc'] <- get_icc(numeric_cols[i])
+  rel_df[numeric_cols[i], 'pearson'] <- get_pearson(numeric_cols[i])
+  rel_df[numeric_cols[i], 'partial_eta_sq'] <- get_partial_eta(numeric_cols[i])
+  rel_df[numeric_cols[i], 'sem'] <- get_sem(numeric_cols[i])
+  rel_df[numeric_cols[i], 'var_subs'] <- get_var_breakdown(numeric_cols[i])$subs
+  rel_df[numeric_cols[i], 'var_ind'] <- get_var_breakdown(numeric_cols[i])$ind
+  rel_df[numeric_cols[i], 'var_resid'] <- get_var_breakdown(numeric_cols[i])$resid
+}
+
+rel_df$dv = row.names(rel_df)
+row.names(rel_df) = seq(1:nrow(rel_df))
+rel_df$task = 'task'
+rel_df[grep('survey', rel_df$dv), 'task'] = 'survey'
+rel_df[grep('holt', rel_df$dv), 'task'] = "task"
+rel_df = rel_df %>%
+  select(dv, task, spearman, icc, pearson, partial_eta_sq, sem, var_subs, var_ind, var_resid)
+# row.names(rel_df) = NULL
+
+```
+
 ```{r}
 table(rel_df$task)
 ```
@@ -1783,9 +1826,9 @@ Doing a simple t-test on the difference score alone would not be a very rigourou
 
 To check whether a measure shows systematic differences between the two time points in a meaningful number of bootstrapped samples we can: check if the effect of time is significant in each bootstrapped sample and filter variables that have more than 5% of the boostrapped samples showing significant time effects.
 
-Another way might be to compute confidence intervals using SEMs as described in the second half of Weir (2005) and check what percent of participants have scores that fall out of this range. I haven't pursued this for now. 
+Another way might be to compute confidence intervals using SEMs as described in the second half of Weir (2005) and check what percent of participants have scores that fall out of this range.
 
-Here we ask: Which variables have significant time effects in more than 5% of the bootstrapped samples?
+First we ask: Which variables have significant time effects in more than 5% of the bootstrapped samples?
 
 23/74 survey measures
 133/372 task measures
@@ -1822,8 +1865,6 @@ Are these significantly different between surveys and tasks? No.
 ```{r}
 chisq.test(matrix(data = c(23,74-23,133, 372-133), nrow=2))
 ```
-
-Are they predominantly in one or the other direction and does that differ depending on survey vs task?
 
 ```{r}
 boot_df %>%
@@ -2009,8 +2050,6 @@ sjt.df(tmp %>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.progre
 ```
 
 ### Meaningful variables
-
-ADD!!!!
 
 ```{r}
 
