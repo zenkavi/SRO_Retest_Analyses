@@ -2010,6 +2010,8 @@ We reduce the list of task measures to a list of one per task by averaging only 
 
 We filter out the DDM parameters and measures for specific contrasts. Note that this does leave some tasks with measures that are model fits and/or for specific conditions (because at least the current datasets do not include measures that are based on all the trials **and** are raw though I could dive in to variables_exhaustive for such measures. For example the average relialibility for Kirby is based on three discount rates for specific conditions.). Here's the order of tasks by mean reliability sorted for ICC and then Spearman's $\rho$.
 
+NOTE: THIS MIGHT GIVE A FALSE SENSE OF HOW GOOD EACH TASK IS. SEE MEANINGFUL VARIABLES ANALYSES FOR TASKS.
+
 ```{r warning=FALSE, message=FALSE}
 tmp = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
@@ -2050,6 +2052,14 @@ sjt.df(tmp %>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.progre
 ```
 
 ### Meaningful variables
+
+The above averaging of reliability estimates for all measures of tasks might not be the best way to look at how reliable a task is. 
+
+Not all measures for which we have calculated reliability estimates are measures that are used in the literature for these tasks
+
+Dealing with this:
+using the measures you found in the literature
+using ian's function
 
 ```{r}
 
