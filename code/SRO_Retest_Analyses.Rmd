@@ -2204,12 +2204,11 @@ tmp = measure_labels %>%
   mutate(dv = as.character(dv),
          contrast = ifelse(overall_difference == "difference", "contrast", "non-contrast")) %>%
   filter(ddm_task == 1, 
-         #overall_difference != "condition",
          rt_acc != 'other') %>%
   drop_na() %>%
   left_join(boot_df[,c("dv", "icc")], by = 'dv')
 
-tmp = tmp %>%
+tmp_save = tmp %>%
   drop_na() %>% #try removing this in final release
   group_by(contrast, raw_fit, rt_acc) %>%
   summarise(icc_median = quantile(icc, probs = 0.5),
@@ -2217,13 +2216,13 @@ tmp = tmp %>%
             icc_97.5 = quantile(icc, probs = 0.975),
             num_vars = n()/1000) 
 
-tmp %>% 
+tmp_save %>% 
   datatable() %>%
   formatRound(columns=c('icc_median', 'icc_2.5', 'icc_97.5'), digits=3)
 ```
 
 ```{r}
-tmp_save = tmp %>%
+tmp_save = tmp_save %>%
   ungroup() %>%
   mutate(contrast = as.character(contrast),
          raw_fit = as.character(raw_fit),
@@ -2233,109 +2232,29 @@ tmp_save = tmp %>%
 sjt.df(tmp_save %>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.progress = TRUE, show.rownames = FALSE, file = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/ddm_rel_table.doc")
 ```
 
-Comparing overall vs difference: overall has higher reliability than difference.
+Comparing contrast vs non-contrast: overall has higher reliability than difference.
 
 ```{r}
-summary(lmerTest::lmer(icc ~ overall_difference + (1|dv) ,tmp))
-```
-
-"consistent with the summing of variance in the difference score"
-
-```{r}
-tmp = measure_labels %>%
-  mutate(dv = as.character(dv)) %>%
-  filter(ddm_task == 1, 
-         overall_difference != "condition",
-         rt_acc != 'other') %>%
-  drop_na() %>%
-  left_join(boot_df[,c("dv", "icc", "var_subs","var_ind", "var_resid")], by = 'dv') %>%
-  mutate(var_subs_pct = var_subs/(var_subs+var_ind+var_resid),
-         var_ind_pct = var_ind/(var_subs+var_ind+var_resid), 
-         var_resid_pct = var_resid/(var_subs+var_ind+var_resid)) %>%
-  select(-task, -ddm_task, -num_all_trials, -var_resid, -var_subs, -var_ind) %>%
-  gather(key, value, -dv, -overall_difference, -raw_fit, -rt_acc, -icc)
-
-tmp %>%
-  filter(key == "var_resid_pct") %>%
-  ggplot(aes(raw_fit, value, fill=overall_difference))+
-  geom_boxplot()
-  
-summary(lmer(value  ~ overall_difference*raw_fit + (1|dv), data=tmp %>% filter(key=="var_resid_pct")))
-
-#Simple effects
-summary(lmer(value  ~ overall_difference + (1|dv), data=tmp %>% filter(key=="var_resid_pct", raw_fit== "EZ")))
-
-summary(lmer(value  ~ overall_difference + (1|dv), data=tmp %>% filter(key=="var_resid_pct", raw_fit== "raw")))
-
-summary(lmer(value  ~ overall_difference + (1|dv), data=tmp %>% filter(key=="var_resid_pct", raw_fit== "hddm")))
-```
-
-Checking Rogosa's claim that ‘Difference scores are reliable when individual differences in true change exist.’
-How do we measure ‘individual difference in true change’ 
-1.between subject variability in difference score distributions
-2.within subject variance in icc
-Using 2 (because comparable between subject variance across different measures would be hard)
-Expecting to see: positive correlation between mean icc and mean var_ind_pct
-Result: The correlation between mean icc and mean var ind pct is NOT significant BUT looking at the distribution of mean var ind pct there is not a lot of variability t
-
-```{r}
-tmp = tmp %>%
-  spread(key, value) %>%
-  group_by(dv) %>%
-  summarise(mean_var_ind_pct = mean(var_ind_pct),
-            mean_var_subs_pct = mean(var_subs_pct),
-            mean_icc = mean(icc)) %>%
-  left_join(measure_labels, by='dv')
-
-tmp %>%
-  filter(overall_difference == 'difference') %>%
-  ggplot(aes(mean_var_ind_pct, mean_icc))+
-  geom_point()+
-  geom_abline(slope=1, intercept=0)+
-  geom_smooth(method = "lm")
-
-summary(lm(mean_icc ~ mean_var_ind_pct,data=tmp %>%
-  filter(overall_difference == 'difference')))
-
-tmp %>%
-  filter(overall_difference == 'difference') %>%
-  ggplot(aes(mean_var_ind_pct))+
-  geom_density()
-
-summary(tmp$mean_var_ind_pct[tmp$overall_difference == "difference"])
-summary(tmp$mean_var_subs_pct[tmp$overall_difference == "difference"])
-
-tmp = tmp %>% filter(overall_difference == 'difference')
-t.test(tmp$mean_var_ind_pct, tmp$mean_var_subs_pct, paired=T)
-```
-
-```{r}
-tmp = measure_labels %>%
-  mutate(dv = as.character(dv)) %>%
-  filter(ddm_task == 1, 
-         overall_difference != "condition",
-         rt_acc != 'other') %>%
-  drop_na() %>%
-  left_join(boot_df[,c("dv", "icc", "spearman")], by = 'dv')
+summary(lmerTest::lmer(icc ~ contrast + (1|dv) ,tmp))
 ```
 
 Comparing raw vs ddm in overall estimates: EZ is significantly better than HDDM and comparable to raw estimates.
 
 ```{r}
-summary(lmerTest::lmer(icc ~ raw_fit + (1|dv) ,tmp %>% filter(overall_difference == "overall")))
+summary(lmerTest::lmer(icc ~ raw_fit + (1|dv) ,tmp %>% filter(contrast == "non-contrast")))
 ```
 
 Comparing raw vs ddm in difference scores: EZ is significantly worse than HDDM and comparable to raw estimates.
 
 ```{r}
-summary(lmerTest::lmer(icc ~ raw_fit + (1|dv) ,tmp %>% filter(overall_difference == "difference")))
+summary(lmerTest::lmer(icc ~ raw_fit + (1|dv) ,tmp %>% filter(contrast == "contrast")))
 ```
 
 ```{r}
 tmp %>%
   ggplot(aes(factor(raw_fit, levels = c("raw", "EZ", "hddm"), labels=c("Raw", "EZ-diffusion", "Hierarchical diffusion")), icc, fill=factor(rt_acc, levels = c("rt","accuracy", "drift rate", "threshold", "non-decision"), labels=c("Response Time", "Accuracy","Drift Rate", "Threshold", "Non-decision"))))+
   geom_boxplot()+
-  facet_wrap(~factor(overall_difference, levels=c("overall", "difference"), labels=c("Overall", "Difference")))+
+  facet_wrap(~factor(contrast, levels=c("non-contrast", "contrast"), labels=c("Non-contrast", "Contrast")))+
   theme_bw()+
   ylab("ICC")+
   xlab("")+
@@ -2353,19 +2272,17 @@ ggsave('Bootstrap_DDM_Comp.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dr
 
 ```{r}
 tmp2 = measure_labels %>%
-  mutate(dv = as.character(dv)) %>%
+  mutate(dv = as.character(dv),
+         contrast = ifelse(overall_difference == "difference", "contrast", "non-contrast")) %>%
   filter(ddm_task == 1, 
-         overall_difference != "condition",
-         rt_acc != "other",
-         raw_fit != "hddm") %>%
+         rt_acc != 'other') %>%
   drop_na() %>%
-  left_join(rel_df[,c("dv", "icc", "spearman")], by = 'dv')
+  left_join(rel_df[,c("dv", "icc")], by = 'dv')
 
 tmp2 %>%
-  # filter(overall_difference == "overall") %>%
   ggplot(aes(factor(raw_fit, levels = c("raw", "EZ", "hddm"), labels=c("Raw", "EZ-diffusion", "Hierarchical diffusion")), icc, fill=factor(rt_acc, levels = c("rt","accuracy", "drift rate", "threshold", "non-decision"), labels=c("Response Time", "Accuracy","Drift Rate", "Threshold", "Non-decision"))))+
   geom_boxplot()+
-  facet_wrap(~factor(overall_difference, levels=c("overall", "difference"), labels=c("Overall (all trials)", "Difference (contrasting conditions)")))+
+  facet_wrap(~factor(contrast, levels=c("non-contrast", "contrast"), labels=c("Non-contrast", "Contrast")))+
   theme_bw()+
   ylab("ICC")+
   xlab("")+
@@ -2388,39 +2305,34 @@ ggsave('PointEst_DDM_Comp.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dro
 tmp = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(task == 'survey') %>%
-  left_join(boot_df[,c("dv", "icc", "spearman")], by = 'dv') %>%
-  filter(overall_difference != 'difference' & raw_fit %in% c('EZ', 'hddm') == FALSE)%>%
+  left_join(boot_df[,c("dv", "icc")], by = 'dv') %>%
   separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
-  select(-extra_1, -extra_2) %>%
+  select(-extra_1, -extra_2) 
+
+tmp_save = tmp %>%
   group_by(task_name) %>%
   summarise(median_icc = median(icc),
-            median_spearman = median(spearman),
             icc_2.5 = quantile(icc, probs = 0.025),
             icc_97.5 = quantile(icc, probs = 0.975),
-            min_spearman = min(spearman),
-            max_spearman = max(spearman),
             num_measures = n()/1000,
             mean_num_trials = round(mean(num_all_trials)))%>%
-  arrange(-median_icc, -median_spearman)
+  arrange(-median_icc)
 
-tmp %>%
+tmp_save %>%
   datatable() %>%
-  formatRound(columns=c('median_spearman', 'median_icc',
-                        'min_spearman', 'icc_2.5',
-                        'max_spearman', 'icc_97.5'), digits=3)
+  formatRound(columns=c('median_icc', 'icc_2.5','icc_97.5'), digits=3)
 ```
 
 ```{r}
-tmp = tmp%>%
-  select(-min_spearman, -max_spearman,-median_spearman) %>%
+tmp_save = tmp_save%>%
   mutate(task_name = gsub("_", " ", task_name),
          task_name = gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", task_name, perl=TRUE),
          task_name = gsub("Survey", "", task_name))
 
-names(tmp) = gsub("_", " ", names(tmp))
-names(tmp) = gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", names(tmp), perl=TRUE)
+names(tmp_save) = gsub("_", " ", names(tmp_save))
+names(tmp_save) = gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", names(tmp_save), perl=TRUE)
 
-sjt.df(tmp %>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.progress = TRUE, show.rownames = FALSE, file = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/survey_rel_table.doc")
+sjt.df(tmp_save %>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.progress = TRUE, show.rownames = FALSE, file = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/survey_rel_table.doc")
 ```
 
 ### Number of items
@@ -2428,28 +2340,11 @@ sjt.df(tmp %>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.progre
 Does number of items in a survey have a significant effect on the average ICC of survey measures? No. 
 
 ```{r warning=FALSE, message=FALSE}
-tmp = measure_labels %>%
-  mutate(dv = as.character(dv)) %>%
-  filter(task == 'survey') %>%
-  # left_join(rel_df[,c("dv", "spearman","icc")], by='dv') %>%
-  left_join(boot_df[,c("dv", "spearman","icc")], by='dv') %>%
-  filter(overall_difference != 'difference' & raw_fit %in% c('EZ', 'hddm') == FALSE)%>%
-  separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
-  select(-extra_1, -extra_2)
-
-# summary(lm(icc ~ num_all_trials, data = tmp))
 summary(lmerTest::lmer(icc ~ num_all_trials + (1|dv), data = tmp))
 ```
 
 ```{r warning=FALSE, message=FALSE}
-measure_labels %>%
-  mutate(dv = as.character(dv)) %>%
-  filter(task == 'task') %>%
-  # left_join(rel_df[,c("dv", "spearman","icc")], by='dv') %>%
-  left_join(boot_df[,c("dv", "spearman","icc")], by='dv') %>%
-  filter(overall_difference != 'difference' & raw_fit %in% c('EZ', 'hddm') == FALSE)%>%
-  separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
-  select(-extra_1, -extra_2) %>%
+tmp %>%
   ggplot(aes(num_all_trials, icc))+
   geom_point()+
   geom_smooth(method="lm")+
