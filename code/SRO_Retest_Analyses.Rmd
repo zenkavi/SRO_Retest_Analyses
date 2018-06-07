@@ -2164,14 +2164,22 @@ trial_num_rel_df$breaks = as.numeric(trial_num_rel_df$breaks)
 # write.csv(trial_num_rel_df, paste0(retest_data_path, 'trial_num_rel_df_tbt.csv'))
 ```
 
+Takeaways from this graph:
+- Reliability estimates stabilize after about an eigthth of the trials (note that this might not be true for other model parameter estimates; here we are only looking at raw response time and accuracy measures)
+- Only three measures that are not contrast measures have reliabilities >0
+- All the other measures are basically completely unreliable (including the two 'meaningful variables' in the literature: the cue switch cost RT's)
+
 ```{r warning=FALSE, message=FALSE}
 trial_num_rel_df = read.csv(paste0(retest_data_path, 'trial_num_rel_df_tbt.csv'))
 
 cols <- c("Accuracy" = '#084594', "Average RT error" = '#99000d', "SD RT error" = '#cb181d', "Average RT correct" = '#ef3b2c', "SD RT correct" = '#fb6a4a', "Missed percentage" = '#2171b5', "Cue switch cost RT (100)" = '#fc9272', "Cue switch cost RT (900)" = '#fcbba1', "Task switch cost RT (100)" = '#fee0d2', "Task switch cost RT (900)" = '#fff5f0', "Cue switch cost Acc (100)" = '#4292c6', "Cue switch cost Acc (900)" = '#6baed6', "Task switch cost Acc (100)" = '#9ecae1', "Task switch cost Acc (900)" = '#c6dbef')
 
+cols <- c("Accuracy" = '#084594', "Average RT error" = '#99000d', "Average RT correct" = '#ef3b2c', "Missed percentage" = '#2171b5', "Cue switch cost RT (100)" = '#fc9272', "Cue switch cost RT (900)" = '#fcbba1', "Task switch cost RT (100)" = '#fee0d2', "Task switch cost RT (900)" = '#fff5f0', "Cue switch cost Acc (100)" = '#4292c6', "Cue switch cost Acc (900)" = '#6baed6', "Task switch cost Acc (100)" = '#9ecae1', "Task switch cost Acc (900)" = '#c6dbef')
+
 trial_num_rel_df %>%
+  select(-std_rt_icc, -std_rt_error_icc)%>%
   gather(key, value, -breaks) %>%
-  ggplot(aes(breaks*10, value, color=factor(key, levels = c("acc_icc", "avg_rt_error_icc", "std_rt_error_icc", "avg_rt_icc", "std_rt_icc", "missed_percent_icc", "cue_switch_cost_rt_100_icc", "cue_switch_cost_rt_900_icc", "task_switch_cost_rt_100_icc", "task_switch_cost_rt_900_icc", "cue_switch_cost_acc_100_icc", "cue_switch_cost_acc_900_icc", "task_switch_cost_acc_100_icc", "task_switch_cost_acc_900_icc"), labels = c("Accuracy", "Average RT error", "SD RT error", "Average RT correct", "SD RT correct", "Missed percentage", "Cue switch cost RT (100)", "Cue switch cost RT (900)", "Task switch cost RT (100)", "Task switch cost RT (900)", "Cue switch cost Acc (100)", "Cue switch cost Acc (900)", "Task switch cost Acc (100)", "Task switch cost Acc (900)"))))+
+  ggplot(aes(breaks*10, value, color=factor(key, levels = c("acc_icc", "avg_rt_error_icc", "avg_rt_icc", "missed_percent_icc", "cue_switch_cost_rt_100_icc", "cue_switch_cost_rt_900_icc", "task_switch_cost_rt_100_icc", "task_switch_cost_rt_900_icc", "cue_switch_cost_acc_100_icc", "cue_switch_cost_acc_900_icc", "task_switch_cost_acc_100_icc", "task_switch_cost_acc_900_icc"), labels = c("Accuracy", "Average RT error", "Average RT correct", "Missed percentage", "Cue switch cost RT (100)", "Cue switch cost RT (900)", "Task switch cost RT (100)", "Task switch cost RT (900)", "Cue switch cost Acc (100)", "Cue switch cost Acc (900)", "Task switch cost Acc (100)", "Task switch cost Acc (900)"))))+
   geom_point()+
   geom_line()+
   theme_bw()+
@@ -2180,9 +2188,9 @@ trial_num_rel_df %>%
   theme(legend.title = element_blank(),
         legend.position = 'bottom')+
   scale_color_manual(values = cols,
-                     breaks = c("Average RT error", "Accuracy", "SD RT error", "Missed percentage", "Average RT correct", "Cue switch cost Acc (100)", "SD RT correct", "Cue switch cost Acc (900)", "Cue switch cost RT (100)", "Task switch cost Acc (100)", "Task switch cost RT (100)", "Task switch cost Acc (900)", "Task switch cost RT (900)"))+
+                     breaks = c("Average RT correct", "Average RT error", "Cue switch cost RT (100)","Cue switch cost RT (900)", "Task switch cost RT (100)","Task switch cost RT (900)","Accuracy", "Missed percentage", "Cue switch cost Acc (100)", "Cue switch cost Acc (900)",  "Task switch cost Acc (100)",  "Task switch cost Acc (900)"))+
   ylim(-1,1)+
-  guides(color = guide_legend(ncol=2, byrow=T))
+  guides(color = guide_legend(ncol=2, byrow=F))
 
 ggsave('Intrameasure_Trialnum_Dependendence.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 10, height = 5, units = "in", dpi = 100)
 ```
@@ -2193,37 +2201,31 @@ Checking DDM results in the bootstrapped estimates. Variables using all trials a
 
 ```{r warning=FALSE, message=FALSE}
 tmp = measure_labels %>%
-  mutate(dv = as.character(dv)) %>%
+  mutate(dv = as.character(dv),
+         contrast = ifelse(overall_difference == "difference", "contrast", "non-contrast")) %>%
   filter(ddm_task == 1, 
-         overall_difference != "condition",
+         #overall_difference != "condition",
          rt_acc != 'other') %>%
   drop_na() %>%
-  left_join(boot_df[,c("dv", "icc", "spearman")], by = 'dv')
+  left_join(boot_df[,c("dv", "icc")], by = 'dv')
 
-tmp %>%
+tmp = tmp %>%
   drop_na() %>% #try removing this in final release
-  group_by(overall_difference, raw_fit, rt_acc) %>%
+  group_by(contrast, raw_fit, rt_acc) %>%
   summarise(icc_median = quantile(icc, probs = 0.5),
             icc_2.5 = quantile(icc, probs = 0.025),
             icc_97.5 = quantile(icc, probs = 0.975),
-            spearman_median = quantile(spearman, probs = 0.5),
-            spearman_2.5 = quantile(spearman, probs = 0.025),
-            spearman_97.5 = quantile(spearman, probs = 0.975),
-            num_vars = n()/1000) %>%
+            num_vars = n()/1000) 
+
+tmp %>% 
   datatable() %>%
-  formatRound(columns=c('icc_median', 'icc_2.5', 'icc_97.5', 'spearman_median', 'spearman_2.5', 'spearman_97.5'), digits=3)
+  formatRound(columns=c('icc_median', 'icc_2.5', 'icc_97.5'), digits=3)
 ```
 
 ```{r}
 tmp_save = tmp %>%
-  drop_na() %>% #try removing this in final release
-  group_by(overall_difference, raw_fit, rt_acc) %>%
-  summarise(icc_median = quantile(icc, probs = 0.5),
-            icc_2.5 = quantile(icc, probs = 0.025),
-            icc_97.5 = quantile(icc, probs = 0.975),
-            num_vars = n()/1000) %>%
   ungroup() %>%
-  mutate(overall_difference = as.character(overall_difference),
+  mutate(contrast = as.character(contrast),
          raw_fit = as.character(raw_fit),
          rt_acc = as.character(rt_acc)) %>%
   arrange(-icc_median)

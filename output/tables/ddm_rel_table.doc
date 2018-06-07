@@ -1,6 +1,6 @@
 <table style="border-collapse:collapse; border:none;">
 <tr>
-<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black;">overall_difference</th>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black;">contrast</th>
 <th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black;">raw_fit</th>
 <th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black;">rt_acc</th>
 <th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black;">icc_median</th>
@@ -9,16 +9,7 @@
 <th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black;">num_vars</th>
 </tr>
 <tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">overall</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">raw</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">rt</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.736</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.535</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.854</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">16</td>
-</tr>
-<tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">overall</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">non-contrast</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">EZ</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">drift rate</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.724</td>
@@ -27,16 +18,16 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">14</td>
 </tr>
 <tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">overall</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">non-contrast</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">raw</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">accuracy</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.684</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">-0.375</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.832</td>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">14</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">rt</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.7</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.378</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.838</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">41</td>
 </tr>
 <tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">overall</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">non-contrast</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">hddm</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">drift rate</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.684</td>
@@ -45,7 +36,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">16</td>
 </tr>
 <tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">overall</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">non-contrast</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">EZ</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">non-decision</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.647</td>
@@ -54,7 +45,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">14</td>
 </tr>
 <tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">overall</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">non-contrast</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">EZ</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">threshold</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.624</td>
@@ -63,7 +54,16 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">14</td>
 </tr>
 <tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">overall</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">non-contrast</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">raw</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">accuracy</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.583</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">-0.267</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.825</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">32</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">non-contrast</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">hddm</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">threshold</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.544</td>
@@ -72,7 +72,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">14</td>
 </tr>
 <tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">overall</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">non-contrast</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">hddm</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">non-decision</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.449</td>
@@ -81,7 +81,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">14</td>
 </tr>
 <tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">difference</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">contrast</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">hddm</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">drift rate</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.404</td>
@@ -90,7 +90,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">18</td>
 </tr>
 <tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">difference</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">contrast</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">raw</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">rt</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.299</td>
@@ -99,7 +99,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">25</td>
 </tr>
 <tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">difference</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">contrast</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">raw</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">accuracy</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.27</td>
@@ -108,7 +108,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">13</td>
 </tr>
 <tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">difference</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">contrast</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">EZ</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">drift rate</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.248</td>
@@ -117,7 +117,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">17</td>
 </tr>
 <tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">difference</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">contrast</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">EZ</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">non-decision</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.236</td>
@@ -126,7 +126,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">17</td>
 </tr>
 <tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">difference</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">contrast</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">EZ</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">threshold</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.097</td>
@@ -135,7 +135,7 @@
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">17</td>
 </tr>
 <tr>
-<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">difference</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">contrast</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">hddm</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">threshold</td>
 <td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">0.09</td>
