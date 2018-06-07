@@ -592,7 +592,8 @@ duplicate_items = comb %>%
   separate(V2, c("item2_ID", "item2_text"), sep="___") %>%
   mutate(similarity = levenshteinSim(item1_text, item2_text)) %>%
   filter(similarity>0.8) %>%
-  select(item1_ID, item2_ID, item1_text, item2_text)
+  select(similarity, item1_ID, item2_ID, item1_text, item2_text) %>%
+  arrange(-similarity)
 
 duplicate_items
 ```
@@ -680,20 +681,40 @@ for(i in 1:nrow(duplicate_items)){
                       duplicate_items_data_t1[,c(duplicate_items$item2_ID[i])]))$rho[2])
 }
 
-duplicate_items
+duplicate_items %>%
+  arrange(-t1_t1_polycor, -t2_t2_polycor)
 ```
 
 ```{r}
-summary(duplicate_items$t1_t1_cor)
-summary(duplicate_items$t2_t2_cor)
-summary(duplicate_items$t1_t2_cor)
-summary(duplicate_items$t2_t1_cor)
+# summary(duplicate_items$t1_t1_cor)
+# summary(duplicate_items$t2_t2_cor)
+# summary(duplicate_items$t1_t2_cor)
+# summary(duplicate_items$t2_t1_cor)
 
 summary(duplicate_items$t1_t1_polycor)
 summary(duplicate_items$t2_t2_polycor)
-summary(duplicate_items$t1_t2_polycor)
-summary(duplicate_items$t2_t1_polycor)
+# summary(duplicate_items$t1_t2_polycor)
+# summary(duplicate_items$t2_t1_polycor)
 ```
+
+```{r}
+tmp = duplicate_items %>%
+  select(similarity, t1_t1_polycor, t2_t2_polycor) %>%
+  gather(key, value, -similarity) 
+
+
+# tmp = duplicate_items %>%
+#   select(similarity, t1_t1_polycor, t1_t2_polycor, t2_t2_polycor, t2_t1_polycor) %>%
+#   gather(key, value, -similarity) 
+
+
+tmp %>%
+  ggplot(aes(similarity, value, col=key))+
+  geom_smooth(method="lm", se=FALSE)
+
+summary(lm(value~key*similarity,tmp))
+```
+
 
 Time 1: item 1 - item 2
 Time 1 item 1 - time 2 item 2
