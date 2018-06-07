@@ -1340,6 +1340,24 @@ rm(p1, p2, p3)
 knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/LitVsEmp_Measure_Plot.jpg')
 ```
 
+```{r}
+rel_comp %>%
+  group_by(dv, task) %>%
+  summarise(mean_lit = mean(retest_reliability),
+            mean_emp = unique(mean_pearson)) %>%
+  ggplot(aes(mean_emp, mean_lit, col=task))+
+  geom_smooth(method="lm")+
+  geom_point()+
+  xlim(-0.25, 1)+
+  ylim(-0.25, 1)+
+  ylab("Average Literature Reliability Estimate")+
+  xlab("Average Empirical Reliability Estimate")+
+  theme(legend.title = element_blank(),
+        legend.position = 'bottom')
+
+ggsave('LitAndEmpAveCor.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 6, height = 4, units = "in", limitsize = FALSE, dpi = 500)
+```
+
 ```{r echo=FALSE}
 rm(tmp, rel_comp, mod1, mod2, mod3, n_df, i, lit_emp_cor, lit_emp_cor_out, comp_lit_pred, comp_lit_pred_out)
 ```
@@ -2316,6 +2334,13 @@ tmp %>%
   scale_fill_discrete(breaks=c("Drift Rate", "Threshold", "Non-decision", "Response Time", "Accuracy"))
 
 ggsave('Bootstrap_DDM_Comp.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 14, height = 10, units = "in", limitsize = FALSE)
+```
+
+```{r}
+tmp %>%
+  group_by(contrast) %>%
+  summarise(mean_icc = mean(icc),
+            sd_icc = sd(icc))
 ```
 
 ```{r}
