@@ -936,7 +936,7 @@ Despite these problems the main result was that the effect size was much larger 
 
 We also checked whether our results diverge most from studies with smaller sample sizes. Square difference between our mean estimate and the reliability from the literature decreases exponentially with sample size. The smaller the sample size in the literature the more the reliability estimate differs from our results. But this was a weak result because most of the studies in the literature have smaller sample sizes and you see both small and large deviations for these studies (these were not significant either).
 
-### Direct relation to our results
+### Correlation with our results
 
 Correlation between our mean estimates from bootstrapped samples and the literature review for task variables
 
@@ -1101,16 +1101,43 @@ comp_lit_pred_out_both %>%
 ```
 
 Are the differences in the distributions significant?
-The literature does a better job in predicting itself for tasks compared to surveys. s
+There is a significant interaction, such that...
+
+```{r}
+tmp = comp_lit_pred_out_both %>%
+  select(-.n, -m_lit, -m_boot) %>%
+  gather(key, value, -task)
+
+summary(lm(value ~ key*task, tmp))
+```
+
+The literature does a better job in predicting itself for tasks compared to surveys (comparing the two orange distributions). 
 
 ```{r}
 with(comp_lit_pred_out_both, t.test(r2_lit ~ task))
 ```
 
-Our data is better in predicting the literature estimates for the surveys that it is in predicting tasks.
+Our data is better in predicting the literature estimates for the surveys that it is in predicting tasks (comparing the difference between orange and purple for red and blue outlines).
 
 ```{r}
 with(comp_lit_pred_out_both, t.test(r2_lit-r2_boot ~ task))
+```
+
+Why are the reliability estimates from surveys worse compared to tasks in predicting the literature?
+
+Rank by variance: empirical estimates for surveys < literature estimates for surveys < empirical estimates for tasks < literature estimates for tasks
+
+In this procedure having high variance is better. When predicting the literature using an empirical estimate for a survey measure
+
+```{r}
+rel_comp %>%
+  select(task, retest_reliability, mean_pearson) %>%
+  gather(key, value, -task) %>%
+  group_by(key, task) %>%
+  summarise(variance = var(value)) %>%
+  ungroup()%>%
+  mutate(key = ifelse(key == "mean_pearson", "emp", "lit")) %>%
+  arrange(variance)
 ```
 
 ### LOOCV predicting lit vs our data
