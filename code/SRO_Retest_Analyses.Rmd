@@ -2006,58 +2006,7 @@ rm(mean_diff_df)
 
 Here we summarize the results on a task level to make it more digestable and easier to make contact with the literature.  
 
-We reduce the list of task measures to a list of one per task by averaging only the raw measures from all the trials in a task. We chose to reduce the information in this manner to avoid any bias stemming from differential amount of interest and procedures applied to certain tasks over others (e.g. a task can have over 10 measures because it has multiple conditions and we have chosen to fit DDM's for specific conditions while another might only have 2 due to our relative inexperience and lack of interest in it). We check whether the number of trials in a task has a significant effect on these average reliabilities of raw measures as well. 
-
-We filter out the DDM parameters and measures for specific contrasts. Note that this does leave some tasks with measures that are model fits and/or for specific conditions (because at least the current datasets do not include measures that are based on all the trials **and** are raw though I could dive in to variables_exhaustive for such measures. For example the average relialibility for Kirby is based on three discount rates for specific conditions.). Here's the order of tasks by mean reliability sorted for ICC and then Spearman's $\rho$.
-
-NOTE: THIS MIGHT GIVE A FALSE SENSE OF HOW GOOD EACH TASK IS. SEE MEANINGFUL VARIABLES ANALYSES FOR TASKS.
-
-```{r warning=FALSE, message=FALSE}
-tmp = measure_labels %>%
-  mutate(dv = as.character(dv)) %>%
-  filter(task == 'task') %>%
-  left_join(boot_df[,c("dv", "icc", "spearman")], by = 'dv') %>%
-  filter(overall_difference != 'difference' & raw_fit %in% c('EZ', 'hddm') == FALSE)%>%
-  separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
-  select(-extra_1, -extra_2) %>%
-  group_by(task_name) %>%
-  summarise(median_icc = median(icc),
-            median_spearman = median(spearman),
-            icc_2.5 = quantile(icc, probs = 0.025),
-            icc_97.5 = quantile(icc, probs = 0.975),
-            min_spearman = min(spearman),
-            max_spearman = max(spearman),
-            num_measures = n()/1000,
-            mean_num_trials = round(mean(num_all_trials)))%>%
-  arrange(-median_icc, -median_spearman)
-
-tmp %>%
-  datatable() %>%
-  formatRound(columns=c('median_spearman', 'median_icc',
-                        'min_spearman', 'icc_2.5',
-                        'max_spearman', 'icc_97.5'), digits=3)
-```
-
-
-```{r}
-tmp = tmp%>%
-  select(-median_spearman, -min_spearman, -max_spearman) %>%
-  mutate(task_name = gsub("_", " ", task_name),
-         task_name = gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", task_name, perl=TRUE))
-
-names(tmp) = gsub("_", " ", names(tmp))
-names(tmp) = gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", names(tmp), perl=TRUE)
-
-sjt.df(tmp %>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.progress = TRUE, show.rownames = FALSE, file = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/task_rel_table.doc")
-```
-
-### Meaningful variables
-
-The above averaging of reliability estimates for all measures of tasks might not be the best way to look at how reliable a task is. 
-
-Not all measures for which we have calculated reliability estimates are measures that are used in the literature for these tasks
-
-We have a list of measures we extracted from the literature as the canonical ones used for analyses.
+We reduce the list of task measures to a list of one per task by averaging only the measures that are extracted and used from these tasks in the literature. We call these the 'meaningful measures.'
 
 ```{r}
 meaningful_vars = read.table('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/meaningful_vars.txt')
@@ -2070,33 +2019,58 @@ meaningful_vars = c(meaningful_vars, tmp)
 meaningful_vars = sort(meaningful_vars)
 ```
 
+```{r warning=FALSE, message=FALSE}
+tmp = measure_labels %>%
+  mutate(dv = as.character(dv)) %>%
+  filter(task == 'task',
+         dv %in% meaningful_vars) %>%
+  left_join(boot_df[,c("dv", "icc")], by = 'dv') %>%
+  separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
+  select(-extra_1, -extra_2) %>%
+  group_by(task_name) %>%
+  summarise(median_icc = median(icc),
+            icc_2.5 = quantile(icc, probs = 0.025),
+            icc_97.5 = quantile(icc, probs = 0.975),
+            num_measures = n()/1000,
+            mean_num_trials = round(mean(num_all_trials)))%>%
+  arrange(-median_icc)
+
+tmp %>%
+  datatable() %>%
+  formatRound(columns=c('median_icc','icc_2.5','icc_97.5'), digits=3)
+```
+
+
+```{r}
+tmp = tmp%>%
+  mutate(task_name = gsub("_", " ", task_name),
+         task_name = gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", task_name, perl=TRUE))
+
+names(tmp) = gsub("_", " ", names(tmp))
+names(tmp) = gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", names(tmp), perl=TRUE)
+
+sjt.df(tmp %>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.progress = TRUE, show.rownames = FALSE, file = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/task_rel_table.doc")
+```
+
 ### Number of trials
 
-Does number of items in a task have a significant effect on the average ICC of (mostly) raw measures for all trials from a task? No. (no effect on Spearman either)
+Does number of items in a task have a significant effect on the average ICC of meaningful measures for all trials from a task? No.
 
 ```{r warning=FALSE, message=FALSE}
 tmp = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
-  filter(task == 'task') %>%
-  # left_join(rel_df[,c("dv", "spearman","icc")], by='dv') %>%
-  left_join(boot_df[,c("dv", "spearman","icc")], by='dv') %>%
-  filter(overall_difference != 'difference' & raw_fit %in% c('EZ', 'hddm') == FALSE)%>%
+  filter(task == 'task',
+         dv %in% meaningful_vars) %>%
+  left_join(boot_df[,c("dv", "icc")], by = 'dv') %>%
   separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
-  select(-extra_1, -extra_2)
+  select(-extra_1, -extra_2) 
 
 # summary(lm(icc ~ num_all_trials, data = tmp))
 summary(lmerTest::lmer(icc ~ num_all_trials + (1|dv), data = tmp))
 ```
 
 ```{r warning=FALSE, message=FALSE}
-measure_labels %>%
-  mutate(dv = as.character(dv)) %>%
-  filter(task == 'task') %>%
-  # left_join(rel_df[,c("dv", "spearman","icc")], by='dv') %>%
-  left_join(boot_df[,c("dv", "spearman","icc")], by='dv') %>%
-  filter(overall_difference != 'difference' & raw_fit %in% c('EZ', 'hddm') == FALSE)%>%
-  separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
-  select(-extra_1, -extra_2) %>%
+tmp %>%
   ggplot(aes(num_all_trials, icc))+
   geom_point()+
   geom_smooth(method="lm")+
@@ -2115,9 +2089,7 @@ This won't make sense for all tasks. For example to estimate a risk aversion par
 
 These kinds of analyses are too task-specific and in-depth for a paper that is trying to give a global sense of the differences between self-regulation measures in their suitablity for individual difference analyses based on their stability across time. Such analyses would provide a detailed examination of how to extract the most reliable/best individual difference measure from tasks with a set of mediocre variables to begin with. Though we do not provide such a comprehensive analysis of this sort in this paper we provide a single example of this approach and hope the open access we provide to the data spurs further work.
 
-For this example we look at the retest reliability of the three dependent measures (average accuracy, median response time, total score) from the hierarchical rule task with 360 trials. Here is a graph of how the point estimates of the retest reliability changes for each of the dependent measures using different numbers of trials to estimate them. While the reliability estimate for each of the variables respectively are ..., ... and ... using all of the trials, these values are independent of number of trials used in the task for only certain variables. Based on this analysis researchers might decide to use a version of the task with fewer trials or only measures with consistently high reliability estimates.
-
-Example task: three by two
+For this example we look at the retest reliability of dependent measures from the threebytwo with >400 trials. Here is a graph of how the point estimates of the retest reliability changes for each of the dependent measures using different numbers of trials to estimate them. 
 
 Post process dv's from cluster to calculate reliabilities
 ```{r}

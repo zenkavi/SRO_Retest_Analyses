@@ -11,7 +11,7 @@ bickel_titrator.hyp_discount_rate_small
 bickel_titrator.hyp_discount_rate_medium
 bickel_titrator.hyp_discount_rate_large
 choice_reaction_time.acc
-choice_reaction_time.rt
+choice_reaction_time.avg_rt
 cognitive_reflection_survey.correct_proportion
 columbia_card_task_cold.avg_cards_chosen
 columbia_card_task_cold.gain_sensitivity
