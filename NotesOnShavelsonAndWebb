@@ -1,0 +1,11 @@
+Shavelson, R. J., & Webb, N. M. (1991). Generalizability theory: A primer. Sage.
+
+General rule: increase the number of conditions of a facet reduces error induced by that facet and increases the generalizability of the measure
+
+p 13:
+"Measurements in the social sciences are characteriscally used in two ways: (a) to rank order individuals (or groups); or (b) to index an individual's (or group's) absolute level of knowledge, skill, attitude, or strength of opinion"
+
+p14:
+"Like classical test theory's reliability coefficient, the generalizability coefficient reflects the proportion of variability in individual's scores that is systematic; that is, attributable to universe-score (cf. true score) variability."
+
+Confused by the lumping of interaction and error variance: is this because I'm misunderstanding or due to lack of computational resources to separate the two?
