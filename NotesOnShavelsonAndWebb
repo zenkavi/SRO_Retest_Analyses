@@ -12,3 +12,6 @@ Confused by the lumping of interaction and error variance: is this because I'm m
 
 p30:
 "The estimated variance components from a generalizability study reflect the magnitude of error in generalizing from a person's score on a single item to his or her universe score (the person's average over all items in the universe). These estimated variance components are not the error in generalizing from the test score (average or sum of n_i items on the test)."
+
+p66:
+Why can't a G study just have fixed facets? Because there wouldn't be anything to generalize over?
