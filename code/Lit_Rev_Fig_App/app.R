@@ -49,9 +49,18 @@ ui <- fluidPage(
            selectInput(inputId = "task_type",
                        label = "View a task or survey:",
                        choices = c("survey", "task")),
-           selectInput(inputId = "task_name",
-                       label = "Choose task or survey name:",
-                       choices = c('bis_bas_survey', 'attention_network_task')),
+           
+           
+           conditionalPanel(condition = "input.task_type == 'survey'",
+                            selectInput(inputId = "survey_name",
+                                        label = "Choose task or survey name:",
+                                        choices = c("bis_bas_survey", "bis11_survey", "brief_self_control_survey", "dickman_survey", "dospert_rp_survey", "dospert_rt_survey", "eating_survey", "erq_survey", "five_facet_mindfulness_survey", "future_time_perspective_survey", "grit_scale_survey", "impulsive_venture_survey", "leisure_time_activity_survey", "mindful_attention_awareness_survey", "selection_optimization_compensation_survey", "sensation_seeking_survey", "ten_item_personality_survey", "theories_of_willpower_survey", "time_perspective_survey", "upps_impulsivity_survey"))),
+           
+           conditionalPanel(condition = "input.task_type == 'task'",
+                            selectInput(inputId = "task_name",
+                                        label = "Choose task or survey name:",
+                                        choices = c("adaptive_n_back", "angling_risk_task_always_sunny", "attention_network_task", "bickel_titrator", "choice_reaction_time", "dietary_decision", "digit_span", "dot_pattern_expectancy", "go_nogo", "holt_laury_survey" , "information_sampling_task", "keep_track", "kirby", "local_global_letter", "probabilistic_selection", "psychological_refractory_period_two_choices", "ravens", "recent_probes", "shape_matching", "shift_task", "simon", "simple_reaction_time", "spatial_span", "stop_signal", "stroop", "tower_of_london"))),
+           
            plotlyOutput(outputId = "litPlot"),
            dataTableOutput("plotData")
     )
@@ -74,8 +83,11 @@ ui <- fluidPage(
 server <- function(input, output) {
   
   datasetInput <- reactive({
+    
+    filterby = ifelse(input$task_type == "survey", input$survey_name, input$task_name)
+    
     lit_data %>%
-      filter(task_group == input$task_name)
+      filter(task_group == filterby)
   })
   
   output$litPlot <- renderPlotly({
