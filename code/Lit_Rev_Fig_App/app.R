@@ -1,85 +1,90 @@
 library(shiny)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(stringr)
+library(plotly)
 
-# Define UI for app that draws a histogram ----
+lit_data <- read.csv('../../input/lit_review_figure.csv')
+
+lit_data = lit_data %>%
+  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
+  mutate(task_group = factor(task_group, levels = task_group[order(task)]),
+         raw1_fit0 = grepl('raw', raw_fit),
+         type = as.character(type),
+         dv = factor(dv, levels = dv[order(task)]),
+         days_cutoff = ifelse(days < 60, days, 120),
+         days = paste(days, '\n reference:', reference))
+
 ui <- fluidPage(
   
-  # App title ----
-  titlePanel("Literature review of retest reliabilities of self-regulation measures"),
+  titlePanel("Retest reliabilities of self-regulation measures"),
   
-  # Sidebar layout with input and output definitions ----
-  sidebarLayout(
-    
-    # Sidebar panel for inputs ----
-    sidebarPanel(
-      
-      # Input: Slider for the number of bins ----
-      # Input: Selector for choosing dataset ----
-      selectInput(inputId = "task_type",
-                  label = "Choose a task or survey:",
-                  choices = c("survey", "task"))
-      
-    ),
-    
-    # Main panel for displaying outputs ----
-    mainPanel(
-      
-      # Output: Histogram ----
-      plotOutput(outputId = "litPlot"),
-      
-      # Output: HTML table with requested number of observations ----
-      tableOutput("plotData")
-      
+  # sidebarLayout(
+  #   
+  #   sidebarPanel(
+  #     
+      # selectInput(inputId = "task_type",
+      #             label = "View a task or survey:",
+      #             choices = c("survey", "task")),
+  #     
+      # selectInput(inputId = "task_name",
+      #             label = "Choose task or survey name:",
+      #             choices = c('bis_bas_survey', 'attention_network_task'))
+  #     
+  #   ),
+  #   
+  #   mainPanel(
+  #     
+  #     plotOutput(outputId = "litPlot"),
+  #     
+  #     tableOutput("plotData")
+  #     
+  #   )
+  # )
+  
+  fluidRow(
+    column(12,
+           h4("Literature Review"),
+           selectInput(inputId = "task_type",
+                       label = "View a task or survey:",
+                       choices = c("survey", "task")),
+           selectInput(inputId = "task_name",
+                       label = "Choose task or survey name:",
+                       choices = c('bis_bas_survey', 'attention_network_task')),
+           plotlyOutput(outputId = "litPlot"),
+           dataTableOutput("plotData")
     )
+    # ,
+    # column(6,
+    #        h4("Bootstrapped Data"),
+    #        selectInput(inputId = "task_type",
+    #                    label = "View a task or survey:",
+    #                    choices = c("survey", "task")),
+    #        selectInput(inputId = "task_name",
+    #                    label = "Choose task or survey name:",
+    #                    choices = c('bis_bas_survey', 'attention_network_task')),
+    #        plotOutput(outputId = "litPlot")
+    # )
   )
+  
 )
 
-# Define server logic required to draw a histogram ----
+
 server <- function(input, output) {
   
-  # Histogram of the Old Faithful Geyser Data ----
-  # with requested number of bins
-  # This expression that generates a histogram is wrapped in a call
-  # to renderPlot to indicate that:
-  #
-  # 1. It is "reactive" and therefore should be automatically
-  #    re-executed when inputs (input$bins) change
-  # 2. Its output type is a plot
+  datasetInput <- reactive({
+    lit_data %>%
+      filter(task_group == input$task_name)
+  })
   
-  library(dplyr)
-  library(tidyr)
-  library(ggplot2)
-  library(gridExtra)
-  library(GGally)
-  library(stringr)
-  library(plotly)
-  
-  fig_data <- read.csv('../../input/lit_review_figure.csv')
-  
-  fig_data = fig_data %>%
-    separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
-    mutate(task_group = factor(task_group, levels = task_group[order(task)]),
-           raw1_fit0 = grepl('raw', raw_fit),
-           type = as.character(type),
-           dv = factor(dv, levels = dv[order(task)]),
-           days_cutoff = ifelse(days < 60, days, 120),
-           days = paste(days, '\n reference:', reference))
-  
-  output$litPlot <- renderPlot({
-    
-    # x    <- faithful$waiting
-    # bins <- seq(min(x), max(x), length.out = input$bins + 1)
-    # 
-    # hist(x, breaks = bins, col = "#75AADB", border = "orange",
-    #      xlab = "Waiting time to next eruption (in mins)",
-    #      main = "Histogram of waiting times")
-    
+  output$litPlot <- renderPlotly({
     
     point_col = ifelse(input$task_type == "survey", '#F8766D','#00BFC4')
     
-    plot_data = fig_data %>%
-      filter(task_group == input$task_name)
+    plot_data = datasetInput()
     
-    ggplotly(plot_data %>%
+   ggplotly(plot_data %>%
                ggplot(aes(y = var, x = retest_reliability, label=days))+
                geom_point(aes(size=sample_size, shape = type, alpha = days_cutoff), color = point_col)+
                theme(panel.background = element_rect(fill = NA),
@@ -88,15 +93,14 @@ server <- function(input, output) {
                xlab("")+
                ylab("")+
                scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
-               scale_shape_manual(breaks = sort(fig_data$type), values = c(15, 16, 17, 3)),
-             width=600)
+               scale_shape_manual(breaks = sort(lit_data$type), values = c(15, 16, 17, 3)))
     
   })
   
-  # Show the first "n" observations ----
-  output$plotData <- renderTable({
-    fig_data %>%
-      filter(task_group == input$task_name)
+  
+  output$plotData <- renderDataTable({
+    datasetInput() %>%
+      select("var", "retest_reliability", "type", "sample_size")
   })
   
 }
