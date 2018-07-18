@@ -1,0 +1,11 @@
+---
+title: "Interactive Figures for retest reliability of self-regulation measures"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+[Literature Review Figure](https://zenkavi.github.io/SRO_Retest_Analyses/output/reports/Lit_Review_Figure.html)
+
+[Bootstrapped retest reliabilities from our data](https://zenkavi.github.io/SRO_Retest_Analyses/output/reports/Boot_Figure.html)
+
