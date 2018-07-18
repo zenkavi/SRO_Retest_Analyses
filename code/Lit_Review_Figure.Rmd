@@ -21,46 +21,78 @@ options(scipen = 1, digits = 4, width = 500)
 fig_data <- read.csv('../input/lit_review_figure.csv')
 ```
 
+```{r warning=FALSE, message=FALSE}
+fig_data = fig_data %>%
+  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
+  mutate(task_group = factor(task_group, levels = task_group[order(task)]),
+         raw1_fit0 = grepl('raw', raw_fit),
+         type = as.character(type)) %>%
+  arrange(task_group, -raw1_fit0)
+```
+
 References mentioned in the plot below can be found [here](https://docs.google.com/spreadsheets/d/1hcED4_rWSGSE8Td0aqT0kWqlLCBAzRNKBXj3tSram58/edit?usp=sharing).
 
-Interactive plot
+# Interactive plot
 
 ```{r warning=FALSE, message=FALSE, fig.height=36, echo=FALSE}
 ggplotly(fig_data %>%
   mutate(dv = factor(dv, levels = dv[order(task)]),
          days_cutoff = ifelse(days < 60, days, 120),
-         days = paste(days, '; reference:', reference)) %>%
+         days = paste(days, '\n reference:', reference)) %>%
 ggplot(aes(x = dv, y = retest_reliability, label=days))+
   geom_point(aes(color = task, size=sample_size, shape = type, alpha = days_cutoff))+
   coord_flip()+
-  theme_bw()+
-  theme(legend.position="none"),
+  theme_bw(),
 tooltip = c('sample_size', 'type', 'dv', 'retest_reliability', 'days')) %>%
-  layout(showlegend=FALSE)
+  layout(showlegend=F)
 ```
 
-Static plot
 
-```{r warning= FALSE, message =FALSE, fig.height=36, echo=FALSE, eval=FALSE}
-#Static plot with everything in same panel
-fig_data %>%
+```{r warning=FALSE, message=FALSE, fig.height=72, echo=FALSE}
+ggplotly(fig_data %>%
+           mutate(dv = factor(dv, levels = dv[order(task)]),
+                  days_cutoff = ifelse(days < 60, days, 120),
+                  days = paste(days, '\n reference:', reference)) %>%
+           filter(task == 'task') %>%
+           ggplot(aes(y = var, x = retest_reliability, label=days))+
+           geom_point(aes(size=sample_size, shape = type, alpha = days_cutoff), color = '#00BFC4')+
+           facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
+           theme(panel.spacing = unit(0.1, "lines"), 
+                 strip.placement = "outside",
+                 strip.text.y = element_text(angle=180),
+                 panel.background = element_rect(fill = NA),
+                 panel.grid.major = element_line(colour = "grey80")),
+         tooltip = c('sample_size', 'type', 'dv', 'retest_reliability', 'days')) %>%
+  layout(showlegend=F)
+
+# if you figure out how to make the panels for tasks and surveys separately you can use subplot() - a ggplotly function to plot them side by side
+```
+
+```{r message=FALSE, echo=FALSE}
+ggplotly(fig_data %>%
   mutate(dv = factor(dv, levels = dv[order(task)]),
          days_cutoff = ifelse(days < 60, days, 120),
-         days = paste(days, '; reference:', reference)) %>%
-ggplot(aes(x = dv, y = retest_reliability, label=days))+
-  geom_point(aes(color = task, size=sample_size, shape = type, alpha = days_cutoff))+
-  coord_flip()+
-  theme_bw()
+         days = paste(days, '\n reference:', reference)) %>%
+  filter(task_group == 'bis_bas_survey') %>%
+  ggplot(aes(y = var, x = retest_reliability, label=days))+
+  geom_point(aes(size=sample_size, shape = type, alpha = days_cutoff), color = '#F8766D')+
+  # facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
+  # facet_grid(task_group~.) +
+  theme(panel.spacing = unit(0.5, "lines"), 
+        strip.placement = "outside",
+        strip.text.y = element_text(angle=180),
+        panel.background = element_rect(fill = NA),
+        panel.grid.major = element_line(colour = "grey80"),
+        legend.position = 'none')+
+  xlab("")+
+  ylab("")+
+  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_shape_manual(breaks = sort(fig_data$type), values = c(15, 16, 17, 3)),
+  width=600)
+  
 ```
 
-```{r warning=FALSE, message=FALSE}
-fig_data = fig_data %>%
-  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
-  mutate(task_group = factor(task_group, levels = task_group[order(task)]),
-         raw1_fit0 = grepl('raw', variable_type),
-         type = as.character(type)) %>%
-  arrange(task_group, -raw1_fit0)
-```
+# Static plot
 
 ```{r warning= FALSE, message =FALSE, echo=FALSE}
 p1_legend = fig_data %>%
