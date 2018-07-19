@@ -8,6 +8,7 @@ library(tidyr)
 library(ggplot2)
 library(stringr)
 library(plotly)
+library(DT)
 
 ##################################################################
 # LOAD LIT REVIEW DATA
@@ -28,7 +29,7 @@ lit_data = lit_data %>%
 # LOAD BOOT DATA
 ##################################################################
 
-boot_data <- read.csv('../../input/boot_figure.csv')
+boot_data <- read.csv(gzfile('../../input/boot_figure.csv.zip'))
 
 boot_data = boot_data %>%
   mutate(task_group = gsub(" ", "_", task_group))
@@ -42,7 +43,7 @@ ui <- fluidPage(
   titlePanel("Retest reliabilities of self-regulation measures"),
   
   fluidRow(
-    column(12,
+    column(6,
            h4("Literature Review"),
            selectInput(inputId = "lit_task_type",
                        label = "View a task or survey:",
@@ -61,26 +62,26 @@ ui <- fluidPage(
            plotlyOutput(outputId = "lit_plot"),
            dataTableOutput("lit_plot_data")
     )
-    # ,
-    # column(6,
-    #        h4("Bootstrapped Data"),
-    #        selectInput(inputId = "boot_task_type",
-    #                    label = "View a task or survey:",
-    #                    choices = c("survey", "task")),
-    #        
-    #        conditionalPanel(condition = "input.boot_task_type == 'survey'",
-    #                         selectInput(inputId = "boot_survey_name",
-    #                                     label = "Choose task or survey name:",
-    #                                     choices = c("bis_bas_survey", "bis11_survey", "brief_self_control_survey", "dickman_survey", "dospert_rp_survey", "dospert_rt_survey", "eating_survey", "erq_survey", "five_facet_mindfulness_survey", "future_time_perspective_survey", "grit_scale_survey", "impulsive_venture_survey", "leisure_time_activity_survey", "mindful_attention_awareness_survey", "selection_optimization_compensation_survey", "sensation_seeking_survey", "ten_item_personality_survey", "theories_of_willpower_survey", "time_perspective_survey", "upps_impulsivity_survey"))),
-    #        
-    #        conditionalPanel(condition = "input.boot_task_type == 'task'",
-    #                         selectInput(inputId = "boot_task_name",
-    #                                     label = "Choose task or survey name:",
-    #                                     choices = c("adaptive_n_back", "angling_risk_task_always_sunny", "attention_network_task", "bickel_titrator", "choice_reaction_time", "dietary_decision", "digit_span", "dot_pattern_expectancy", "go_nogo", "holt_laury_survey" , "information_sampling_task", "keep_track", "kirby", "local_global_letter", "probabilistic_selection", "psychological_refractory_period_two_choices", "ravens", "recent_probes", "shape_matching", "shift_task", "simon", "simple_reaction_time", "spatial_span", "stop_signal", "stroop", "tower_of_london"))),
-    #        
-    #        plotlyOutput(outputId = "boot_plot"),
-    #        dataTableOutput("boot_plot_data")
-    # )
+    ,
+    column(6,
+           h4("Bootstrapped Data"),
+           selectInput(inputId = "boot_task_type",
+                       label = "View a task or survey:",
+                       choices = c("survey", "task")),
+
+           conditionalPanel(condition = "input.boot_task_type == 'survey'",
+                            selectInput(inputId = "boot_survey_name",
+                                        label = "Choose task or survey name:",
+                                        choices = c("bis_bas_survey", "bis11_survey", "brief_self_control_survey", "dickman_survey", "dospert_rp_survey", "dospert_rt_survey", "eating_survey", "erq_survey", "five_facet_mindfulness_survey", "future_time_perspective_survey", "grit_scale_survey", "impulsive_venture_survey", "leisure_time_activity_survey", "mindful_attention_awareness_survey", "selection_optimization_compensation_survey", "sensation_seeking_survey", "ten_item_personality_survey", "theories_of_willpower_survey", "time_perspective_survey", "upps_impulsivity_survey"))),
+
+           conditionalPanel(condition = "input.boot_task_type == 'task'",
+                            selectInput(inputId = "boot_task_name",
+                                        label = "Choose task or survey name:",
+                                        choices = c("adaptive_n_back", "angling_risk_task_always_sunny", "attention_network_task", "bickel_titrator", "choice_reaction_time", "dietary_decision", "digit_span", "dot_pattern_expectancy", "go_nogo", "holt_laury_survey" , "information_sampling_task", "keep_track", "kirby", "local_global_letter", "probabilistic_selection", "psychological_refractory_period_two_choices", "ravens", "recent_probes", "shape_matching", "shift_task", "simon", "simple_reaction_time", "spatial_span", "stop_signal", "stroop", "tower_of_london"))),
+
+           plotlyOutput(outputId = "boot_plot"),
+           dataTableOutput("boot_plot_data")
+    )
   )
   
 )
@@ -136,7 +137,7 @@ server <- function(input, output) {
     
     filterby = ifelse(input$boot_task_type == "survey", input$boot_survey_name, input$boot_task_name)
     
-    boot_df %>%
+    boot_data %>%
       filter(task_group == filterby)
   })
   
@@ -146,39 +147,23 @@ server <- function(input, output) {
     
     boot_plot_data = get_boot_dataset()
     
-    # ggplotly(boot_plot_data %>%
-    #            ggplot(aes(y = var, x = retest_reliability, label=days))+
-    #            geom_point(aes(size=sample_size, shape = type, alpha = days_cutoff), color = point_col)+
-    #            theme(panel.background = element_rect(fill = NA),
-    #                  panel.grid.major = element_line(colour = "grey80"),
-    #                  legend.position = 'none')+
-    #            xlab("")+
-    #            ylab("")+
-    #            scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
-    #            scale_shape_manual(breaks = sort(lit_data$type), values = c(15, 16, 17, 3)))
-    
-    tmp %>%
+    ggplotly(boot_plot_data %>%
       ggplot(aes(y = var, x = icc)) + 
+      geom_point(color=point_col)+
       geom_point(aes(y = var, x = point_est), color = "black")+
-      # facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y", labeller = label_wrap_gen(width=20)) +
-      theme(#panel.spacing = unit(0.75, "lines"), 
-            #strip.placement = "outside",
-            #strip.text.y = element_text(angle=180, size=36),
-            #axis.text.y = element_text(size=20),
-            panel.background = element_rect(fill = NA),
+      theme(panel.background = element_rect(fill = NA),
             panel.grid.major = element_line(colour = "grey80"),
             legend.position = 'none') + 
       xlab("")+
       ylab("")+
       scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
       scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
-      geom_vline(xintercept = 0, color = "red", size = 1)
+      geom_vline(xintercept = 0, color = "red", size = 1))
     
   })
   
-  
   output$boot_plot_data <- renderDataTable({
-    get_boot_dataset()
+    get_boot_dataset() %>%
       group_by(dv) %>%
       summarise(icc_median = quantile(icc, probs = 0.5),
                 icc_2.5 = quantile(icc, probs = 0.025),
