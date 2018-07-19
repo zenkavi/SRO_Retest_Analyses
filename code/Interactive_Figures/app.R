@@ -29,10 +29,11 @@ lit_data = lit_data %>%
 # LOAD BOOT DATA
 ##################################################################
 
-boot_data <- read.csv(gzfile('../../input/boot_figure.csv.zip'))
+boot_data <- read.csv(gzfile('../../input/boot_figure.csv.gz'))
 
 boot_data = boot_data %>%
-  mutate(task_group = gsub(" ", "_", task_group))
+  mutate(task_group = gsub(" ", "_", task_group),
+         task_group = gsub('_$', '_survey', task_group))
 
 ##################################################################
 # UI
