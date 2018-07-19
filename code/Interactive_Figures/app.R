@@ -30,6 +30,9 @@ lit_data = lit_data %>%
 
 boot_data <- read.csv('../../input/boot_figure.csv')
 
+boot_data = boot_data %>%
+  mutate(task_group = gsub(" ", "_", task_group))
+
 ##################################################################
 # UI
 ##################################################################
@@ -154,13 +157,34 @@ server <- function(input, output) {
     #            scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
     #            scale_shape_manual(breaks = sort(lit_data$type), values = c(15, 16, 17, 3)))
     
+    tmp %>%
+      ggplot(aes(y = var, x = icc)) + 
+      geom_point(aes(y = var, x = point_est), color = "black")+
+      # facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y", labeller = label_wrap_gen(width=20)) +
+      theme(#panel.spacing = unit(0.75, "lines"), 
+            #strip.placement = "outside",
+            #strip.text.y = element_text(angle=180, size=36),
+            #axis.text.y = element_text(size=20),
+            panel.background = element_rect(fill = NA),
+            panel.grid.major = element_line(colour = "grey80"),
+            legend.position = 'none') + 
+      xlab("")+
+      ylab("")+
+      scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+      scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
+      geom_vline(xintercept = 0, color = "red", size = 1)
+    
   })
   
   
   output$boot_plot_data <- renderDataTable({
-    get_boot_dataset() #%>%
-      #select("var", "retest_reliability", "type", "sample_size")
-      #summarise instead of showing all data
+    get_boot_dataset()
+      group_by(dv) %>%
+      summarise(icc_median = quantile(icc, probs = 0.5),
+                icc_2.5 = quantile(icc, probs = 0.025),
+                icc_97.5 = quantile(icc, probs = 0.975)) %>%
+      datatable() %>%
+      formatRound(columns=c('icc_median', 'icc_2.5', 'icc_97.5'), digits=3)
   })
   
 }
