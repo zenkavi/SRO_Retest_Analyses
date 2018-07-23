@@ -546,7 +546,9 @@ Before I was using subjects as a random effect but days between the two time poi
 Significant fixed effect suggests that on average the longer the delay the smaller the difference.
 
 ```{r}
-summary(lmerTest::lmer(abs(difference) ~ scale(days_btw)+(scale(days_btw) | dv), data=t1_2_difference)) 
+#summary(lmerTest::lmer(abs(difference) ~ scale(days_btw)+(scale(days_btw) | dv), data=t1_2_difference)) 
+
+summary(tmp <- MCMCglmm(abs(difference) ~ scale(days_btw), random = ~us(scale(days_btw)):dv, data=t1_2_difference)) 
 ```
 
 But if I just run one mixed effects model then we don't get a sense of the simple effects (how many of the variables this effect of the days between is significant and in which direction). I can run it separately for each dv to see if all difference score distributions are affected the same way depending on the days between completion. But since we are running so many tests we need to correct for multiple comparisons. How many of these tests are significant FDR correcting? None.
