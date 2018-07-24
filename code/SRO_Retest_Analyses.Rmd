@@ -712,9 +712,25 @@ tmp = duplicate_items %>%
 
 tmp %>%
   ggplot(aes(similarity, value, col=key))+
-  geom_smooth(method="lm", se=FALSE)
+  geom_smooth(method="lm", alpha = 0.15)+
+  ylab("Polychoric correlation")+
+  xlab("Levenshtein distance")+
+  scale_color_discrete(breaks = c("t1_t1_polycor", "t2_t2_polycor"),
+                       labels = c("T1 correlations", "T2 correlations"),
+                       name = element_blank())+
+  theme_bw()
 
+ggsave('OverlappingItemSimilarity.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 6, height = 4, units = "in", limitsize = FALSE, dpi = 500)
+```
+
+
+```{r}
 summary(lm(value~key*similarity,tmp))
+effect.size(lm(value~key*similarity,tmp))
+```
+
+```{r}
+summary(MCMCglmm(value ~ key*similarity, data=tmp, nitt = 50000)) 
 ```
 
 
