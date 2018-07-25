@@ -970,14 +970,7 @@ rel_comp %>%
 ggsave('LitTaskVsSurvey.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 3, height = 5, units = "in", limitsize = FALSE, dpi = 500)
 ```
 
-I used to compare effect sizes of effect of task on reliability estimates in literature vs our results (just looking at the variables you find in the literature) but removed this analysis because   
-1. the estimates in the literature are not all the same statistic
-2. from our data I was only using ICC's
-3. I was sampling from our bootstrapped results as many datapoints for each measure as there are in the literature but that didn't seem like the best way to make use of our data to make it comparable to the literature.
-
-Despite these problems the main result was that the effect size was much larger in our dataset compared to the literature but given the problems I think the sampling analyses below are more informative than this.
-
-We also checked whether our results diverge most from studies with smaller sample sizes. Square difference between our mean estimate and the reliability from the literature decreases exponentially with sample size. The smaller the sample size in the literature the more the reliability estimate differs from our results. But this was a weak result because most of the studies in the literature have smaller sample sizes and you see both small and large deviations for these studies (these were not significant either).
+Note: We checked whether our results diverge most from studies with smaller sample sizes. Square difference between our mean estimate and the reliability from the literature decreases exponentially with sample size. The smaller the sample size in the literature the more the reliability estimate differs from our results. But this was a weak result because most of the studies in the literature have smaller sample sizes and you see both small and large deviations for these studies (these were not significant either).
 
 ### Correlation with our results
 
@@ -1056,7 +1049,8 @@ comp_lit_pred <- function(df){
   
   sampled_df = df %>%
     group_by(dv) %>%
-    do(sample_from_dv(.))
+    do(sample_from_dv(.)) %>%
+    na.omit()
   
   if(length(unique(sampled_df$task))>1){
     mod_lit = lm(retest_reliability ~ lit_predictor+scale(sample_size)+task, data=sampled_df)
@@ -1115,6 +1109,14 @@ ggsave('LitAndBoot_Noise_Ceiling.jpg', device = "jpeg", path = "/Users/zeynepenk
 with(comp_lit_pred_out, t.test(r2_lit, r2_boot, paired=T))
 ```
 
+```{r}
+tmp = comp_lit_pred_out %>%
+  select(r2_lit, r2_boot) %>%
+  gather(key, value)
+
+summary(MCMCglmm(value ~ key, data = tmp))
+```
+
 Are you at noise ceiling for suveys vs. tasks? Are you better in estimating the literature using our data for surveys vs tasks?
 
 ```{r}
@@ -1144,7 +1146,7 @@ comp_lit_pred_out_both %>%
 ```
 
 Are the differences in the distributions significant?
-There is a significant interaction, such that...
+There is a significant interaction, such that:
 
 ```{r}
 tmp = comp_lit_pred_out_both %>%
@@ -1160,17 +1162,15 @@ The literature does a better job in predicting itself for tasks compared to surv
 with(comp_lit_pred_out_both, t.test(r2_lit ~ task))
 ```
 
-Our data is better in predicting the literature estimates for the surveys that it is in predicting tasks (comparing the difference between orange and purple for red and blue outlines).
+Our data is better in predicting the literature estimates for the surveys than it is in predicting tasks (comparing the difference between orange and purple for red and blue outlines).
 
 ```{r}
 with(comp_lit_pred_out_both, t.test(r2_lit-r2_boot ~ task))
 ```
 
-Why are the reliability estimates from surveys worse compared to tasks in predicting the literature?
+Why are the reliability estimates from surveys worse compared to tasks in predicting the literature? Because they are less variable. In this procedure having high variance in what is being predicted (i.e. the literature reliability estimates) is better.
 
 Rank by variance: empirical estimates for surveys < literature estimates for surveys < empirical estimates for tasks < literature estimates for tasks
-
-In this procedure having high variance is better. When predicting the literature using an empirical estimate for a survey measure
 
 ```{r}
 rel_comp %>%
@@ -1705,8 +1705,9 @@ boot_df %>%
 ```
 
 
-```{r}
-summary(lmerTest::lmer(icc ~  task + (1|dv), boot_df))
+```{r eval=FALSE}
+#summary(lmerTest::lmer(icc ~  task + (1|dv), boot_df))
+summary(MCMCglmm(icc ~  task, random = ~dv, data=boot_df))
 ```
 
 ### Variance breakdown
