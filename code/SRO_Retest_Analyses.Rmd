@@ -726,7 +726,6 @@ ggsave('OverlappingItemSimilarity.jpg', device = "jpeg", path = "/Users/zeynepen
 
 ```{r}
 summary(lm(value~key*similarity,tmp))
-effect.size(lm(value~key*similarity,tmp))
 ```
 
 ```{r}
@@ -807,7 +806,7 @@ rm(tmp, tmp2, p1, p2, p3, p4, p5)
 ```
 
 ```{r echo=FALSE}
-rm(tmp, comb, t1_2_difference, duplicate_items, duplicate_items_data_t1, duplicate_items_data_t2, extract_items, get_delay_effect)
+rm(tmp, comb, t1_2_difference, duplicate_items, duplicate_items_data_t1, duplicate_items_data_t2, extract_items)
 ```
 
 ## Comparison to prior literature
