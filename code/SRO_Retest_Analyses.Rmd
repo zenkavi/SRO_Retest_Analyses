@@ -1707,7 +1707,9 @@ boot_df %>%
 
 ```{r eval=FALSE}
 #summary(lmerTest::lmer(icc ~  task + (1|dv), boot_df))
-summary(MCMCglmm(icc ~  task, random = ~dv, data=boot_df))
+# m = MCMCglmm(icc ~  task, random = ~dv, data=boot_df, nitt = 1300, burnin = 300)
+m = readRDS('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/icc_by_task_model.rds')
+summary(m)
 ```
 
 ### Variance breakdown
@@ -1837,17 +1839,23 @@ tmp = boot_df %>%
          var_resid_pct = var_resid/(var_subs+var_ind+var_resid)*100) %>%
   select(dv, task, var_subs_pct, var_ind_pct, var_resid_pct) 
 
-summary(lmerTest::lmer(var_subs_pct~task+(1|dv),tmp%>%select(-var_ind_pct,-var_resid_pct)))
+# summary(lmerTest::lmer(var_subs_pct~task+(1|dv),tmp%>%select(-var_ind_pct,-var_resid_pct)))
+m = readRDS('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/var_subs_pct_by_task_model.rds')
+summary(m)
 ```
 
 We also find that a significantly larger percentage of their variance is explained by between session variability. Larger between session variability suggests systematic differences between the two sessions. Such systematic effects can be due to e.g. learning effects as explored later.
 
 ```{r}
-summary(lmerTest::lmer(var_ind_pct~task+(1|dv),tmp%>%select(-var_subs_pct,-var_resid_pct)))
+# summary(lmerTest::lmer(var_ind_pct~task+(1|dv),tmp%>%select(-var_subs_pct,-var_resid_pct)))
+m = readRDS('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/var_ind_pct_by_task_model.rds')
+summary(m)
 ```
 
 ```{r}
-summary(lmerTest::lmer(var_resid_pct~task+(1|dv),tmp%>%select(-var_subs_pct,-var_ind_pct)))
+# summary(lmerTest::lmer(var_resid_pct~task+(1|dv),tmp%>%select(-var_subs_pct,-var_ind_pct)))
+m = readRDS('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/var_resid_pct_by_task_model.rds')
+summary(m)
 ```
 
 ```{r}
@@ -1965,7 +1973,6 @@ boot_df %>%
             mean_pearson = mean(pearson))%>%
   filter(pct_sig_time_effect>5) %>%
   arrange(task,-pct_sig_time_effect) %>%
-  arrange(mean_pearson) 
   
 ```
 
@@ -2155,7 +2162,8 @@ tmp = measure_labels %>%
   select(-extra_1, -extra_2) 
 
 # summary(lm(icc ~ num_all_trials, data = tmp))
-summary(lmerTest::lmer(icc ~ num_all_trials + (1|dv), data = tmp))
+# summary(lmerTest::lmer(icc ~ num_all_trials + (1|dv), data = tmp))
+summary(MCMCglmm(icc ~ num_all_trials, random=~dv, data = tmp))
 ```
 
 ```{r warning=FALSE, message=FALSE}
