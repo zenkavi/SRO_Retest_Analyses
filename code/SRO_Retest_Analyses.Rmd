@@ -725,11 +725,11 @@ ggsave('OverlappingItemSimilarity.jpg', device = "jpeg", path = "/Users/zeynepen
 
 
 ```{r}
-summary(lm(value~key*similarity,tmp))
+summary(lm(value~key*scale(similarity),tmp))
 ```
 
 ```{r}
-summary(MCMCglmm(value ~ key*similarity, data=tmp, nitt = 50000)) 
+summary(MCMCglmm(value ~ key*scale(similarity), data=tmp, nitt = 50000)) 
 ```
 
 
@@ -895,7 +895,8 @@ ggsave('LitReviewSampleSize.jpg', device = "jpeg", path = "/Users/zeynepenkavi/D
 The literature has smaller sized samples for task measures compared to survey measures that report retest reliability.
 
 ```{r}
-summary(lm(sample_size ~ task,rel_comp))
+# summary(lm(sample_size ~ task,rel_comp))
+summary(m1 <- MCMCglmm(sample_size ~ task, data=rel_comp))
 ```
 
 What predicts retest reliability in the literature?
@@ -915,7 +916,8 @@ anova(mod2, mod3)
 ```
 
 ```{r}
-summary(mod2)
+#summary(mod2)
+summary(MCMCglmm(retest_reliability ~ task + sample_size, random = ~ dv, data = rel_comp))
 ```
 
 Are the residuals of this model heteroscedastic? Yes the residuals do not depend on the predictor.
@@ -928,7 +930,10 @@ tmp %>%
   ggplot(aes(sample_size, resid))+
   geom_point()+
   geom_smooth(method = "lm")
+```
 
+
+```{r}
 summary(lm(resid ~ sample_size, tmp))
 ```
 
