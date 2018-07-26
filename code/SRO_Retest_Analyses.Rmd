@@ -2163,7 +2163,8 @@ tmp = measure_labels %>%
 
 # summary(lm(icc ~ num_all_trials, data = tmp))
 # summary(lmerTest::lmer(icc ~ num_all_trials + (1|dv), data = tmp))
-summary(MCMCglmm(icc ~ num_all_trials, random=~dv, data = tmp))
+m = readRDS('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/icc_by_num_trials_model.rds')
+summary(m)
 ```
 
 ```{r warning=FALSE, message=FALSE}
