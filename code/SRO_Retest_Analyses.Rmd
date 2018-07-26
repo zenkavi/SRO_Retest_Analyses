@@ -2333,19 +2333,24 @@ sjt.df(tmp_save %>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.p
 Comparing contrast vs non-contrast: overall has higher reliability than difference.
 
 ```{r}
-summary(lmerTest::lmer(icc ~ contrast + (1|dv) ,tmp))
+# summary(lmerTest::lmer(icc ~ contrast + (1|dv) ,tmp))
+summary(MCMCglmm(icc ~ contrast, random = ~ dv, data=tmp))
 ```
 
 Comparing raw vs ddm in overall estimates: EZ is significantly better than HDDM and comparable to raw estimates.
 
 ```{r}
-summary(lmerTest::lmer(icc ~ raw_fit + (1|dv) ,tmp %>% filter(contrast == "non-contrast")))
+# summary(lmerTest::lmer(icc ~ raw_fit + (1|dv) ,tmp %>% filter(contrast == "non-contrast")))
+m = readRDS('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/icc_by_rawfit_noncon_model.rds')
+summary(m)
 ```
 
 Comparing raw vs ddm in difference scores: EZ is significantly worse than HDDM and comparable to raw estimates.
 
 ```{r}
-summary(lmerTest::lmer(icc ~ raw_fit + (1|dv) ,tmp %>% filter(contrast == "contrast")))
+# summary(lmerTest::lmer(icc ~ raw_fit + (1|dv) ,tmp %>% filter(contrast == "contrast")))
+m = readRDS('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/icc_by_rawfit_con_model.rds')
+summary(m)
 ```
 
 ```{r}
