@@ -1,6 +1,4 @@
-library(dplyr)
-library(tidyr)
-library(ggplot2)
+library(tidyverse)
 library(gridExtra)
 library(lme4)
 library(GGally)

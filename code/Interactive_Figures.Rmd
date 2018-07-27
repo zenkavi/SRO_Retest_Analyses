@@ -5,7 +5,10 @@ output:
   pdf_document: default
 ---
 
-[Literature Review Figure](https://zenkavi.github.io/SRO_Retest_Analyses/output/reports/Lit_Review_Figure.html)
+Interactive figures visualizing both the literature review as well as data from our sample can be found by running the following code in an R session:
 
-[Bootstrapped retest reliabilities from our data](https://zenkavi.github.io/SRO_Retest_Analyses/output/reports/Boot_Figure.html)
-
+```{r eval=FALSE}
+install.packages('shiny', dependencies = TRUE)
+library(shiny)
+runGitHub("SRO_Retest_Analyses", "zenkavi", subdir = 'code/Interactive_Figures/')
+```
