@@ -1840,7 +1840,7 @@ tmp = boot_df %>%
   select(dv, task, var_subs_pct, var_ind_pct, var_resid_pct) 
 
 # summary(lmerTest::lmer(var_subs_pct~task+(1|dv),tmp%>%select(-var_ind_pct,-var_resid_pct)))
-m = readRDS(gzfile('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/var_subs_pct_by_task_model.rds.gz'))
+m = readRDS('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/var_subs_pct_by_task_model.rds')
 summary(m)
 ```
 
@@ -1848,13 +1848,13 @@ We also find that a significantly larger percentage of their variance is explain
 
 ```{r}
 # summary(lmerTest::lmer(var_ind_pct~task+(1|dv),tmp%>%select(-var_subs_pct,-var_resid_pct)))
-m = readRDS(gzfile('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/var_ind_pct_by_task_model.rds.gz'))
+m = readRDS('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/var_ind_pct_by_task_model.rds')
 summary(m)
 ```
 
 ```{r}
 # summary(lmerTest::lmer(var_resid_pct~task+(1|dv),tmp%>%select(-var_subs_pct,-var_ind_pct)))
-m = readRDS(gzfile('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/var_resid_pct_by_task_model.rds'))
+m = readRDS('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/var_resid_pct_by_task_model.rds')
 summary(m)
 ```
 
@@ -2163,7 +2163,7 @@ tmp = measure_labels %>%
 
 # summary(lm(icc ~ num_all_trials, data = tmp))
 # summary(lmerTest::lmer(icc ~ num_all_trials + (1|dv), data = tmp))
-m = readRDS(gzfile('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/icc_by_num_trials_model.rds'))
+m = readRDS('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/icc_by_num_trials_model.rds')
 summary(m)
 ```
 
@@ -2341,7 +2341,7 @@ Comparing raw vs ddm in overall estimates: EZ is significantly better than HDDM 
 
 ```{r}
 # summary(lmerTest::lmer(icc ~ raw_fit + (1|dv) ,tmp %>% filter(contrast == "non-contrast")))
-m = readRDS(gzfile('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/icc_by_rawfit_noncon_model.rds.gz'))
+m = readRDS('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/icc_by_rawfit_noncon_model.rds')
 summary(m)
 ```
 
@@ -2349,7 +2349,7 @@ Comparing raw vs ddm in difference scores: EZ is significantly worse than HDDM a
 
 ```{r}
 # summary(lmerTest::lmer(icc ~ raw_fit + (1|dv) ,tmp %>% filter(contrast == "contrast")))
-m = readRDS(gzfile('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/icc_by_rawfit_con_model.rds.gz'))
+m = readRDS('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/icc_by_rawfit_con_model.rds')
 summary(m)
 ```
 
