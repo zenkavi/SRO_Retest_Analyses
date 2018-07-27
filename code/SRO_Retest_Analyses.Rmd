@@ -1367,7 +1367,7 @@ rel_comp %>%
   group_by(dv, task) %>%
   summarise(mean_lit = mean(retest_reliability),
             mean_emp = unique(mean_pearson)) %>%
-  ggplot(aes(mean_emp, mean_lit, col=task))+
+  ggplot(aes(mean_emp, mean_lit, col=task, shape=task))+
   geom_smooth(method="lm")+
   geom_point()+
   xlim(-0.25, 1)+
