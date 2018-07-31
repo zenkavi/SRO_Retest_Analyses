@@ -920,6 +920,12 @@ anova(mod2, mod3)
 summary(MCMCglmm(retest_reliability ~ task + sample_size, random = ~ dv, data = rel_comp))
 ```
 
+```{r}
+rel_comp %>% 
+  group_by(task) %>%
+  summarise(mean_rr = mean(retest_reliability))
+```
+
 Are the residuals of this model heteroscedastic? Yes the residuals do not depend on the predictor.
 
 ```{r}
