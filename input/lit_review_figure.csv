@@ -65,7 +65,6 @@ choice_reaction_time.avg_rt,task,Median response time for correct responses,0.6,
 choice_reaction_time.avg_rt,task,Median response time for correct responses,0.94,Pearson,1,16,Kennedy et al. (1989),"overall, raw, rt",raw,rt,1,0
 choice_reaction_time.avg_rt,task,Median response time for correct responses,0.94,Pearson,1,16,Kennedy et al. (1989),"overall, raw, rt",raw,rt,1,0
 choice_reaction_time.avg_rt,task,Median response time for correct responses,0.71,Pearson,28,21,Williams et al. (2005),"overall, raw, rt",raw,rt,1,0
-choice_reaction_time.avg_rt,task,Median response time for correct responses,0.64,Pearson,1,20,"Deary, Liewald and Nissan (2011)","overall, raw, rt",raw,rt,1,0
 choice_reaction_time.avg_rt,task,Median response time for correct responses,0.83,Pearson,1,20,"Deary, Liewald and Nissan (2011)","overall, raw, rt",raw,rt,1,0
 choice_reaction_time.avg_rt,task,Median response time for correct responses,0.79,ICC,1,96,Jones et al. (2016),"overall, raw, rt",raw,rt,1,0
 dietary_decision.prop_healthy_choice,task,Proportion of choices in the test phase where the item with higher health rating is chosen,0.42,Pearson,7,27,Vlaev et al. (2017),overall,raw,,0,0
@@ -279,6 +278,7 @@ simple_reaction_time.avg_rt,task,Median response time (excluding no response tri
 simple_reaction_time.avg_rt,task,Median response time (excluding no response trials),0.6,ICC,30,50,Cole et al. (2013),overall,raw,rt,0,0
 simple_reaction_time.avg_rt,task,Median response time (excluding no response trials),0.4,ICC,30,50,Cole et al. (2013),overall,raw,rt,0,0
 simple_reaction_time.avg_rt,task,Median response time (excluding no response trials),0.825,ICC,1,95,Jones et al. (2016),overall,raw,rt,0,0
+simple_reaction_time.avg_rt,task,Median response time for correct responses,0.64,Pearson,1,20,"Deary, Liewald and Nissan (2011)","overall, raw, rt",raw,rt,1,0
 spatial_span.forward_span,task,Average number of locations remembered in order of appearance after dropping the first four trials,0.7,Pearson,9,1122,Orsini (1994),condition,raw,,0,0
 spatial_span.forward_span,task,Average number of locations remembered in order of appearance after dropping the first four trials,0.79,Pearson,9,1122,Orsini (1994),condition,raw,,0,0
 spatial_span.forward_span,task,Average number of locations remembered in order of appearance after dropping the first four trials,0.6,Pearson,90,145,"Baddeley, Gardner and Grantham-McGregor (1995)",condition,raw,,0,0
