@@ -1097,16 +1097,17 @@ tmp %>%
   scale_fill_manual(breaks=c("boot","lit"),
                        labels=c("Empirical", "Literature"),
                       name="Predictor",
-                      values = c("purple", "orange"))+
-  xlab('Variance Explained')+
+                      values = c("gray15", "gray75"))+
+  xlab('Proportion of Variance in Literature Explained')+
   ylab('Density')+
   xlim(0,1)+
   ylim(0,40)+
-  theme(axis.title.x  = element_text(size=16),
-        axis.text.x  = element_text(size=14),
-        axis.title.y  = element_text(size=16),
-        legend.title  = element_text(size=16),
-        legend.text  = element_text(size=16))
+  theme(axis.title.x  = element_text(size=12),
+        axis.text.x  = element_text(size=12),
+        axis.text.y  = element_text(size=12),
+        axis.title.y  = element_text(size=12),
+        legend.title  = element_text(size=12),
+        legend.text  = element_text(size=12))
 
 ggsave('LitAndBoot_Noise_Ceiling.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 6, height = 4, units = "in", limitsize = FALSE, dpi = 500)
 ```
