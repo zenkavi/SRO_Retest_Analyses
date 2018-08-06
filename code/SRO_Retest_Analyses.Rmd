@@ -1547,6 +1547,8 @@ tmp = tmp %>%
   mutate(task_group = ifelse(task_group == "Bis Bas ", "BIS-BAS", ifelse(task_group == "Bis11 ", "BIS-11", ifelse(task_group == "Dospert Eb ", "DOSPERT EB", ifelse(task_group == "Dospert Rp ", "DOSPOERT RP", ifelse(task_group == "Dospert Rt ", "DOSPERT RT", ifelse(task_group == "Erq ", "ERQ", ifelse(task_group == "Upps Impulsivity ", "UPPS-P", task_group))))))))
 ```
 
+Extract trial number info to add to boot plot instead of adding another table
+
 ```{r}
 trial_num_info = tmp %>%
   group_by(task_group, task) %>%
@@ -1557,7 +1559,22 @@ tmp = tmp %>%
   left_join(trial_num_info, by="task_group")
 ```
 
+Boot plot for tasks with trial info
+
 ```{r warning=FALSE, message=FALSE}
+p4_t <- tmp %>%
+  filter(task == 'task') %>%
+ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) + 
+  geom_violin(fill='#00BFC4')+
+  theme_bw() + 
+  theme(axis.text = element_text(size=30))+
+  xlab("")+
+  ylab("")+
+  scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1), position = "right")+
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 15))+
+  geom_hline(yintercept = 0, color = "red", size = 1)+
+  coord_flip()
+
 task_trial_num = trial_num_info %>% 
   filter(task == "task") %>% 
   ungroup() %>% 
@@ -1583,6 +1600,48 @@ boot_task_plot = arrangeGrob(p4_t, task_trial_num_table, nrow=1, widths = c(3,2)
 
 ggsave('Task_Boot_w_trialinfo.jpg', plot = boot_task_plot, device = "jpeg", path = "../output/figures/", width = 20, height = 48, units = "in", limitsize = FALSE, dpi = 100)
   
+```
+
+Boot plot for surveys with trial info
+
+```{r}
+p5_t <- tmp %>%
+  filter(task == 'survey') %>%
+ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) + 
+  geom_violin(fill='#F8766D')+
+  theme_bw() + 
+  theme(axis.text = element_text(size=30))+
+  xlab("")+
+  ylab("")+
+  scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1), position = "right")+
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))+
+  geom_hline(yintercept = 0, color = "red", size = 1)+
+  coord_flip()
+
+survey_trial_num = trial_num_info %>% 
+  filter(task == "survey") %>% 
+  ungroup() %>% 
+  select(-task)
+
+survey_trial_num_table = survey_trial_num %>%
+  mutate(y_axis = rev(ggplot_build(p5_t)$layout$panel_params[[1]]$y.major)) %>%
+  gather(key, value, -y_axis, -task_group) %>%
+  ggplot(aes(key, factor(y_axis)))+
+  geom_text(aes(label=value), size=14)+
+  xlab("")+
+  ylab("")+
+  theme(axis.ticks=element_blank(),
+        axis.text.y = element_blank(),
+        panel.grid = element_blank(),
+        panel.border = element_blank(),
+        axis.text.x = element_text(size=30))+
+  scale_x_discrete(position = "top",
+                   breaks=c("mean_num_all_trials", "num_measures"),
+                   labels=c("Mean Num Trials", "Num Measures"))
+
+boot_survey_plot = arrangeGrob(p5_t, survey_trial_num_table, nrow=1, widths = c(3,2))
+
+ggsave('Survey_Boot_w_trialinfo.jpg', plot = boot_survey_plot, device = "jpeg", path = "../output/figures/", width = 20, height = 48, units = "in", limitsize = FALSE, dpi = 100)
 ```
 
 Variable level summary of bootstrapped reliabilities.
@@ -1639,32 +1698,7 @@ knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Anal
 Task level summary of bootstrapped reliabilities.
 
 ```{r message=FALSE, warning=FALSE}
-p4_t <- tmp %>%
-  filter(task == 'task') %>%
-ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) + 
-  geom_violin(fill='#00BFC4')+
-  theme_bw() + 
-  theme(axis.text.y = element_text(size=30),
-        axis.text.x = element_text(size=30))+
-  xlab("")+
-  ylab("")+
-  scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1), position = "right")+
-  scale_x_discrete(labels = function(x) str_wrap(x, width = 15))+
-  geom_hline(yintercept = 0, color = "red", size = 1)+
-  coord_flip()
 
-p5_t <- tmp %>%
-  filter(task == 'survey') %>%
-ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) + 
-  geom_violin(fill='#F8766D')+
-  theme_bw() + 
-  theme(axis.text.y = element_text(size=43))+
-  xlab("")+
-  ylab("")+
-  scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
-  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))+
-  geom_hline(yintercept = 0, color = "red", size = 1)+
-  coord_flip()
   
 p6_t <- arrangeGrob(p4_t, p5_t,nrow=1)
 
