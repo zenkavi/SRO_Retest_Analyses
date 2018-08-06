@@ -1549,12 +1549,61 @@ tmp = tmp %>%
 
 ```{r}
 trial_num_info = tmp %>%
-  group_by(task_group) %>%
+  group_by(task_group, task) %>%
   summarise(mean_num_all_trials = round(mean(num_all_trials)),
             num_measures = length(unique(dv)))
 
 tmp = tmp %>%
   left_join(trial_num_info, by="task_group")
+```
+
+Trying tableGrob
+
+```{r warning=FALSE, message=FALSE}
+mytheme <- gridExtra::ttheme_minimal(
+    core = list(fg_params=list(cex = 3.5)),
+    colhead = list(fg_params=list(cex = 3.0)),
+    rowhead = list(fg_params=list(cex = 3.0)))
+
+task_trial_num_table = tableGrob(trial_num_info %>% 
+                                   filter(task == "task") %>% 
+                                   ungroup() %>% 
+                                   select(-task_group, -task),
+                                 theme = mytheme, rows=NULL, cols = NULL,
+                                 heights = rep(unit(1.25, "in"), 37))
+
+test_plot = arrangeGrob(p4_t, task_trial_num_table, nrow=1)
+
+ggsave('Task_Boot_w_trialinfo.jpg', plot = test_plot, device = "jpeg", path = "../output/figures/", width = 27, height = 48, units = "in", limitsize = FALSE, dpi = 100)
+```
+
+Trying geom_text
+
+```{r warning=FALSE, message=FALSE}
+task_trial_num = trial_num_info %>% 
+  filter(task == "task") %>% 
+  ungroup() %>% 
+  select(-task)
+
+task_trial_num_table = task_trial_num %>%
+  mutate(y_axis = rev(seq(from=1, to=37, by=1))) %>%
+  gather(key, value, -y_axis, -task_group) %>%
+  ggplot(aes(key, y_axis))+
+  geom_text(aes(label=value), size=14)+
+  xlab("")+
+  ylab("")+
+  theme(axis.ticks=element_blank(),
+        axis.text = element_blank(),
+        panel.grid = element_blank(),
+        panel.border = element_blank())
+  # scale_x_discrete(position = "top",
+  #                  breaks=c("mean_num_all_trials", "num_measures"),
+  #                  labels=c("Mean Num Trials", "Num Measures"))
+
+test_plot = arrangeGrob(p4_t, task_trial_num_table, nrow=1, widths = c(2,1))
+
+ggsave('Task_Boot_w_trialinfo.jpg', plot = test_plot, device = "jpeg", path = "../output/figures/", width = 20, height = 48, units = "in", limitsize = FALSE, dpi = 100)
+  
 ```
 
 Variable level summary of bootstrapped reliabilities.
