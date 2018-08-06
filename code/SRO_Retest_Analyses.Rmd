@@ -1540,10 +1540,11 @@ tmp = tmp %>%
 #Manual correction
 tmp = tmp %>%
   mutate(task = ifelse(task_group == 'holt laury survey', "task", as.character(task))) %>%
-  mutate(task_group = ifelse(task_group == "psychological refractory period two choices", "psychological refractory period", ifelse(task_group == "angling risk task always sunny", "angling risk", ifelse(task_group == "two stage task", "two step", ifelse(task_group == "threebytwo", "task switching", ifelse(task_group == "adaptive n back", "adaptive n-back", ifelse(task_group == "go nogo", "go/no-go",  ifelse(task_group == "ravens", "raven's", task_group)))))))) %>%
   mutate(task_group = gsub("survey", "", task_group),
          task_group = gsub("task", "", task_group),
-         task_group = str_to_title(task_group))
+         task_group = str_to_title(task_group)) %>%
+  mutate(task_group = ifelse(task_group == "Psychological Refractory Period Two Choices", "Psychological Refractory Period", ifelse(task_group == "Angling Risk Always Sunny", "Angling Risk", ifelse(task_group == "Two Stage", "Two Step", ifelse(task_group == "Threebytwo", "Task Switching", ifelse(task_group == "Adaptive N Back", "Adaptive N-back", ifelse(task_group == "Go Nogo", "Go/No-go",  ifelse(task_group == "Ravens", "Raven's", task_group)))))))) %>%
+  mutate(task_group = ifelse(task_group == "Bis Bas ", "BIS-BAS", ifelse(task_group == "Bis11 ", "BIS-11", ifelse(task_group == "Dospert Eb ", "DOSPERT EB", ifelse(task_group == "Dospert Rp ", "DOSPOERT RP", ifelse(task_group == "Dospert Rt ", "DOSPERT RT", ifelse(task_group == "Erq ", "ERQ", ifelse(task_group == "Upps Impulsivity ", "UPPS-P", task_group))))))))
 ```
 
 ```{r}
