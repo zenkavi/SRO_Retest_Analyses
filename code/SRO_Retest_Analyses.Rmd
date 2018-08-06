@@ -1540,8 +1540,20 @@ tmp = tmp %>%
 #Manual correction
 tmp = tmp %>%
   mutate(task = ifelse(task_group == 'holt laury survey', "task", as.character(task))) %>%
-  mutate(task_group = ifelse(task_group == "psychological refractory period two choices", "psychological refractory period", ifelse(task_group == "angling risk task always sunny", "angling risk task",task_group))) %>%
-  mutate(task_group = gsub("survey", "", task_group))
+  mutate(task_group = ifelse(task_group == "psychological refractory period two choices", "psychological refractory period", ifelse(task_group == "angling risk task always sunny", "angling risk", ifelse(task_group == "two stage task", "two step", ifelse(task_group == "threebytwo", "task switching", ifelse(task_group == "adaptive n back", "adaptive n-back", ifelse(task_group == "go nogo", "go/no-go",  ifelse(task_group == "ravens", "raven's", task_group)))))))) %>%
+  mutate(task_group = gsub("survey", "", task_group),
+         task_group = gsub("task", "", task_group),
+         task_group = str_to_title(task_group))
+```
+
+```{r}
+trial_num_info = tmp %>%
+  group_by(task_group) %>%
+  summarise(mean_num_all_trials = round(mean(num_all_trials)),
+            num_measures = length(unique(dv)))
+
+tmp = tmp %>%
+  left_join(trial_num_info, by="task_group")
 ```
 
 Variable level summary of bootstrapped reliabilities.
@@ -1594,6 +1606,8 @@ rm(p4, p5, p6)
 ```{r echo=FALSE, out.width='100%'}
 knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/Bootstrap_Raw_Var_Plot.jpg')
 ```
+
+Task level summary of bootstrapped reliabilities.
 
 ```{r message=FALSE, warning=FALSE}
 p4_t <- tmp %>%
