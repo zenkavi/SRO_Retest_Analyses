@@ -1557,28 +1557,6 @@ tmp = tmp %>%
   left_join(trial_num_info, by="task_group")
 ```
 
-Trying tableGrob
-
-```{r warning=FALSE, message=FALSE}
-mytheme <- gridExtra::ttheme_minimal(
-    core = list(fg_params=list(cex = 3.5)),
-    colhead = list(fg_params=list(cex = 3.0)),
-    rowhead = list(fg_params=list(cex = 3.0)))
-
-task_trial_num_table = tableGrob(trial_num_info %>% 
-                                   filter(task == "task") %>% 
-                                   ungroup() %>% 
-                                   select(-task_group, -task),
-                                 theme = mytheme, rows=NULL, cols = NULL,
-                                 heights = rep(unit(1.25, "in"), 37))
-
-test_plot = arrangeGrob(p4_t, task_trial_num_table, nrow=1)
-
-ggsave('Task_Boot_w_trialinfo.jpg', plot = test_plot, device = "jpeg", path = "../output/figures/", width = 27, height = 48, units = "in", limitsize = FALSE, dpi = 100)
-```
-
-Trying geom_text
-
 ```{r warning=FALSE, message=FALSE}
 task_trial_num = trial_num_info %>% 
   filter(task == "task") %>% 
@@ -1586,23 +1564,24 @@ task_trial_num = trial_num_info %>%
   select(-task)
 
 task_trial_num_table = task_trial_num %>%
-  mutate(y_axis = rev(seq(from=1, to=37, by=1))) %>%
+  mutate(y_axis = rev(ggplot_build(p4_t)$layout$panel_params[[1]]$y.major)) %>%
   gather(key, value, -y_axis, -task_group) %>%
-  ggplot(aes(key, y_axis))+
+  ggplot(aes(key, factor(y_axis)))+
   geom_text(aes(label=value), size=14)+
   xlab("")+
   ylab("")+
   theme(axis.ticks=element_blank(),
-        axis.text = element_blank(),
+        axis.text.y = element_blank(),
         panel.grid = element_blank(),
-        panel.border = element_blank())
-  # scale_x_discrete(position = "top",
-  #                  breaks=c("mean_num_all_trials", "num_measures"),
-  #                  labels=c("Mean Num Trials", "Num Measures"))
+        panel.border = element_blank(),
+        axis.text.x = element_text(size=30))+
+  scale_x_discrete(position = "top",
+                   breaks=c("mean_num_all_trials", "num_measures"),
+                   labels=c("Mean Num Trials", "Num Measures"))
 
-test_plot = arrangeGrob(p4_t, task_trial_num_table, nrow=1, widths = c(2,1))
+boot_task_plot = arrangeGrob(p4_t, task_trial_num_table, nrow=1, widths = c(3,2))
 
-ggsave('Task_Boot_w_trialinfo.jpg', plot = test_plot, device = "jpeg", path = "../output/figures/", width = 20, height = 48, units = "in", limitsize = FALSE, dpi = 100)
+ggsave('Task_Boot_w_trialinfo.jpg', plot = boot_task_plot, device = "jpeg", path = "../output/figures/", width = 20, height = 48, units = "in", limitsize = FALSE, dpi = 100)
   
 ```
 
@@ -1665,10 +1644,11 @@ p4_t <- tmp %>%
 ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) + 
   geom_violin(fill='#00BFC4')+
   theme_bw() + 
-  theme(axis.text.y = element_text(size=30))+
+  theme(axis.text.y = element_text(size=30),
+        axis.text.x = element_text(size=30))+
   xlab("")+
   ylab("")+
-  scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
+  scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1), position = "right")+
   scale_x_discrete(labels = function(x) str_wrap(x, width = 15))+
   geom_hline(yintercept = 0, color = "red", size = 1)+
   coord_flip()
