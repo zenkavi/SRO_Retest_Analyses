@@ -99,8 +99,11 @@ lit_review = lit_review %>%
   mutate(task_group = gsub("_", " ", task_group),
          var = gsub("_", " ", var)) %>%
   arrange(task_group, raw_fit, var) %>%
-  mutate(task_group = ifelse(task_group == "psychological refractory period two choices", "psychological refractory period", ifelse(task_group == "angling risk task always sunny", "angling risk task",task_group))) %>%
-  mutate(task_group = gsub("survey", "", task_group)) %>%
+  mutate(task_group = gsub("survey", "", task_group),
+         task_group = gsub("task", "", task_group),
+         task_group = str_to_title(task_group)) %>%
+  mutate(task_group = ifelse(task_group == "Psychological Refractory Period Two Choices", "Psychological Refractory Period", ifelse(task_group == "Angling Risk Always Sunny", "Angling Risk", ifelse(task_group == "Two Stage", "Two Step", ifelse(task_group == "Threebytwo", "Task Switching", ifelse(task_group == "Adaptive N Back", "Adaptive N-back", ifelse(task_group == "Go Nogo", "Go/No-go",  ifelse(task_group == "Ravens", "Raven's", task_group)))))))) %>%
+  mutate(task_group = ifelse(task_group == "Bis Bas ", "BIS-BAS", ifelse(task_group == "Bis11 ", "BIS-11", ifelse(task_group == "Dospert Eb ", "DOSPERT EB", ifelse(task_group == "Dospert Rp ", "DOSPOERT RP", ifelse(task_group == "Dospert Rt ", "DOSPERT RT", ifelse(task_group == "Erq ", "ERQ", ifelse(task_group == "Upps Impulsivity ", "UPPS-P", task_group))))))))  %>%
   select(-measure_description)
 
 
@@ -192,13 +195,13 @@ p1_t_legend <- lit_review %>%
   filter(task == 'task') %>%
 ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_reliability)) + 
   geom_point(aes(size=sample_size, shape = type), color='black')+
-  theme(axis.text.y = element_text(size=43),
+  theme(axis.text.y = element_text(size=30),
         legend.position = 'bottom',
-        axis.text.x = element_text(size=23),
-        axis.title.x = element_text(size=30), 
-        legend.text = element_text(size=20), 
+        axis.text.x = element_text(size=20),
+        axis.title.x = element_text(size=20), 
+        legend.text = element_text(size=12), 
         legend.key.width = unit(0.75, "inches"), 
-        legend.title = element_text(size=28),
+        legend.title = element_text(size=20),
         legend.spacing.x = unit(0.5, "inches")) + 
   guides(size = guide_legend(override.aes = list(size=c(9,18,28))),
          shape = guide_legend(override.aes = list(size=18)))+
@@ -214,14 +217,14 @@ p1_t <- lit_review %>%
   filter(task == 'task') %>%
 ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_reliability)) + 
   geom_point(aes(size=sample_size, shape = type), color='#00BFC4')+
-  theme(axis.text.y = element_text(size=43),
+  theme(axis.text.y = element_text(size=30),
         legend.position = 'none',
         axis.text.x = element_text(size=23),
         axis.title.x = element_text(size=30)) + 
   xlab("Retest Reliability")+
   ylab("")+
   scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
-  scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
+  scale_y_discrete(labels = function(x) str_wrap(x, width = 15))+
   scale_shape_manual(breaks = sort(lit_review$type), values = c(15, 16, 17, 3))+
   scale_size_continuous(range = c(5, 35))+
   geom_vline(xintercept = 0, color = "red", size = 1)
@@ -230,14 +233,14 @@ p2_t <- lit_review %>%
   filter(task == 'survey') %>%
 ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_reliability)) + 
   geom_point(aes(size=sample_size, shape = type), color='#F8766D')+
-  theme(axis.text.y = element_text(size=43),
+  theme(axis.text.y = element_text(size=30),
         legend.position = 'none',
         axis.text.x = element_text(size=23),
         axis.title.x = element_text(size=30)) + 
   xlab("Retest Reliability")+
   ylab("")+
   scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
-  scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
+  scale_y_discrete(labels = function(x) str_wrap(x, width = 15))+
   scale_shape_manual(breaks = sort(lit_review$type), values = c(15, 16, 17, 3))+
   scale_size_continuous(range = c(5, 35))+
   geom_vline(xintercept = 0, color = "red", size = 1)
