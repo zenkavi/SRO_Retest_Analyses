@@ -2297,10 +2297,6 @@ t2_dvs = hr_merge %>%
 # calculate point estimates for reliability of each of the variables for each break
 # get_icc for each break of tmp_t1_dvs and tmp_t2_dvs
 
-'acc', 'avg_rt', 'conceptual_responses', 'fail_to_maintain_set',
-       'learning_rate', 'learning_to_learn', 'nonperseverative_errors',
-       'perseverative_errors', 'perseverative_responses', 'total_errors'
-
 trial_num_rel_df = data.frame(breaks=rep(NA, length(unique(t1_dvs$breaks))),
                               acc_icc=rep(NA, length(unique(t1_dvs$breaks))),
                               avg_rt_icc=rep(NA, length(unique(t1_dvs$breaks))),
@@ -2333,7 +2329,7 @@ rm(i, cur_break, tmp_t1_dvs, tmp_t2_dvs)
 
 trial_num_rel_df$breaks = as.numeric(trial_num_rel_df$breaks)
 
-# write.csv(trial_num_rel_df, paste0(retest_data_path, 'trial_num_rel_df_tbt.csv'))
+# write.csv(trial_num_rel_df, paste0(retest_data_path, 'trial_num_rel_df_shift.csv'))
 ```
 
 Takeaways from this graph:
@@ -2342,23 +2338,22 @@ Takeaways from this graph:
 - All the other measures are basically completely unreliable (including the two 'meaningful variables' in the literature: the cue switch cost RT's)
 
 ```{r warning=FALSE, message=FALSE}
-trial_num_rel_df = read.csv(paste0(retest_data_path, 'trial_num_rel_df_tbt.csv'))
-
-cols <- c("Accuracy" = '#084594', "Average RT error" = '#99000d', "SD RT error" = '#cb181d', "Average RT correct" = '#ef3b2c', "SD RT correct" = '#fb6a4a', "Missed percentage" = '#2171b5', "Cue switch cost RT (100)" = '#fc9272', "Cue switch cost RT (900)" = '#fcbba1', "Task switch cost RT (100)" = '#fee0d2', "Task switch cost RT (900)" = '#fff5f0', "Cue switch cost Acc (100)" = '#4292c6', "Cue switch cost Acc (900)" = '#6baed6', "Task switch cost Acc (100)" = '#9ecae1', "Task switch cost Acc (900)" = '#c6dbef')
-
-cols <- c("Accuracy" = '#084594', "Average RT error" = '#99000d', "Average RT correct" = '#ef3b2c', "Missed percentage" = '#2171b5', "Cue switch cost RT (100)" = '#fc9272', "Cue switch cost RT (900)" = '#fcbba1', "Task switch cost RT (100)" = '#fee0d2', "Task switch cost RT (900)" = '#fff5f0', "Cue switch cost Acc (100)" = '#4292c6', "Cue switch cost Acc (900)" = '#6baed6', "Task switch cost Acc (100)" = '#9ecae1', "Task switch cost Acc (900)" = '#c6dbef')
+trial_num_rel_df = read.csv(paste0(retest_data_path, 'trial_num_rel_df_shift.csv'))
 
 trial_num_rel_df %>%
   gather(key, value, -breaks) %>%
-  ggplot(aes(breaks, value, color=key))+
+  ggplot(aes((breaks+1)*10, value, shape=key))+
   geom_point()+
-  geom_line()+
+  geom_line(alpha = 0.5)+
+  
   theme_bw()+
   xlab("Number of trials")+
   ylab("ICC")+
   theme(legend.title = element_blank(),
         legend.position = 'bottom')+
-  ylim(-1,1)
+  scale_shape_manual(values = c(0:9),
+                     breaks = c("acc_icc", "avg_rt_icc", "conceptual_responses_icc", "fail_to_maintain_set_icc", "learning_rate_icc", "learning_to_learn_icc", "nonperseverative_errors_icc", "perseverative_errors_icc", "perseverative_responses_icc", "total_errors_icc"),
+                     labels = c("Accuracy", "Average Response Time", "Conceptual Responses", "Failure to Maintain Set", "Learning Rate", "Learning to Learn",  "Nonperseverative Errors", "Perseverative Errors", "Perseverative Responses", "Total Errors"))
 
 ggsave('Shift_Task_Intrameasure_Trialnum_Dependendence.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 10, height = 5, units = "in", dpi = 100)
 ```
