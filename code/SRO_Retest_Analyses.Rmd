@@ -2267,20 +2267,22 @@ For this example we look at the retest reliability of dependent measures from th
 
 Post process dv's from cluster to calculate reliabilities
 ```{r}
-t1_dvs = read.csv(paste0(retest_data_path, 't1_tbt_dvs.csv'))
-t2_dvs = read.csv(paste0(retest_data_path, 't2_tbt_dvs.csv'))
+t1_dvs = read.csv(paste0(retest_data_path, 't1_shift_dvs.csv'))
+t2_dvs = read.csv(paste0(retest_data_path, 't2_shift_dvs.csv'))
 
 t1_dvs = t1_dvs %>% select(-X)
 t2_dvs = t2_dvs %>% select(-X)
 ```
 
 ```{r eval=FALSE}
-hr_merge = merge(t1_dvs, t2_dvs, by = c("sub_id", "breaks"))
+hr_merge = merge(t1_dvs, t2_dvs, by = c("worker_id", "level_1"))
 
 hr_merge = hr_merge %>%
-  gather(key, value, -sub_id, -breaks) %>%
+  gather(key, value, -worker_id, -level_1) %>%
   separate(key, c("dv", "time"), sep="\\.") %>%
-  mutate(time = ifelse(time == "x", 1, 2))
+  mutate(time = ifelse(time == "x", 1, 2))%>%
+  rename(sub_id = worker_id,
+         breaks = level_1)
 
 t1_dvs = hr_merge %>%
   filter(time == 1) %>%
@@ -2295,21 +2297,21 @@ t2_dvs = hr_merge %>%
 # calculate point estimates for reliability of each of the variables for each break
 # get_icc for each break of tmp_t1_dvs and tmp_t2_dvs
 
+'acc', 'avg_rt', 'conceptual_responses', 'fail_to_maintain_set',
+       'learning_rate', 'learning_to_learn', 'nonperseverative_errors',
+       'perseverative_errors', 'perseverative_responses', 'total_errors'
+
 trial_num_rel_df = data.frame(breaks=rep(NA, length(unique(t1_dvs$breaks))),
                               acc_icc=rep(NA, length(unique(t1_dvs$breaks))),
-                              avg_rt_error_icc=rep(NA, length(unique(t1_dvs$breaks))),
-                              std_rt_error_icc=rep(NA, length(unique(t1_dvs$breaks))),
                               avg_rt_icc=rep(NA, length(unique(t1_dvs$breaks))),
-                              std_rt_icc=rep(NA, length(unique(t1_dvs$breaks))),
-                              missed_percent_icc=rep(NA, length(unique(t1_dvs$breaks))),
-                              cue_switch_cost_rt_100_icc=rep(NA, length(unique(t1_dvs$breaks))),
-                              cue_switch_cost_rt_900_icc=rep(NA, length(unique(t1_dvs$breaks))),
-                              task_switch_cost_rt_100_icc=rep(NA, length(unique(t1_dvs$breaks))),
-                              task_switch_cost_rt_900_icc=rep(NA, length(unique(t1_dvs$breaks))),
-                              cue_switch_cost_acc_100_icc=rep(NA, length(unique(t1_dvs$breaks))),
-                              cue_switch_cost_acc_900_icc=rep(NA, length(unique(t1_dvs$breaks))),
-                              task_switch_cost_acc_100_icc=rep(NA, length(unique(t1_dvs$breaks))),
-                              task_switch_cost_acc_900_icc=rep(NA, length(unique(t1_dvs$breaks))))
+                              conceptual_responses_icc=rep(NA, length(unique(t1_dvs$breaks))),
+                              fail_to_maintain_set_icc=rep(NA, length(unique(t1_dvs$breaks))),
+                              learning_rate_icc=rep(NA, length(unique(t1_dvs$breaks))),
+                              learning_to_learn_icc=rep(NA, length(unique(t1_dvs$breaks))),
+                              nonperseverative_errors_icc=rep(NA, length(unique(t1_dvs$breaks))),
+                              perseverative_errors_icc=rep(NA, length(unique(t1_dvs$breaks))),
+                              perseverative_responses_icc=rep(NA, length(unique(t1_dvs$breaks))),
+                              total_errors_icc=rep(NA, length(unique(t1_dvs$breaks))))
 
 for(i in 1:length(unique(t1_dvs$breaks))){
   cur_break = unique(t1_dvs$breaks)[i]
@@ -2317,19 +2319,15 @@ for(i in 1:length(unique(t1_dvs$breaks))){
   tmp_t2_dvs = t2_dvs %>% filter(breaks == cur_break)
   trial_num_rel_df$breaks[i] = cur_break
   trial_num_rel_df$acc_icc[i] = get_icc("acc", tmp_t1_dvs, tmp_t2_dvs)
-  trial_num_rel_df$avg_rt_error_icc[i] = get_icc("avg_rt_error", tmp_t1_dvs, tmp_t2_dvs)
-  trial_num_rel_df$std_rt_error_icc[i] = get_icc("std_rt_error", tmp_t1_dvs, tmp_t2_dvs)
   trial_num_rel_df$avg_rt_icc[i] = get_icc("avg_rt", tmp_t1_dvs, tmp_t2_dvs)
-  trial_num_rel_df$std_rt_icc[i] = get_icc("std_rt", tmp_t1_dvs, tmp_t2_dvs)
-  trial_num_rel_df$missed_percent_icc[i] = get_icc("missed_percent", tmp_t1_dvs, tmp_t2_dvs)
-  trial_num_rel_df$cue_switch_cost_rt_100_icc[i] = get_icc("cue_switch_cost_rt_100", tmp_t1_dvs, tmp_t2_dvs)
-  trial_num_rel_df$cue_switch_cost_rt_900_icc[i] = get_icc("cue_switch_cost_rt_900", tmp_t1_dvs, tmp_t2_dvs)
-  trial_num_rel_df$trial_switch_cost_rt_100_icc[i] = get_icc("task_switch_cost_rt_100", tmp_t1_dvs, tmp_t2_dvs)
-  trial_num_rel_df$trial_switch_cost_rt_900_icc[i] = get_icc("task_switch_cost_rt_900", tmp_t1_dvs, tmp_t2_dvs)
-  trial_num_rel_df$cue_switch_cost_acc_100_icc[i] = get_icc("cue_switch_cost_acc_100", tmp_t1_dvs, tmp_t2_dvs)
-  trial_num_rel_df$cue_switch_cost_acc_900_icc[i] = get_icc("cue_switch_cost_acc_900", tmp_t1_dvs, tmp_t2_dvs)
-  trial_num_rel_df$trial_switch_cost_acc_100_icc[i] = get_icc("task_switch_cost_acc_100", tmp_t1_dvs, tmp_t2_dvs)
-  trial_num_rel_df$trial_switch_cost_acc_900_icc[i] = get_icc("task_switch_cost_acc_900", tmp_t1_dvs, tmp_t2_dvs)
+  trial_num_rel_df$conceptual_responses_icc[i] = get_icc("conceptual_responses", tmp_t1_dvs, tmp_t2_dvs)
+  trial_num_rel_df$fail_to_maintain_set_icc[i] = get_icc("fail_to_maintain_set", tmp_t1_dvs, tmp_t2_dvs)
+  trial_num_rel_df$learning_rate_icc[i] = get_icc("learning_rate", tmp_t1_dvs, tmp_t2_dvs)
+  trial_num_rel_df$learning_to_learn_icc[i] = get_icc("learning_to_learn", tmp_t1_dvs, tmp_t2_dvs)
+  trial_num_rel_df$nonperseverative_errors_icc[i] = get_icc("nonperseverative_errors", tmp_t1_dvs, tmp_t2_dvs)
+  trial_num_rel_df$perseverative_errors_icc[i] = get_icc("perseverative_errors", tmp_t1_dvs, tmp_t2_dvs)
+  trial_num_rel_df$perseverative_responses_icc[i] = get_icc("perseverative_responses", tmp_t1_dvs, tmp_t2_dvs)
+  trial_num_rel_df$total_errors_icc[i] = get_icc("total_errors", tmp_t1_dvs, tmp_t2_dvs)
 }
 rm(i, cur_break, tmp_t1_dvs, tmp_t2_dvs)
 
@@ -2351,9 +2349,8 @@ cols <- c("Accuracy" = '#084594', "Average RT error" = '#99000d', "SD RT error" 
 cols <- c("Accuracy" = '#084594', "Average RT error" = '#99000d', "Average RT correct" = '#ef3b2c', "Missed percentage" = '#2171b5', "Cue switch cost RT (100)" = '#fc9272', "Cue switch cost RT (900)" = '#fcbba1', "Task switch cost RT (100)" = '#fee0d2', "Task switch cost RT (900)" = '#fff5f0', "Cue switch cost Acc (100)" = '#4292c6', "Cue switch cost Acc (900)" = '#6baed6', "Task switch cost Acc (100)" = '#9ecae1', "Task switch cost Acc (900)" = '#c6dbef')
 
 trial_num_rel_df %>%
-  select(-std_rt_icc, -std_rt_error_icc)%>%
   gather(key, value, -breaks) %>%
-  ggplot(aes(breaks*10, value, color=factor(key, levels = c("acc_icc", "avg_rt_error_icc", "avg_rt_icc", "missed_percent_icc", "cue_switch_cost_rt_100_icc", "cue_switch_cost_rt_900_icc", "task_switch_cost_rt_100_icc", "task_switch_cost_rt_900_icc", "cue_switch_cost_acc_100_icc", "cue_switch_cost_acc_900_icc", "task_switch_cost_acc_100_icc", "task_switch_cost_acc_900_icc"), labels = c("Accuracy", "Average RT error", "Average RT correct", "Missed percentage", "Cue switch cost RT (100)", "Cue switch cost RT (900)", "Task switch cost RT (100)", "Task switch cost RT (900)", "Cue switch cost Acc (100)", "Cue switch cost Acc (900)", "Task switch cost Acc (100)", "Task switch cost Acc (900)"))))+
+  ggplot(aes(breaks, value, color=key))+
   geom_point()+
   geom_line()+
   theme_bw()+
@@ -2361,12 +2358,9 @@ trial_num_rel_df %>%
   ylab("ICC")+
   theme(legend.title = element_blank(),
         legend.position = 'bottom')+
-  scale_color_manual(values = cols,
-                     breaks = c("Average RT correct", "Average RT error", "Cue switch cost RT (100)","Cue switch cost RT (900)", "Task switch cost RT (100)","Task switch cost RT (900)","Accuracy", "Missed percentage", "Cue switch cost Acc (100)", "Cue switch cost Acc (900)",  "Task switch cost Acc (100)",  "Task switch cost Acc (900)"))+
-  ylim(-1,1)+
-  guides(color = guide_legend(ncol=2, byrow=F))
+  ylim(-1,1)
 
-ggsave('Intrameasure_Trialnum_Dependendence.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 10, height = 5, units = "in", dpi = 100)
+ggsave('Shift_Task_Intrameasure_Trialnum_Dependendence.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 10, height = 5, units = "in", dpi = 100)
 ```
 
 ### Raw vs DDM
