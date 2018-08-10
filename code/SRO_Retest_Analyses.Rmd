@@ -199,18 +199,23 @@ ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_re
         legend.position = 'bottom',
         axis.text.x = element_text(size=20),
         axis.title.x = element_text(size=20), 
-        legend.text = element_text(size=12), 
+        legend.text = element_text(size=16), 
         legend.key.width = unit(0.75, "inches"), 
         legend.title = element_text(size=20),
-        legend.spacing.x = unit(0.5, "inches")) + 
-  guides(size = guide_legend(override.aes = list(size=c(9,18,28))),
-         shape = guide_legend(override.aes = list(size=18)))+
+        legend.spacing.x = unit(0.5, "inches"),
+        legend.box = "vertical",
+        legend.direction = "horizontal") + 
   xlab("Retest Reliability")+
   ylab("")+
   scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
   scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
-  scale_shape_manual(breaks = sort(lit_review$type), values = c(15, 16, 17, 3), name="Type")+
-  scale_size_continuous(name = "Sample Size")+
+  scale_shape_manual(breaks = sort(unique(lit_review$type)), values = c(17, 3, 16, 15), name="Type")+
+  scale_size_continuous(name = "Sample Size", 
+                        limits = c(10, 1200),
+                        range = c(1, 40), 
+                        breaks = c(10, 100, 1000))+
+  guides(#size = guide_legend(override.aes = list(breaks = c(10, 100, 1000)), labels = c(10, 100, 1000)),
+         shape = guide_legend(override.aes = list(size = 16)))+
   geom_vline(xintercept = 0, color = "red", size = 1)
 
 p1_t <- lit_review %>%
@@ -225,8 +230,9 @@ ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_re
   ylab("")+
   scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
   scale_y_discrete(labels = function(x) str_wrap(x, width = 15))+
-  scale_shape_manual(breaks = sort(lit_review$type), values = c(15, 16, 17, 3))+
-  scale_size_continuous(range = c(5, 35))+
+  scale_shape_manual(breaks = sort(unique(lit_review$type)), values = c(17, 3, 16, 15))+
+  scale_size_continuous(range = c(1, 40),
+                        limits = c(10,1200))+
   geom_vline(xintercept = 0, color = "red", size = 1)
 
 p2_t <- lit_review %>%
@@ -241,8 +247,10 @@ ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_re
   ylab("")+
   scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
   scale_y_discrete(labels = function(x) str_wrap(x, width = 15))+
-  scale_shape_manual(breaks = sort(lit_review$type), values = c(15, 16, 17, 3))+
-  scale_size_continuous(range = c(5, 35))+
+  scale_shape_manual(breaks = c("ICC","Pearson","Spearman"), 
+                     values = c(17, 16, 15))+
+  scale_size_continuous(range = c(1, 40),
+                        limits = c(10,1200))+
   geom_vline(xintercept = 0, color = "red", size = 1)
 
 mylegend<-g_legend(p1_t_legend)
@@ -250,6 +258,15 @@ mylegend<-g_legend(p1_t_legend)
 p3_t <- arrangeGrob(arrangeGrob(p1_t, p2_t, nrow=1), mylegend, nrow=2,heights=c(10, 1))
 
 ggsave('Lit_Review_Plot_t.jpg', plot = p3_t, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 27, height = 48, units = "in", limitsize = FALSE, dpi = 72)
+```
+
+
+```{r}
+lit_review %>%
+  select(dv, sample_size, task) %>%
+  ggplot(aes(sample_size, fill=task))+
+  geom_histogram(position = "identity", alpha = 0.5)
+
 rm(p1_t, p2_t, p3_t, mylegend, p1_t_legend)
 ```
 
