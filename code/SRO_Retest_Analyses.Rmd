@@ -1579,13 +1579,21 @@ Extract trial number info to add to boot plot instead of adding another table
 tmp_mngfl = tmp %>%
   filter(dv %in% meaningful_vars)
 
-trial_num_info = tmp_mngfl %>%
+trial_num_info = tmp %>%
+  group_by(task_group, task) %>%
+  summarise(mean_num_all_trials = round(mean(num_all_trials)),
+            num_measures = length(unique(dv)))
+
+trial_num_info_mngfl = tmp_mngfl %>%
   group_by(task_group, task) %>%
   summarise(mean_num_all_trials = round(mean(num_all_trials)),
             num_measures = length(unique(dv)))
 
 tmp = tmp %>%
-  left_join(trial_num_info, by="task_group")
+  left_join(trial_num_info, by=c("task_group", "task"))
+
+tmp_mngfl = tmp_mngfl %>%
+  left_join(trial_num_info_mngfl, by=c("task_group", "task"))
 ```
 
 Boot plot for tasks with trial info (only using meaningful vars)
@@ -1604,7 +1612,7 @@ ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) +
   geom_hline(yintercept = 0, color = "red", size = 1)+
   coord_flip()
 
-task_trial_num = trial_num_info %>% 
+task_trial_num = trial_num_info_mngfl %>% 
   filter(task == "task") %>% 
   ungroup() %>% 
   select(-task)
@@ -1634,7 +1642,7 @@ ggsave('Task_Boot_w_trialinfo.jpg', plot = boot_task_plot, device = "jpeg", path
 Boot plot for surveys with trial info (only using meaningful vars)
 
 ```{r}
-p5_t <- tmp_mngfl %>%
+p5_t <- tmp %>%
   filter(task == 'survey') %>%
 ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) + 
   geom_violin(fill='#F8766D')+
