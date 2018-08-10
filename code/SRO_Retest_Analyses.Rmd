@@ -275,6 +275,18 @@ Takeaways from this review are:
 - Survey measures have been reported to higher reliability compared to task measures  
 - Survey measures have less variability in the reported reliabiltiy estimates compared to task measures   
 
+Are there differences between clinical and non-clinical samples in the literature?
+
+```{r}
+tmp = lit_review %>%
+  mutate(clinical = as.character(clinical),
+         clinical = ifelse(clinical == "", "control", clinical),
+         clinical_1_0 = ifelse(clinical == "control", 0, 1))
+table(tmp$clinical)
+table(tmp$clinical_1_0)
+summary(lmer(retest_reliability ~ clinical_1_0+(1|dv),data=tmp))
+```
+
 ## Loading datasets
 
 The variables included in this report are:  
