@@ -262,11 +262,6 @@ ggsave('Lit_Review_Plot_t.jpg', plot = p3_t, device = "jpeg", path = "/Users/zey
 
 
 ```{r}
-lit_review %>%
-  select(dv, sample_size, task) %>%
-  ggplot(aes(sample_size, fill=task))+
-  geom_histogram(position = "identity", alpha = 0.5)
-
 rm(p1_t, p2_t, p3_t, mylegend, p1_t_legend)
 ```
 
@@ -1539,6 +1534,17 @@ measure_labels = measure_labels %>% select(-measure_description)
 # measure_labels$dv[(measure_labels$dv %in% retest_report_vars == FALSE)]
 ```
 
+```{r}
+meaningful_vars = read.table('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/meaningful_vars.txt')
+meaningful_vars = as.character(meaningful_vars$V1)
+
+tmp = as.character(unique(lit_review$dv)[which(unique(lit_review$dv) %in% meaningful_vars == FALSE)])
+tmp = tmp[-grep('survey', tmp)]
+
+meaningful_vars = c(meaningful_vars, tmp)
+meaningful_vars = sort(meaningful_vars)
+```
+
 ```{r warning=FALSE, message=FALSE}
 # Df wrangling for plotting
 tmp = measure_labels %>%
@@ -1570,7 +1576,10 @@ tmp = tmp %>%
 Extract trial number info to add to boot plot instead of adding another table
 
 ```{r}
-trial_num_info = tmp %>%
+tmp_mngfl = tmp %>%
+  filter(dv %in% meaningful_vars)
+
+trial_num_info = tmp_mngfl %>%
   group_by(task_group, task) %>%
   summarise(mean_num_all_trials = round(mean(num_all_trials)),
             num_measures = length(unique(dv)))
@@ -1579,10 +1588,10 @@ tmp = tmp %>%
   left_join(trial_num_info, by="task_group")
 ```
 
-Boot plot for tasks with trial info
+Boot plot for tasks with trial info (only using meaningful vars)
 
 ```{r warning=FALSE, message=FALSE}
-p4_t <- tmp %>%
+p4_t <- tmp_mngfl %>%
   filter(task == 'task') %>%
 ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) + 
   geom_violin(fill='#00BFC4')+
@@ -1622,10 +1631,10 @@ ggsave('Task_Boot_w_trialinfo.jpg', plot = boot_task_plot, device = "jpeg", path
   
 ```
 
-Boot plot for surveys with trial info
+Boot plot for surveys with trial info (only using meaningful vars)
 
 ```{r}
-p5_t <- tmp %>%
+p5_t <- tmp_mngfl %>%
   filter(task == 'survey') %>%
 ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) + 
   geom_violin(fill='#F8766D')+
@@ -2199,17 +2208,6 @@ rm(mean_diff_df)
 Here we summarize the results on a task level to make it more digestable and easier to make contact with the literature.  
 
 We reduce the list of task measures to a list of one per task by averaging only the measures that are extracted and used from these tasks in the literature. We call these the 'meaningful measures.'
-
-```{r}
-meaningful_vars = read.table('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/meaningful_vars.txt')
-meaningful_vars = as.character(meaningful_vars$V1)
-
-tmp = as.character(unique(lit_review$dv)[which(unique(lit_review$dv) %in% meaningful_vars == FALSE)])
-tmp = tmp[-grep('survey', tmp)]
-
-meaningful_vars = c(meaningful_vars, tmp)
-meaningful_vars = sort(meaningful_vars)
-```
 
 ```{r warning=FALSE, message=FALSE}
 tmp = measure_labels %>%
