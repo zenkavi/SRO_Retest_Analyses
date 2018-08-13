@@ -22,13 +22,13 @@ get_retest_stats = function(dv_var, t1_df = test_data, t2_df = retest_data, merg
     icc = ICC(df)
     
     if('icc' %in% metric){
-      out$icc_3k = icc$results['Average_fixed_raters', 'ICC']
+      out$icc = icc$results['Average_fixed_raters', 'ICC']
     }
     
     if('var_breakdown' %in% metric){
-      out$subs = icc$summary[[1]][1,'Mean Sq']
-      out$ind = icc$summary[[1]][2,'Mean Sq']
-      out$resid = icc$summary[[1]][3,'Mean Sq']
+      out$var_subs = icc$summary[[1]][1,'Mean Sq']
+      out$var_ind = icc$summary[[1]][2,'Mean Sq']
+      out$var_resid = icc$summary[[1]][3,'Mean Sq']
     }
     
   }
