@@ -9,8 +9,6 @@ toc_float: yes
 ```{r, message=FALSE, warning=FALSE, include=FALSE}
 source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/SRO_Retest_Analyses_Helper_Functions.R')
 
-theme_set(theme_bw())
-
 test_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_03-29-2018/'
 
 retest_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-29-2018/'
