@@ -7,14 +7,24 @@ get_retest_stats = function(dv_var, t1_df = test_data, t2_df = retest_data, merg
     df = match_t1_t2(dv_var, t1_df = t1_df, t2_df = t2_df, merge_var = merge_var, format='wide', sample='bootstrap', sample_vec = sample_vec)
   }
   
-  out = data.frame()
+  out_cols = length(metric)
+  out_names = metric
+  
+  if('var_breakdown' %in% metric){
+    out_cols = out_cols+2
+    out_names = out_names[out_names != 'var_breakdown']
+    out_names = c(out_names, 'var_subs', 'var_ind', 'var_resid')
+  }
+
+  out = data.frame(matrix(ncol=out_cols))
+  names(out) = out_names
   
   if('spearman' %in% metric){
-    out$rho = cor(df$`1`, df$`2`, method='spearman')
+    out$spearman = cor(df$`1`, df$`2`, method='spearman')
   }
   
   if('pearson' %in% metric){
-    out$r = cor(df$`1`, df$`2`, method='pearson')
+    out$pearson = cor(df$`1`, df$`2`, method='pearson')
   }
   
   if('icc' %in% metric | 'var_breakdown' %in% metric){
@@ -34,6 +44,7 @@ get_retest_stats = function(dv_var, t1_df = test_data, t2_df = retest_data, merg
   }
   
   if('partial_eta' %in% metric | 'sem' %in% metric){
+    
     mod = summary(aov(score~Error(sub_id)+time, df))
     
     if('partial_eta' %in% metric){
@@ -48,7 +59,7 @@ get_retest_stats = function(dv_var, t1_df = test_data, t2_df = retest_data, merg
     }
     
   }
-  return(out)
+  return(out %>% drop_na())
   
 }
 
