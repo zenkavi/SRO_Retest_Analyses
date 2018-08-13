@@ -17,40 +17,15 @@ render_this <- function(){rmarkdown::render('/Users/zeynepenkavi/Dropbox/Poldrac
 
 options(scipen = 1, digits = 4)
 
-sem <- function(x) {sd(x, na.rm=T) / sqrt(length(x))}
+helper_func_path = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/SRO_Retest_Helper_Functions/'
 
-g_legend<-function(a.gplot){
-  tmp <- ggplot_gtable(ggplot_build(a.gplot))
-  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
-  legend <- tmp$grobs[[leg]]
-  return(legend)}
+source(paste0(helper_func_path, 'g_legend.R'))
+source(paste0(helper_func_path, 'sem.R'))
+source(paste0(helper_func_path, 'trim.R'))
+source(paste0(helper_func_path, 'match_t1_t2.R'))
 
-trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 
-match_t1_t2 <- function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 'sub_id', format = "long", sample = 'full', sample_vec){
-  
-  if(sample == 'full'){
-    df = merge(t1_df[,c(merge_var, dv_var)], t2_df[,c(merge_var, dv_var)], by = merge_var) 
-  }
-  else{
-    df = merge(t1_df[t1_df[,merge_var] %in% sample_vec, c(merge_var, dv_var)], t2_df[t2_df[,merge_var] %in% sample_vec, c(merge_var, dv_var)],
-               by=merge_var)
-  }
-  
-  df = df %>% 
-    na.omit()%>%
-    gather(dv, score, -sub_id) %>%
-    mutate(time = ifelse(grepl('\\.x', dv), 1, ifelse(grepl('\\.y', dv), 2, NA))) %>%
-    separate(dv, c("dv", "drop"), sep='\\.([^.]*)$') %>%
-    select(-drop)
-  
-  
-  if(format == 'wide'){
-    df = df%>% spread(time, score) 
-  }
-  
-  return(df)
-}
+
 
 get_spearman = function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 'sub_id', sample='full', sample_vec){
   
@@ -89,9 +64,9 @@ get_pearson = function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var
     df = match_t1_t2(dv_var, t1_df = t1_df, t2_df = t2_df, merge_var = merge_var, format='wide', sample='bootstrap', sample_vec = sample_vec)
   }
   
-  rho = cor(df$`1`, df$`2`, method='pearson')
+  r = cor(df$`1`, df$`2`, method='pearson')
   
-  return(rho)
+  return(r)
 }
 
 get_var_breakdown <- function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 'sub_id', sample='full', sample_vec){

@@ -87,7 +87,7 @@ directed_forgetting.proactive_interference_EZ_non_decision,task,Difference in EZ
 directed_forgetting.proactive_interference_EZ_thresh,task,Difference in EZ ddm threshold parameter between negative (where the stimulus to respond to is in forgetting set) and control (where the stimulus to respond to is new) trials,difference,EZ,threshold,1,16
 directed_forgetting.proactive_interference_hddm_drift,task,Difference in hddm drift rate parameter between negative (where the stimulus to respond to is in forgetting set) and control (where the stimulus to respond to is new) trials,difference,hddm,drift rate,1,17
 directed_forgetting.proactive_interference_rt,task,Difference in median response time of correct responses between negative (where the stimulus to respond to is in forgetting set) and control (where the stimulus to respond to is new) trials,difference,raw,rt,1,16
-discount_titrate.percent_patient,task,Proportion of patient choices across all 36 trials,overall,raw,other,1,36
+discount_titrate.percent_patient,task,Proportion of patient choices across all 36 trials,overall,raw,other,0,36
 dot_pattern_expectancy.acc,task,Proportion of correct responses (both hits and correct rejections) in identifying whether observed sequence of dot patterns is the target pair (AX),overall,raw,accuracy,1,156
 dot_pattern_expectancy.avg_rt,task,Median response time of correct responses (both hits and correct rejections) in identifying whether observed sequence of dot patterns is the target pair (AX),overall,raw,rt,1,147
 dot_pattern_expectancy.AX_errors,task,,condition,raw,accuracy,1,108

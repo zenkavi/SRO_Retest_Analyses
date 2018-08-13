@@ -1,0 +1,1 @@
+sem <- function(x) {sd(x, na.rm=T) / sqrt(length(x))}
