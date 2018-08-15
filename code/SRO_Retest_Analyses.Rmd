@@ -1410,7 +1410,7 @@ rel_comp %>%
   theme(legend.title = element_blank(),
         legend.position = 'bottom')
 
-ggsave('LitAndEmpAveCor.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 6, height = 4, units = "in", limitsize = FALSE, dpi = 500)
+ggsave('LitAndEmpAveCor.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 4, height = 4, units = "in", limitsize = FALSE, dpi = 500)
 ```
 
 ```{r echo=FALSE}
@@ -2378,18 +2378,18 @@ trial_num_rel_df = read.csv(paste0(retest_data_path, 'trial_num_rel_df_shift.csv
 
 trial_num_rel_df %>%
   gather(key, value, -breaks) %>%
+  filter(key %in% c("avg_rt_icc", "learning_to_learn_icc", "nonperseverative_errors_icc")) %>%
   ggplot(aes((breaks+1)*10, value, shape=key))+
   geom_point()+
   geom_line(alpha = 0.5)+
-  
   theme_bw()+
   xlab("Number of trials")+
   ylab("ICC")+
   theme(legend.title = element_blank(),
         legend.position = 'bottom')+
   scale_shape_manual(values = c(0:9),
-                     breaks = c("acc_icc", "avg_rt_icc", "conceptual_responses_icc", "fail_to_maintain_set_icc", "learning_rate_icc", "learning_to_learn_icc", "nonperseverative_errors_icc", "perseverative_errors_icc", "perseverative_responses_icc", "total_errors_icc"),
-                     labels = c("Accuracy", "Average Response Time", "Conceptual Responses", "Failure to Maintain Set", "Learning Rate", "Learning to Learn",  "Nonperseverative Errors", "Perseverative Errors", "Perseverative Responses", "Total Errors"))
+                     breaks = c("avg_rt_icc","learning_to_learn_icc", "nonperseverative_errors_icc"),
+                     labels = c("Average Response Time", "Learning to Learn",  "Nonperseverative Errors"))
 
 ggsave('Shift_Task_Intrameasure_Trialnum_Dependendence.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 10, height = 5, units = "in", dpi = 100)
 ```
@@ -2456,7 +2456,12 @@ summary(m)
 
 ```{r}
 ddm_boot_plot = tmp %>%
-  ggplot(aes(factor(raw_fit, levels = c("raw", "EZ", "hddm"), labels=c("Raw", "EZ-diffusion", "Hierarchical diffusion")), icc, fill=factor(rt_acc, levels = c("rt","accuracy", "drift rate", "threshold", "non-decision"), labels=c("Response Time", "Accuracy","Drift Rate", "Threshold", "Non-decision"))))+
+  group_by(dv) %>%
+  summarise(mean_icc = mean(icc),
+            raw_fit = unique(raw_fit),
+            contrast = unique(contrast),
+            rt_acc = unique(rt_acc)) %>%
+  ggplot(aes(factor(raw_fit, levels = c("raw", "EZ", "hddm"), labels=c("Raw", "EZ-diffusion", "Hierarchical diffusion")), mean_icc, fill=factor(rt_acc, levels = c("rt","accuracy", "drift rate", "threshold", "non-decision"), labels=c("Response Time", "Accuracy","Drift Rate", "Threshold", "Non-decision"))))+
   geom_boxplot()+
   facet_wrap(~factor(contrast, levels=c("non-contrast", "contrast"), labels=c("Non-contrast", "Contrast")))+
   theme_bw()+
@@ -2464,10 +2469,10 @@ ddm_boot_plot = tmp %>%
   xlab("")+
   theme(legend.title = element_blank(),
         legend.position = 'bottom',
-        legend.text = element_text(size=12),
-        strip.text = element_text(size=12),
-        axis.text = element_text(size = 12),
-        text = element_text(size=12))+
+        legend.text = element_text(size=16),
+        strip.text = element_text(size=16),
+        axis.text = element_text(size = 16),
+        text = element_text(size=16))+
   guides(fill = guide_legend(ncol = 2, byrow=F))+
   scale_fill_brewer(palette="Greys",
                     breaks=c( "Response Time", "Accuracy","Drift Rate", "Threshold", "Non-decision"))
