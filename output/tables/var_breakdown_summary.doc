@@ -1,0 +1,45 @@
+<table style="border-collapse:collapse; border:none;">
+<tr>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black;">task</th>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black;">key</th>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black;">Median</th>
+<th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black;">SD</th>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">survey</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Between session variance</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">5.384</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">11.353</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">survey</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Between subjects variance</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">83.355</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">11.686</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">survey</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Residual variance</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">8.976</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">4.325</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">task</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Between session variance</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">18.077</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">22.114</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">task</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Between subjects variance</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">52.548</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">17.681</td>
+</tr>
+<tr>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">task</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">Residual variance</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">22.818</td>
+<td style="padding:0.2cm; text-align:left; vertical-align:top; text-align:center;">11.012</td>
+</tr>
+</table>
+

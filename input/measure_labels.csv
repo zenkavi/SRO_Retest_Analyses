@@ -1,0 +1,447 @@
+dv,task,measure_description,overall_difference,raw_fit,rt_acc,ddm_task,num_all_trials
+adaptive_n_back.acc,task,Proportion of correct responses (both hits and correct rejections) where correct is pressing one button over the other for a letter depending on the load,overall,raw,accuracy,1,352
+adaptive_n_back.avg_rt,task,Median response times for correct responses only,overall,raw,rt,1,352
+adaptive_n_back.EZ_drift,task,EZ ddm drift rate parameter for 2 back blocks only,overall,EZ,drift rate,1,352
+adaptive_n_back.EZ_non_decision,task,EZ ddm non-decision time parameter for 2 back blocks only,overall,EZ,non-decision,1,352
+adaptive_n_back.EZ_thresh,task,EZ ddm threshold parameter for 2 back blocks only,overall,EZ,threshold,1,352
+adaptive_n_back.hddm_drift,task,Hddm drift rate parameter for 2 back blocks only,overall,hddm,drift rate,1,435
+adaptive_n_back.hddm_non_decision,task,Hddm non-decision time parameter for 2 back blocks only,overall,hddm,non-decision,1,435
+adaptive_n_back.hddm_thresh,task,Hddm threshold parameter for 2 back blocks only,overall,hddm,threshold,1,435
+adaptive_n_back.mean_load,task,Average delay/load throughout the task,overall,raw,other,1,435
+adaptive_n_back.hddm_drift_load,task,,overall,hddm,drift rate,1,435
+angling_risk_task_always_sunny.keep_adjusted_clicks,task,Average number of clicks for trials where blue fish was not caught in the condition where probability of loosing everything in the round increased with each click,condition,raw,other,0,22
+angling_risk_task_always_sunny.keep_score,task,Total score for the trials  in the condition where probability of loosing everything in the round increased with each click,condition,raw,other,0,22
+angling_risk_task_always_sunny.release_adjusted_clicks,task,Average number of clicks for trials where blue fish was not caught in the condition where probability of loosing everything in the round stayed constant with each click,condition,raw,other,0,20
+angling_risk_task_always_sunny.release_score,task,Total score for the trials  in the condition where probability of loosing everything in the round stayed constant with each click,condition,raw,other,0,20
+angling_risk_task_always_sunny.keep_coef_of_variation,task,,condition,fit,other,0,22
+angling_risk_task_always_sunny.release_coef_of_variation,task,,condition,fit,other,0,20
+attention_network_task.acc,task,Proportion of correct responses (correct/all responses; excluding no response trials) where correct response means indicating which direction the middle arrow pointed towards,overall,raw,accuracy,1,139
+attention_network_task.alerting_acc,task,Difference in accuracy between nocue and double cue trials,difference,raw,accuracy,1,35
+attention_network_task.alerting_EZ_drift,task,Difference in EZ ddm drift rate parameter between nocue and double cue trials,difference,EZ,drift rate,1,35
+attention_network_task.alerting_EZ_non_decision,task,Difference in EZ ddm non-decision time parameter between nocue and double cue trials,difference,EZ,non-decision,1,35
+attention_network_task.alerting_EZ_thresh,task,Difference in EZ ddm threshold parameter between nocue and double cue trials,difference,EZ,threshold,1,35
+attention_network_task.alerting_hddm_drift,task,Difference in hddm drift rate parameter between nocue and double cue trials,difference,hddm,drift rate,1,36
+attention_network_task.alerting_rt,task,Difference in median response time between nocue and double cue trials,difference,raw,rt,1,35
+attention_network_task.avg_rt,task,Median response time for correct responses,overall,raw,rt,1,139
+attention_network_task.conflict_acc,task,Difference in accuracy between incongruent and congruent flanker trials,difference,raw,accuracy,1,35
+attention_network_task.conflict_EZ_drift,task,Difference in EZ ddm drift parameter between incongruent and congruent flanker trials,difference,EZ,drift rate,1,35
+attention_network_task.conflict_EZ_non_decision,task,Difference in EZ ddm non-decision time parameter between incongruent and congruent flanker trials,difference,EZ,non-decision,1,35
+attention_network_task.conflict_EZ_thresh,task,Difference in EZ ddm threshold parameter between incongruent and congruent flanker trials,difference,EZ,threshold,1,35
+attention_network_task.conflict_hddm_drift,task,Difference in hddm drift parameter between incongruent and congruent flanker trials,difference,hddm,drift rate,1,36
+attention_network_task.conflict_rt,task,Difference in median response time between incongruent and congruent flanker trials,difference,raw,rt,1,35
+attention_network_task.congruent_rt,task,,condition,raw,rt,1,46
+attention_network_task.EZ_drift,task,EZ ddm drift parameter for all trials with response (excluding no response trials),overall,EZ,drift rate,1,139
+attention_network_task.EZ_non_decision,task,EZ ddm non-decision time parameter for all trials with response (excluding no response trials),overall,EZ,non-decision,1,139
+attention_network_task.EZ_thresh,task,EZ ddm threshold parameter for all trials with response (excluding no response trials),overall,EZ,threshold,1,139
+attention_network_task.hddm_drift,task,Hddm drift parameter for all trials with response (excluding no response trials),overall,hddm,drift rate,1,142
+attention_network_task.hddm_non_decision,task,Hddm non-decision time parameter for all trials with response (excluding no response trials),overall,hddm,non-decision,1,142
+attention_network_task.hddm_thresh,task,Hddm threshold parameter for all trials with response (excluding no response trials),overall,hddm,threshold,1,142
+attention_network_task.incongruent_rt,task,,condition,raw,rt,1,46
+attention_network_task.neutral_rt,task,,condition,raw,rt,1,46
+attention_network_task.orienting_acc,task,Difference in accuracy between center and spatial cue trials,overall,raw,accuracy,1,35
+attention_network_task.orienting_EZ_drift,task,Difference in EZ ddm drift parameter between center and spatial cue trials,difference,EZ,drift rate,1,35
+attention_network_task.orienting_EZ_non_decision,task,Difference in EZ ddm non-decision time parameter between center and spatial cue trials,difference,EZ,non-decision,1,35
+attention_network_task.orienting_EZ_thresh,task,Difference in EZ ddm threshold parameter between center and spatial cue trials,difference,EZ,threshold,1,35
+attention_network_task.orienting_hddm_drift,task,Difference in hddm drift parameter between center and spatial cue trials,difference,hddm,drift rate,1,36
+attention_network_task.orienting_rt,task,Difference in median response time between center and spatial cue trials,difference,raw,rt,1,35
+bickel_titrator.auc_small,task,,condition,fit,other,0,30
+bickel_titrator.hyp_discount_rate_large,task,Hyperbolic discount rate for condition where larger amount is fixed at $1 million. Estimated by fitting model to six decayed values for different delays,condition,fit,other,0,30
+bickel_titrator.hyp_discount_rate_medium,task,Hyperbolic discount rate for condition where larger amount is fixed at $1000. Estimated by fitting model to six decayed values for different delays,condition,fit,other,0,30
+bickel_titrator.hyp_discount_rate_small,task,Hyperbolic discount rate for condition where larger amount is fixed at $10. Estimated by fitting model to six decayed values for different delays,condition,fit,other,0,30
+choice_reaction_time.acc,task,Proportion of correct responses (correct/all responses; excluding no response trials) where correct response means pressing the correct key for a given colored square,overall,raw,accuracy,1,150
+choice_reaction_time.avg_rt,task,Median response time for correct responses,overall,raw,rt,1,150
+choice_reaction_time.EZ_drift,task,EZ ddm drift parameter for all trials with response (excluding no response trials),overall,EZ,drift rate,1,150
+choice_reaction_time.EZ_non_decision,task,EZ ddm non-decision time parameter for all trials with response (excluding no response trials),overall,EZ,non-decision,1,150
+choice_reaction_time.EZ_thresh,task,EZ ddm threshold parameter for all trials with response (excluding no response trials),overall,EZ,threshold,1,150
+choice_reaction_time.hddm_drift,task,Hddm drift parameter for all trials with response (excluding no response trials),overall,hddm,drift rate,1,150
+choice_reaction_time.hddm_non_decision,task,Hddm non-decision time parameter for all trials with response (excluding no response trials),overall,hddm,non-decision,1,150
+choice_reaction_time.hddm_thresh,task,Hddm threshold parameter for all trials with response (excluding no response trials),overall,hddm,threshold,1,150
+cognitive_reflection_survey.correct_proportion,task,,overall,raw,accuracy,0,6
+cognitive_reflection_survey.intuitive_proportion,task,,overall,raw,other,0,6
+columbia_card_task_cold.avg_cards_chosen,task,Average number of cards chosen to be flipped in each round in the version of the task where subject don't turn the cards over and see their total scores at the end of all trials,condition,raw,other,0,24
+columbia_card_task_cold.gain_sensitivity,task,"Coefficient of gain amount in the multiple regression where number of cards chosen in each round is regressed over the gain amount, loss amount and number of loss cards in that round in the version of the task where subject don't turn the cards over and see their total scores at the end of all trials",condition,fit,other,0,24
+columbia_card_task_cold.information_use,task,Number of sensitivity parameters that were significantly <0.5 in the version of the task where subject don't turn the cards over and see their total scores at the end of all trials (ranges from 0-3),condition,fit,other,0,24
+columbia_card_task_cold.loss_sensitivity,task,"Coefficient of loss amount in the multiple regression where number of cards chosen in each round is regressed over the gain amount, loss amount and number of loss cards in that round in the version of the task where subject don't turn the cards over and see their total scores at the end of all trials",condition,fit,other,0,24
+columbia_card_task_cold.probability_sensitivity,task,"Coefficient of number of loss cards in the multiple regression where number of cards chosen in each round is regressed over the gain amount, loss amount and number of loss cards in that round in the version of the task where subject don't turn the cards over and see their total scores at the end of all trials",condition,fit,other,0,24
+columbia_card_task_hot.avg_cards_chosen,task,Average number of cards chosen to be flipped in each round in the version of the task where subject do turn the cards over and see their scores at the end of each round,condition,raw,other,0,24
+columbia_card_task_hot.gain_sensitivity,task,"Coefficient of gain amount in the multiple regression where number of cards chosen in each round is regressed over the gain amount, loss amount and number of loss cards in that round in the version of the task where subject do turn the cards over and see their scores at the end of each round",condition,fit,other,0,24
+columbia_card_task_hot.information_use,task,Number of sensitivity parameters that were significantly <0.5 in the version of the task where subject do turn the cards over and see their scores at the end of each round (ranges from 0-3),condition,fit,other,0,24
+columbia_card_task_hot.loss_sensitivity,task,"Coefficient of loss amount in the multiple regression where number of cards chosen in each round is regressed over the gain amount, loss amount and number of loss cards in that round in the version of the task where subject do turn the cards over and see their scores at the end of each round",condition,fit,other,0,24
+columbia_card_task_hot.probability_sensitivity,task,"Coefficient of number of loss cards in the multiple regression where number of cards chosen in each round is regressed over the gain amount, loss amount and number of loss cards in that round in the version of the task where subject do turn the cards over and see their scores at the end of each round",condition,fit,other,0,24
+dietary_decision.health_sensitivity,task,Coefficient of difference in health ratings in the multiple regression where choice in each trial is regressed over the difference in health ratings and the difference in taste rating between the reference item and alternative item in that trial,overall,fit,other,0,48
+dietary_decision.prop_healthy_choice,task,,overall,raw,other,0,48
+dietary_decision.taste_sensitivity,task,Coefficient of difference in taste ratings in the multiple regression where choice in each trial is regressed over the difference in health ratings and the difference in taste rating between the reference item and alternative item in that trial,overall,fit,other,0,48
+digit_span.forward_span,task,Average number of accurately recalled digits in order of appearance after dropping the first four trials,condition,raw,other,0,10
+digit_span.reverse_span,task,Average number of accurately recalled digits in reverse order of appearance after dropping the first four trials,condition,raw,other,0,10
+directed_forgetting.acc,task,Proportion of correct responses (both hits and correct rejections) in identifying whether presented letter was in memory set,overall,raw,accuracy,1,70
+directed_forgetting.avg_rt,task,Median response time for correct responses,overall,raw,rt,1,64
+directed_forgetting.EZ_drift,task,EZ ddm drift parameter for all trials with response (excluding no response trials),overall,EZ,drift rate,1,64
+directed_forgetting.EZ_non_decision,task,EZ ddm non-decision time parameter for all trials with response (excluding no response trials),overall,EZ,non-decision,1,64
+directed_forgetting.EZ_thresh,task,EZ ddm threshold parameter for all trials with response (excluding no response trials),overall,EZ,threshold,1,64
+directed_forgetting.hddm_drift,task,Hddm drift parameter for all trials with response (excluding no response trials),overall,hddm,drift rate,1,70
+directed_forgetting.hddm_non_decision,task,Hddm non-decision time parameter for all trials with response (excluding no response trials),overall,hddm,non-decision,1,70
+directed_forgetting.hddm_thresh,task,Hddm threshold parameter for all trials with response (excluding no response trials),overall,hddm,threshold,1,70
+directed_forgetting.proactive_interference_acc,task,Difference in proportion of correct responses between negative (where the stimulus to respond to is in forgetting set) and control (where the stimulus to respond to is new) trials,difference,raw,accuracy,1,17
+directed_forgetting.proactive_interference_EZ_drift,task,Difference in EZ ddm drift rate parameter between negative (where the stimulus to respond to is in forgetting set) and control (where the stimulus to respond to is new) trials,difference,EZ,drift rate,1,16
+directed_forgetting.proactive_interference_EZ_non_decision,task,Difference in EZ ddm non-decision time parameter between negative (where the stimulus to respond to is in forgetting set) and control (where the stimulus to respond to is new) trials,difference,EZ,non-decision,1,16
+directed_forgetting.proactive_interference_EZ_thresh,task,Difference in EZ ddm threshold parameter between negative (where the stimulus to respond to is in forgetting set) and control (where the stimulus to respond to is new) trials,difference,EZ,threshold,1,16
+directed_forgetting.proactive_interference_hddm_drift,task,Difference in hddm drift rate parameter between negative (where the stimulus to respond to is in forgetting set) and control (where the stimulus to respond to is new) trials,difference,hddm,drift rate,1,17
+directed_forgetting.proactive_interference_rt,task,Difference in median response time of correct responses between negative (where the stimulus to respond to is in forgetting set) and control (where the stimulus to respond to is new) trials,difference,raw,rt,1,16
+discount_titrate.percent_patient,task,Proportion of patient choices across all 36 trials,overall,raw,other,0,36
+dot_pattern_expectancy.acc,task,Proportion of correct responses (both hits and correct rejections) in identifying whether observed sequence of dot patterns is the target pair (AX),overall,raw,accuracy,1,156
+dot_pattern_expectancy.avg_rt,task,Median response time of correct responses (both hits and correct rejections) in identifying whether observed sequence of dot patterns is the target pair (AX),overall,raw,rt,1,147
+dot_pattern_expectancy.AX_errors,task,,condition,raw,accuracy,1,108
+dot_pattern_expectancy.AX_rt,task,,condition,raw,rt,1,104
+dot_pattern_expectancy.AY_errors,task,,condition,raw,accuracy,1,19
+dot_pattern_expectancy.AY_rt,task,,condition,raw,rt,1,16
+dot_pattern_expectancy.AY.BY_acc,task,Difference in mean accuracy between AY and BY trials,difference,raw,accuracy,1,15
+dot_pattern_expectancy.AY.BY_EZ_drift,task,Difference in EZ ddm drift rate parameter between AY and BY trials,difference,EZ,drift rate,1,13
+dot_pattern_expectancy.AY.BY_EZ_non_decision,task,Difference in EZ ddm non-decision time parameter between AY and BY trials,difference,EZ,non-decision,1,13
+dot_pattern_expectancy.AY.BY_EZ_thresh,task,Difference in EZ ddm threshold parameter between AY and BY trials,difference,EZ,threshold,1,13
+dot_pattern_expectancy.AY.BY_hddm_drift,task,Difference in hddm drift rate parameter between AY and BY trials,difference,hddm,drift rate,1,15
+dot_pattern_expectancy.AY.BY_rt,task,Difference in median response times between AY and BY trials,difference,raw,rt,1,13
+dot_pattern_expectancy.bias,task,Negative average of hit rate in AX and false alarm rate in BX,condition,raw,other,1,65
+dot_pattern_expectancy.BX_errors,task,,condition,raw,accuracy,1,19
+dot_pattern_expectancy.BX_rt,task,,condition,raw,rt,1,17
+dot_pattern_expectancy.BX.BY_acc,task,Difference in mean accuracy between BX and BY trials,difference,raw,accuracy,1,15
+dot_pattern_expectancy.BX.BY_EZ_drift,task,Difference in EZ ddm drift rate parameter between BX and BY trials,difference,EZ,drift rate,1,13
+dot_pattern_expectancy.BX.BY_EZ_non_decision,task,Difference in EZ ddm non-decision time parameter between BX and BY trials,difference,EZ,non-decision,1,13
+dot_pattern_expectancy.BX.BY_EZ_thresh,task,Difference in EZ ddm threshold parameter between BX and BY trials,difference,EZ,threshold,1,13
+dot_pattern_expectancy.BX.BY_hddm_drift,task,Difference in hddm drift rate parameter between BX and BY trials,difference,hddm,drift rate,1,15
+dot_pattern_expectancy.BX.BY_rt,task,Difference in median response times between BX and BY trials,difference,raw,rt,1,13
+dot_pattern_expectancy.BY_errors,task,,condition,raw,accuracy,1,10
+dot_pattern_expectancy.BY_rt,task,,condition,raw,rt,1,9
+dot_pattern_expectancy.dprime,task,Difference between hit rate in AX trials and false alarm rate on BX trials,difference,raw,other,1,65
+dot_pattern_expectancy.EZ_drift,task,EZ ddm drift rate parameter for all trials (excluding no response trials),overall,EZ,drift rate,1,147
+dot_pattern_expectancy.EZ_non_decision,task,EZ ddm non-decision time parameter for all trials (excluding no response trials),overall,EZ,non-decision,1,147
+dot_pattern_expectancy.EZ_thresh,task,EZ ddm threshold parameter for all trials (excluding no response trials),overall,EZ,threshold,1,147
+dot_pattern_expectancy.hddm_drift,task,Hddm drift rate parameter for all trials (excluding no response trials),overall,hddm,drift rate,1,156
+dot_pattern_expectancy.hddm_non_decision,task,Hddm non-decision time parameter for all trials (excluding no response trials),overall,hddm,non-decision,1,156
+dot_pattern_expectancy.hddm_thresh,task,Hddm threshold parameter for all trials (excluding no response trials),overall,hddm,threshold,1,156
+go_nogo.acc,task,Proportion of correct responses where correct response is to press for go stimuli and stop for nogo stimuli,overall,raw,accuracy,0,350
+go_nogo.bias,task,Negative average of hit rate (proprotion of go trials with response) and false alarm rate (proportion of nogo trials with response),overall,raw,other,0,175
+go_nogo.commission_errors,task,,condition,raw,accuracy,0,175
+go_nogo.dprime,task,Difference between hit rate (proprotion of go trials with response) and false alarm rate (proportion of nogo trials with response),difference,raw,other,0,175
+go_nogo.go_rt,task,,condition,raw,rt,0,175
+go_nogo.omission_errors,task,,condition,raw,accuracy,0,175
+hierarchical_rule.acc,task,Proportion of correct responses (excluding no response trials),overall,raw,accuracy,0,360
+hierarchical_rule.avg_rt,task,Median response time for correct responses,overall,raw,rt,0,173
+hierarchical_rule.score,task,Sum of number of correct responses,overall,raw,other,0,360
+holt_laury_survey.risk_aversion,task,,overall,fit,other,0,10
+holt_laury_survey.risky_choices,task,,overall,raw,other,0,10
+holt_laury_survey.safe_choices,task,,overall,raw,other,0,10
+holt_laury_survey.beta,,,overall,fit,other,0,10
+holt_laury_survey.prob_weighting,,,overall,fit,other,0,10
+information_sampling_task.Decreasing_Win_acc,task,Proprotion of correct choices in the condition where opening each additional box decreases the points that can be earned in that round following a correct guess of the color in majority,condition,raw,accuracy,0,10
+information_sampling_task.Decreasing_Win_boxes_opened,task,,condition,raw,other,0,10
+information_sampling_task.Decreasing_Win_motivation,task,Average latency in opening each box in the condition where opening each additional box decreases the points that can be earned in that round following a correct guess of the color in majority,condition,raw,rt,0,10
+information_sampling_task.Decreasing_Win_P_correct,task,Average probability of a correct response given the number of opened boxes in the condition where opening each additional box decreases the points that can be earned in that round following a correct guess of the color in majority,condition,raw,other,0,10
+information_sampling_task.Fixed_Win_acc,task,Proprotion of correct choices  in the condition where the points that can be earned is fixed in that round following a correct guess of the color in majority,condition,raw,accuracy,0,10
+information_sampling_task.Fixed_Win_boxes_opened,task,,condition,raw,other,0,10
+information_sampling_task.Fixed_Win_motivation,task,Average latency in opening each box in the condition where the points that can be earned is fixed in that round following a correct guess of the color in majority,condition,raw,rt,0,10
+information_sampling_task.Fixed_Win_P_correct,task,Average probability of a correct response given the number of opened boxes in the condition where the points that can be earned is fixed in that round following a correct guess of the color in majority,condition,raw,other,0,10
+keep_track.score,task,Proportion of items remembered correctly where correct means indicating the last item of a category in a given sequence of words,overall,raw,other,0,9
+kirby.exp_discount_rate,task,,overall,fit,other,0,27
+kirby.exp_discount_rate_large,task,,condition,fit,other,0,9
+kirby.exp_discount_rate_medium,task,,condition,fit,other,0,9
+kirby.exp_discount_rate_small,task,,condition,fit,other,0,9
+kirby.hyp_discount_rate,task,,overall,fit,other,0,27
+kirby.hyp_discount_rate_large,task,Hyperbolic discount rate for set of 9 choices with large rewards,condition,fit,other,0,9
+kirby.hyp_discount_rate_medium,task,Hyperbolic discount rate for set of 9 choices with medium rewards,condition,fit,other,0,9
+kirby.hyp_discount_rate_small,task,Hyperbolic discount rate for set of 9 choices with small rewards,condition,fit,other,0,9
+kirby.percent_patient,task,,overall,raw,other,0,27
+kirby.percent_patient_large,task,,condition,raw,other,0,9
+kirby.percent_patient_medium,task,,condition,raw,other,0,9
+kirby.percent_patient_small,task,,condition,raw,other,0,9
+local_global_letter.acc,task,Proportion of correct choices (excluding no response trials) where correct choice means indicating the correct local or global letter depending on the color of the stimulus,overall,raw,accuracy,1,95
+local_global_letter.avg_rt,task,Median response time for correct responses,overall,raw,rt,1,86
+local_global_letter.conflict_acc,task,Difference in proportion of accuracy between incongruent and congruent trials (incongruent trials are those that have different local and global letters and congruent trials have the same),difference,raw,accuracy,1,31
+local_global_letter.conflict_EZ_drift,task,Difference in EZ ddm drift rate parameter between incongruent and congruent trials (incongruent trials are those that have different local and global letters and congruent trials have the same),difference,EZ,drift rate,1,27
+local_global_letter.conflict_EZ_non_decision,task,Difference in EZ ddm non-decision time parameter between incongruent and congruent trials (incongruent trials are those that have different local and global letters and congruent trials have the same),difference,EZ,non-decision,1,27
+local_global_letter.conflict_EZ_thresh,task,Difference in EZ ddm threshold parameter between incongruent and congruent trials (incongruent trials are those that have different local and global letters and congruent trials have the same),difference,EZ,threshold,1,27
+local_global_letter.conflict_hddm_drift,task,Difference in hddm drift rate parameter between incongruent and congruent trials (incongruent trials are those that have different local and global letters and congruent trials have the same),difference,hddm,drift rate,1,31
+local_global_letter.conflict_rt,task,Difference in median rt between incongruent and congruent trials (incongruent trials are those that have different local and global letters and congruent trials have the same),difference,raw,rt,1,27
+local_global_letter.congruent_facilitation_acc,task,Difference in proportion of accuracy between neutral and congruent trials (where neutral is trials including 'o' and congruent trials are those that have the same local and global letter),difference,raw,accuracy,1,31
+local_global_letter.congruent_facilitation_rt,task,Difference in median rt between neutral and congruent trials (where neutral is trials including 'o' and congruent trials are those that have the same local and global letter),difference,raw,rt,1,27
+local_global_letter.congruent_rt,task,,condition,raw,rt,1,31
+local_global_letter.EZ_drift,task,EZ ddm drift rate parameter for all trials (excluding no response trials),overall,EZ,drift rate,1,86
+local_global_letter.EZ_non_decision,task,EZ ddm non-decision time parameter for all trials (excluding no response trials),overall,EZ,non-decision,1,86
+local_global_letter.EZ_thresh,task,EZ ddm threshold parameter for all trials (excluding no response trials),overall,EZ,threshold,1,86
+local_global_letter.global_conflict_rt,task,,difference,raw,rt,1,16
+local_global_letter.global_congruent_errors,task,,condition,raw,accuracy,1,16
+local_global_letter.global_congruent_rt,task,,condition,raw,rt,1,16
+local_global_letter.global_error_cost,task,,difference,raw,other,1,37
+local_global_letter.global_incongruent_errors,task,,condition,raw,accuracy,1,16
+local_global_letter.global_incongruent_rt,task,,condition,raw,rt,1,16
+local_global_letter.hddm_drift,task,Hddm drift rate parameter for all trials (excluding no response trials),overall,hddm,drift rate,1,95
+local_global_letter.hddm_non_decision,task,Hddm non-decision time parameter for all trials (excluding no response trials),overall,hddm,non-decision,1,95
+local_global_letter.hddm_thresh,task,Hddm threshold parameter for all trials (excluding no response trials),overall,hddm,threshold,1,95
+local_global_letter.incongruent_harm_acc,task,Difference in proportion of accuracy between incongruent and neutral trials (where neutral is trials including 'o' and incongruent trials are those that have different local and global letter),difference,raw,accuracy,1,31
+local_global_letter.incongruent_harm_rt,task,Difference in median rt between incongruent and neutral trials (where neutral is trials including 'o' and incongruent trials are those that have different local and global letter),difference,raw,rt,1,27
+local_global_letter.incongruent_rt,task,,condition,raw,rt,1,31
+local_global_letter.local_conflict_rt,task,,difference,raw,rt,1,16
+local_global_letter.local_congruent_errors,task,,condition,raw,accuracy,1,16
+local_global_letter.local_congruent_rt,task,,condition,raw,rt,1,16
+local_global_letter.local_error_cost,task,,difference,raw,rt,1,37
+local_global_letter.local_incongruent_errors,task,,condition,raw,accuracy,1,16
+local_global_letter.local_incongruent_rt,task,,condition,raw,rt,1,16
+local_global_letter.switch_cost_acc,task,Difference in proportion of accuracy between switch and stay trials (where switch trials are preceded by trials that different conflict conditions changes and stay trials are those that are preceded by the same conflict condition),difference,raw,accuracy,1,43
+local_global_letter.switch_cost_EZ_drift,task,Difference in EZ ddm drift rate parameter between switch and stay trials (where switch trials are preceded by trials that different conflict conditions changes and stay trials are those that are preceded by the same conflict condition),difference,EZ,drift rate,1,39
+local_global_letter.switch_cost_EZ_non_decision,task,Difference in EZ ddm non-decision time parameter between switch and stay trials (where switch trials are preceded by trials that different conflict conditions changes and stay trials are those that are preceded by the same conflict condition),difference,EZ,non-decision,1,39
+local_global_letter.switch_cost_EZ_thresh,task,Difference in EZ ddm threshold parameter between switch and stay trials (where switch trials are preceded by trials that different conflict conditions changes and stay trials are those that are preceded by the same conflict condition),difference,EZ,threshold,1,39
+local_global_letter.switch_cost_hddm_drift,task,Difference in hddm drift rate parameter between switch and stay trials (where switch trials are preceded by trials that different conflict conditions changes and stay trials are those that are preceded by the same conflict condition),difference,hddm,drift rate,1,43
+local_global_letter.switch_cost_rt,task,Difference in median response time between switch and stay trials (where switch trials are preceded by trials that different conflict conditions changes and stay trials are those that are preceded by the same conflict condition),difference,raw,rt,1,39
+local_global_letter.global_bias_hddm_drift,task,,difference,hddm,drift rate,1,47
+local_global_letter.global_bias_acc,task,,difference,raw,accuracy,1,66
+local_global_letter.global_bias_rt,task,,difference,raw,rt,1,66
+local_global_letter.global_bias_EZ_drift,task,,difference,EZ,drift rate,1,66
+local_global_letter.global_bias_EZ_non_decision,task,,difference,EZ,non-decision,1,66
+local_global_letter.global_bias_EZ_thresh,task,,difference,EZ,threshold,1,66
+motor_selective_stop_signal.EZ_drift,task,EZ ddm drift rate parameter for all go trials (excluding no response trials),overall,EZ,drift rate,1,168
+motor_selective_stop_signal.EZ_non_decision,task,EZ ddm non-decision time parameter for all go trials (excluding no response trials),overall,EZ,non-decision,1,168
+motor_selective_stop_signal.EZ_thresh,task,EZ ddm threshold parameter for all go trials (excluding no response trials),overall,EZ,threshold,1,168
+motor_selective_stop_signal.hddm_drift,task,Hddm drift rate parameter for all go trials (excluding no response trials),overall,hddm,drift rate,1,180
+motor_selective_stop_signal.hddm_non_decision,task,Hddm non-decision time parameter for all go trials (excluding no response trials),overall,hddm,non-decision,1,180
+motor_selective_stop_signal.hddm_thresh,task,Hddm threshold parameter for all go trials (excluding no response trials),overall,hddm,threshold,1,180
+motor_selective_stop_signal.reactive_control_rt,task,Difference between median response times in noncritical signal and go trials,difference,raw,rt,1,67
+motor_selective_stop_signal.proactive_control_rt,task,Difference between median response times in critical and noncritical signal trials,difference,raw,rt,1,84
+motor_selective_stop_signal.SSRT,task,Difference between mean go rt at the percentile specified by the failed stop percentage and mean stop signal delay for stop trials for critical trials only,overall,raw,rt,1,90
+motor_selective_stop_signal.ignore_acc,task,,condition,raw,accuracy,1,60
+motor_selective_stop_signal.ignore_rt_error,task,,condition,raw,rt,1,51
+motor_selective_stop_signal.ignore_rt_error_std,task,,condition,raw,rt,1,51
+motor_selective_stop_signal.proactive_control_hddm_drift,task,,difference,hddm,drift rate,1,67
+motor_selective_stop_signal.reactive_control_hddm_drift,task,,difference,hddm,drift rate,1,84
+probabilistic_selection.approach_trial_acc,task,,condition,raw,accuracy,0,29
+probabilistic_selection.approach_trial_rt,task,,condition,raw,rt,0,29
+probabilistic_selection.avoid_trial_acc,task,,condition,raw,accuracy,0,29
+probabilistic_selection.avoid_trial_rt,task,,condition,raw,rt,0,29
+probabilistic_selection.overall_test_acc,task,Proportion of trials where the correct option is chosen where correct means choosing the stimulus with the higher win probability,overall,raw,accuracy,0,87
+probabilistic_selection.positive_learning_bias,task,"Parameter of value difference in the multiple regression where choice (accuracy) is regressed over value difference, the interaction of value difference and value sum and the next choice",overall,fit,other,0,87
+probabilistic_selection.value_sensitivity,task,"Parameter of the interaction between value difference and value sum in the multiple regression where choice (accuracy) is regressed over value difference, the interaction of value difference and value sum and the next choice",overall,fit,other,0,87
+psychological_refractory_period_two_choices.PRP_slope,task,Coefficient of ISI in the regression where response time to second task (responding to number after responding to box color) is regressed on ISI's (with four discrete values),overall,fit,other,0,232
+psychological_refractory_period_two_choices.PRP_slowing,task,,overall,fit,other,0,48
+psychological_refractory_period_two_choices.task1_acc,task,Proportion of correct responses for the first trial (responding to box color - excluding no response trials),overall,raw,accuracy,0,232
+psychological_refractory_period_two_choices.task2_acc,task,Proportion of correct responses for the second trial (responding to number - excluding no response trials),overall,raw,accuracy,0,232
+ravens.score,task,Number of correct responses out of 18,overall,raw,accuracy,0,18
+recent_probes.acc,task,Proportion of correct responses including hits and correct rejections (excluding no response trials) where correct means identifying whether the presented letter was in the memory set of six letter,overall,raw,accuracy,1,71
+recent_probes.avg_rt,task,Median response time for correct responses,overall,raw,rt,1,64
+recent_probes.EZ_drift,task,EZ ddm drift rate parameter for all trials (excluding no response trials),overall,EZ,drift rate,1,64
+recent_probes.EZ_non_decision,task,EZ ddm non-decision time parameter for all trials (excluding no response trials),overall,EZ,non-decision,1,64
+recent_probes.EZ_thresh,task,EZ ddm threshold parameter for all trials (excluding no response trials),overall,EZ,threshold,1,64
+recent_probes.hddm_drift,task,Hddm drift rate parameter for all trials (excluding no response trials),overall,hddm,drift rate,1,71
+recent_probes.hddm_non_decision,task,Hddm non-decision time parameter for all trials (excluding no response trials),overall,hddm,non-decision,1,71
+recent_probes.hddm_thresh,task,Hddm threshold parameter for all trials (excluding no response trials),overall,hddm,threshold,1,71
+recent_probes.proactive_interference_acc,task,Difference in proportion of correct responses between negative trials where the probe was part of the previous trial's memory set (recent trials) versus when it was not,difference,raw,accuracy,1,18
+recent_probes.proactive_interference_EZ_drift,task,Difference in EZ ddm drift rate parameter between negative trials where the probe was part of the previous trial's memory set (recent trials) versus when it was not,difference,EZ,drift rate,1,16
+recent_probes.proactive_interference_EZ_non_decision,task,Difference in EZ ddm non-decision time parameter between negative trials where the probe was part of the previous trial's memory set (recent trials) versus when it was not,difference,EZ,non-decision,1,16
+recent_probes.proactive_interference_EZ_thresh,task,Difference in EZ ddm threshold parameter between negative trials where the probe was part of the previous trial's memory set (recent trials) versus when it was not,difference,EZ,threshold,1,16
+recent_probes.proactive_interference_hddm_drift,task,Difference in hddm drift rate parameter between negative trials where the probe was part of the previous trial's memory set (recent trials) versus when it was not,difference,hddm,drift rate,1,18
+recent_probes.proactive_interference_rt,task,Difference in median response times to correct trials between negative trials where the probe was part of the previous trial's memory set (recent trials) versus when it was not,difference,raw,rt,1,16
+shape_matching.acc,task,Proportion of correct responses where correct includes hits and correct rejections and indicates whether the shapes in white and green are the same (excluding no response trials),overall,raw,accuracy,1,277
+shape_matching.avg_rt,task,Median response time for correct responses,overall,raw,rt,1,266
+shape_matching.EZ_drift,task,EZ ddm drift rate parameter for all trials (excluding no response trials),overall,EZ,drift rate,1,266
+shape_matching.EZ_non_decision,task,EZ ddm non-decision time parameter for all trials (excluding no response trials),overall,EZ,non-decision,1,266
+shape_matching.EZ_thresh,task,EZ ddm threshold parameter for all trials (excluding no response trials),overall,EZ,threshold,1,266
+shape_matching.hddm_drift,task,Hddm drift rate parameter for all trials (excluding no response trials),overall,hddm,drift rate,1,277
+shape_matching.hddm_non_decision,task,Hddm non-decision time parameter for all trials (excluding no response trials),overall,hddm,non-decision,1,277
+shape_matching.hddm_thresh,task,Hddm threshold parameter for all trials (excluding no response trials),overall,hddm,threshold,1,277
+shape_matching.negative_priming,task,,difference,raw,other,1,139
+shape_matching.stimulus_interference_EZ_drift,task,Difference in EZ ddm drift rate parameter between trials where probe and target are the same but target and distractor and distractor and probe are different versus when neutral,difference,EZ,drift rate,1,37
+shape_matching.stimulus_interference_EZ_non_decision,task,Difference in EZ ddm non-decision time parameter between trials where probe and target are the same but target and distractor and distractor and probe are different versus when neutral,difference,EZ,non-decision,1,37
+shape_matching.stimulus_interference_EZ_thresh,task,Difference in EZ ddm threshold parameter between trials where probe and target are the same but target and distractor and distractor and probe are different versus when neutral,difference,EZ,threshold,1,37
+shape_matching.stimulus_interference_hddm_drift,task,Difference in hddm drift rate parameter between trials where probe and target are the same but target and distractor and distractor and probe are different versus when neutral,difference,hddm,drift rate,1,40
+shift_task.acc,task,Proportion of correct responses (excluding no response trials) where correct means choosing the shape with the feature that will be rewarded,overall,raw,accuracy,0,401
+shift_task.avg_rt,task,Median response time for correct responses,overall,raw,rt,0,401
+shift_task.conceptual_responses,task,,overall,raw,other,0,401
+shift_task.fail_to_maintain_set,task,,overall,raw,other,0,401
+shift_task.learning_rate,task,Coefficient of number of trials since rewarded feature switched where (binomial) correct choices is regressed on this,overall,fit,other,0,401
+shift_task.learning_to_learn,task,,overall,fit,other,0,401
+shift_task.nonperseverative_errors,task,,overall,raw,accuracy,0,401
+shift_task.perseverative_errors,task,,overall,raw,other,0,401
+shift_task.perseverative_responses,task,,overall,raw,other,0,401
+shift_task.total_errors,task,,overall,raw,accuracy,0,401
+shift_task.model_beta,task,,overall,fit,other,0,401
+shift_task.model_decay,task,,overall,fit,other,0,401
+shift_task.model_learning_rate,task,,overall,fit,other,0,401
+simon.acc,task,Proportion of correct responses (excluding non-response trials) where correct means pressing the correct button for the correct color regardless of where it appears on the screen,overall,raw,accuracy,1,100
+simon.avg_rt,task,Median response times for correct responses only,overall,raw,rt,1,96
+simon.congruent_acc,task,,condition,raw,accuracy,1,50
+simon.congruent_avg_rt,task,,condition,raw,rt,1,48
+simon.congruent_sd_rt,task,,condition,raw,rt,1,48
+simon.EZ_drift,task,EZ ddm drift rate parameter for all trials (excluding no response trials),overall,EZ,drift rate,1,96
+simon.EZ_non_decision,task,EZ ddm non-decision time parameter for all trials (excluding no response trials),overall,EZ,non-decision,1,96
+simon.EZ_thresh,task,EZ ddm threshold parameter for all trials (excluding no response trials),overall,EZ,threshold,1,96
+simon.hddm_drift,task,Hddm drift rate parameter for all trials (excluding no response trials),overall,hddm,drift rate,1,700
+simon.hddm_non_decision,task,Hddm non-decision time parameter for all trials (excluding no response trials),overall,hddm,non-decision,1,700
+simon.hddm_thresh,task,Hddm threshold parameter for all trials (excluding no response trials),overall,hddm,threshold,1,700
+simon.incongruent_acc,task,,condition,raw,accuracy,1,50
+simon.incongruent_avg_rt,task,,condition,raw,rt,1,48
+simon.incongruent_sd_rt,task,,condition,raw,rt,1,48
+simon.simon_acc,task,Difference in proportion of correct responses between incongruent (trials where response should be left and response is on right) and congruent trials (trials where the response should be left and the stimulus is on left),difference,raw,accuracy,1,50
+simon.simon_EZ_drift,task,Difference in EZ ddm drift rate parameter between incongruent (trials where response should be left and response is on right) and congruent trials (trials where the response should be left and the stimulus is on left),difference,EZ,drift rate,1,48
+simon.simon_EZ_non_decision,task,Difference in EZ ddm non-decision time parameter between incongruent (trials where response should be left and response is on right) and congruent trials (trials where the response should be left and the stimulus is on left),difference,EZ,non-decision,1,48
+simon.simon_EZ_thresh,task,Difference in EZ ddm threshold parameter between incongruent (trials where response should be left and response is on right) and congruent trials (trials where the response should be left and the stimulus is on left),difference,EZ,threshold,1,48
+simon.simon_hddm_drift,task,Difference in hddm drift rate parameter between incongruent (trials where response should be left and response is on right) and congruent trials (trials where the response should be left and the stimulus is on left),difference,hddm,drift rate,1,50
+simon.simon_rt,task,Difference in median response time in correct responses between incongruent (trials where response should be left and response is on right) and congruent trials (trials where the response should be left and the stimulus is on left),difference,raw,rt,1,48
+simple_reaction_time.avg_rt,task,Median response time (excluding no response trials),overall,raw,rt,0,149
+spatial_span.forward_span,task,Average number of locations remembered in order of appearance after dropping the first four trials,condition,raw,accuracy,0,10
+spatial_span.reverse_span,task,Average number of locations remembered in reverse order of appearance after dropping the first four trials,condition,raw,accuracy,0,10
+stim_selective_stop_signal.EZ_drift,task,EZ ddm drift rate parameter for all go trials (excluding no response trials),overall,EZ,drift rate,1,169
+stim_selective_stop_signal.EZ_non_decision,task,EZ ddm non-decision time parameter for all go trials (excluding no response trials),overall,EZ,non-decision,1,169
+stim_selective_stop_signal.EZ_thresh,task,EZ ddm threshold parameter for all go trials (excluding no response trials),overall,EZ,threshold,1,169
+stim_selective_stop_signal.hddm_drift,task,Hddm drift rate parameter for all go trials (excluding no response trials),overall,hddm,drift rate,1,180
+stim_selective_stop_signal.hddm_non_decision,task,Hddm non-decision time parameter for all go trials (excluding no response trials),overall,hddm,non-decision,1,180
+stim_selective_stop_signal.hddm_thresh,task,Hddm threshold parameter for all go trials (excluding no response trials),overall,hddm,threshold,1,180
+stim_selective_stop_signal.SSRT,task,Difference between mean go rt at the percentile specified by the failed stop percentage and mean stop signal delay for stop trials,overall,raw,rt,1,240
+stim_selective_stop_signal.reactive_control_hddm_drift,task,,overall,hddm,drift rate,1,120
+stim_selective_stop_signal.ignore_acc,task,,condition,raw,accuracy,1,60
+stim_selective_stop_signal.ignore_rt_error,task,,condition,raw,rt,1,59
+stim_selective_stop_signal.ignore_rt_error_std,task,,condition,raw,rt,1,59
+stop_signal.commission_errors,task,,condition,raw,accuracy,1,180
+stop_signal.EZ_drift,task,EZ ddm drift rate parameter for all go trials (excluding no response trials),overall,EZ,drift rate,1,420
+stop_signal.EZ_non_decision,task,EZ ddm non-decision time parameter for all go trials (excluding no response trials),overall,EZ,non-decision,1,420
+stop_signal.EZ_thresh,task,EZ ddm threshold parameter for all go trials (excluding no response trials),overall,EZ,threshold,1,420
+stop_signal.go_rt,task,,condition,raw,rt,1,392
+stop_signal.go_rt_std_error,task,,condition,raw,rt,1,392
+stop_signal.hddm_drift,task,,overall,hddm,drift rate,1,420
+stop_signal.hddm_non_decision,task,,overall,hddm,non-decision,1,420
+stop_signal.hddm_thresh,task,,overall,hddm,threshold,1,420
+stop_signal.proactive_slowing_hddm_drift,task,,difference,hddm,drift rate,1,210
+stop_signal.proactive_slowing_hddm_thresh,task,,difference,hddm,threshold,1,210
+stop_signal.inhibition_slope,task,,condition,raw,other,1,180
+stop_signal.omission_errors,task,,condition,raw,accuracy,1,420
+stop_signal.proactive_slowing_rt,task,Difference in mean reaction time between the two stop signal frequency conditions (high-low),difference,raw,rt,1,224
+stop_signal.proactive_SSRT_speeding,task,Difference in SSRT between the low stop signal frequency conditions (low-high),difference,raw,rt,1,300
+stop_signal.SSRT,task,,overall,raw,rt,1,300
+stop_signal.SSRT_high,task,Difference between mean go rt at the percentile specified by the failed stop percentage and mean stop signal delay for stop trials in condition with high stop signal probability (40%),overall,raw,rt,1,300
+stop_signal.SSRT_low,task,Difference between mean go rt at the percentile specified by the failed stop percentage and mean stop signal delay for stop trials in condition with low stop signal probability (20%),overall,raw,rt,1,300
+stop_signal.stop_acc,task,,condition,raw,accuracy,1,180
+stop_signal.stop_rt_error,task,,condition,raw,rt,1,95
+stop_signal.total_errors,task,,overall,raw,accuracy,1,600
+stroop.acc,task,Proportion of correct responses (excluding no response trials),overall,raw,accuracy,1,95
+stroop.avg_rt,task,Median response time for correct responses,overall,raw,rt,1,91
+stroop.congruent_errors,task,,condition,raw,accuracy,1,48
+stroop.congruent_rt,task,,condition,raw,accuracy,1,48
+stroop.errors,task,,overall,raw,accuracy,1,95
+stroop.EZ_drift,task,EZ ddm drift rate parameter for all trials (excluding no response trials),overall,EZ,drift rate,1,91
+stroop.EZ_non_decision,task,EZ ddm non-decision time parameter for all trials (excluding no response trials),overall,EZ,non-decision,1,91
+stroop.EZ_thresh,task,EZ ddm threshold parameter for all trials (excluding no response trials),overall,EZ,threshold,1,91
+stroop.hddm_drift,task,Hddm drift rate parameter for all trials (excluding no response trials),overall,hddm,drift rate,1,95
+stroop.hddm_non_decision,task,Hddm non-decision time parameter for all trials (excluding no response trials),overall,hddm,non-decision,1,95
+stroop.hddm_thresh,task,Hddm threshold parameter for all trials (excluding no response trials),overall,hddm,threshold,1,95
+stroop.incongruent_errors,task,,condition,raw,accuracy,1,47
+stroop.incongruent_rt,task,,condition,raw,rt,1,47
+stroop.stroop_acc,task,Difference in proportion of correct responses between incongruent (where word color does not match the word) and congruent trials (where word color does match the word),difference,raw,accuracy,1,48
+stroop.stroop_EZ_drift,task,Difference in EZ ddm drift rate parameter between incongruent (where word color does not match the word) and congruent trials (where word color does match the word),difference,EZ,drift rate,1,45
+stroop.stroop_EZ_non_decision,task,Difference in EZ ddm non-decision time parameter between incongruent (where word color does not match the word) and congruent trials (where word color does match the word),difference,EZ,non-decision,1,45
+stroop.stroop_EZ_thresh,task,Difference in EZ ddm threshold parameter between incongruent (where word color does not match the word) and congruent trials (where word color does match the word),difference,EZ,threshold,1,45
+stroop.stroop_hddm_drift,task,Difference in hddm drift rate parameter between incongruent (where word color does not match the word) and congruent trials (where word color does match the word),difference,hddm,drift rate,1,47
+stroop.stroop_rt,task,Difference in median response times in correct trials between incongruent (where word color does not match the word) and congruent trials (where word color does match the word),difference,raw,rt,1,45
+threebytwo.acc,task,Proportion of correct trials (excluding no response trials) where correct means pressing the right button for the stimulus depending one of three rules,overall,raw,accuracy,1,433
+threebytwo.avg_rt,task,Median response time for correct responses,overall,raw,rt,1,333
+threebytwo.cue_switch_cost_EZ_drift_100.0,task,Difference in EZ ddm drift rate parameter between stay (where cue and task remains the same) and switch (where task is the same but cue changes) trials for 100 ms cue-target-interval condition,difference,EZ,drift rate,1,29
+threebytwo.cue_switch_cost_EZ_drift_900.0,task,Difference in EZ ddm drift rate parameter between stay (where cue and task remains the same) and switch (where task is the same but cue changes) trials for 900 ms cue-target-interval condition,difference,EZ,drift rate,1,29
+threebytwo.cue_switch_cost_EZ_non_decision_100.0,task,Difference in EZ ddm non-decision time parameter between stay (where cue and task remains the same) and switch (where task is the same but cue changes) trials for 100 ms cue-target-interval condition,difference,EZ,non-decision,1,29
+threebytwo.cue_switch_cost_EZ_non_decision_900.0,task,Difference in EZ ddm non-decision time parameter between stay (where cue and task remains the same) and switch (where task is the same but cue changes) trials for 900 ms cue-target-interval condition,difference,EZ,non-decision,1,29
+threebytwo.cue_switch_cost_EZ_thresh_100.0,task,Difference in EZ ddm threshold parameter between stay (where cue and task remains the same) and switch (where task is the same but cue changes) trials for 100 ms cue-target-interval condition,difference,EZ,threshold,1,29
+threebytwo.cue_switch_cost_EZ_thresh_900.0,task,Difference in EZ ddm threshold parameter between stay (where cue and task remains the same) and switch (where task is the same but cue changes) trials for 900 ms cue-target-interval condition,difference,EZ,threshold,1,29
+threebytwo.cue_switch_cost_hddm_drift,task,Difference in hddm drift rate parameter between stay (where cue and task remains the same) and switch (where task is the same but cue changes) trials for 100 ms cue-target-interval condition,difference,hddm,drift rate,1,36
+threebytwo.cue_switch_cost_rt_100.0,task,Difference in median response time of correct responses between stay (where cue and task remains the same) and switch (where task is the same but cue changes) trials for 100 ms cue-target-interval condition,difference,raw,rt,1,29
+threebytwo.cue_switch_cost_rt_900.0,task,Difference median response time of correct responses between stay (where cue and task remains the same) and switch (where task is the same but cue changes) trials for 900 ms cue-target-interval condition,difference,raw,rt,1,29
+threebytwo.EZ_drift,task,EZ ddm drift rate parameter for all trials (excluding no response trials),overall,EZ,drift rate,1,333
+threebytwo.EZ_non_decision,task,EZ ddm non-decision time parameter for all trials (excluding no response trials),overall,EZ,non-decision,1,333
+threebytwo.EZ_thresh,task,EZ ddm threshold parameter for all trials (excluding no response trials),overall,EZ,threshold,1,333
+threebytwo.hddm_drift,task,Hddm drift rate parameter for all trials (excluding no response trials),overall,hddm,drift rate,1,433
+threebytwo.hddm_non_decision,task,Hddm non-decision time parameter for all trials (excluding no response trials),overall,hddm,non-decision,1,433
+threebytwo.hddm_thresh,task,Hddm threshold parameter for all trials (excluding no response trials),overall,hddm,threshold,1,433
+threebytwo.task_switch_cost_EZ_drift_100.0,task,Difference in EZ ddm drift rate parameter between stay (where task remains the same) and switch (where task changes) trials for 100 ms cue-target-interval condition,difference,EZ,drift rate,1,54
+threebytwo.task_switch_cost_EZ_drift_900.0,task,Difference in EZ ddm drift rate parameter between stay (where task remains the same) and switch (where task changes) trials for 900 ms cue-target-interval condition,difference,EZ,drift rate,1,54
+threebytwo.task_switch_cost_EZ_non_decision_100.0,task,Difference in EZ ddm non-decision time parameter between stay (where task remains the same) and switch (where task changes) trials for 100 ms cue-target-interval condition,difference,EZ,non-decision,1,54
+threebytwo.task_switch_cost_EZ_non_decision_900.0,task,Difference in EZ ddm non-decision time parameter between stay (where task remains the same) and switch (where task changes) trials for 900 ms cue-target-interval condition,difference,EZ,non-decision,1,54
+threebytwo.task_switch_cost_EZ_thresh_100.0,task,Difference in EZ ddm threshold parameter between stay (where task remains the same) and switch (where task changes) trials for 100 ms cue-target-interval condition,difference,EZ,threshold,1,54
+threebytwo.task_switch_cost_EZ_thresh_900.0,task,Difference in EZ ddm threshold parameter between stay (where task remains the same) and switch (where task changes) trials for 900 ms cue-target-interval condition,difference,EZ,threshold,1,54
+threebytwo.task_switch_cost_hddm_drift,task,Difference in hddm drift rate parameter between stay (where task remains the same) and switch (where task changes) trials for 100 ms cue-target-interval condition,difference,hddm,drift rate,1,71
+threebytwo.task_switch_cost_rt_100.0,task,Difference in median response time of correct responses between stay (where task remains the same) and switch (where task changes) trials for 100 ms cue-target-interval condition,difference,raw,rt,1,54
+threebytwo.task_switch_cost_rt_900.0,task,Difference median response time of correct responses between stay (where task remains the same) and switch (where task changes) trials for 900 ms cue-target-interval condition,difference,raw,rt,1,54
+tower_of_london.avg_move_time,task,Average time to take action on correct trials,overall,raw,rt,0,12
+tower_of_london.num_extra_moves,task,Total number of extra moves in the whole task,overall,raw,other,0,12
+tower_of_london.num_optimal_solutions,task,Total number of correct responses with optimal solutions,overall,raw,accuracy,0,12
+tower_of_london.planning_time,task,Average time before taking first action,overall,raw,rt,0,12
+two_stage_decision.avg_rt,task,Average response time of both first and second responses throughout the task,overall,raw,rt,0,198
+two_stage_decision.model_based,task,"Random effect interaction of last feedback and transition type for subject to stay on with same choice in the logistic regression of all subjects’ data where the choice to stay (binary) is regressed on fixed effects of most recent feedback, most recent transition and their interaction and with random slopes for these three coefficients as well as random intercepts for each subject",overall,fit,other,0,198
+two_stage_decision.model_free,task,"Random effect last feedback for subject to stay on with same choice in the logistic regression of all subjects’ data where the choice to stay (binary) is regressed on fixed effects of most recent feedback, most recent transition and their interaction and with random slopes for these three coefficients as well as random intercepts for each subject",overall,fit,other,0,198
+two_stage_decision.perseverance,task,"Random intercept for subject to stay on with same choice in the logistic regression of all subjects’ data where the choice to stay (binary) is regressed on fixed effects of most recent feedback, most recent transition and their interaction and with random slopes for these three coefficients as well as random intercepts for each subject",overall,fit,other,0,198
+writing_task.neutral_probability,task,Proportion of positive words resulting from sentiment analysis,overall,fit,other,0,1
+writing_task.positive_probability,task,Proportion of negative words resulting from sentiment analysis,overall,fit,other,0,1
+bis_bas_survey.BAS_drive,survey,,condition,raw,other,0,4
+bis_bas_survey.BAS_fun_seeking,survey,,condition,raw,other,0,4
+bis_bas_survey.BAS_reward_responsiveness,survey,,condition,raw,other,0,5
+bis_bas_survey.BAS_total,survey,,overall,raw,other,0,13
+bis_bas_survey.BIS,survey,,condition,raw,other,0,7
+bis11_survey.Attentional,survey,,condition,raw,other,0,8
+bis11_survey.Motor,survey,,condition,raw,other,0,11
+bis11_survey.Nonplanning,survey,,condition,raw,other,0,11
+bis11_survey.total,survey,,overall,raw,other,0,30
+brief_self_control_survey.self_control,survey,,condition,raw,other,0,13
+dickman_survey.dysfunctional,survey,,condition,raw,other,0,12
+dickman_survey.functional,survey,,condition,raw,other,0,11
+dospert_eb_survey.ethical,survey,,condition,raw,other,0,6
+dospert_eb_survey.financial,survey,,condition,raw,other,0,6
+dospert_eb_survey.health_safety,survey,,condition,raw,other,0,6
+dospert_eb_survey.recreational,survey,,condition,raw,other,0,6
+dospert_eb_survey.social,survey,,condition,raw,other,0,6
+dospert_rp_survey.ethical,survey,,condition,raw,other,0,6
+dospert_rp_survey.financial,survey,,condition,raw,other,0,6
+dospert_rp_survey.health_safety,survey,,condition,raw,other,0,6
+dospert_rp_survey.recreational,survey,,condition,raw,other,0,6
+dospert_rp_survey.social,survey,,condition,raw,other,0,6
+dospert_rt_survey.ethical,survey,,condition,raw,other,0,6
+dospert_rt_survey.financial,survey,,condition,raw,other,0,6
+dospert_rt_survey.health_safety,survey,,condition,raw,other,0,6
+dospert_rt_survey.recreational,survey,,condition,raw,other,0,6
+dospert_rt_survey.social,survey,,condition,raw,other,0,6
+eating_survey.cognitive_restraint,survey,,condition,raw,other,0,6
+eating_survey.emotional_eating,survey,,condition,raw,other,0,3
+eating_survey.total,survey,,overall,raw,other,0,18
+eating_survey.uncontrolled_eating,survey,,condition,raw,other,0,9
+erq_survey.reappraisal,survey,,condition,raw,other,0,6
+erq_survey.suppression,survey,,condition,raw,other,0,4
+five_facet_mindfulness_survey.act_with_awareness,survey,,condition,raw,other,0,8
+five_facet_mindfulness_survey.describe,survey,,condition,raw,other,0,8
+five_facet_mindfulness_survey.nonjudge,survey,,condition,raw,other,0,8
+five_facet_mindfulness_survey.nonreact,survey,,condition,raw,other,0,7
+five_facet_mindfulness_survey.observe,survey,,condition,raw,other,0,8
+five_facet_mindfulness_survey.total,survey,,overall,raw,other,0,39
+future_time_perspective_survey.future_time_perspective,survey,,overall,raw,other,0,10
+grit_scale_survey.grit,survey,,overall,raw,other,0,8
+impulsive_venture_survey.impulsiveness,survey,,condition,raw,other,0,19
+impulsive_venture_survey.venturesomeness,survey,,condition,raw,other,0,15
+leisure_time_activity_survey.activity_level,survey,,overall,raw,other,0,1
+mindful_attention_awareness_survey.mindfulness,survey,,overall,raw,other,0,15
+mpq_control_survey.control,survey,,overall,raw,other,0,24
+selection_optimization_compensation_survey.compensation,survey,,condition,raw,other,0,12
+selection_optimization_compensation_survey.elective_selection,survey,,condition,raw,other,0,12
+selection_optimization_compensation_survey.loss_based_selection,survey,,condition,raw,other,0,12
+selection_optimization_compensation_survey.optimization,survey,,condition,raw,other,0,12
+self_regulation_survey.control,survey,,overall,raw,other,0,31
+sensation_seeking_survey.boredom_susceptibility,survey,,condition,raw,other,0,10
+sensation_seeking_survey.disinhibition,survey,,condition,raw,other,0,10
+sensation_seeking_survey.experience_seeking,survey,,condition,raw,other,0,10
+sensation_seeking_survey.thrill_adventure_seeking,survey,,condition,raw,other,0,10
+sensation_seeking_survey.total,survey,,overall,raw,other,0,40
+ten_item_personality_survey.agreeableness,survey,,condition,raw,other,0,2
+ten_item_personality_survey.conscientiousness,survey,,condition,raw,other,0,2
+ten_item_personality_survey.emotional_stability,survey,,condition,raw,other,0,2
+ten_item_personality_survey.extraversion,survey,,condition,raw,other,0,2
+ten_item_personality_survey.openness,survey,,condition,raw,other,0,2
+theories_of_willpower_survey.endorse_limited_resource,survey,,overall,raw,other,0,12
+time_perspective_survey.future,survey,,condition,raw,other,0,13
+time_perspective_survey.past_negative,survey,,condition,raw,other,0,10
+time_perspective_survey.past_positive,survey,,condition,raw,other,0,9
+time_perspective_survey.present_fatalistic,survey,,condition,raw,other,0,9
+time_perspective_survey.present_hedonistic,survey,,condition,raw,other,0,15
+upps_impulsivity_survey.lack_of_perseverance,survey,,condition,raw,other,0,10
+upps_impulsivity_survey.lack_of_premeditation,survey,,condition,raw,other,0,11
+upps_impulsivity_survey.negative_urgency,survey,,condition,raw,other,0,12
+upps_impulsivity_survey.positive_urgency,survey,,condition,raw,other,0,14
+upps_impulsivity_survey.sensation_seeking,survey,,condition,raw,other,0,12

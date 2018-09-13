@@ -1,0 +1,39 @@
+Table 2 provides a nice summary of the sources of variance both contextualizing them within Generalizability Theory as well as highlighting what sources are desirable and undesirable for the purposes of the measure (in this case consistent differentiation of teachers from each other). Reliability in this context is both interrater as well as test-retest.
+
+Question: Do all 11 sources of variance come in to play for the different types of reliability?
+
+"In general, samples with restricted ranges understate the reliability of their populations, assuming
+other conditions of measurement remain the same (Haertel, 2006). This implies that if the conditions of this
+study were applied to the full population, the reliability coefficients reported through this paper would be
+conservative."
+
+One thing I don't understand:
+"A single observation by a single observer is a fairly unreliable estimate of a teacher’s practice, with reliability between .27 and .45"
+How are the percentages of variance explained by a component interpreted as reliability? What type of reliability does it refer to? (-- see below for what I think is a general definition of reliability)
+
+Nice example of a detailed analysis of a component of variance and explanation of its interpretive consequences
+"we are able to identify the importance of “rater-by-teacher”
+effects—differences in rater perceptions of a given teacher’s practice. The rater-by-teacher component represents
+15 percent to 20 percent of the variance in scores. In other words, it accounts for about half of the
+residual we saw in the earlier study. This is substantively important because increasing the number of lessons
+per observer does not shrink this portion of the residual. The only way to reduce the error and misjudgments
+due to rater-by-teacher error is to increase the number of raters per teacher, not just the number
+of lessons observed. (This implies that adding raters improves reliability more than adding observations by
+the same rater, a point we discuss further on.)"
+
+How can we translate the conclusion on having more raters to our setting? Have more measures of the putatively same construct? So then would the question become: are single DVs less reliable than some sort of composite score (e.g. factor scores)?
+
+"Reliability is the proportion of variance in observed scores that reflects persistent differences between teachers"
+
+Another example of how to translate between source of variance - increase in reliability - practical implication:
+"The gain [in reliability] is even larger when the second observer watches a different lesson from the first observer. With two
+raters each scoring a single lesson, reliability improves in two ways—by dividing both the lesson-to-lesson
+variance and the rater-by-teacher error variance in half. When having the same rater score two lessons from a
+teacher, only the lesson-to-lesson variance is reduced. As a result, if a school district is going to pay the cost to
+observe two lessons for each teacher (both financially and in terms of school professionals’ time), it gets bigger
+improvements in reliability by having each lesson observed by a different observer."
+
+Are different types of raters seeing teachers similarly? - For us this would translate to: Are different types of measures ranking individuals similarly?
+"Specifically, we can calculate the correlation in the teacher effects across different types of observers and correct for reliability"
+The formula (footnote 15) for this correlation is: cor(DV1 for sub1 at t1, DV2 for sub 1 at t2)/sqrt(reliability of DV1 * reliability of DV2)
+This would give us an attenuation corrected correlation table between all measures?

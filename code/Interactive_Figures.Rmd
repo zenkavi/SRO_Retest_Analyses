@@ -1,0 +1,14 @@
+---
+title: "Interactive Figures for retest reliability of self-regulation measures"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+Interactive figures visualizing both the literature review as well as data from our sample can be found by running the following code in an R session:
+
+```{r eval=FALSE}
+install.packages('shiny', dependencies = TRUE)
+library(shiny)
+runGitHub("SRO_Retest_Analyses", "zenkavi", subdir = 'code/Interactive_Figures/')
+```

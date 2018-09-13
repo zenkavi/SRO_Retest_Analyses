@@ -1,0 +1,16 @@
+R version 3.3.2 (2016-10-31)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: OS X Yosemite 10.10.5
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] MCMCglmm_2.26 ape_5.1       coda_0.19-1   Matrix_1.2-12
+
+loaded via a namespace (and not attached):
+ [1] cubature_1.4    corpcor_1.6.9   parallel_3.3.2  tools_3.3.2     yaml_2.1.16     Rcpp_0.12.15   
+ [7] nlme_3.1-131    grid_3.3.2      knitr_1.19      tensorA_0.36    lattice_0.20-35
