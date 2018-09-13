@@ -28,7 +28,7 @@ This sample consists of data for 150 subjects of the original sample of 522 that
 
 ```{r warning=FALSE, message=FALSE}
 workers = read.csv(paste0(retest_data_path,'Local/User_717570_workers.csv'))
-workers = workers %>% 
+workers = workers %>%
   group_by(Worker.ID) %>%
   mutate(Retest_worker=ifelse(sum(CURRENT.RetestWorker,CURRENT.RetestWorkerB2,CURRENT.RetestWorkerB3,CURRENT.RetestWorkerB4,CURRENT.RetestWorkerB5,na.rm=T)>0,1,0)) %>%
   ungroup()
@@ -126,15 +126,15 @@ lit_review = lit_review %>%
 ```{r warning= FALSE, message =FALSE, echo=FALSE}
 p1_legend = lit_review %>%
   filter(task == 'task') %>%
-ggplot(aes(y = var, x = retest_reliability)) + 
+ggplot(aes(y = var, x = retest_reliability)) +
   geom_point(aes(size=sample_size, shape=type))+
   facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
-  theme(panel.spacing = unit(0.5, "lines"), 
+  theme(panel.spacing = unit(0.5, "lines"),
         strip.placement = "outside",
         strip.text.y = element_text(angle=180),
         panel.background = element_rect(fill = NA),
         panel.grid.major = element_line(colour = "grey80"),
-        legend.position = 'bottom') + 
+        legend.position = 'bottom') +
   xlab("")+
   ylab("")+
   scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
@@ -142,15 +142,15 @@ ggplot(aes(y = var, x = retest_reliability)) +
 
 p1 = lit_review %>%
   filter(task == 'task') %>%
-ggplot(aes(y = var, x = retest_reliability)) + 
+ggplot(aes(y = var, x = retest_reliability)) +
   geom_point(aes(size=sample_size, shape = type), color='#00BFC4')+
   facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
-  theme(panel.spacing = unit(0.5, "lines"), 
+  theme(panel.spacing = unit(0.5, "lines"),
         strip.placement = "outside",
         strip.text.y = element_text(angle=180),
         panel.background = element_rect(fill = NA),
         panel.grid.major = element_line(colour = "grey80"),
-        legend.position = 'bottom') + 
+        legend.position = 'bottom') +
   xlab("")+
   ylab("")+
   scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
@@ -158,14 +158,14 @@ ggplot(aes(y = var, x = retest_reliability)) +
 
 p2 = lit_review %>%
   filter(task == 'survey') %>%
-ggplot(aes(y = var, x = retest_reliability)) + 
+ggplot(aes(y = var, x = retest_reliability)) +
   geom_point(aes(size=sample_size, shape = type), color = '#F8766D')+
   facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
-  theme(panel.spacing = unit(0.5, "lines"), 
+  theme(panel.spacing = unit(0.5, "lines"),
         strip.placement = "outside",
         strip.text.y = element_text(angle=180),
         panel.background = element_rect(fill = NA),
-        panel.grid.major = element_line(colour = "grey80")) + 
+        panel.grid.major = element_line(colour = "grey80")) +
   xlab("")+
   ylab("")+
   scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
@@ -191,27 +191,27 @@ Because this plot is difficult to digest we summarize it on a task level to give
 ```{r}
 p1_t_legend <- lit_review %>%
   filter(task == 'task') %>%
-ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_reliability)) + 
+ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_reliability)) +
   geom_point(aes(size=sample_size, shape = type), color='black')+
   theme(axis.text.y = element_text(size=30),
         legend.position = 'bottom',
         axis.text.x = element_text(size=20),
-        axis.title.x = element_text(size=20), 
-        legend.text = element_text(size=16), 
-        legend.key.width = unit(0.75, "inches"), 
+        axis.title.x = element_text(size=20),
+        legend.text = element_text(size=16),
+        legend.key.width = unit(0.75, "inches"),
         legend.title = element_text(size=20),
         legend.spacing.x = unit(0.5, "inches"),
         legend.box = "vertical",
         legend.direction = "horizontal",
-        plot.caption = element_text(family = "Times", size = 40, lineheight = 2, hjust = 0)) + 
+        plot.caption = element_text(family = "Times", size = 40, lineheight = 2, hjust = 0)) +
   xlab("Retest Reliability")+
   ylab("")+
   scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
   scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
   scale_shape_manual(breaks = sort(unique(lit_review$type)), values = c(17, 3, 16, 15), name="Type")+
-  scale_size_continuous(name = "Sample Size", 
+  scale_size_continuous(name = "Sample Size",
                         limits = c(10, 1200),
-                        range = c(1, 40), 
+                        range = c(1, 40),
                         breaks = c(10, 100, 1000))+
   guides(#size = guide_legend(override.aes = list(breaks = c(10, 100, 1000)), labels = c(10, 100, 1000)),
          shape = guide_legend(override.aes = list(size = 16)))+
@@ -220,12 +220,12 @@ ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_re
 
 p1_t <- lit_review %>%
   filter(task == 'task') %>%
-ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_reliability)) + 
+ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_reliability)) +
   geom_point(aes(size=sample_size, shape = type), color='#00BFC4')+
   theme(axis.text.y = element_text(size=30),
         legend.position = 'none',
         axis.text.x = element_text(size=23),
-        axis.title.x = element_text(size=30)) + 
+        axis.title.x = element_text(size=30)) +
   xlab("Retest Reliability")+
   ylab("")+
   scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
@@ -237,17 +237,17 @@ ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_re
 
 p2_t <- lit_review %>%
   filter(task == 'survey') %>%
-ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_reliability)) + 
+ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_reliability)) +
   geom_point(aes(size=sample_size, shape = type), color='#F8766D')+
   theme(axis.text.y = element_text(size=30),
         legend.position = 'none',
         axis.text.x = element_text(size=23),
-        axis.title.x = element_text(size=30)) + 
+        axis.title.x = element_text(size=30)) +
   xlab("Retest Reliability")+
   ylab("")+
   scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
   scale_y_discrete(labels = function(x) str_wrap(x, width = 15))+
-  scale_shape_manual(breaks = c("ICC","Pearson","Spearman"), 
+  scale_shape_manual(breaks = c("ICC","Pearson","Spearman"),
                      values = c(17, 16, 15))+
   scale_size_continuous(range = c(1, 40),
                         limits = c(10,1200))+
@@ -315,7 +315,7 @@ test_data <- read.csv(paste0(retest_data_path,'t1_data/variables_exhaustive.csv'
 test_data <- test_data[,names(test_data) %in% retest_report_vars]
 
 test_data$X <- as.character(test_data$X)
-names(test_data)[which(names(test_data) == 'X')] <-'sub_id' 
+names(test_data)[which(names(test_data) == 'X')] <-'sub_id'
 ```
 
 For reference here are the variables that are **not** included in the analyses of the remainder of this report because they were not of theoretical interest in factor structure analyses of this data so far. These include drift diffusion and other model parameters for specific conditions within a task; survey variables that are not part of the dependant variables for that survey in the literature and demographics (these are saved for prediction analyses).
@@ -333,20 +333,20 @@ df
 rm(test_data2, df)
 ```
 
-### Load time 2 data 
+### Load time 2 data
 ```{r}
 retest_data <- read.csv(paste0(retest_data_path,'variables_exhaustive.csv'))
 
 retest_data <- retest_data[,names(retest_data) %in% retest_report_vars]
 
 retest_data$X <- as.character(retest_data$X)
-names(retest_data)[which(names(retest_data) == 'X')] <-'sub_id' 
+names(retest_data)[which(names(retest_data) == 'X')] <-'sub_id'
 retest_data = retest_data[retest_data$sub_id %in% test_data$sub_id,]
 ```
 
 ### Replace HDDM parameters in t1 data
 
-Since HDDM parameters depend on the sample on which they are fit we refit the model on t1 data for the subjects that have t2 data. Here we replace the HDDM parameters in the current t1 dataset with these refitted values. 
+Since HDDM parameters depend on the sample on which they are fit we refit the model on t1 data for the subjects that have t2 data. Here we replace the HDDM parameters in the current t1 dataset with these refitted values.
 
 ```{r}
 hddm_refits <- read.csv(paste0(retest_data_path,'t1_data/hddm_refits_exhaustive.csv'))
@@ -354,7 +354,7 @@ hddm_refits <- read.csv(paste0(retest_data_path,'t1_data/hddm_refits_exhaustive.
 hddm_refits = hddm_refits[,names(hddm_refits) %in% retest_report_vars]
 
 hddm_refits$X <- as.character(hddm_refits$X)
-names(hddm_refits)[which(names(hddm_refits) == 'X')] <-'sub_id' 
+names(hddm_refits)[which(names(hddm_refits) == 'X')] <-'sub_id'
 
 #For later comparison of whether fitting the DDM parameters on full or retest sample makes a big difference
 test_data_full_sample_hddm <- test_data
@@ -461,13 +461,13 @@ rm(test_demog, retest_demog, demog_rel_df, numeric_cols)
 
 ### Effect of delays between the two measurements
 
-Due to our data collection strategy we did not strictly control for the delay between the two measurements as standard psychometrics studies measuring retest reliability might. 
+Due to our data collection strategy we did not strictly control for the delay between the two measurements as standard psychometrics studies measuring retest reliability might.
 
 An individual difference measure would preferably remain stable regardless of the delay between multiple measurements.
 
 Since we only had two measurements we could not test directly whether a measure becomes less reliable depending on the delay between the two time points (The average number of days between two measurements would be the same for all measures since reliability is a measure level metric while days between completion a subject level one).
 
-So if you regress the average difference for each measure on average delay between two measurements you are regressing a vector with varying numbers on a vector of same values, like a t test asking if the mean of the varying column, in this case the average difference score, is different than the unique value in the single value column, i.e. the average delay between two time points (Note that this should be true in theory but in practice since for each measure there might subjects for whom the dv could not be calculated there might be >1 unique values for the average delay between the two time points). This analysis is not meaningful. 
+So if you regress the average difference for each measure on average delay between two measurements you are regressing a vector with varying numbers on a vector of same values, like a t test asking if the mean of the varying column, in this case the average difference score, is different than the unique value in the single value column, i.e. the average delay between two time points (Note that this should be true in theory but in practice since for each measure there might subjects for whom the dv could not be calculated there might be >1 unique values for the average delay between the two time points). This analysis is not meaningful.
 
 Instead of the summary metric like the retest reliability estimate for each measure we can check whether the difference score distribution for each measure depends on the delay between the two measurements. Since the difference score distribution is at subject level we can check whether the order of subjects in this distribution depends on their order in the distribution of days between completing the two tests.
 
@@ -488,7 +488,7 @@ t1_2_difference = data.frame()
 
 for(i in 1:length(numeric_cols)){
   tmp = match_t1_t2(numeric_cols[i],format='wide')
-  tmp = tmp %>% 
+  tmp = tmp %>%
   mutate(difference = scale(`2` - `1`))
   t1_2_difference = rbind(t1_2_difference, tmp)
 }
@@ -525,7 +525,7 @@ t1_2_difference = merge(t1_2_difference, task_comp_times[,c('sub_id', 'task','da
 rm(task_comp_times)
 ```
 
-What does the distribution of differences look like: The distribution of differences between two time points for each measure 
+What does the distribution of differences look like: The distribution of differences between two time points for each measure
 
 ```{r warning=FALSE, message=FALSE}
 t1_2_difference %>%
@@ -555,9 +555,9 @@ Before I was using subjects as a random effect but days between the two time poi
 Significant fixed effect suggests that on average the longer the delay the smaller the difference.
 
 ```{r}
-#summary(lmerTest::lmer(abs(difference) ~ scale(days_btw)+(scale(days_btw) | dv), data=t1_2_difference)) 
+#summary(lmerTest::lmer(abs(difference) ~ scale(days_btw)+(scale(days_btw) | dv), data=t1_2_difference))
 
-summary(tmp <- MCMCglmm(abs(difference) ~ scale(days_btw), random = ~us(scale(days_btw)):dv, data=t1_2_difference)) 
+summary(tmp <- MCMCglmm(abs(difference) ~ scale(days_btw), random = ~us(scale(days_btw)):dv, data=t1_2_difference))
 ```
 
 But if I just run one mixed effects model then we don't get a sense of the simple effects (how many of the variables this effect of the days between is significant and in which direction). I can run it separately for each dv to see if all difference score distributions are affected the same way depending on the days between completion. But since we are running so many tests we need to correct for multiple comparisons. How many of these tests are significant FDR correcting? None.
@@ -577,7 +577,7 @@ days_effect  = t1_2_difference %>%
 sum(p.adjust(days_effect$pval, method = "fdr") < 0.05)
 ```
 
-Conclusion: The average difference between the scores of a measure doesn't change with the increased delay. 
+Conclusion: The average difference between the scores of a measure doesn't change with the increased delay.
 
 ### Overlapping survey questions
 
@@ -587,15 +587,15 @@ First determine the overlapping questions.
 
 ```{r}
 tmp = read.csv(gzfile(paste0(retest_data_path, 'items.csv.gz')))
-tmp = tmp %>% 
-  filter(worker == 's005') %>% 
-  select(item_ID, item_text) %>% 
+tmp = tmp %>%
+  filter(worker == 's005') %>%
+  select(item_ID, item_text) %>%
   mutate(item_text = trimws(as.character(item_text))) %>%
   unite(item, c("item_ID", "item_text"), sep = "___")
 
 comb = as.data.frame(t(combn(unique(tmp$item),2)))
 
-duplicate_items = comb %>% 
+duplicate_items = comb %>%
   filter(grepl('dospert', V1)==FALSE) %>%
   filter(grepl('selection_optimization', V1)==FALSE) %>%
   filter(grepl('sensation_seeking', V1)==FALSE) %>%
@@ -614,9 +614,9 @@ duplicate_items
 extract_items = c('worker',unique(with(duplicate_items, c(item1_ID, item2_ID))))
 
 #correlations to compute:
-#item1_t1 - item2_t1, 
-#item1_t2 - item2_t2, 
-#item1_t1 - item2_t2, 
+#item1_t1 - item2_t1,
+#item1_t2 - item2_t2,
+#item1_t1 - item2_t2,
 #item1_t2 - item2_t1
 
 duplicate_items_data_t1 = read.csv(paste0(test_data_path, 'subject_x_items.csv'))
@@ -643,16 +643,16 @@ duplicate_items = duplicate_items %>%
 for(i in 1:nrow(duplicate_items)){
   duplicate_items$t1_t1_cor[i] = abs(cor(duplicate_items_data_t1[,c(duplicate_items$item1_ID[i])],
                                   duplicate_items_data_t1[,c(duplicate_items$item2_ID[i])]))
-  
+
   duplicate_items$t2_t2_cor[i] = abs(cor(duplicate_items_data_t2[,c(duplicate_items$item1_ID[i])],
                                   duplicate_items_data_t2[,c(duplicate_items$item2_ID[i])]))
-  
+
   duplicate_items$t1_t2_cor[i] = abs(cor(duplicate_items_data_t1[,c(duplicate_items$item1_ID[i])],
                                   duplicate_items_data_t2[,c(duplicate_items$item2_ID[i])]))
-  
+
   duplicate_items$t2_t1_cor[i] = abs(cor(duplicate_items_data_t2[,c(duplicate_items$item1_ID[i])],
                                   duplicate_items_data_t1[,c(duplicate_items$item2_ID[i])]))
-  
+
   duplicate_items$t1_t1_polycor[i] = abs(polychoric(data.frame(duplicate_items_data_t1[,c(duplicate_items$item1_ID[i])],
                       duplicate_items_data_t1[,c(duplicate_items$item2_ID[i])]))$rho[2])
 
@@ -669,16 +669,16 @@ for(i in 1:nrow(duplicate_items)){
 for(i in 1:nrow(duplicate_items)){
   duplicate_items$t1_t1_cor[i] = abs(cor(scale(duplicate_items_data_t1[,c(duplicate_items$item1_ID[i])]),
                                   scale(duplicate_items_data_t1[,c(duplicate_items$item2_ID[i])])))
-  
+
   duplicate_items$t2_t2_cor[i] = abs(cor(scale(duplicate_items_data_t2[,c(duplicate_items$item1_ID[i])]),
                                   scale(duplicate_items_data_t2[,c(duplicate_items$item2_ID[i])])))
-  
+
   duplicate_items$t1_t2_cor[i] = abs(cor(scale(duplicate_items_data_t1[,c(duplicate_items$item1_ID[i])]),
                                   scale(duplicate_items_data_t2[,c(duplicate_items$item2_ID[i])])))
-  
+
   duplicate_items$t2_t1_cor[i] = abs(cor(scale(duplicate_items_data_t2[,c(duplicate_items$item1_ID[i])]),
                                   scale(duplicate_items_data_t1[,c(duplicate_items$item2_ID[i])])))
-  
+
   duplicate_items$t1_t1_polycor[i] = abs(polychoric(data.frame(duplicate_items_data_t1[,c(duplicate_items$item1_ID[i])],
                       duplicate_items_data_t1[,c(duplicate_items$item2_ID[i])]))$rho[2])
 
@@ -711,12 +711,12 @@ summary(duplicate_items$t2_t2_polycor)
 ```{r}
 tmp = duplicate_items %>%
   select(similarity, t1_t1_polycor, t2_t2_polycor) %>%
-  gather(key, value, -similarity) 
+  gather(key, value, -similarity)
 
 
 # tmp = duplicate_items %>%
 #   select(similarity, t1_t1_polycor, t1_t2_polycor, t2_t2_polycor, t2_t1_polycor) %>%
-#   gather(key, value, -similarity) 
+#   gather(key, value, -similarity)
 
 
 tmp %>%
@@ -738,7 +738,7 @@ summary(lm(value~key*scale(similarity),tmp))
 ```
 
 ```{r}
-summary(MCMCglmm(value ~ key*scale(similarity), data=tmp, nitt = 50000)) 
+summary(MCMCglmm(value ~ key*scale(similarity), data=tmp, nitt = 50000))
 ```
 
 
@@ -779,7 +779,7 @@ p1 = tmp %>%
   geom_abline(slope=1, intercept=0, size = 2, linetype = "dashed")+
   xlab("Item 1 T1")+
   ylab("Item 2 T1")
- 
+
 p2 = tmp %>%
   ggplot(aes(item1_time1, item2_time2, col=item1_ID))+
   geom_smooth (alpha=0.3, size=0, span=0.5, method = "lm")+
@@ -833,7 +833,7 @@ boot_df = boot_df[boot_df$dv %in% retest_report_vars,]
 # retest_report_vars[which(retest_report_vars %in% boot_df$dv==FALSE)]
 
 # Boot df contains hddm parameters fit on the full sample in the t1 data
-# refits_bootstrap_merged.csv.gz contains bootstrapped reliabilities 
+# refits_bootstrap_merged.csv.gz contains bootstrapped reliabilities
 
 refit_boot_df = read.csv(gzfile(paste0(retest_data_path,'refits_bootstrap_merged.csv.gz')))
 
@@ -871,7 +871,7 @@ rel_comp
 Distribution of reliabilities, sample sizes and delays
 
 ```{r}
-rel_comp %>% 
+rel_comp %>%
   select(dv, task, retest_reliability, sample_size, days) %>%
   filter(days < 3600) %>%
   gather(key, value, -dv, -task) %>%
@@ -930,7 +930,7 @@ summary(MCMCglmm(retest_reliability ~ task + sample_size, random = ~ dv, data = 
 ```
 
 ```{r}
-rel_comp %>% 
+rel_comp %>%
   group_by(task) %>%
   summarise(mean_rr = mean(retest_reliability))
 ```
@@ -955,7 +955,7 @@ summary(lm(resid ~ sample_size, tmp))
 Tasks have significantly lower reliability and reliability decreases with increasing sample size.
 
 ```{r}
-rel_comp %>% 
+rel_comp %>%
   ggplot(aes(sample_size, retest_reliability, color=task))+
   geom_smooth(method='lm')+
   # geom_point(alpha = 0.2)+
@@ -972,7 +972,7 @@ ggsave('LitReviewRelBySampleSize.jpg', device = "jpeg", path = "/Users/zeynepenk
 Highlighting the difference between survey and task reliability for comparability to our results.
 
 ```{r}
-rel_comp %>% 
+rel_comp %>%
   ggplot(aes(task, retest_reliability, fill = task))+
   geom_boxplot()+
   theme(legend.position = 'none',
@@ -992,14 +992,14 @@ Note: We checked whether our results diverge most from studies with smaller samp
 Correlation between our mean estimates from bootstrapped samples and the literature review for task variables
 
 ```{r}
-n_df = rel_comp %>% 
+n_df = rel_comp %>%
   group_by(dv) %>%
   tally()
 
 lit_emp_cor = function(){
-  
+
   boot_comp = data.frame()
-  
+
   for(i in 1:length(unique(rel_comp$dv)) ){
     cur_dv = unique(rel_comp$dv)[i]
     n = n_df$n[n_df$dv == cur_dv]
@@ -1007,24 +1007,24 @@ lit_emp_cor = function(){
     tmp = sample_n(sample_df, n)
     boot_comp = rbind(boot_comp, tmp)
   }  
-  
+
   rm(cur_dv, n, sample_df, tmp)
-  
+
   #check if cbind is ok
   # sum(boot_comp$dv == rel_comp$dv)
   #cbinding pearson because that is the most common metric in the lit
   rel_comp = cbind(rel_comp, boot_comp$pearson)
   #rename new column
   names(rel_comp)[which(names(rel_comp) == "boot_comp$pearson")] = "pearson"
-  
+
   out = data.frame(task = NA, survey = NA)
-  
+
   out$task = with(rel_comp %>% filter(task == "task"), cor(pearson, retest_reliability))
-  
+
   out$survey = with(rel_comp %>% filter(task == "survey"), cor(pearson, retest_reliability))
-  
+
   rel_comp = rel_comp[,-16]
-  
+
   return(out)
 }
 
@@ -1043,15 +1043,15 @@ summary(lit_emp_cor_out)
 Model comparisons building model to predict the reliabilities in the literature from a sample from our results versus a sample form the literature.
 
 sample one row per measure out of lit review
-r^2 of retest_reliability ~ sampled_reliability vs. 
+r^2 of retest_reliability ~ sampled_reliability vs.
 r^2 of retest_reliability ~ mean_icc
 
-coef of retest_reliability ~ sampled_reliability vs. 
+coef of retest_reliability ~ sampled_reliability vs.
 coef of retest_reliability ~ mean_icc
 
 ```{r}
 comp_lit_pred <- function(df){
-  
+
   sample_from_dv <- function(df){
     if(nrow(df)>1){
       row_num = sample(1:nrow(df),1)
@@ -1061,12 +1061,12 @@ comp_lit_pred <- function(df){
     }
     return(df)
   }
-  
+
   sampled_df = df %>%
     group_by(dv) %>%
     do(sample_from_dv(.)) %>%
     na.omit()
-  
+
   if(length(unique(sampled_df$task))>1){
     mod_lit = lm(retest_reliability ~ lit_predictor+scale(sample_size)+task, data=sampled_df)
     mod_boot = lm(retest_reliability ~ mean_pearson+scale(sample_size)+task, data=sampled_df)
@@ -1075,13 +1075,13 @@ comp_lit_pred <- function(df){
     mod_lit = lm(retest_reliability ~ lit_predictor+scale(sample_size), data=sampled_df)
     mod_boot = lm(retest_reliability ~ mean_pearson+scale(sample_size), data=sampled_df)
   }
-  
-  
+
+
   out = data.frame(r2_lit = summary(mod_lit)$adj.r.squared,
                    r2_boot = summary(mod_boot)$adj.r.squared,
                    m_lit = coef(summary(mod_lit))["lit_predictor","Estimate"],
                    m_boot = coef(summary(mod_boot))["mean_pearson","Estimate"])
-  
+
   return(out)
 }
 
@@ -1094,7 +1094,7 @@ tmp = comp_lit_pred_out %>%
   select(-.n, -m_lit, -m_boot) %>%
   gather(key, value) %>%
   separate(key, c("stat", "sample"), sep = "_")
- 
+
 # tmp$stat = as.factor(tmp$stat)
 # levels(tmp$stat) <- c("coefficient", expression(r^"2"))
 
@@ -1176,7 +1176,7 @@ tmp = comp_lit_pred_out_both %>%
 summary(lm(value ~ key*task, tmp))
 ```
 
-The literature does a better job in predicting itself for tasks compared to surveys (comparing the two orange distributions). 
+The literature does a better job in predicting itself for tasks compared to surveys (comparing the two orange distributions).
 
 ```{r}
 with(comp_lit_pred_out_both, t.test(r2_lit ~ task))
@@ -1210,7 +1210,7 @@ Sample one row of literature, fit model of sample size+task on remaining data, u
 
 ```{r}
 pred_sample <- function(df){
-  
+
   get_sample_row <- function(df){
     if(nrow(df)>1){
       row_num = sample(1:nrow(df),1)
@@ -1221,25 +1221,25 @@ pred_sample <- function(df){
     }
     return(sample_row)
   }
-  
+
   test_df = df %>%
     group_by(dv) %>%
     do(get_sample_row(.))
-  
+
   train_df = anti_join(df, test_df)
-  
+
   if(length(unique(train_df$task))>1){
     mod = lm(retest_reliability ~ scale(sample_size)+task, data=train_df)
   }
   else{
     mod = lm(retest_reliability ~ scale(sample_size), data=train_df)
   }
-  
+
   test_df$pred = predict(mod, test_df)
-  
+
   # out = data.frame(res_lit = sum(test_df$retest_reliability - pred)^2,
   #                  res_boot = sum(test_df$mean_pearson - pred)^2)
-  
+
   return(test_df)
 }
 ```
@@ -1340,34 +1340,34 @@ Literature vs. our data on a  measure basis
 ```{r warning=FALSE, message=FALSE}
 p1 = rel_comp %>%
   filter(task == 'task') %>%
-ggplot(aes(x = var, y = retest_reliability)) + 
+ggplot(aes(x = var, y = retest_reliability)) +
   geom_boxplot(fill='#00BFC4', position="identity")+
   geom_point(aes(x = var, y = mean_pearson),color="purple", fill="purple", size=3, shape=23)+
   coord_flip()+
   facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
-  theme(panel.spacing = unit(0.5, "lines"), 
+  theme(panel.spacing = unit(0.5, "lines"),
         strip.placement = "outside",
         strip.text.y = element_text(angle=180),
         panel.background = element_rect(fill = NA),
         panel.grid.major = element_line(colour = "grey80"),
-        legend.position = 'bottom') + 
+        legend.position = 'bottom') +
   xlab("")+
   ylab("")+
   scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))
 
 p2 = rel_comp %>%
   filter(task == 'survey') %>%
-ggplot(aes(x = var, y = retest_reliability)) + 
+ggplot(aes(x = var, y = retest_reliability)) +
   geom_boxplot(fill='#F8766D', position="identity")+
   geom_point(aes(x = var, y = mean_pearson),color="purple", fill="purple", size=3, shape=23)+
   coord_flip()+
   facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
-  theme(panel.spacing = unit(0.5, "lines"), 
+  theme(panel.spacing = unit(0.5, "lines"),
         strip.placement = "outside",
         strip.text.y = element_text(angle=180),
         panel.background = element_rect(fill = NA),
         panel.grid.major = element_line(colour = "grey80"),
-        legend.position = 'bottom') + 
+        legend.position = 'bottom') +
   xlab("")+
   ylab("")+
   scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))
@@ -1412,7 +1412,7 @@ Based on [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9
 - ICC(3,k): As Dave clarified this ranges from 1 to -1/(number of repeated measures -1) so in our case this range would be [-1, 1]; larger values would mean that the two scores of a subject for a given measure are more similar to each other than they are to scores of other people  
 - "ICC is reflective of the ability of a test to differentiate between different individuals"
 - partial $\eta^2$ for time ($SS_{time}/SS_{within}$): effect size of time   
-- SEM ($\sqrt(MS_{error})$): standard error of measurement; the smaller the better. It 
+- SEM ($\sqrt(MS_{error})$): standard error of measurement; the smaller the better. It
 "quantifies the precision of individual scores on a test" and is not dependent on the sample in the way ICC is since it doesn't depend on between subject reliability (at least in this formulation) but is unit-dependent.
 
 We calculated `r as.numeric(table(rel_df$task)[1])` measures for surveys and `r as.numeric(table(rel_df$task)[2])` measures for cognitive tasks.  
@@ -1441,7 +1441,7 @@ rel_df <- data.frame(spearman = rep(NA, length(numeric_cols)),
 row.names(rel_df) <- numeric_cols
 
 for(i in 1:length(numeric_cols)){
-  rel_df[numeric_cols[i], 'spearman'] <- get_spearman(numeric_cols[i]) 
+  rel_df[numeric_cols[i], 'spearman'] <- get_spearman(numeric_cols[i])
   rel_df[numeric_cols[i], 'icc'] <- get_icc(numeric_cols[i])
   rel_df[numeric_cols[i], 'pearson'] <- get_pearson(numeric_cols[i])
   rel_df[numeric_cols[i], 'partial_eta_sq'] <- get_partial_eta(numeric_cols[i])
@@ -1548,7 +1548,7 @@ meaningful_vars = sort(meaningful_vars)
 # Df wrangling for plotting
 tmp = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
-  left_join(boot_df[,c("dv", "icc", "spearman")], by = 'dv') 
+  left_join(boot_df[,c("dv", "icc", "spearman")], by = 'dv')
 
 tmp = tmp %>%
   separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
@@ -1600,9 +1600,9 @@ Boot plot for tasks with trial info (only using meaningful vars)
 ```{r warning=FALSE, message=FALSE}
 p4_t <- tmp_mngfl %>%
   filter(task == 'task') %>%
-ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) + 
+ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) +
   geom_violin(fill='#00BFC4')+
-  theme_bw() + 
+  theme_bw() +
   theme(axis.text = element_text(size=30))+
   xlab("")+
   ylab("")+
@@ -1611,9 +1611,9 @@ ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) +
   geom_hline(yintercept = 0, color = "red", size = 1)+
   coord_flip()
 
-task_trial_num = trial_num_info_mngfl %>% 
-  filter(task == "task") %>% 
-  ungroup() %>% 
+task_trial_num = trial_num_info_mngfl %>%
+  filter(task == "task") %>%
+  ungroup() %>%
   select(-task)
 
 task_trial_num_table = task_trial_num %>%
@@ -1635,7 +1635,7 @@ task_trial_num_table = task_trial_num %>%
 boot_task_plot = arrangeGrob(p4_t, task_trial_num_table, nrow=1, widths = c(3,2))
 
 ggsave('Task_Boot_w_trialinfo.jpg', plot = boot_task_plot, device = "jpeg", path = "../output/figures/", width = 20, height = 48, units = "in", limitsize = FALSE, dpi = 100)
-  
+
 ```
 
 Boot plot for surveys with trial info (only using meaningful vars)
@@ -1643,9 +1643,9 @@ Boot plot for surveys with trial info (only using meaningful vars)
 ```{r}
 p5_t <- tmp %>%
   filter(task == 'survey') %>%
-ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) + 
+ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) +
   geom_violin(fill='#F8766D')+
-  theme_bw() + 
+  theme_bw() +
   theme(axis.text = element_text(size=30))+
   xlab("")+
   ylab("")+
@@ -1654,9 +1654,9 @@ ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) +
   geom_hline(yintercept = 0, color = "red", size = 1)+
   coord_flip()
 
-survey_trial_num = trial_num_info %>% 
-  filter(task == "survey") %>% 
-  ungroup() %>% 
+survey_trial_num = trial_num_info %>%
+  filter(task == "survey") %>%
+  ungroup() %>%
   select(-task)
 
 survey_trial_num_table = survey_trial_num %>%
@@ -1692,20 +1692,20 @@ ggsave('Boot_Both_w_trialinfo.tiff', plot = boot_both_w_trial, device = "tiff", 
 
 Variable level summary of bootstrapped reliabilities.
 
-```{r warning=FALSE, message=FALSE} 
+```{r warning=FALSE, message=FALSE}
 p4 <- tmp %>%
   filter(task == 'task',
          raw_fit == 'raw') %>%
-ggplot(aes(y = var, x = icc)) + 
+ggplot(aes(y = var, x = icc)) +
   geom_point(color = '#00BFC4')+
   geom_point(aes(y = var, x = point_est), color = "black")+
   facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y", labeller = label_wrap_gen(width=20)) +
-  theme(panel.spacing = unit(0.75, "lines"), 
+  theme(panel.spacing = unit(0.75, "lines"),
         strip.placement = "outside",
         strip.text.y = element_text(angle=180, size=36),
         axis.text.y = element_text(size=20),
         panel.background = element_rect(fill = NA),
-        panel.grid.major = element_line(colour = "grey80")) + 
+        panel.grid.major = element_line(colour = "grey80")) +
   xlab("")+
   ylab("")+
   scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
@@ -1714,22 +1714,22 @@ ggplot(aes(y = var, x = icc)) +
 
 p5 <- tmp %>%
   filter(task == 'survey') %>%
-ggplot(aes(y = var, x = icc)) + 
+ggplot(aes(y = var, x = icc)) +
   geom_point(color = '#F8766D')+
   geom_point(aes(y = var, x = point_est), color = "black")+
   facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y", labeller = label_wrap_gen(width=20)) +
-  theme(panel.spacing = unit(0.75, "lines"), 
+  theme(panel.spacing = unit(0.75, "lines"),
         strip.placement = "outside",
         strip.text.y = element_text(angle=180, size=36),
         axis.text.y = element_text(size=20),
         panel.background = element_rect(fill = NA),
-        panel.grid.major = element_line(colour = "grey80")) + 
+        panel.grid.major = element_line(colour = "grey80")) +
   xlab("")+
   ylab("")+
   scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
   scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
   geom_vline(xintercept = 0, color = "red", size = 1)
-  
+
 p6 <- arrangeGrob(p4, p5,nrow=1)
 
 ggsave('Bootstrap_Raw_Var_Plot.jpg', plot = p6, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 36, height = 72, units = "in", limitsize = FALSE, dpi=50)
@@ -1746,9 +1746,9 @@ Example of the overlaying procedure.
 ```{r}
 p1<- tmp %>%
   filter(grepl('selection_optimization', dv)) %>%
-ggplot(aes(x = var, y = icc)) + 
+ggplot(aes(x = var, y = icc)) +
   geom_violin(fill='#F8766D')+
-  theme_bw() + 
+  theme_bw() +
   theme(axis.text.y = element_text(size=30))+
   xlab("")+
   ylab("")+
@@ -1759,9 +1759,9 @@ ggplot(aes(x = var, y = icc)) +
 
 p2<- tmp %>%
   filter(grepl('selection_optimization', dv)) %>%
-ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc, group=dv)) + 
+ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc, group=dv)) +
   geom_violin(fill='#F8766D', position = 'identity')+
-  theme_bw() + 
+  theme_bw() +
   theme(axis.text.y = element_text(size=30))+
   xlab("")+
   ylab("")+
@@ -1772,9 +1772,9 @@ ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc, grou
 
 p3<- tmp %>%
   filter(grepl('selection_optimization', dv)) %>%
-ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) + 
+ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) +
   geom_violin(fill='#F8766D', position = 'identity')+
-  theme_bw() + 
+  theme_bw() +
   theme(axis.text.y = element_text(size=30))+
   xlab("")+
   ylab("")+
@@ -1798,7 +1798,7 @@ rm(p1, p2, p3, p4)
 
 ## Survey vs Tasks
 
-Comparison of survey measures to cognitive task measures in the bootstrapped results. Multilevel model with random intercepts for each measure and fixed effect of survey versus cognitive measure. 
+Comparison of survey measures to cognitive task measures in the bootstrapped results. Multilevel model with random intercepts for each measure and fixed effect of survey versus cognitive measure.
 
 ```{r}
 boot_df = boot_df %>%
@@ -1835,7 +1835,7 @@ Here we first plot the percentage of variance explained by the three sources of 
 ```{r warning=FALSE, message=FALSE}
 tmp = rel_df %>%
   mutate(var_subs_pct = var_subs/(var_subs+var_ind+var_resid)*100,
-         var_ind_pct = var_ind/(var_subs+var_ind+var_resid)*100, 
+         var_ind_pct = var_ind/(var_subs+var_ind+var_resid)*100,
          var_resid_pct = var_resid/(var_subs+var_ind+var_resid)*100) %>%
   select(dv, task, var_subs_pct, var_ind_pct, var_resid_pct) %>%
   mutate(dv = factor(dv, levels = dv[order(task)])) %>%
@@ -1863,7 +1863,7 @@ p1 <- tmp %>%
                        labels = labels$var)+
   coord_flip()+
   facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
-  theme(panel.spacing = unit(0.5, "lines"), 
+  theme(panel.spacing = unit(0.5, "lines"),
         strip.placement = "outside",
         strip.text.y = element_text(angle=180),
         panel.background = element_rect(fill = NA),
@@ -1880,7 +1880,7 @@ p1 <- tmp %>%
 
 tmp = rel_df %>%
   mutate(var_subs_pct = var_subs/(var_subs+var_ind+var_resid)*100,
-         var_ind_pct = var_ind/(var_subs+var_ind+var_resid)*100, 
+         var_ind_pct = var_ind/(var_subs+var_ind+var_resid)*100,
          var_resid_pct = var_resid/(var_subs+var_ind+var_resid)*100) %>%
   select(dv, task, var_subs_pct, var_ind_pct, var_resid_pct) %>%
   mutate(dv = factor(dv, levels = dv[order(task)])) %>%
@@ -1908,7 +1908,7 @@ p2 <- tmp %>%
                        labels = labels$var)+
   coord_flip()+
   facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
-  theme(panel.spacing = unit(0.5, "lines"), 
+  theme(panel.spacing = unit(0.5, "lines"),
         strip.placement = "outside",
         strip.text.y = element_text(angle=180),
         panel.background = element_rect(fill = NA),
@@ -1949,9 +1949,9 @@ First we find that task measures have a smaller percentage of their overall vari
 ```{r}
 tmp = boot_df %>%
   mutate(var_subs_pct = var_subs/(var_subs+var_ind+var_resid)*100,
-         var_ind_pct = var_ind/(var_subs+var_ind+var_resid)*100, 
+         var_ind_pct = var_ind/(var_subs+var_ind+var_resid)*100,
          var_resid_pct = var_resid/(var_subs+var_ind+var_resid)*100) %>%
-  select(dv, task, var_subs_pct, var_ind_pct, var_resid_pct) 
+  select(dv, task, var_subs_pct, var_ind_pct, var_resid_pct)
 
 # summary(lmerTest::lmer(var_subs_pct~task+(1|dv),tmp%>%select(-var_ind_pct,-var_resid_pct)))
 m = readRDS('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/var_subs_pct_by_task_model.rds')
@@ -2035,7 +2035,7 @@ The type of ICC we have chosen does not take within subject (between session/sys
 
 Had we chosen another kind of ICC taking this source of variance into account (e.g. 2,1 or 2,k) they could have suggested that tasks have lower reliability.
 
-Doing a simple t-test on the difference score alone would not be a very rigourous way of testing whether any change is meaningful because two distributions from both time points with error would be compared to each other. Fortunately there are ways to take the error for both measurements in to account. 
+Doing a simple t-test on the difference score alone would not be a very rigourous way of testing whether any change is meaningful because two distributions from both time points with error would be compared to each other. Fortunately there are ways to take the error for both measurements in to account.
 
 To check whether a measure shows systematic differences between the two time points in a meaningful number of bootstrapped samples we can: check if the effect of time is significant in each bootstrapped sample and filter variables that have more than 5% of the boostrapped samples showing significant time effects.
 
@@ -2062,7 +2062,7 @@ boot_df %>%
          prop = count/total_num_vars) %>%
   ggplot(aes(task, prop, fill=task))+
   geom_bar(stat="identity", alpha=0.5, width=0.5)+
-  theme(legend.position = "none", 
+  theme(legend.position = "none",
         axis.text.x = element_text(size=14),
         axis.title.y = element_text(size=14))+
   ylab("Proportiono of bootstrap samples")+
@@ -2089,7 +2089,7 @@ boot_df %>%
             mean_pearson = mean(pearson))%>%
   filter(pct_sig_time_effect>5) %>%
   arrange(task,-pct_sig_time_effect) %>%
-  
+
 ```
 
 ### SEM CI calculation
@@ -2097,7 +2097,7 @@ boot_df %>%
 Step 1: T = Grand mean + ICC * (Subject score - Grand mean)
 Step 2: SEP = SD of both measurements * sqrt(1-ICC^2)
 
-Here I calculate the proportion of subjects that move more than one standard error of prediction (SEP) in t2 compared to t1 for each measure. 
+Here I calculate the proportion of subjects that move more than one standard error of prediction (SEP) in t2 compared to t1 for each measure.
 
 This is odd to think about because the larger the ICC of a measure the smaller the SEP. So very small differences between the two time points can be categorized as 'meaningful' based on the tiny SEP.
 
@@ -2113,7 +2113,7 @@ get_ind_ci = function(dv_var){
   grand_sd = sd(matched$score)
   dv_icc = get_icc(dv_var)
   sep = grand_sd * sqrt(1-(dv_icc^2))
-  matched = matched %>% 
+  matched = matched %>%
     spread(time, score) %>%
     rename("t1"="1", "t2"="2") %>%
     mutate(true_score = grand_mean+(dv_icc*(t1-grand_mean)),
@@ -2137,8 +2137,8 @@ ind_ci_df <- data.frame(prop_above_ci = rep(NA, length(numeric_cols)),
 row.names(ind_ci_df) <- numeric_cols
 
 for(i in 1:length(numeric_cols)){
-    ind_ci_df[numeric_cols[i], 'prop_above_ci'] <- get_prop_out_ci(numeric_cols[i])$prop_above_ci 
-    ind_ci_df[numeric_cols[i], 'prop_below_ci'] <- get_prop_out_ci(numeric_cols[i])$prop_below_ci 
+    ind_ci_df[numeric_cols[i], 'prop_above_ci'] <- get_prop_out_ci(numeric_cols[i])$prop_above_ci
+    ind_ci_df[numeric_cols[i], 'prop_below_ci'] <- get_prop_out_ci(numeric_cols[i])$prop_below_ci
 }
 
 ind_ci_df$dv = row.names(ind_ci_df)
@@ -2264,7 +2264,7 @@ tmp = measure_labels %>%
          dv %in% meaningful_vars) %>%
   left_join(boot_df[,c("dv", "icc")], by = 'dv') %>%
   separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
-  select(-extra_1, -extra_2) 
+  select(-extra_1, -extra_2)
 
 # summary(lm(icc ~ num_all_trials, data = tmp))
 # summary(lmerTest::lmer(icc ~ num_all_trials + (1|dv), data = tmp))
@@ -2282,7 +2282,7 @@ tmp %>%
   ylab("ICC")
 ```
 
-#### Trial number dependence intrameasure 
+#### Trial number dependence intrameasure
 
 The above analysis was looking at the effect of number of trials across tasks. But some tasks might be bad for individual difference measurement regardless of how many trials there are in them whereas for others fewer trials might be yielding a sufficiently reliable measure.
 
@@ -2292,7 +2292,7 @@ This won't make sense for all tasks. For example to estimate a risk aversion par
 
 These kinds of analyses are too task-specific and in-depth for a paper that is trying to give a global sense of the differences between self-regulation measures in their suitablity for individual difference analyses based on their stability across time. Such analyses would provide a detailed examination of how to extract the most reliable/best individual difference measure from tasks with a set of mediocre variables to begin with. Though we do not provide such a comprehensive analysis of this sort in this paper we provide a single example of this approach and hope the open access we provide to the data spurs further work.
 
-For this example we look at the retest reliability of dependent measures from the threebytwo with >400 trials. Here is a graph of how the point estimates of the retest reliability changes for each of the dependent measures using different numbers of trials to estimate them. 
+For this example we look at the retest reliability of dependent measures from the threebytwo with >400 trials. Here is a graph of how the point estimates of the retest reliability changes for each of the dependent measures using different numbers of trials to estimate them.
 
 Post process dv's from cluster to calculate reliabilities
 ```{r}
@@ -2397,7 +2397,7 @@ Checking DDM results in the bootstrapped estimates. Variables using all trials a
 tmp = measure_labels %>%
   mutate(dv = as.character(dv),
          contrast = ifelse(overall_difference == "difference", "contrast", "non-contrast")) %>%
-  filter(ddm_task == 1, 
+  filter(ddm_task == 1,
          rt_acc != 'other') %>%
   drop_na() %>%
   left_join(boot_df[,c("dv", "icc")], by = 'dv')
@@ -2408,9 +2408,9 @@ tmp_save = tmp %>%
   summarise(icc_median = quantile(icc, probs = 0.5),
             icc_2.5 = quantile(icc, probs = 0.025),
             icc_97.5 = quantile(icc, probs = 0.975),
-            num_vars = n()/1000) 
+            num_vars = n()/1000)
 
-tmp_save %>% 
+tmp_save %>%
   datatable() %>%
   formatRound(columns=c('icc_median', 'icc_2.5', 'icc_97.5'), digits=3)
 ```
@@ -2515,7 +2515,7 @@ tmp %>%
 tmp2 = measure_labels %>%
   mutate(dv = as.character(dv),
          contrast = ifelse(overall_difference == "difference", "contrast", "non-contrast")) %>%
-  filter(ddm_task == 1, 
+  filter(ddm_task == 1,
          rt_acc != 'other') %>%
   drop_na() %>%
   left_join(rel_df[,c("dv", "icc")], by = 'dv')
@@ -2537,7 +2537,7 @@ ddm_point_plot = tmp2 %>%
   scale_fill_brewer(palette="Greys",
                     breaks=c( "Response Time", "Accuracy","Drift Rate", "Threshold", "Non-decision"))+
   ylim(-0.4, 1)
-  
+
 mylegend<-g_legend(ddm_point_plot)
 
 grob_name <- names(mylegend$grobs)[1]
@@ -2577,7 +2577,7 @@ tmp = measure_labels %>%
   filter(task == 'survey') %>%
   left_join(boot_df[,c("dv", "icc")], by = 'dv') %>%
   separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
-  select(-extra_1, -extra_2) 
+  select(-extra_1, -extra_2)
 
 tmp_save = tmp %>%
   group_by(task_name) %>%
@@ -2607,7 +2607,7 @@ sjt.df(tmp_save %>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.p
 
 ### Number of items
 
-Does number of items in a survey have a significant effect on the average ICC of survey measures? No. 
+Does number of items in a survey have a significant effect on the average ICC of survey measures? No.
 
 ```{r warning=FALSE, message=FALSE}
 summary(lmerTest::lmer(icc ~ num_all_trials + (1|dv), data = tmp))
