@@ -147,9 +147,15 @@ Script: python concatenate_hddm_flat.py /oak/stanford/groups/russpold/users/ieis
 Output: retest_hddm_flat.csv, t1_hddm_flat.csv
 Run: Commandline Sherlock
 
+Concatenate HDDM parameter estimates without hierarchy for each task separately
+Input: mturk_retest_outputs/hddm_flat/subject_fits, batch_files/retest/run_concatenate_hddm_flat.sh
+Script: ./run_concatenate_hddm_flat.sh
+Output: {task}_{time}_hddm_flat.csv
+Run: Commandline Sherlock
+
 Copy over concatenated hddm flat_tasks_list
 Input: retest_hddm_flat.csv, t1_hddm_flat.csv
-Script: rsync -avzh zenkavi@sherlock.stanford.edu:/oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/hddm_flat/t1_hddm_flat.csv ./
+Script: rsync -avzh zenkavi@login.sherlock.stanford.edu:/oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/hddm_flat/t1_hddm_flat.csv ./
 Output: Retest_03-29-2018/retest_hddm_flat.csv, Retest_03-29-2018/t1_data/t1_hddm_flat.csv
 Run: Locally in Data/Retest_03-29-2018 directory
 
