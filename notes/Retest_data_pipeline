@@ -50,14 +50,14 @@ Input: extract_t1_csv_data.R, extract_t1_csv_data.batch, Data/Complete_03-29-201
 Script: run_extract_t1_csv_data.sh
 Output: Data/Retest_03-29-2018/t1_data/*.csv
 Run: Sherlock
-To copy over: rsync -avzh zenkavi@sherlock.stanford.edu:/oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_03-29-2018/t1_data ./
+To copy over: rsync -avzh zenkavi@loging.sherlock.stanford.edu:/oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_03-29-2018/t1_data ./
 
 Extract t1-data for Individual_Measures csv's:
 Input: extract_t1_csv_data.R, extract_t1_csv_data.batch, Data/Complete_03-29-2018/, Data/Retest_03-29-2018/t1_data/Individual_Measures
 Script: run_extract_t1_task_data.sh
 Output: Data/Retest_03-29-2018/t1_data/Individual_Measures/*.csv.gz
 Run: Sherlock
-To copy over: rsync -avzh zenkavi@sherlock.stanford.edu:/oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_03-29-2018/t1_data/Individual_Measures ./
+To copy over: rsync -avzh zenkavi@loging.sherlock.stanford.edu:/oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_03-29-2018/t1_data/Individual_Measures ./
 
 Bootstrap (can start before refits because refit bootstrap is separate)
 Input: /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/bootstrap_output, /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/bootstrap_output/.err, /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/bootstrap_output/.out, batch_scripts/retest/bootstrap_retest.R, bootstrap_scripts/retest/bootstrap_retest.batch, retest_report_vars.txt,
@@ -70,7 +70,7 @@ Input: /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/beh
 Script: batch_files/retest/run_concatenate_boostrap.sh
 Output: Local/bootstrap_merged.csv.gz
 Run: Sherlock
-To copy over: rsync -avzh zenkavi@sherlock.stanford.edu:/oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_03-29-2018/Local/bootstrap_merged.csv.gz ./
+To copy over: rsync -avzh zenkavi@loging.sherlock.stanford.edu:/oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_03-29-2018/Local/bootstrap_merged.csv.gz ./
 
 Get retest_subs_test_data_post.json for DDM refits
 Input: get_retest_worker_raw_test_data.py, mturk_complete_data_post.pkl
@@ -107,7 +107,7 @@ Input: /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/beh
 Script: batch_files/retest/run_concatenate_refit_bootstrap.sh
 Output: Local/refits_bootstrap_merged.csv.gz
 Run: Sherlock
-To copy over to Retest_03-29-2018: rsync -avzh zenkavi@sherlock.stanford.edu:/oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_03-29-2018/Local/refits_bootstrap_merged.csv.gz ./
+To copy over to Retest_03-29-2018: rsync -avzh zenkavi@loging.sherlock.stanford.edu:/oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_03-29-2018/Local/refits_bootstrap_merged.csv.gz ./
 
 Get completion times (to be tested post path correction)
 Input: /oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_complete_data_post.pkl, get_completion_time.py
@@ -120,7 +120,7 @@ Input: /oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data
 Script: intratrial_reliability.batch
 Output: /oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_03-29-2018/Local/t1_tbt_dvs.csv, /oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_03-29-2018/Local/t2_tbt_dvs.csv
 Run: Sherlock
-To copy over to Retest_03-29-2018: rsync -avzh zenkavi@sherlock.stanford.edu:/oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_03-29-2018/Local/t1_tbt_dvs.csv ./
+To copy over to Retest_03-29-2018: rsync -avzh zenkavi@loging.sherlock.stanford.edu:/oak/stanford/groups/russpold/users/zenkavi/Self_Regulation_Ontology/Data/Retest_03-29-2018/Local/t1_tbt_dvs.csv ./
 
 ----------- FOR DDM PAPER -----------------------
 Create task list for HDDM flat job arrays
@@ -155,7 +155,7 @@ Run: Commandline Sherlock
 
 Copy over concatenated hddm flat_tasks_list
 Input: retest_hddm_flat.csv, t1_hddm_flat.csv
-Script: rsync -avzh zenkavi@login.sherlock.stanford.edu:/oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/hddm_flat/t1_hddm_flat.csv ./
+Script: rsync -avzh zenkavi@login.loging.sherlock.stanford.edu:/oak/stanford/groups/russpold/users/ieisenbe/Self_Regulation_Ontology/behavioral_data/mturk_retest_output/hddm_flat/t1_hddm_flat.csv ./
 Output: Retest_03-29-2018/retest_hddm_flat.csv, Retest_03-29-2018/t1_data/t1_hddm_flat.csv
 Run: Locally in Data/Retest_03-29-2018 directory
 
