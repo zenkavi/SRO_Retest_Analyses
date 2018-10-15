@@ -9,69 +9,44 @@ toc_float: yes
 ```{r, message=FALSE, warning=FALSE, include=FALSE}
 source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/SRO_Retest_Analyses_Helper_Functions.R')
 
+source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/SRO_Retest_Analyses_Workspace.R')
+
 test_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_03-29-2018/'
 
 retest_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-29-2018/'
 ```
 
-# Introduction
-
-The psychological construct of self-regulation, or related concepts of impulsivity, self-control, inhibition and others correlate with problematic real-world behaviors such as disordered eating (Mobbs et al., 2010, Verbeken et al., 2009, Nederkoorn et al. 2006a, Nederkoorn et al., 2006b), gambling (Lawrence et al., 2009, Fuentes et al., 2006, Alessi and Petry, 2003), drug addiction (Coffey et al., 2003, de Wit, Crean and John, 2000, Sher, Bartholow and Wood, 2000, Kirby, Petry and Bickel, 1999) or bad financial decisions (Meier and Sprenger, 2015, Meier and Sprenger, 2013, Meier and Sprenger 2012). In these lines of work measures of self-regulation are used as behavioral assays for individual difference analyses. An underlying assumption of treating behavioral measures as reflective of person-specific characteristics is that the measures of self-regulation are stable across time. In other words, that they have high test-retest reliability (or high between- and low within-subject variability). This assumption is not extensively and equally tested in the literature for all measures of self-regulation.    
-Self-regulation measures can be grouped in two broad categories: Surveys and cognitive tasks. While the former typically goes through some form of psychometric testing often filtering out items with low test-retest reliability this is less frequently true for the latter. Though some empirical results on test-retest reliabilities of certain cognitive task measures are reported in pockets of the literature an exhaustive summary or systematic elimination of tasks or measures based on stability across time does not seem to exist. Test-retest reliability is, however, crucial for individual difference analyses (Hedge, Powell and Sumner, 2017).   
-To answer the question of reliability of self-regulation measures comprehensively we created a large battery consisting of both cognitive task and survey measures. In this paper we make two contributions: First we provide a review of these measures along with their reported reliabilities when available. Then we report results of a large study we conducted where we collected retest reliability data using all of these measures. This effort not only fills in a notable gap in the literature in clarifying which measures of self-regulation are stable across time but also provides guidance on factors to pay attention to when constructing new tasks for individual difference measures.  
-
-# Methods
-
-## Data collection
-
-This sample consists of data for 150 subjects of the original sample of 522 that has completed the initial battery of 37 cognitive tasks, 23 surveys and 3 surveys on demographics. Details of the original sample as well as quality control (qc) procedures are described elsewhere (Eisenberg et al., 2017). Invited participants were chosen randomly and only subsets of them were invited for a given batch (instead of opening the battery to all qualified subjects) with the intention to avoid a potential oversampling and bias towards "high self regulators".
-
-```{r warning=FALSE, message=FALSE}
-workers = read.csv(paste0(retest_data_path,'Local/User_717570_workers.csv'))
-workers = workers %>%
-  group_by(Worker.ID) %>%
-  mutate(Retest_worker=ifelse(sum(CURRENT.RetestWorker,CURRENT.RetestWorkerB2,CURRENT.RetestWorkerB3,CURRENT.RetestWorkerB4,CURRENT.RetestWorkerB5,na.rm=T)>0,1,0)) %>%
-  ungroup()
-
-worker_counts <- fromJSON(paste0(retest_data_path,'/Local/retest_worker_counts.json'))
-
-worker_counts = as.data.frame(unlist(worker_counts))
-names(worker_counts) = "task_count"
-```
-
 In total `r sum(workers$Retest_worker)` participants were invited, `r nrow(worker_counts)` began the battery, `r sum(worker_counts$task_count >= 62)` completed the battery and 150 provided data that passed qc for both time points. Our target sample size was determined in advance of data collection and data collection continued until this number of participants with data that survived qc was reached.
-
-```{r warning=FALSE, message=FALSE}
-disc_comp_date = read.csv(paste0(retest_data_path,'Local/discovery_completion_dates.csv'), header=FALSE)
-val_comp_date = read.csv(paste0(retest_data_path,'Local/validation_completion_dates.csv'), header=FALSE)
-test_comp_date = rbind(disc_comp_date, val_comp_date)
-rm(disc_comp_date, val_comp_date)
-retest_comp_date = read.csv(paste0(retest_data_path,'Local/retest_completion_dates.csv'), header=FALSE)
-comp_dates = merge(retest_comp_date, test_comp_date, by="V1")
-names(comp_dates) <- c("sub_id", "retest_comp", "test_comp")
-comp_dates$retest_comp = as.Date(comp_dates$retest_comp)
-comp_dates$test_comp = as.Date(comp_dates$test_comp)
-comp_dates$days_btw = with(comp_dates, retest_comp-test_comp)
-```
 
 Data collection took place on average `r round(mean(as.numeric(comp_dates$days_btw)))` number of days after the completion of the initial battery with a range of `r round(range(as.numeric(comp_dates$days_btw)))[1]` to `r round(range(as.numeric(comp_dates$days_btw)))[2]` days.
 
+The variables included in this report are:  
+- meaningful variables (includes only hdddm parameters)  
+- EZ diffusion parameters  
+- Raw RT and Accuracy measures  
+- Variables found in the literature (for comparison)  
+
+For reference here are the variables that are **not** included in the analyses of the remainder of this report because they were not of theoretical interest in factor structure analyses of this data. These include drift diffusion and other model parameters for specific conditions within a task; survey variables that are not part of the dependant variables for that survey in the literature and demographics (these are saved for prediction analyses).
+
 ```{r}
-rm(test_comp_date, retest_comp_date, comp_dates)
+test_data2 <- read.csv(paste0(retest_data_path, 't1_data/variables_exhaustive.csv'))
+
+df <- data.frame(names(test_data2)[which(names(test_data2) %in% names(test_data) == FALSE)])
+names(df) = c('vars')
+
+df %>%
+  filter(vars != "X")
 ```
+
+```{r}
+rm(test_data2, df)
+```
+
+# Results
 
 ## Demographics
 
 ```{r}
-test_demog <- read.csv(paste0(retest_data_path, '/t1_data/demographic_health.csv'))
-
-retest_demog <- read.csv(paste0(retest_data_path, 'demographic_health.csv'))
-
-retest_demog = retest_demog[retest_demog$X %in% test_demog$X,]
-
-names(test_demog)[which(names(test_demog) == 'X')] <-'sub_id'
-names(retest_demog)[which(names(retest_demog) == 'X')] <-'sub_id'
-
 summary(test_demog %>%
           select(Sex, Age))
 
@@ -79,32 +54,15 @@ summary(retest_demog %>%
           select(Sex, Age))
 ```
 
-## Literature
+## Literature review
 
-One of the major contributions of this project is a comprehensive literature review of the retest reliabilities of the surveys and tasks that were used. We reviewed the literature on a measure (as opposed to task level) paying attention to differences in sample size, the delay between the two measurements as well as the statistic that was used to assess reliabilities (e.g. Spearman vs. Pearson correlations). Here we present a table and a visualization summarizing our findings. References mentioned in the table below can be found [here](https://docs.google.com/spreadsheets/d/1hcED4_rWSGSE8Td0aqT0kWqlLCBAzRNKBXj3tSram58/edit?usp=sharing).  
+Here's what our literature review looks like
 
 ```{r}
-lit_review <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/lit_review_figure.csv')
-
 lit_review
 ```
 
 ```{r message=FALSE}
-lit_review = lit_review %>%
-  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
-  mutate(task_group = factor(task_group, levels = task_group[order(task)]),
-         type = as.character(type)) %>%
-  mutate(task_group = gsub("_", " ", task_group),
-         var = gsub("_", " ", var)) %>%
-  arrange(task_group, raw_fit, var) %>%
-  mutate(task_group = gsub("survey", "", task_group),
-         task_group = gsub("task", "", task_group),
-         task_group = str_to_title(task_group)) %>%
-  mutate(task_group = ifelse(task_group == "Psychological Refractory Period Two Choices", "Psychological Refractory Period", ifelse(task_group == "Angling Risk Always Sunny", "Angling Risk", ifelse(task_group == "Two Stage", "Two Step", ifelse(task_group == "Threebytwo", "Task Switching", ifelse(task_group == "Adaptive N Back", "Adaptive N-back", ifelse(task_group == "Go Nogo", "Go/No-go",  ifelse(task_group == "Ravens", "Raven's", task_group)))))))) %>%
-  mutate(task_group = ifelse(task_group == "Bis Bas ", "BIS-BAS", ifelse(task_group == "Bis11 ", "BIS-11", ifelse(task_group == "Dospert Eb ", "DOSPERT EB", ifelse(task_group == "Dospert Rp ", "DOSPOERT RP", ifelse(task_group == "Dospert Rt ", "DOSPERT RT", ifelse(task_group == "Erq ", "ERQ", ifelse(task_group == "Upps Impulsivity ", "UPPS-P", task_group))))))))  %>%
-  select(-measure_description)
-
-
 tmp = lit_review[duplicated(lit_review$reference)==FALSE,]
 
 nrow(tmp)
@@ -288,100 +246,12 @@ table(tmp$clinical_1_0)
 summary(lmer(retest_reliability ~ clinical_1_0+(1|dv),data=tmp))
 ```
 
-## Loading datasets
-
-The variables included in this report are:  
-- meaningful variables (includes only hdddm parameters)  
-- EZ diffusion parameters  
-- Raw RT and Accuracy measures  
-- Variables found in the literature (for comparison)  
-
-```{r echo=FALSE}
-#Get variables of interest from Ian's release
-tmp1 <- read.csv(paste0(test_data_path,'meaningful_variables.csv'))
-tmp2 <- read.csv(paste0(test_data_path,'meaningful_variables_noDDM.csv'))
-tmp3 <- read.csv(paste0(test_data_path,'meaningful_variables_EZ.csv'))
-retest_report_vars = c(names(tmp1), names(tmp2), names(tmp3))
-retest_report_vars = unique(retest_report_vars)
-lit_rev_vars = as.character(unique(lit_review$dv)[which(unique(lit_review$dv) %in% retest_report_vars == FALSE)])
-retest_report_vars = c(retest_report_vars, lit_rev_vars)
-rm(tmp1, tmp2, tmp3, lit_rev_vars)
-```
-
-### Load time 1 data
-```{r}
-test_data <- read.csv(paste0(retest_data_path,'t1_data/variables_exhaustive.csv'))
-
-test_data <- test_data[,names(test_data) %in% retest_report_vars]
-
-test_data$X <- as.character(test_data$X)
-names(test_data)[which(names(test_data) == 'X')] <-'sub_id'
-```
-
-For reference here are the variables that are **not** included in the analyses of the remainder of this report because they were not of theoretical interest in factor structure analyses of this data so far. These include drift diffusion and other model parameters for specific conditions within a task; survey variables that are not part of the dependant variables for that survey in the literature and demographics (these are saved for prediction analyses).
-
-```{r}
-test_data2 <- read.csv(paste0(retest_data_path, 't1_data/variables_exhaustive.csv'))
-
-df <- data.frame(names(test_data2)[which(names(test_data2) %in% names(test_data) == FALSE)])
-names(df) = c('vars')
-
-df
-```
-
-```{r echo=FALSE}
-rm(test_data2, df)
-```
-
-### Load time 2 data
-```{r}
-retest_data <- read.csv(paste0(retest_data_path,'variables_exhaustive.csv'))
-
-retest_data <- retest_data[,names(retest_data) %in% retest_report_vars]
-
-retest_data$X <- as.character(retest_data$X)
-names(retest_data)[which(names(retest_data) == 'X')] <-'sub_id'
-retest_data = retest_data[retest_data$sub_id %in% test_data$sub_id,]
-```
-
-### Replace HDDM parameters in t1 data
-
-Since HDDM parameters depend on the sample on which they are fit we refit the model on t1 data for the subjects that have t2 data. Here we replace the HDDM parameters in the current t1 dataset with these refitted values.
-
-```{r}
-hddm_refits <- read.csv(paste0(retest_data_path,'t1_data/hddm_refits_exhaustive.csv'))
-
-hddm_refits = hddm_refits[,names(hddm_refits) %in% retest_report_vars]
-
-hddm_refits$X <- as.character(hddm_refits$X)
-names(hddm_refits)[which(names(hddm_refits) == 'X')] <-'sub_id'
-
-#For later comparison of whether fitting the DDM parameters on full or retest sample makes a big difference
-test_data_full_sample_hddm <- test_data
-
-#drop hddm columns from test_data
-test_data = cbind(test_data$sub_id, test_data[,names(test_data) %in% names(hddm_refits) == FALSE])
-
-#fix naming before merging
-names(test_data)[which(names(test_data) == 'test_data$sub_id')] <-'sub_id'
-
-#merge hddm refits to test data
-test_data = merge(test_data, hddm_refits, by="sub_id")
-```
-
-# Results
 
 ## Data quality checks
 
 ### Demographics reliability
 
 Point estimates of reliability for the demographic variabels.
-
-```{r}
-demog_boot_df <- read.csv(gzfile(paste0(retest_data_path,'demog_boot_merged.csv.gz')))
-
-demog_boot_df = process_boot_df(demog_boot_df)
-```
 
 ```{r}
 tmp = demog_boot_df %>%
@@ -504,19 +374,6 @@ rm(tmp, i)
 
 Add completion dates to this data frame.
 
-```{r}
-retest_task_comp_times = read.csv(paste0(retest_data_path, 'Local/retest_task_completion_times.csv'))
-test_task_comp_times = read.csv(paste0(retest_data_path, 'Local/test_task_completion_times.csv'))
-task_comp_times = merge(retest_task_comp_times, test_task_comp_times, by=c('worker_id','task'))
-rm(retest_task_comp_times, test_task_comp_times)
-task_comp_times = task_comp_times %>%
-  select(-X.x, -X.y) %>%
-  mutate(finish_day.x = as.Date(finish_day.x),
-         finish_day.y = as.Date(finish_day.y),
-         days_btw = finish_day.x-finish_day.y) %>%
-  rename(sub_id=worker_id)
-```
-
 ```{r warning=FALSE}
 t1_2_difference = merge(t1_2_difference, task_comp_times[,c('sub_id', 'task','days_btw')], by=c('sub_id', 'task'))
 ```
@@ -586,26 +443,6 @@ Some surveys have overlapping questions. Do these correlate within and across se
 First determine the overlapping questions.
 
 ```{r}
-tmp = read.csv(gzfile(paste0(retest_data_path, 'items.csv.gz')))
-tmp = tmp %>%
-  filter(worker == 's005') %>%
-  select(item_ID, item_text) %>%
-  mutate(item_text = trimws(as.character(item_text))) %>%
-  unite(item, c("item_ID", "item_text"), sep = "___")
-
-comb = as.data.frame(t(combn(unique(tmp$item),2)))
-
-duplicate_items = comb %>%
-  filter(grepl('dospert', V1)==FALSE) %>%
-  filter(grepl('selection_optimization', V1)==FALSE) %>%
-  filter(grepl('sensation_seeking', V1)==FALSE) %>%
-  separate(V1, c("item1_ID", "item1_text"), sep="___") %>%
-  separate(V2, c("item2_ID", "item2_text"), sep="___") %>%
-  mutate(similarity = levenshteinSim(item1_text, item2_text)) %>%
-  filter(similarity>0.8) %>%
-  select(similarity, item1_ID, item2_ID, item1_text, item2_text) %>%
-  arrange(-similarity)
-
 duplicate_items
 ```
 
@@ -618,9 +455,6 @@ extract_items = c('worker',unique(with(duplicate_items, c(item1_ID, item2_ID))))
 #item1_t2 - item2_t2,
 #item1_t1 - item2_t2,
 #item1_t2 - item2_t1
-
-duplicate_items_data_t1 = read.csv(paste0(test_data_path, 'subject_x_items.csv'))
-duplicate_items_data_t2 = read.csv(paste0(retest_data_path, 'subject_x_items.csv'))
 
 duplicate_items_data_t1 = duplicate_items_data_t1 %>%
   filter(worker %in% duplicate_items_data_t2$worker) %>%
@@ -820,45 +654,7 @@ rm(tmp, comb, t1_2_difference, duplicate_items, duplicate_items_data_t1, duplica
 
 ## Comparison to prior literature
 
-Read in and process bootstrapped results.
-
-```{r}
-boot_df <- read.csv(gzfile(paste0(retest_data_path,'bootstrap_merged.csv.gz')))
-
-boot_df = process_boot_df(boot_df)
-
-boot_df = boot_df[boot_df$dv %in% retest_report_vars,]
-
-# Check if you have all variables bootstrapped
-# retest_report_vars[which(retest_report_vars %in% boot_df$dv==FALSE)]
-
-# Boot df contains hddm parameters fit on the full sample in the t1 data
-# refits_bootstrap_merged.csv.gz contains bootstrapped reliabilities
-
-refit_boot_df = read.csv(gzfile(paste0(retest_data_path,'refits_bootstrap_merged.csv.gz')))
-
-refit_boot_df = process_boot_df(refit_boot_df)
-
-fullfit_boot_df = boot_df[as.character(boot_df$dv) %in% unique(as.character(refit_boot_df$dv)),]
-
-boot_df = boot_df[!as.character(boot_df$dv) %in% unique(as.character(refit_boot_df$dv)),]
-
-boot_df = rbind(boot_df, refit_boot_df)
-
-rm(refit_boot_df)
-```
-
 Summarize bootstrapped results and merge to lit review data
-
-```{r message=FALSE}
-var_boot_df = boot_df %>%
-  group_by(dv) %>%
-  summarise(mean_icc = mean(icc),
-            mean_pearson = mean(pearson))
-
-rel_comp = lit_review %>%
-  left_join(var_boot_df, by = 'dv')
-```
 
 Here's what our data looks like: (583 data points for 171 measures)
 
@@ -1525,18 +1321,7 @@ boot_df %>%
   formatRound(columns=c('icc_median', 'icc_2.5', 'icc_97.5', 'spearman_median', 'spearman_2.5', 'spearman_97.5'), digits=3)
 ```
 
-```{r echo=FALSE}
-measure_labels <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/measure_labels.csv')
-measure_labels = measure_labels %>% select(-measure_description)
-# Check if there are any missing variables
-# retest_report_vars[(retest_report_vars %in% measure_labels$dv == FALSE)]
-# measure_labels$dv[(measure_labels$dv %in% retest_report_vars == FALSE)]
-```
-
 ```{r}
-meaningful_vars = read.table('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/meaningful_vars.txt')
-meaningful_vars = as.character(meaningful_vars$V1)
-
 tmp = as.character(unique(lit_review$dv)[which(unique(lit_review$dv) %in% meaningful_vars == FALSE)])
 tmp = tmp[-grep('survey', tmp)]
 
@@ -1820,10 +1605,7 @@ boot_df %>%
 
 
 ```{r eval=FALSE}
-#summary(lmerTest::lmer(icc ~  task + (1|dv), boot_df))
-# m = MCMCglmm(icc ~  task, random = ~dv, data=boot_df, nitt = 1300, burnin = 300)
-m = readRDS('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/icc_by_task_model.rds')
-summary(m)
+summary(icc_by_task_model)
 ```
 
 ### Variance breakdown
@@ -1948,28 +1730,19 @@ First we find that task measures have a smaller percentage of their overall vari
 
 ```{r}
 tmp = boot_df %>%
-  mutate(var_subs_pct = var_subs/(var_subs+var_ind+var_resid)*100,
-         var_ind_pct = var_ind/(var_subs+var_ind+var_resid)*100,
-         var_resid_pct = var_resid/(var_subs+var_ind+var_resid)*100) %>%
   select(dv, task, var_subs_pct, var_ind_pct, var_resid_pct)
 
-# summary(lmerTest::lmer(var_subs_pct~task+(1|dv),tmp%>%select(-var_ind_pct,-var_resid_pct)))
-m = readRDS('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/var_subs_pct_by_task_model.rds')
-summary(m)
+summary(var_subs_pct_by_task_model)
 ```
 
 We also find that a significantly larger percentage of their variance is explained by between session variability. Larger between session variability suggests systematic differences between the two sessions. Such systematic effects can be due to e.g. learning effects as explored later.
 
 ```{r}
-# summary(lmerTest::lmer(var_ind_pct~task+(1|dv),tmp%>%select(-var_subs_pct,-var_resid_pct)))
-m = readRDS('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/var_ind_pct_by_task_model.rds')
-summary(m)
+summary(var_ind_pct_by_task_model)
 ```
 
 ```{r}
-# summary(lmerTest::lmer(var_resid_pct~task+(1|dv),tmp%>%select(-var_subs_pct,-var_ind_pct)))
-m = readRDS('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/var_resid_pct_by_task_model.rds')
-summary(m)
+summary(var_resid_pct_by_task_model)
 ```
 
 ```{r}
@@ -2073,25 +1846,6 @@ ggsave('PropTimeEffects.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropb
 
 ```
 
-Are these significantly different between surveys and tasks? No.
-
-```{r}
-chisq.test(matrix(data = c(23,74-23,133, 372-133), nrow=2))
-```
-
-```{r}
-boot_df %>%
-  select(dv, p_time, task, pearson) %>%
-  mutate(time_effect_sig = ifelse(p_time<0.05,1,0)) %>%
-  group_by(dv)%>%
-  summarise(pct_sig_time_effect = sum(time_effect_sig)/10,
-            task = unique(task),
-            mean_pearson = mean(pearson))%>%
-  filter(pct_sig_time_effect>5) %>%
-  arrange(task,-pct_sig_time_effect) %>%
-
-```
-
 ### SEM CI calculation
 
 Step 1: T = Grand mean + ICC * (Subject score - Grand mean)
@@ -2157,62 +1911,7 @@ mean_diff_df = ind_ci_df %>%
 mean_diff_df
 ```
 
-This doesn't make it easier to interpret whether it is a performance improvement or decline. In fact 'performance' isn't even necessarily the correct term here. Using the valence assignments of the measures look at whether it translates to an increase or decrease in self-regulation. Of the 66 this makes sense for 54 variables.
-
-```{r}
-valence_df = read.csv(paste0(retest_data_path, 'DV_valence.csv'), header = F)
-valence_df = valence_df %>% rename(dv = V1, valence = V2)
-valence_df$task = 'task'
-valence_df[grep('survey', valence_df$dv), 'task'] = 'survey'
-valence_df[grep('holt', valence_df$dv), 'task'] = "task"
-
-valence_df = valence_df %>% filter(dv %in% retest_report_vars)
-with(valence_df, table(task, valence))
-#Comparable level of valences for task and survey measures
-chisq.test(with(valence_df, table(task, valence)))
-```
-
-```{r warning=FALSE, message=FALSE}
-
-mean_diff_df %>%
-  left_join(valence_df, by = c("dv", "task")) %>%
-  mutate(sc_increase = ifelse(prop_one_direction>0&valence==1,1,ifelse(prop_one_direction<0&valence==-1,1,0)),
-         sc_decrease = ifelse(prop_one_direction>0&valence==-1,1,ifelse(prop_one_direction<0&valence==1,1,0))) %>%
-  group_by(task) %>%
-summarise(sum_sc_increase = sum(sc_increase,na.rm=T),
-          sum_sc_decrease = sum(sc_decrease,na.rm=T)) %>%
-  gather(key, value, -task) %>%
-  mutate(total_vars = c(74, 372, 74, 372),
-         prop = value/total_vars) %>%
-  ggplot(aes(key, prop, group=task, fill=task))+
-  geom_bar(stat = "identity", position = position_dodge(), alpha = 0.5)+
-  theme(legend.title = element_blank(),
-        axis.title.y = element_text(size=14),
-        axis.text.x = element_text(size=14))+
-  xlab("")+
-  ylab("Proportion of measures")+
-  ylim(0, 1)+
-  scale_x_discrete(breaks = c("sum_sc_decrease", "sum_sc_increase"),
-                   labels = c("Self-control decrease", "Self-control increase"))
-
-ggsave('PropTimeEffectsValence.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 7, height = 5, units = "in", limitsize = FALSE, dpi = 300)
-```
-
-Variables that show more than 5% difference in a direction do not depend on whether they translate to a self control increase or decrease.
-
-```{r}
-chisq.test(matrix(data = c(23,54-23,31,54-31), nrow=2))
-```
-
-Do they differ depending on whether they are task or survey variables? No.
-
-```{r}
-chisq.test(matrix(data = c(5,74-5,60,372-60), nrow=2))
-```
-
-```{r}
-rm(mean_diff_df)
-```
+This doesn't make it easier to interpret whether it is a performance improvement or decline. In fact 'performance' isn't even necessarily the correct term here.
 
 ## Task Reliabilities
 
@@ -2241,18 +1940,6 @@ tmp %>%
   formatRound(columns=c('median_icc','icc_2.5','icc_97.5'), digits=3)
 ```
 
-
-```{r}
-tmp = tmp%>%
-  mutate(task_name = gsub("_", " ", task_name),
-         task_name = gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", task_name, perl=TRUE))
-
-names(tmp) = gsub("_", " ", names(tmp))
-names(tmp) = gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", names(tmp), perl=TRUE)
-
-sjt.df(tmp %>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.progress = TRUE, show.rownames = FALSE, file = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/task_rel_table.doc")
-```
-
 ### Number of trials
 
 Does number of items in a task have a significant effect on the average ICC of meaningful measures for all trials from a task? No.
@@ -2266,10 +1953,7 @@ tmp = measure_labels %>%
   separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
   select(-extra_1, -extra_2)
 
-# summary(lm(icc ~ num_all_trials, data = tmp))
-# summary(lmerTest::lmer(icc ~ num_all_trials + (1|dv), data = tmp))
-m = readRDS('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/icc_by_num_trials_model.rds')
-summary(m)
+summary(icc_by_num_trials_model)
 ```
 
 ```{r warning=FALSE, message=FALSE}
@@ -2296,9 +1980,6 @@ For this example we look at the retest reliability of dependent measures from th
 
 Post process dv's from cluster to calculate reliabilities
 ```{r}
-t1_dvs = read.csv(paste0(retest_data_path, 't1_shift_dvs.csv'))
-t2_dvs = read.csv(paste0(retest_data_path, 't2_shift_dvs.csv'))
-
 t1_dvs = t1_dvs %>% select(-X)
 t2_dvs = t2_dvs %>% select(-X)
 ```
@@ -2367,8 +2048,6 @@ Takeaways from this graph:
 - All the other measures are basically completely unreliable (including the two 'meaningful variables' in the literature: the cue switch cost RT's)
 
 ```{r warning=FALSE, message=FALSE}
-trial_num_rel_df = read.csv(paste0(retest_data_path, 'trial_num_rel_df_shift.csv'))
-
 trial_num_rel_df %>%
   gather(key, value, -breaks) %>%
   filter(key %in% c("avg_rt_icc", "learning_to_learn_icc", "nonperseverative_errors_icc")) %>%
@@ -2415,17 +2094,6 @@ tmp_save %>%
   formatRound(columns=c('icc_median', 'icc_2.5', 'icc_97.5'), digits=3)
 ```
 
-```{r}
-tmp_save = tmp_save %>%
-  ungroup() %>%
-  mutate(contrast = as.character(contrast),
-         raw_fit = as.character(raw_fit),
-         rt_acc = as.character(rt_acc)) %>%
-  arrange(-icc_median)
-
-sjt.df(tmp_save %>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.progress = TRUE, show.rownames = FALSE, file = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/ddm_rel_table.doc")
-```
-
 Comparing contrast vs non-contrast: overall has higher reliability than difference.
 
 ```{r}
@@ -2436,17 +2104,13 @@ summary(MCMCglmm(icc ~ contrast, random = ~ dv, data=tmp))
 Comparing raw vs ddm in overall estimates: EZ is significantly better than HDDM and comparable to raw estimates.
 
 ```{r}
-# summary(lmerTest::lmer(icc ~ raw_fit + (1|dv) ,tmp %>% filter(contrast == "non-contrast")))
-m = readRDS('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/icc_by_rawfit_noncon_model.rds')
-summary(m)
+summary(icc_by_rawfit_noncon_model)
 ```
 
 Comparing raw vs ddm in difference scores: EZ is significantly worse than HDDM and comparable to raw estimates.
 
 ```{r}
-# summary(lmerTest::lmer(icc ~ raw_fit + (1|dv) ,tmp %>% filter(contrast == "contrast")))
-m = readRDS('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/icc_by_rawfit_con_model.rds')
-summary(m)
+summary(icc_by_rawfit_con_model)
 ```
 
 ```{r}
