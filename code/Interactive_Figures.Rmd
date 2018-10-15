@@ -10,5 +10,5 @@ Interactive figures visualizing both the literature review as well as data from 
 ```{r eval=FALSE}
 install.packages('shiny', dependencies = TRUE)
 library(shiny)
-runGitHub("SRO_Retest_Analyses", "zenkavi", subdir = 'code/Interactive_Figures/')
+runGitHub("SRO_Retest_Analyses", "zenkavi", subdir = 'code/interactive_figures/')
 ```

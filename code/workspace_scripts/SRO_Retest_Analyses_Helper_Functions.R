@@ -7,7 +7,6 @@ library(psych)
 library(stringr)
 library(plotly)
 library(DT)
-library(sjPlot)
 library(RecordLinkage)
 library(MCMCglmm)
 
@@ -17,7 +16,7 @@ render_this <- function(){rmarkdown::render('/Users/zeynepenkavi/Dropbox/Poldrac
 
 options(scipen = 1, digits = 4)
 
-helper_func_path = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/SRO_Retest_Helper_Functions/'
+helper_func_path = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/helper_functions/'
 
 source(paste0(helper_func_path, 'g_legend.R'))
 source(paste0(helper_func_path, 'g_caption.R'))
