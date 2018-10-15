@@ -11,5 +11,4 @@ bootstrap_merged.csv
 all_ddm_sample_size_estimates.csv
 output/workspaces/*
 input/*.rds
-Figure1.tiff
-Figure4.tiff
+output/figures/high_res/*

@@ -1,8 +1,6 @@
-library(tidyverse)
 library(gridExtra)
 library(lme4)
 library(GGally)
-library(jsonlite)
 library(psych)
 library(rmarkdown)
 library(psych)

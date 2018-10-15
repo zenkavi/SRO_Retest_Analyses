@@ -10,10 +10,6 @@ toc_float: yes
 source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/SRO_Retest_Analyses_Helper_Functions.R')
 
 source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/SRO_Retest_Analyses_Workspace.R')
-
-test_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_03-29-2018/'
-
-retest_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-29-2018/'
 ```
 
 In total `r sum(workers$Retest_worker)` participants were invited, `r nrow(worker_counts)` began the battery, `r sum(worker_counts$task_count >= 62)` completed the battery and 150 provided data that passed qc for both time points. Our target sample size was determined in advance of data collection and data collection continued until this number of participants with data that survived qc was reached.
@@ -64,11 +60,9 @@ lit_review
 
 ```{r message=FALSE}
 tmp = lit_review[duplicated(lit_review$reference)==FALSE,]
-
-nrow(tmp)
-sum(tmp$sample_size)
-nrow(lit_review)
 ```
+
+The literature review included `r nrow(tmp)` papers, `r sum(tmp$sample_size)` participants and `r nrow(lit_review)` data points on reliability.
 
 ```{r}
 rm(tmp)
@@ -82,62 +76,7 @@ lit_review = lit_review %>%
 ```
 
 ```{r warning= FALSE, message =FALSE, echo=FALSE}
-p1_legend = lit_review %>%
-  filter(task == 'task') %>%
-ggplot(aes(y = var, x = retest_reliability)) +
-  geom_point(aes(size=sample_size, shape=type))+
-  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
-  theme(panel.spacing = unit(0.5, "lines"),
-        strip.placement = "outside",
-        strip.text.y = element_text(angle=180),
-        panel.background = element_rect(fill = NA),
-        panel.grid.major = element_line(colour = "grey80"),
-        legend.position = 'bottom') +
-  xlab("")+
-  ylab("")+
-  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
-  scale_shape_manual(breaks = sort(lit_review$type), values = c(15, 16, 17, 3))
 
-p1 = lit_review %>%
-  filter(task == 'task') %>%
-ggplot(aes(y = var, x = retest_reliability)) +
-  geom_point(aes(size=sample_size, shape = type), color='#00BFC4')+
-  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
-  theme(panel.spacing = unit(0.5, "lines"),
-        strip.placement = "outside",
-        strip.text.y = element_text(angle=180),
-        panel.background = element_rect(fill = NA),
-        panel.grid.major = element_line(colour = "grey80"),
-        legend.position = 'bottom') +
-  xlab("")+
-  ylab("")+
-  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
-  scale_shape_manual(breaks = sort(lit_review$type), values = c(15, 16, 17, 3))
-
-p2 = lit_review %>%
-  filter(task == 'survey') %>%
-ggplot(aes(y = var, x = retest_reliability)) +
-  geom_point(aes(size=sample_size, shape = type), color = '#F8766D')+
-  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
-  theme(panel.spacing = unit(0.5, "lines"),
-        strip.placement = "outside",
-        strip.text.y = element_text(angle=180),
-        panel.background = element_rect(fill = NA),
-        panel.grid.major = element_line(colour = "grey80")) +
-  xlab("")+
-  ylab("")+
-  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
-  scale_shape_manual(breaks = sort(lit_review$type), values = c(15, 17, 3))
-
-mylegend<-g_legend(p1_legend)
-
-p3 <- arrangeGrob(arrangeGrob(p1 +theme(legend.position="none"),
-                         p2 + theme(legend.position="none"),
-                         nrow=1),
-             mylegend, nrow=2,heights=c(10, 1))
-
-ggsave('Lit_Review_Plot.jpg', plot = p3, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 24, height = 20, units = "in", dpi=100)
-rm(p1, p2, p3, p1_legend, mylegend)
 ```
 
 ```{r echo=FALSE, out.width='100%'}
