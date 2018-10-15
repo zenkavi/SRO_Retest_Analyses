@@ -189,9 +189,9 @@ Before I was using subjects as a random effect but days between the two time poi
 Significant fixed effect suggests that on average the longer the delay the smaller the difference.  
 
 ```{r}
-#summary(lmerTest::lmer(abs(difference) ~ scale(days_btw)+(scale(days_btw) | dv), data=t1_2_difference))
+summary(lmerTest::lmer(abs(difference) ~ scale(days_btw)+(scale(days_btw) | dv), data=t1_2_difference))
 
-summary(tmp <- MCMCglmm(abs(difference) ~ scale(days_btw), random = ~us(scale(days_btw)):dv, data=t1_2_difference, verbose=FALSE))
+# summary(tmp <- MCMCglmm(abs(difference) ~ scale(days_btw), random = ~us(scale(days_btw)):dv, data=t1_2_difference, verbose=FALSE))
 ```
 
 But if I just run one mixed effects model then we don't get a sense of the simple effects (how many of the variables this effect of the days between is significant and in which direction). I can run it separately for each dv to see if all difference score distributions are affected the same way depending on the days between completion. But since we are running so many tests we need to correct for multiple comparisons. How many of these tests are significant FDR correcting? None.
@@ -324,12 +324,6 @@ tmp = duplicate_items %>%
   select(similarity, t1_t1_polycor, t2_t2_polycor) %>%
   gather(key, value, -similarity)
 
-
-# tmp = duplicate_items %>%
-#   select(similarity, t1_t1_polycor, t1_t2_polycor, t2_t2_polycor, t2_t1_polycor) %>%
-#   gather(key, value, -similarity)
-
-
 tmp %>%
   ggplot(aes(similarity, value, col=key))+
   geom_smooth(method="lm", alpha = 0.15)+
@@ -339,8 +333,6 @@ tmp %>%
                        labels = c("T1 correlations", "T2 correlations"),
                        name = element_blank())+
   theme_bw()
-
-ggsave('OverlappingItemSimilarity.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 6, height = 4, units = "in", limitsize = FALSE, dpi = 500)
 ```
 
 
@@ -348,81 +340,8 @@ ggsave('OverlappingItemSimilarity.jpg', device = "jpeg", path = "/Users/zeynepen
 summary(lm(value~key*scale(similarity),tmp))
 ```
 
-```{r}
+```{r eval=FALSE, echo=FALSE}
 summary(MCMCglmm(value ~ key*scale(similarity), data=tmp, nitt = 50000))
-```
-
-
-Time 1: item 1 - item 2
-Time 1 item 1 - time 2 item 2
-Time 2 item 1 - time 1 item 2
-Time 2: item 1 - item 2
-
-```{r warning=FALSE, message=FALSE}
-tmp = duplicate_items_data_t1 %>%
-  gather(key, value, -worker)
-
-tmp2 = duplicate_items_data_t2 %>%
-  gather(key, value, -worker)
-
-tmp = duplicate_items %>%
-  select(item1_ID, item2_ID) %>%
-  left_join(tmp, by = c("item1_ID" = "key")) %>%
-  left_join(tmp, by = c("item2_ID" = "key", "worker" = "worker")) %>%
-  rename(item1_time1 = value.x, item2_time1 = value.y) %>%
-  left_join(tmp2, by = c("item1_ID" = "key", "worker" = "worker")) %>%
-  left_join(tmp2, by = c("item2_ID" = "key", "worker" = "worker")) %>%
-  rename(item1_time2 = value.x, item2_time2 = value.y) %>%
-  group_by(item1_ID) %>%
-  mutate(item1_time1 = scale(item1_time1),
-         item1_time2 = scale(item1_time2),
-         item2_time1 = scale(item2_time1),
-         item2_time2 = scale(item2_time2),
-         item1_time1 = ifelse(item1_ID == "mpq_control_survey.13", item1_time1*-1, item1_time1),
-         item1_time2 = ifelse(item1_ID == "mpq_control_survey.13", item1_time2*-1, item1_time2)) %>%
-  ungroup()
-
-p1 = tmp %>%
-  ggplot(aes(item1_time1, item2_time1, col=item1_ID))+
-  geom_smooth (alpha=0.3, size=0, span=0.5, method = "lm")+
-  stat_smooth (geom="line", alpha=1, size=1, span=0.5, method= "lm")+
-  theme(legend.position = "none")+
-  geom_abline(slope=1, intercept=0, size = 2, linetype = "dashed")+
-  xlab("Item 1 T1")+
-  ylab("Item 2 T1")
-
-p2 = tmp %>%
-  ggplot(aes(item1_time1, item2_time2, col=item1_ID))+
-  geom_smooth (alpha=0.3, size=0, span=0.5, method = "lm")+
-  stat_smooth (geom="line", alpha=1, size=1, span=0.5, method= "lm")+
-  theme(legend.position = "none")+
-  geom_abline(slope=1, intercept=0, size = 2, linetype = "dashed")+
-  xlab("Item 1 T1")+
-  ylab("Item 2 T2")
-
-p3 = tmp %>%
-  ggplot(aes(item1_time2, item2_time1, col=item1_ID))+
-  geom_smooth (alpha=0.3, size=0, span=0.5, method = "lm")+
-  stat_smooth (geom="line", alpha=1, size=1, span=0.5, method= "lm")+
-  theme(legend.position = "none")+
-  geom_abline(slope=1, intercept=0, size = 2, linetype = "dashed")+
-  xlab("Item 1 T2")+
-  ylab("Item 2 T1")
-
-p4 = tmp %>%
-  ggplot(aes(item1_time2, item2_time2, col=item1_ID))+
-  geom_smooth (alpha=0.3, size=0, span=0.5, method = "lm")+
-  stat_smooth (geom="line", alpha=1, size=1, span=0.5, method= "lm")+
-  theme(legend.position = "none")+
-  geom_abline(slope=1, intercept=0, size = 2, linetype = "dashed")+
-  xlab("Item 1 T2")+
-  ylab("Item 2 T2")
-
-p5 = arrangeGrob(p1, p2, p3, p4, ncol=2)
-
-ggsave('DataCheckOverlappingItems.jpg', p5, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 8, height = 5, units = "in", limitsize = FALSE, dpi = 500)
-
-rm(tmp, tmp2, p1, p2, p3, p4, p5)
 ```
 
 ```{r echo=FALSE}
@@ -441,7 +360,7 @@ rel_comp
 
 ### Lit review results
 
-Distribution of reliabilities, sample sizes and delays
+Distribution of reliabilities, sample sizes and delays in the literature
 
 ```{r}
 rel_comp %>%
@@ -470,15 +389,13 @@ rel_comp %>%
   theme(legend.position = 'none',
         axis.text.x = element_text(size=14),
         axis.title.y = element_text(size=14))
-
-ggsave('LitReviewSampleSize.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 3, height = 5, units = "in", limitsize = FALSE, dpi = 500)
 ```
 
 The literature has smaller sized samples for task measures compared to survey measures that report retest reliability.
 
 ```{r}
 # summary(lm(sample_size ~ task,rel_comp))
-summary(m1 <- MCMCglmm(sample_size ~ task, data=rel_comp))
+summary(m1 <- MCMCglmm(sample_size ~ task, data=rel_comp, verbose=FALSE))
 ```
 
 What predicts retest reliability in the literature?
@@ -499,7 +416,7 @@ anova(mod2, mod3)
 
 ```{r}
 #summary(mod2)
-summary(MCMCglmm(retest_reliability ~ task + sample_size, random = ~ dv, data = rel_comp))
+summary(MCMCglmm(retest_reliability ~ task + sample_size, random = ~ dv, data = rel_comp, verbose=FALSE))
 ```
 
 ```{r}
@@ -538,8 +455,6 @@ rel_comp %>%
   xlab("Sample Size")+
   ylab("Retest reliability")+
   ylim(-0.15, 1)
-
-ggsave('LitReviewRelBySampleSize.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 8, height = 5, units = "in", limitsize = FALSE, dpi = 500)
 ```
 
 Highlighting the difference between survey and task reliability for comparability to our results.
@@ -554,8 +469,6 @@ rel_comp %>%
   xlab("")+
   ylab("Mean ICC")+
   ylim(-0.4,1)
-
-ggsave('LitTaskVsSurvey.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 3, height = 5, units = "in", limitsize = FALSE, dpi = 500)
 ```
 
 Note: We checked whether our results diverge most from studies with smaller sample sizes. Square difference between our mean estimate and the reliability from the literature decreases exponentially with sample size. The smaller the sample size in the literature the more the reliability estimate differs from our results. But this was a weak result because most of the studies in the literature have smaller sample sizes and you see both small and large deviations for these studies (these were not significant either).
@@ -564,7 +477,7 @@ Note: We checked whether our results diverge most from studies with smaller samp
 
 Correlation between our mean estimates from bootstrapped samples and the literature review for task variables
 
-```{r}
+```{r eval=FALSE}
 n_df = rel_comp %>%
   group_by(dv) %>%
   tally()
@@ -601,14 +514,16 @@ lit_emp_cor = function(){
   return(out)
 }
 
-#lit_emp_cor_out = plyr::rdply(100, lit_emp_cor)
+lit_emp_cor_out = plyr::rdply(100, lit_emp_cor)
 
-#write.csv(lit_emp_cor_out,'/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/lit_emp_cor_out.csv')
+write.csv(lit_emp_cor_out,'/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/lit_emp_cor_out.csv')
+```
 
+
+```{r echo=FALSE}
 lit_emp_cor_out = read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/lit_emp_cor_out.csv')
 
 summary(lit_emp_cor_out)
-
 ```
 
 ### Noise ceiling
@@ -622,7 +537,7 @@ r^2 of retest_reliability ~ mean_icc
 coef of retest_reliability ~ sampled_reliability vs.
 coef of retest_reliability ~ mean_icc
 
-```{r}
+```{r eval=FALSE}
 comp_lit_pred <- function(df){
 
   sample_from_dv <- function(df){
@@ -659,44 +574,20 @@ comp_lit_pred <- function(df){
 }
 
 comp_lit_pred_out = plyr::rdply(1000, comp_lit_pred(rel_comp))
+
+write.csv(comp_lit_pred_out,'/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/comp_lit_pred_out.csv')
 ```
 
 
-```{r}
-tmp = comp_lit_pred_out %>%
-  select(-.n, -m_lit, -m_boot) %>%
-  gather(key, value) %>%
-  separate(key, c("stat", "sample"), sep = "_")
-
-# tmp$stat = as.factor(tmp$stat)
-# levels(tmp$stat) <- c("coefficient", expression(r^"2"))
-
-tmp %>%  
-  ggplot(aes(value, fill=sample))+
-  geom_density(alpha = 0.5, position='identity', color=NA)+
-  # facet_grid(.~stat, scales='free', labeller = label_parsed)+
-  scale_fill_manual(breaks=c("boot","lit"),
-                       labels=c("Empirical", "Literature"),
-                      name="Predictor",
-                      values = c("gray15", "gray75"))+
-  xlab('Proportion of Variance in Literature Explained')+
-  ylab('Density')+
-  xlim(0,1)+
-  ylim(0,40)+
-  theme(#axis.title.x  = element_text(size=12),
-        #axis.text.x  = element_text(size=12),
-        #axis.text.y  = element_text(size=12),
-        #axis.title.y  = element_text(size=12),
-        #legend.title  = element_text(size=12),
-        #legend.text  = element_text(size=12),
-        legend.position = "bottom",
-        plot.caption = element_text(family = "Times", lineheight = 2, hjust = 0))+
-  labs(caption = str_wrap("FIGURE 3: Noise ceiling for comparing empirical retest reliability estimates to reliability estimates from the literature. Data come from sampling a single reliability estimate from the literature and using that as a predictor of the remaining retest reliability estimates from the literature versus using the mean estimate from our empirical results as a predictor. Models account for the effect of sample size in the literature and whether the measure is a task or survey variables. The literature samples are significantly better at predicting the rest of the literature than our empirical averages, but the distributions of variance explained across samples are highly overlapping. ", width = 120))
-
-
-ggsave('LitAndBoot_Noise_Ceiling.tiff', device = "tiff", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 7, height = 5, units = "in", limitsize = FALSE, dpi = 300)
+```{r echo=FALSE}
+comp_lit_pred_out = read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/comp_lit_pred_out.csv')
 ```
 
+```{r echo=FALSE, out.width='100%'}
+fig_name = 'LitAndBoot_Noise_Ceiling.jpeg'
+
+knitr::include_graphics(paste0(fig_path, fig_name))
+```
 
 ```{r}
 with(comp_lit_pred_out, t.test(r2_lit, r2_boot, paired=T))
