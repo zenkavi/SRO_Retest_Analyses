@@ -109,45 +109,29 @@ Plotting point estimates of reliability for demographic items coloring those tha
 timed_demogs <- c("DoctorVisitsLastMonth","DaysHalfLastMonth","Worthless","DaysPhysicalHealthFeelings","Depressed","EverythingIsEffort","Hopeless","RestlessFidgety","Nervous","DaysLostLastMonth","Last30DaysUsual")
 
 demog_rel_df %>%
-  mutate(timed = ifelse(var %in% timed_demogs, 1, 0)) %>%
+  mutate(timed = ifelse(dv %in% timed_demogs, 1, 0)) %>%
   ggplot(aes(icc, fill = factor(timed)))+
   geom_histogram(position = "identity", alpha = 0.7, color = NA)+
   xlab("ICC")+
   ylab("Count")+
   scale_fill_manual(values = c("grey", "grey25"))+
   theme(legend.position = "none")
-
-ggsave('DemogRelDist.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 6, height = 5, units = "in", dpi=500)
 ```
 
 ```{r echo=FALSE}
-rm(test_demog, retest_demog, demog_rel_df, numeric_cols)
+rm(test_demog, retest_demog, demog_rel_df, timed_demogs)
 ```
 
 ### Effect of delays between the two measurements
 
-Due to our data collection strategy we did not strictly control for the delay between the two measurements as standard psychometrics studies measuring retest reliability might.
+Instead of the summary metric like the retest reliability estimate for each measure we can check whether the difference score distribution for each measure depends on the delay between the two measurements. Since the difference score distribution is at subject level we can check whether the order of subjects in this distribution depends on their order in the distribution of days between completing the two tests.  
 
-An individual difference measure would preferably remain stable regardless of the delay between multiple measurements.
+To check this we make data frame with difference between two scores for each measure for each subject. Since the scores for different measures are on different scales for comparability the difference scores are normalized (ie demeaned and dividied by the sd of the difference score distribution.) Note that the variance of the difference score distribution accounts for the variance in both time points by summing them. Normalization equates the means of each difference score distribution to 0 which would mask any meaningful change between the two time points but the analysis here does not interpret the mean of the difference score distributions but is interested in its relation to the days between completion. We check if the variables show systematic differences between the two points later.  
 
-Since we only had two measurements we could not test directly whether a measure becomes less reliable depending on the delay between the two time points (The average number of days between two measurements would be the same for all measures since reliability is a measure level metric while days between completion a subject level one).
-
-So if you regress the average difference for each measure on average delay between two measurements you are regressing a vector with varying numbers on a vector of same values, like a t test asking if the mean of the varying column, in this case the average difference score, is different than the unique value in the single value column, i.e. the average delay between two time points (Note that this should be true in theory but in practice since for each measure there might subjects for whom the dv could not be calculated there might be >1 unique values for the average delay between the two time points). This analysis is not meaningful.
-
-Instead of the summary metric like the retest reliability estimate for each measure we can check whether the difference score distribution for each measure depends on the delay between the two measurements. Since the difference score distribution is at subject level we can check whether the order of subjects in this distribution depends on their order in the distribution of days between completing the two tests.
-
-Make data frame with difference between two scores for each measure for each subject. Since the scores for different measures are on different scales for comparability the difference scores are normalized (ie demeaned and dividied by the sd of the difference score distribution.) Note that the variance of the difference score distribution accounts for the variance in both time points by summing them. Normalization equates the means of each difference score distribution to 0 which would mask any meaningful change between the two time points but the analysis here does not interpret the mean of the difference score distributions but is interested in its relation to the days between completion. We check if the variables show systematic differences between the two points later.
-
-Here we check if the difference is larger the longer the delay
+Here we check if the difference is larger the longer the delay.  
 
 ```{r warning=FALSE}
-numeric_cols = c()
-
-for(i in 1:length(names(test_data))){
-  if(is.numeric(test_data[,i]) & names(test_data)[i] %in% names(retest_data)){
-    numeric_cols <- c(numeric_cols, names(test_data)[i])
-  }
-}
+numeric_cols = get_numeric_cols(test_data)
 
 t1_2_difference = data.frame()
 
@@ -164,7 +148,7 @@ t1_2_difference = t1_2_difference %>% separate(dv, c("task", "dv2"), sep="\\.", 
 ```
 
 ```{r echo=FALSE}
-rm(tmp, i)
+rm(tmp, i, numeric_cols)
 ```
 
 Add completion dates to this data frame.
@@ -196,20 +180,18 @@ t1_2_difference %>%
   theme(legend.title = element_blank())+
   xlab('Days between completion')+
   ylab('Scaled difference score')
-
-ggsave('DaysBtwEffect.jpg', device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 6, height = 4, units = "in", limitsize = FALSE, dpi = 500)
 ```
 
-To test if the slope of the black is significant we would run a mixed effects model with a fixed effect for days between completion, random slope for each dv depending on the days between and random intercept for each dv.
+To test if the slope of the black is significant we would run a mixed effects model with a fixed effect for days between completion, random slope for each dv depending on the days between and random intercept for each dv.  
 
-Before I was using subjects as a random effect but days between the two time points for each measure depends on subj id. What varies randomly is which dv we are looking for its distribution of differences in relation to the days between the time points. So I changed the model to have fixed effect for the days between, a random slope for (dependent variables can be differentially sensitive to th effect of days between) and a random intercept for dependent variable.
+Before I was using subjects as a random effect but days between the two time points for each measure depends on subj id. What varies randomly is which dv we are looking for its distribution of differences in relation to the days between the time points. So I changed the model to have fixed effect for the days between, a random slope for (dependent variables can be differentially sensitive to th effect of days between) and a random intercept for dependent variable.  
 
-Significant fixed effect suggests that on average the longer the delay the smaller the difference.
+Significant fixed effect suggests that on average the longer the delay the smaller the difference.  
 
 ```{r}
 #summary(lmerTest::lmer(abs(difference) ~ scale(days_btw)+(scale(days_btw) | dv), data=t1_2_difference))
 
-summary(tmp <- MCMCglmm(abs(difference) ~ scale(days_btw), random = ~us(scale(days_btw)):dv, data=t1_2_difference))
+summary(tmp <- MCMCglmm(abs(difference) ~ scale(days_btw), random = ~us(scale(days_btw)):dv, data=t1_2_difference, verbose=FALSE))
 ```
 
 But if I just run one mixed effects model then we don't get a sense of the simple effects (how many of the variables this effect of the days between is significant and in which direction). I can run it separately for each dv to see if all difference score distributions are affected the same way depending on the days between completion. But since we are running so many tests we need to correct for multiple comparisons. How many of these tests are significant FDR correcting? None.
