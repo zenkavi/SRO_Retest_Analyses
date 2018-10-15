@@ -11,6 +11,8 @@ test_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation
 
 retest_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-29-2018/'
 
+fig_path = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/'
+
 source(paste0(workspace_scripts, 'battery_completion_data.R'))
 
 source(paste0(workspace_scripts,'lit_review_data.R'))

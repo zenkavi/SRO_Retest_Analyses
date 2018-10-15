@@ -66,123 +66,17 @@ The literature review included `r nrow(tmp)` papers, `r sum(tmp$sample_size)` pa
 rm(tmp)
 ```
 
-Measure level plot
-
-```{r warning=FALSE, message=FALSE}
-lit_review = lit_review %>%
-  select(-reference)
-```
-
-```{r warning= FALSE, message =FALSE, echo=FALSE}
-
-```
-
 ```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/Lit_Review_Plot.jpg')
+fig_name = 'Lit_Review_Plot_t.jpeg'
+
+knitr::include_graphics(paste0(fig_path, fig_name))
 ```
 
-Because this plot is difficult to digest we summarize it on a task level to give a general sense of the main takeaways. This plot naturally disregards much of the fine grained information.
-
-```{r}
-p1_t_legend <- lit_review %>%
-  filter(task == 'task') %>%
-ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_reliability)) +
-  geom_point(aes(size=sample_size, shape = type), color='black')+
-  theme(axis.text.y = element_text(size=30),
-        legend.position = 'bottom',
-        axis.text.x = element_text(size=20),
-        axis.title.x = element_text(size=20),
-        legend.text = element_text(size=16),
-        legend.key.width = unit(0.75, "inches"),
-        legend.title = element_text(size=20),
-        legend.spacing.x = unit(0.5, "inches"),
-        legend.box = "vertical",
-        legend.direction = "horizontal",
-        plot.caption = element_text(family = "Times", size = 40, lineheight = 2, hjust = 0)) +
-  xlab("Retest Reliability")+
-  ylab("")+
-  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
-  scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
-  scale_shape_manual(breaks = sort(unique(lit_review$type)), values = c(17, 3, 16, 15), name="Type")+
-  scale_size_continuous(name = "Sample Size",
-                        limits = c(10, 1200),
-                        range = c(1, 40),
-                        breaks = c(10, 100, 1000))+
-  guides(#size = guide_legend(override.aes = list(breaks = c(10, 100, 1000)), labels = c(10, 100, 1000)),
-         shape = guide_legend(override.aes = list(size = 16)))+
-  geom_vline(xintercept = 0, color = "red", size = 1)+
-  labs(caption = str_wrap("FIGURE 1: Summary of the literature review for tasks (left) and surveys (right). Each point represents a study containing test-retest reliability data on an unspecified dependent measure for a given task. The size of the point depends on the sample size of the study and the shape depends on the metric that was used to estimate reliability. Each vertical red line indicates 0 reliability.", width = 120))
-
-p1_t <- lit_review %>%
-  filter(task == 'task') %>%
-ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_reliability)) +
-  geom_point(aes(size=sample_size, shape = type), color='#00BFC4')+
-  theme(axis.text.y = element_text(size=30),
-        legend.position = 'none',
-        axis.text.x = element_text(size=23),
-        axis.title.x = element_text(size=30)) +
-  xlab("Retest Reliability")+
-  ylab("")+
-  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
-  scale_y_discrete(labels = function(x) str_wrap(x, width = 15))+
-  scale_shape_manual(breaks = sort(unique(lit_review$type)), values = c(17, 3, 16, 15))+
-  scale_size_continuous(range = c(1, 40),
-                        limits = c(10,1200))+
-  geom_vline(xintercept = 0, color = "red", size = 1)
-
-p2_t <- lit_review %>%
-  filter(task == 'survey') %>%
-ggplot(aes(y = factor(task_group, levels=rev(unique(task_group))), x = retest_reliability)) +
-  geom_point(aes(size=sample_size, shape = type), color='#F8766D')+
-  theme(axis.text.y = element_text(size=30),
-        legend.position = 'none',
-        axis.text.x = element_text(size=23),
-        axis.title.x = element_text(size=30)) +
-  xlab("Retest Reliability")+
-  ylab("")+
-  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
-  scale_y_discrete(labels = function(x) str_wrap(x, width = 15))+
-  scale_shape_manual(breaks = c("ICC","Pearson","Spearman"),
-                     values = c(17, 16, 15))+
-  scale_size_continuous(range = c(1, 40),
-                        limits = c(10,1200))+
-  geom_vline(xintercept = 0, color = "red", size = 1)
-
-mylegend<-g_legend(p1_t_legend)
-mycaption<-g_caption(p1_t_legend)
-
-p3_t <- arrangeGrob(arrangeGrob(p1_t, p2_t, nrow=1), mylegend, mycaption, nrow=3, heights=c(10, 1, 1.5))
-
-ggsave('Lit_Review_Plot_t.tiff', plot = p3_t, device = "tiff", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 27, height = 52, units = "in", limitsize = FALSE, dpi = 250)
-```
-
-
-```{r}
-rm(p1_t, p2_t, p3_t, mylegend, p1_t_legend)
-```
-
-```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/Lit_Review_Plot_t.jpg')
-```
-
-An interactive version of this plot could be find [here](https://zenkavi.github.io/SRO_Retest_Analyses/output/reports/Lit_Review_Figure.html)
+An interactive version of this plot could be find [here](https://zenkavi.github.io/SRO_Retest_Analyses/output/reports/Interactive_Figures.html)
 
 Takeaways from this review are:   
 - Survey measures have been reported to higher reliability compared to task measures  
 - Survey measures have less variability in the reported reliabiltiy estimates compared to task measures   
-
-Are there differences between clinical and non-clinical samples in the literature?
-
-```{r}
-tmp = lit_review %>%
-  mutate(clinical = as.character(clinical),
-         clinical = ifelse(clinical == "", "control", clinical),
-         clinical_1_0 = ifelse(clinical == "control", 0, 1))
-table(tmp$clinical)
-table(tmp$clinical_1_0)
-summary(lmer(retest_reliability ~ clinical_1_0+(1|dv),data=tmp))
-```
-
 
 ## Data quality checks
 
@@ -191,58 +85,22 @@ summary(lmer(retest_reliability ~ clinical_1_0+(1|dv),data=tmp))
 Point estimates of reliability for the demographic variabels.
 
 ```{r}
-tmp = demog_boot_df %>%
+demog_boot_df %>%
   group_by(dv) %>%
   summarise(median_icc = quantile(icc, probs=0.5),
             icc_2.5 = quantile(icc, probs = 0.025),
             icc_97.5 = quantile(icc, probs = 0.975)) %>%
   arrange(-median_icc)
-tmp
-```
-
-```{r}
-sjt.df(tmp%>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.progress = TRUE, show.rownames = FALSE, file = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/demog_rel_table.doc")
 ```
 
 Point estimates of reliability for demog items
 
 ```{r}
-numeric_cols = c()
+demog_rel_df = make_rel_df(test_demog, t2_df = retest_demog, metrics=c('icc'))
 
-for(i in 1:length(names(test_demog))){
-  if(is.numeric(test_demog[,i])){
-    numeric_cols <- c(numeric_cols, names(test_demog)[i])
-  }
-}
-
-demog_rel_df <- data.frame(icc = rep(NA, length(numeric_cols)))
-
-row.names(demog_rel_df) <- numeric_cols
-
-for(i in 1:length(numeric_cols)){
-  demog_rel_df[numeric_cols[i], 'icc'] <- get_icc(numeric_cols[i], t1_df = test_demog, t2_df = retest_demog)
-}
-
-demog_rel_df = demog_rel_df %>%
-  mutate(var = row.names(.)) %>%
-  select(var, icc) %>%
+demog_rel_df %>%
+  select(dv, icc) %>%
   arrange(-icc)
-```
-
-Checking low reliability demog vars: Mostly NA's
-
-```{r}
-test_demog$HowOftenHazardousCannabis
-retest_demog$HowOftenHazardousCannabis
-
-test_demog$CaffieneOtherSourcesDayMG
-retest_demog$CaffieneOtherSourcesDayMG
-
-test_demog$SpouseParentsComplainDrugUse
-retest_demog$SpouseParentsComplainDrugUse
-
-test_demog$OtherDebtAmount
-retest_demog$OtherDebtAmount
 ```
 
 Plotting point estimates of reliability for demographic items coloring those that have a time limit darker in the histogram.

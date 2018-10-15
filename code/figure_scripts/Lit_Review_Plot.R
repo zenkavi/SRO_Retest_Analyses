@@ -1,9 +1,12 @@
 source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/figure_scripts/figure_res_wrapper.R')
 
-source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/workspace_scripts/lit_review_data.R')
+if(!exists('lit_review')){
+  source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/workspace_scripts/lit_review_data.R')
+}
 
-source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/helper_functions/g_legend.R')
-
+if(!exists('g_legend')){
+  source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/helper_functions/g_legend.R')
+}
 p1_legend = lit_review %>%
   filter(task == 'task') %>%
   ggplot(aes(y = var, x = retest_reliability)) +
@@ -58,6 +61,6 @@ p3 <- arrangeGrob(arrangeGrob(p1 +theme(legend.position="none"),
                               nrow=1),
                   mylegend, nrow=2,heights=c(10, 1))
 
-ggsave('Lit_Review_Plot.jpg', plot = p3, device = out_device, path = fig_path, width = 24, height = 20, units = "in", dpi=img_dpi)
+ggsave(paste0('Lit_Review_Plot_t.',out_device), plot = p3, device = out_device, path = fig_path, width = 24, height = 20, units = "in", dpi=img_dpi)
 
 rm(p1, p2, p3, p1_legend, mylegend)
