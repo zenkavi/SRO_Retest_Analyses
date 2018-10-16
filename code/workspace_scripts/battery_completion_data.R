@@ -24,7 +24,7 @@ comp_dates$retest_comp = as.Date(comp_dates$retest_comp)
 comp_dates$test_comp = as.Date(comp_dates$test_comp)
 comp_dates$days_btw = with(comp_dates, retest_comp-test_comp)
 
-rm(test_comp_date, retest_comp_date, comp_dates)
+rm(test_comp_date, retest_comp_date)
 
 ### Completion time data
 

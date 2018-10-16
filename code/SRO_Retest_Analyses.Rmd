@@ -990,18 +990,6 @@ tmp_save %>%
   formatRound(columns=c('median_icc', 'icc_2.5','icc_97.5'), digits=3)
 ```
 
-```{r}
-tmp_save = tmp_save%>%
-  mutate(task_name = gsub("_", " ", task_name),
-         task_name = gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", task_name, perl=TRUE),
-         task_name = gsub("Survey", "", task_name))
-
-names(tmp_save) = gsub("_", " ", names(tmp_save))
-names(tmp_save) = gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", names(tmp_save), perl=TRUE)
-
-sjt.df(tmp_save %>% mutate_if(is.numeric, funs(round(., 3))), describe=F, hide.progress = TRUE, show.rownames = FALSE, file = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/survey_rel_table.doc")
-```
-
 ### Number of items
 
 Does number of items in a survey have a significant effect on the average ICC of survey measures? No.
