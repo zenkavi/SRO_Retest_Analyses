@@ -874,70 +874,6 @@ These kinds of analyses are too task-specific and in-depth for a paper that is t
 
 For this example we look at the retest reliability of dependent measures from the threebytwo with >400 trials. Here is a graph of how the point estimates of the retest reliability changes for each of the dependent measures using different numbers of trials to estimate them.
 
-Post process dv's from cluster to calculate reliabilities
-```{r}
-t1_dvs = t1_dvs %>% select(-X)
-t2_dvs = t2_dvs %>% select(-X)
-```
-
-```{r eval=FALSE}
-hr_merge = merge(t1_dvs, t2_dvs, by = c("worker_id", "level_1"))
-
-hr_merge = hr_merge %>%
-  gather(key, value, -worker_id, -level_1) %>%
-  separate(key, c("dv", "time"), sep="\\.") %>%
-  mutate(time = ifelse(time == "x", 1, 2))%>%
-  rename(sub_id = worker_id,
-         breaks = level_1)
-
-t1_dvs = hr_merge %>%
-  filter(time == 1) %>%
-  select(-time) %>%
-  spread(dv, value)
-
-t2_dvs = hr_merge %>%
-  filter(time == 2) %>%
-  select(-time) %>%
-  spread(dv, value)
-
-# calculate point estimates for reliability of each of the variables for each break
-# get_icc for each break of tmp_t1_dvs and tmp_t2_dvs
-
-trial_num_rel_df = data.frame(breaks=rep(NA, length(unique(t1_dvs$breaks))),
-                              acc_icc=rep(NA, length(unique(t1_dvs$breaks))),
-                              avg_rt_icc=rep(NA, length(unique(t1_dvs$breaks))),
-                              conceptual_responses_icc=rep(NA, length(unique(t1_dvs$breaks))),
-                              fail_to_maintain_set_icc=rep(NA, length(unique(t1_dvs$breaks))),
-                              learning_rate_icc=rep(NA, length(unique(t1_dvs$breaks))),
-                              learning_to_learn_icc=rep(NA, length(unique(t1_dvs$breaks))),
-                              nonperseverative_errors_icc=rep(NA, length(unique(t1_dvs$breaks))),
-                              perseverative_errors_icc=rep(NA, length(unique(t1_dvs$breaks))),
-                              perseverative_responses_icc=rep(NA, length(unique(t1_dvs$breaks))),
-                              total_errors_icc=rep(NA, length(unique(t1_dvs$breaks))))
-
-for(i in 1:length(unique(t1_dvs$breaks))){
-  cur_break = unique(t1_dvs$breaks)[i]
-  tmp_t1_dvs = t1_dvs %>% filter(breaks == cur_break)
-  tmp_t2_dvs = t2_dvs %>% filter(breaks == cur_break)
-  trial_num_rel_df$breaks[i] = cur_break
-  trial_num_rel_df$acc_icc[i] = get_icc("acc", tmp_t1_dvs, tmp_t2_dvs)
-  trial_num_rel_df$avg_rt_icc[i] = get_icc("avg_rt", tmp_t1_dvs, tmp_t2_dvs)
-  trial_num_rel_df$conceptual_responses_icc[i] = get_icc("conceptual_responses", tmp_t1_dvs, tmp_t2_dvs)
-  trial_num_rel_df$fail_to_maintain_set_icc[i] = get_icc("fail_to_maintain_set", tmp_t1_dvs, tmp_t2_dvs)
-  trial_num_rel_df$learning_rate_icc[i] = get_icc("learning_rate", tmp_t1_dvs, tmp_t2_dvs)
-  trial_num_rel_df$learning_to_learn_icc[i] = get_icc("learning_to_learn", tmp_t1_dvs, tmp_t2_dvs)
-  trial_num_rel_df$nonperseverative_errors_icc[i] = get_icc("nonperseverative_errors", tmp_t1_dvs, tmp_t2_dvs)
-  trial_num_rel_df$perseverative_errors_icc[i] = get_icc("perseverative_errors", tmp_t1_dvs, tmp_t2_dvs)
-  trial_num_rel_df$perseverative_responses_icc[i] = get_icc("perseverative_responses", tmp_t1_dvs, tmp_t2_dvs)
-  trial_num_rel_df$total_errors_icc[i] = get_icc("total_errors", tmp_t1_dvs, tmp_t2_dvs)
-}
-rm(i, cur_break, tmp_t1_dvs, tmp_t2_dvs)
-
-trial_num_rel_df$breaks = as.numeric(trial_num_rel_df$breaks)
-
-# write.csv(trial_num_rel_df, paste0(retest_data_path, 'trial_num_rel_df_shift.csv'))
-```
-
 Takeaways from this graph:
 - Reliability estimates stabilize after about an eigthth of the trials (note that this might not be true for other model parameter estimates; here we are only looking at raw response time and accuracy measures)
 - Only three measures that are not contrast measures have reliabilities >0
@@ -960,8 +896,6 @@ trial_num_rel_df %>%
                      breaks = c("avg_rt_icc","learning_to_learn_icc", "nonperseverative_errors_icc"),
                      labels = c("Average Response Time", "Learning to Learn",  "Nonperseverative Errors")) +
   labs(caption = str_wrap("FIGURE 6: Change in point estimates of ICC for three dependent measures selected from the Shift task using increasing numbers of trials to estimate them. These measures show the different types of relationships reliability estimates have based on the trial numbers used to estimate them.", width = 180))
-
-ggsave('Shift_Task_Intrameasure_Trialnum_Dependendence.tiff', device = "tiff", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures", width = 10, height = 5, units = "in", dpi = 300)
 ```
 
 ### Raw vs DDM
@@ -993,8 +927,8 @@ tmp_save %>%
 Comparing contrast vs non-contrast: overall has higher reliability than difference.
 
 ```{r}
-# summary(lmerTest::lmer(icc ~ contrast + (1|dv) ,tmp))
-summary(MCMCglmm(icc ~ contrast, random = ~ dv, data=tmp))
+summary(lmerTest::lmer(icc ~ contrast + (1|dv) ,tmp))
+# summary(MCMCglmm(icc ~ contrast, random = ~ dv, data=tmp, verbose=FALSE))
 ```
 
 Comparing raw vs ddm in overall estimates: EZ is significantly better than HDDM and comparable to raw estimates.
@@ -1009,59 +943,14 @@ Comparing raw vs ddm in difference scores: EZ is significantly worse than HDDM a
 summary(icc_by_rawfit_con_model)
 ```
 
-```{r}
-ddm_boot_plot = tmp %>%
-  group_by(dv) %>%
-  summarise(mean_icc = mean(icc),
-            raw_fit = unique(raw_fit),
-            contrast = unique(contrast),
-            rt_acc = unique(rt_acc)) %>%
-  ggplot(aes(factor(raw_fit, levels = c("raw", "EZ", "hddm"), labels=c("Raw", "EZ-diffusion", "Hierarchical diffusion")), mean_icc, fill=factor(rt_acc, levels = c("rt","accuracy", "drift rate", "threshold", "non-decision"), labels=c("Response Time", "Accuracy","Drift Rate", "Threshold", "Non-decision"))))+
-  geom_boxplot()+
-  facet_wrap(~factor(contrast, levels=c("non-contrast", "contrast"), labels=c("Non-contrast", "Contrast")))+
-  theme_bw()+
-  ylab("ICC")+
-  xlab("")+
-  theme(legend.title = element_blank(),
-        legend.position = 'bottom',
-        legend.text = element_text(size=16),
-        strip.text = element_text(size=16),
-        axis.text = element_text(size = 16),
-        text = element_text(size=16))+
-  guides(fill = guide_legend(ncol = 2, byrow=F))+
-  scale_fill_brewer(palette="Greys",
-                    breaks=c( "Response Time", "Accuracy","Drift Rate", "Threshold", "Non-decision"))
+```{r echo=FALSE}
+rm(icc_by_rawfit_con_model, icc_by_rawfit_noncon_model)
+```
 
-mylegend<-g_legend(ddm_boot_plot)
+```{r echo=FALSE, out.width='100%'}
+fig_name = 'Bootstrap_DDM_Comp_Legend.jpeg'
 
-grob_name <- names(mylegend$grobs)[1]
-
-#manually fix the legend
-#move non-decision down
-#key
-mylegend$grobs[grob_name][[1]]$layout[11,c(1:4)] <- c(4,8,4,8)
-mylegend$grobs[grob_name][[1]]$layout[12,c(1:4)] <- c(4,8,4,8)
-#text
-mylegend$grobs[grob_name][[1]]$layout[17,c(1:4)] <- c(4,10,4,10)
-#move threshold down
-#key
-mylegend$grobs[grob_name][[1]]$layout[9,c(1:4)] <- c(3,8,3,8)
-mylegend$grobs[grob_name][[1]]$layout[10,c(1:4)] <- c(3,8,3,8)
-#text
-mylegend$grobs[grob_name][[1]]$layout[16,c(1:4)] <- c(3,10,3,10)
-#move drift rate right and up
-#key
-mylegend$grobs[grob_name][[1]]$layout[7,c(1:4)] <- c(2,8,2,8)
-mylegend$grobs[grob_name][[1]]$layout[8,c(1:4)] <- c(2,8,2,8)
-#text
-mylegend$grobs[grob_name][[1]]$layout[15,c(1:4)] <- c(2,10,2,10)
-
-mycaption = textGrob(label = str_wrap("FIGURE 7: Average bootstrapped reliability estimates per measure comparing raw measures and model parameters as well as contrast and non-contrast measures for task measures.", width = 130), gp = gpar(fontfamily="Times", lineheight = 2, fontsize = 18), hjust = 0, vjust = 0.5, x = unit(0, "npc"))
-
-ddm_boot_legend = arrangeGrob(ddm_boot_plot +theme(legend.position="none"),
-             mylegend, mycaption, nrow=3, heights=c(10, 1, 1))
-
-ggsave('Bootstrap_DDM_Comp_Legend.tiff', plot = ddm_boot_legend, device = "tiff", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 14, height = 10, units = "in", limitsize = FALSE, dpi=300)
+knitr::include_graphics(paste0(fig_path, fig_name))
 ```
 
 ```{r}
@@ -1071,62 +960,10 @@ tmp %>%
             sd_icc = sd(icc))
 ```
 
-```{r}
-tmp2 = measure_labels %>%
-  mutate(dv = as.character(dv),
-         contrast = ifelse(overall_difference == "difference", "contrast", "non-contrast")) %>%
-  filter(ddm_task == 1,
-         rt_acc != 'other') %>%
-  drop_na() %>%
-  left_join(rel_df[,c("dv", "icc")], by = 'dv')
+```{r echo=FALSE, out.width='100%'}
+fig_name = 'PointEst_DDM_Comp.jpeg'
 
-ddm_point_plot = tmp2 %>%
-  ggplot(aes(factor(raw_fit, levels = c("raw", "EZ", "hddm"), labels=c("Raw", "EZ-diffusion", "Hierarchical diffusion")), icc, fill=factor(rt_acc, levels = c("rt","accuracy", "drift rate", "threshold", "non-decision"), labels=c("Response Time", "Accuracy","Drift Rate", "Threshold", "Non-decision"))))+
-  geom_boxplot()+
-  facet_wrap(~factor(contrast, levels=c("non-contrast", "contrast"), labels=c("Non-contrast", "Contrast")))+
-  theme_bw()+
-  ylab("ICC")+
-  xlab("")+
-  theme(legend.title = element_blank(),
-        legend.position = 'bottom',
-        legend.text = element_text(size=16),
-        strip.text = element_text(size=16),
-        axis.text = element_text(size = 16),
-        text = element_text(size=16))+
-  guides(fill = guide_legend(ncol = 2))+
-  scale_fill_brewer(palette="Greys",
-                    breaks=c( "Response Time", "Accuracy","Drift Rate", "Threshold", "Non-decision"))+
-  ylim(-0.4, 1)
-
-mylegend<-g_legend(ddm_point_plot)
-
-grob_name <- names(mylegend$grobs)[1]
-
-#manually fix the legend
-#move non-decision down
-#key
-mylegend$grobs[grob_name][[1]]$layout[11,c(1:4)] <- c(4,8,4,8)
-mylegend$grobs[grob_name][[1]]$layout[12,c(1:4)] <- c(4,8,4,8)
-#text
-mylegend$grobs[grob_name][[1]]$layout[17,c(1:4)] <- c(4,10,4,10)
-#move threshold down
-#key
-mylegend$grobs[grob_name][[1]]$layout[9,c(1:4)] <- c(3,8,3,8)
-mylegend$grobs[grob_name][[1]]$layout[10,c(1:4)] <- c(3,8,3,8)
-#text
-mylegend$grobs[grob_name][[1]]$layout[16,c(1:4)] <- c(3,10,3,10)
-#move drift rate right and up
-#key
-mylegend$grobs[grob_name][[1]]$layout[7,c(1:4)] <- c(2,8,2,8)
-mylegend$grobs[grob_name][[1]]$layout[8,c(1:4)] <- c(2,8,2,8)
-#text
-mylegend$grobs[grob_name][[1]]$layout[15,c(1:4)] <- c(2,10,2,10)
-
-ddm_point_legend = arrangeGrob(ddm_point_plot +theme(legend.position="none"),
-             mylegend, nrow=2, heights=c(10, 1))
-
-
-ggsave('PointEst_DDM_Comp.jpg', plot=ddm_point_legend, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 15, height = 7, units = "in", limitsize = FALSE)
+knitr::include_graphics(paste0(fig_path, fig_name))
 ```
 
 ## Survey reliabilities
