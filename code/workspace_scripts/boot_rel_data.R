@@ -1,3 +1,29 @@
+if(!exists('test_data_path')){
+  test_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_03-29-2018/'
+}
+
+if(!exists('retest_data_path')){
+  retest_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-29-2018/'
+}
+
+if(!exists('process_boot_df')){
+  source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/helper_functions/process_boot_df.R')
+}
+
+if(!retest_report_vars){
+  tmp1 <- read.csv(paste0(test_data_path,'meaningful_variables.csv'))
+  tmp2 <- read.csv(paste0(test_data_path,'meaningful_variables_noDDM.csv'))
+  tmp3 <- read.csv(paste0(test_data_path,'meaningful_variables_EZ.csv'))
+  retest_report_vars = c(names(tmp1), names(tmp2), names(tmp3))
+  retest_report_vars = unique(retest_report_vars)
+  if(!lit_review){
+    source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/workspace_scripts/lit_review_data.R')
+  }
+  lit_rev_vars = as.character(unique(lit_review$dv)[which(unique(lit_review$dv) %in% retest_report_vars == FALSE)])
+  retest_report_vars = c(retest_report_vars, lit_rev_vars)
+  rm(tmp1, tmp2, tmp3, lit_rev_vars)
+}
+
 #########################
 ## Bootstrapped reliability data ####
 #########################

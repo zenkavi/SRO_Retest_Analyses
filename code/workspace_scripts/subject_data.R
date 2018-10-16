@@ -1,3 +1,15 @@
+if(!exists('test_data_path')){
+  test_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_03-29-2018/'
+}
+
+if(!exists('retest_data_path')){
+  retest_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-29-2018/'
+}
+
+if(!exists('lit_review')){
+  source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/workspace_scripts/lit_review_data.R')
+}
+
 #########################
 ## Subject data ####
 #########################
