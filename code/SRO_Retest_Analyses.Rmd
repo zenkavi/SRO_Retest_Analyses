@@ -641,29 +641,19 @@ rel_comp %>%
         legend.position = 'bottom',
         plot.caption = element_text(family = "Times", lineheight = 2, hjust = 0))+
   labs(caption = str_wrap("FIGURE 2: Correlation between mean reliability estimates for each measure found in the literature with the mean reliability from our data.", width = 120))
-
-ggsave('LitAndEmpAveCor.tiff', device = "tiff", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 7, height = 5, units = "in", limitsize = FALSE, dpi = 300)
 ```
 
 ```{r echo=FALSE}
-rm(tmp, rel_comp, mod1, mod2, mod3, n_df, i, lit_emp_cor, lit_emp_cor_out, comp_lit_pred, comp_lit_pred_out)
+rm(tmp, rel_comp, mod1, mod2, mod3, i, lit_emp_cor_out, comp_lit_pred, comp_lit_pred_out)
 ```
 
 ## Relationship between reliability metrics (point estimates)
 
-Based on [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9d379b79de4f767740.pdf) ICC(3,k) does not take in to account within subject differences between two time points (i.e. the fixed effect of time/systematic error). Thus, it is well approximated by Pearson's r and subject to similar criticisms. [Weir (2005)](https://pdfs.semanticscholar.org/d99a/790cce43f7f20d742f9d379b79de4f767740.pdf) suggests reporting at least this systematic error effect size if one chooses to report with ICC(3,k). Based on his conclusions here I report:  
-- ICC(3,k): As Dave clarified this ranges from 1 to -1/(number of repeated measures -1) so in our case this range would be [-1, 1]; larger values would mean that the two scores of a subject for a given measure are more similar to each other than they are to scores of other people  
-- "ICC is reflective of the ability of a test to differentiate between different individuals"
-- partial $\eta^2$ for time ($SS_{time}/SS_{within}$): effect size of time   
-- SEM ($\sqrt(MS_{error})$): standard error of measurement; the smaller the better. It
-"quantifies the precision of individual scores on a test" and is not dependent on the sample in the way ICC is since it doesn't depend on between subject reliability (at least in this formulation) but is unit-dependent.
-
-We calculated `r as.numeric(table(rel_df$task)[1])` measures for surveys and `r as.numeric(table(rel_df$task)[2])` measures for cognitive tasks.  
-
 Though we are primarily reporting ICC's as our metric of reliability the results don't change depending on the metric chosen. Here we plot point estimates of three different reliability metrics against each other (ICC, Pearson, Spearman). The bootstrapped version is essentially the same but the plots are busier due to more datapoints.
 
-
 ```{r}
+rel_df = make_rel_df(t1_df = test_data, t2_df = retest_data, metrics = c('spearman', 'icc', 'pearson', 'var_breakdown', 'partial_eta', 'sem'))
+
 numeric_cols = c()
 
 for(i in 1:length(names(test_data))){
@@ -704,6 +694,8 @@ rel_df = rel_df %>%
 # row.names(rel_df) = NULL
 
 ```
+
+We calculated `r as.numeric(table(rel_df$task)[1])` measures for surveys and `r as.numeric(table(rel_df$task)[2])` measures for cognitive tasks.  
 
 ```{r}
 table(rel_df$task)
