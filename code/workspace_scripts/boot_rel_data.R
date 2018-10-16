@@ -1,8 +1,3 @@
-if(!exists('lit_review')){
-  source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/workspace_scripts/lit_review_data.R')
-}
-
-
 #########################
 ## Bootstrapped reliability data ####
 #########################
@@ -42,13 +37,15 @@ rm(refit_boot_df)
 boot_df = boot_df %>% mutate(var_subs_pct = var_subs/(var_subs+var_ind+var_resid)*100,
                              var_ind_pct = var_ind/(var_subs+var_ind+var_resid)*100,
                              var_resid_pct = var_resid/(var_subs+var_ind+var_resid)*100)
-
-var_boot_df = boot_df %>%
-  group_by(dv) %>%
-  summarise(mean_icc = mean(icc),
-            mean_pearson = mean(pearson))
-
-rel_comp = lit_review %>%
-  left_join(var_boot_df, by = 'dv')
-
-rm(var_boot_df)
+# 
+# var_boot_df = boot_df %>%
+#   group_by(dv) %>%
+#   summarise(mean_icc = mean(icc),
+#             mean_pearson = mean(pearson))
+# 
+# rel_comp = lit_review %>%
+#   left_join(var_boot_df, by = 'dv')
+# 
+# write.csv(rel_comp, '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/rel_comp.csv', row.names=F)
+# 
+# rm(var_boot_df)

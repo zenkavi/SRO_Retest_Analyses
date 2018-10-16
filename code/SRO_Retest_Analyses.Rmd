@@ -598,252 +598,31 @@ tmp = comp_lit_pred_out %>%
   select(r2_lit, r2_boot) %>%
   gather(key, value)
 
-summary(MCMCglmm(value ~ key, data = tmp))
+summary(MCMCglmm(value ~ key, data = tmp, verbose=F))
 ```
 
-Are you at noise ceiling for suveys vs. tasks? Are you better in estimating the literature using our data for surveys vs tasks?
+We checked if survey and task measures differed in how close our results were to the literature (i.e. Are you better in estimating the literature using our data for surveys vs tasks?). We found an interaction, such that: The literature does a better job in predicting itself for tasks compared to surveys. On the other hand, our data is better in predicting the literature estimates for the surveys than it is in predicting tasks.  
 
-```{r}
-comp_lit_pred_out_task = plyr::rdply(1000, comp_lit_pred(rel_comp %>% filter(task=="task")))
-comp_lit_pred_out_task$task = "task"
-comp_lit_pred_out_survey = plyr::rdply(1000, comp_lit_pred(rel_comp %>% filter(task=="survey")))
-comp_lit_pred_out_survey$task = "survey"
-comp_lit_pred_out_both = rbind(comp_lit_pred_out_task, comp_lit_pred_out_survey)
+One might wonder: Why are the reliability estimates from surveys worse compared to tasks in predicting the literature? Because they are less variable. In this procedure having high variance in what is being predicted (i.e. the literature reliability estimates) is better.  
 
-comp_lit_pred_out_both %>%
-  select(-.n, -m_lit, -m_boot) %>%
-  gather(key, value, -task) %>%
-  separate(key, c("stat", "sample"), sep = "_") %>%
-  ggplot(aes(value, fill=sample, alpha=task, color=task))+
-  geom_density(position='identity', size=2)+
-  # facet_grid(~task)+
-  scale_fill_manual(breaks=c("boot","lit"),
-                       labels=c("Empirical", "Literature"),
-                      name="Predictor",
-                      values = c("purple", "orange"))+
-  scale_alpha_manual(breaks=c("survey", "task"),
-                     values = c(0.4, 0.7),
-                     name="Measure type")+
-  scale_color_discrete(name="Measure type")+
-  xlab('Variance Explained')+
-  ylab('Density')
-```
+We also conducted LOOCV on this data and checked what it looked like if we estimate the left one out using the remaining ones for the noise ceiling model? The procedure followed these steps:
+- Sample one row of literature,   
+- fit model of sample size+task on remaining data,   
+- use that model to predict the reliability estimates,   
+- compare those to the left out reliability estimate from the literature versus the average reliability estimate from our data  
 
-Are the differences in the distributions significant?
-There is a significant interaction, such that:
+We found that the (squared) difference is slightly larger when predicting the left-out value from our data versus predicting left out value from literature. The squared differences were larger for predicting the literature compared to predicting our data for surveys while for tasks the squared differences were larger when predicting our data compared to predicting the literature. (This fits with other results too: our results differ from the literature more for the survey measures).  
 
-```{r}
-tmp = comp_lit_pred_out_both %>%
-  select(-.n, -m_lit, -m_boot) %>%
-  gather(key, value, -task)
-
-summary(lm(value ~ key*task, tmp))
-```
-
-The literature does a better job in predicting itself for tasks compared to surveys (comparing the two orange distributions).
-
-```{r}
-with(comp_lit_pred_out_both, t.test(r2_lit ~ task))
-```
-
-Our data is better in predicting the literature estimates for the surveys than it is in predicting tasks (comparing the difference between orange and purple for red and blue outlines).
-
-```{r}
-with(comp_lit_pred_out_both, t.test(r2_lit-r2_boot ~ task))
-```
-
-Why are the reliability estimates from surveys worse compared to tasks in predicting the literature? Because they are less variable. In this procedure having high variance in what is being predicted (i.e. the literature reliability estimates) is better.
-
-Rank by variance: empirical estimates for surveys < literature estimates for surveys < empirical estimates for tasks < literature estimates for tasks
-
-```{r}
-rel_comp %>%
-  select(task, retest_reliability, mean_pearson) %>%
-  gather(key, value, -task) %>%
-  group_by(key, task) %>%
-  summarise(variance = var(value)) %>%
-  ungroup()%>%
-  mutate(key = ifelse(key == "mean_pearson", "emp", "lit")) %>%
-  arrange(variance)
-```
-
-### LOOCV predicting lit vs our data
-
-What does it look like if you estimate the left one out using the remaining ones for the noise ceiling model?
-Sample one row of literature, fit model of sample size+task on remaining data, use that model to predict the reliability estimates, compare those to the left out reliability estimate from the literature versus the average reliability estimate from our data
-
-```{r}
-pred_sample <- function(df){
-
-  get_sample_row <- function(df){
-    if(nrow(df)>1){
-      row_num = sample(1:nrow(df),1)
-      sample_row = df[row_num,]
-    }
-    else{
-      sample_row = df
-    }
-    return(sample_row)
-  }
-
-  test_df = df %>%
-    group_by(dv) %>%
-    do(get_sample_row(.))
-
-  train_df = anti_join(df, test_df)
-
-  if(length(unique(train_df$task))>1){
-    mod = lm(retest_reliability ~ scale(sample_size)+task, data=train_df)
-  }
-  else{
-    mod = lm(retest_reliability ~ scale(sample_size), data=train_df)
-  }
-
-  test_df$pred = predict(mod, test_df)
-
-  # out = data.frame(res_lit = sum(test_df$retest_reliability - pred)^2,
-  #                  res_boot = sum(test_df$mean_pearson - pred)^2)
-
-  return(test_df)
-}
-```
-
-Why did I have to run it separately for the function before but can run it on all data once here? Before the output was model fits for all measures. Here the output is measure level prediction.
-
-```{r message=FALSE}
-pred_sample_out = plyr::rdply(1000, pred_sample(rel_comp))
-```
-
-Plot difference between prediction and value of either the lit estimate or the average estimate from our data
-
-```{r}
-tmp = pred_sample_out %>%
-  select(task,pred, retest_reliability, mean_pearson) %>%
-  gather(key, value, -task, -pred) %>%
-  mutate(sq_diff = (pred - value)^2)
-
-tmp%>%  
-  ggplot(aes(sq_diff, fill=key))+
-  geom_density(position = "identity", color=NA, alpha=0.5)+
-  scale_fill_manual(breaks=c("mean_pearson","retest_reliability"),
-                       labels=c("Empirical", "Literature"),
-                      name="Predicting",
-                      values = c("purple", "orange"))
-```
-
-Are the means of these distributions different? Yes: the difference is larger when predicting the left-out value from our data versus predicting left out value from literature. The difference seems pretty small though.
-
-```{r}
-with(tmp, t.test(sq_diff ~ key))
-```
-
-Plot difference between prediction and value broken down by measure type.
-
-```{r}
-tmp%>%
-  ggplot(aes(sq_diff, fill=key, color=task, alpha=task))+
-  geom_density(position = "identity", size=2)+
-  scale_fill_manual(breaks=c("mean_pearson","retest_reliability"),
-                       labels=c("Empirical", "Literature"),
-                      name="Predicting",
-                      values = c("purple", "orange"))+
-  scale_alpha_manual(breaks=c("survey", "task"),
-                     values = c(0.4, 0.7),
-                     name="Measure type")+
-  scale_color_discrete(name="Measure type")
-```
-
-Can we capture this interaction in a single model? Yes. The significant interaction suggests that the squared difference is larger for predicting the literature compared to predicting our data for surveys while for tasks the squared difference is larger when predicting our data compared to predicting the literature. (This fits with other results too: our results differ from the literature more for the survey measures)
-
-```{r}
-aggregate(sq_diff ~ key*task,tmp, FUN=mean)
-```
-
-```{r}
-summary(lm(sq_diff ~ key*task,tmp))
-```
-
-Data versus model prediction plot: The predictions are not veriable so they don't really capture the variability neither in the literature nor in our data very well.
-
-```{r}
-tmp %>%
-  ggplot(aes(value, pred, color=task))+
-  geom_point()+
-  facet_wrap(~key)
-```
-
-Distributions of sum squared residual: Residuals are larger for tasks compared to surveys (i.e. predictions are worse when predicting task variables - possibly because their variability is higher?). For surveys the predictions of the literature are better than predictions of our data while the opposite is true for task measures.
-
-Does this make sense with the results above? Figure out how to think of the noise ceiling analyses and LOOCV results together.
-
-```{r}
-pred_sample_out %>%
-  mutate(sq_diff_lit = (pred - retest_reliability)^2,
-         sq_diff_emp = (pred - mean_icc)^2) %>%
-  group_by(.n, task) %>%
-  summarise(sum_sq_diff_lit = sum(sq_diff_lit),
-            sum_sq_diff_emp = sum(sq_diff_emp)) %>%
-  # select(-'.n') %>%
-  gather(key, value, -task, -.n) %>%
-  ggplot(aes(value, fill=key, color=task, alpha=task))+
-  geom_density(size=1)+
-  scale_fill_manual(breaks=c("sum_sq_diff_emp","sum_sq_diff_lit"),
-                       labels=c("Empirical", "Literature"),
-                      name="Predicting",
-                      values = c("purple", "orange"))+
-  scale_alpha_manual(breaks=c("survey", "task"),
-                     values = c(0.4, 0.7),
-                     name="Measure type")+
-  scale_color_discrete(name="Measure type")
-```
+We do not present these results in further detail as they yield only converging evidence as the analyses above.
 
 ### Measure level comparison
 
 Literature vs. our data on a  measure basis
 
-```{r warning=FALSE, message=FALSE}
-p1 = rel_comp %>%
-  filter(task == 'task') %>%
-ggplot(aes(x = var, y = retest_reliability)) +
-  geom_boxplot(fill='#00BFC4', position="identity")+
-  geom_point(aes(x = var, y = mean_pearson),color="purple", fill="purple", size=3, shape=23)+
-  coord_flip()+
-  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
-  theme(panel.spacing = unit(0.5, "lines"),
-        strip.placement = "outside",
-        strip.text.y = element_text(angle=180),
-        panel.background = element_rect(fill = NA),
-        panel.grid.major = element_line(colour = "grey80"),
-        legend.position = 'bottom') +
-  xlab("")+
-  ylab("")+
-  scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))
-
-p2 = rel_comp %>%
-  filter(task == 'survey') %>%
-ggplot(aes(x = var, y = retest_reliability)) +
-  geom_boxplot(fill='#F8766D', position="identity")+
-  geom_point(aes(x = var, y = mean_pearson),color="purple", fill="purple", size=3, shape=23)+
-  coord_flip()+
-  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y") +
-  theme(panel.spacing = unit(0.5, "lines"),
-        strip.placement = "outside",
-        strip.text.y = element_text(angle=180),
-        panel.background = element_rect(fill = NA),
-        panel.grid.major = element_line(colour = "grey80"),
-        legend.position = 'bottom') +
-  xlab("")+
-  ylab("")+
-  scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))
-
-p3 <- arrangeGrob(p1, p2,nrow=1)
-
-ggsave('LitVsEmp_Measure_Plot.jpg', plot = p3, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 24, height = 20, units = "in", dpi=100)
-rm(p1, p2, p3)
-```
-
 ```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/LitVsEmp_Measure_Plot.jpg')
+fig_name = 'LitVsEmp_Measure_Plot.jpeg'
+
+knitr::include_graphics(paste0(fig_path, fig_name))
 ```
 
 ```{r}

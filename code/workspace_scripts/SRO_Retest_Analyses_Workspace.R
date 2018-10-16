@@ -25,6 +25,8 @@ source(paste0(workspace_scripts,'demog_data.R'))
 
 source(paste0(workspace_scripts,'boot_rel_data.R'))
 
+source(paste0(workspace_scripts,'rel_comp_data.R'))
+
 source(paste0(workspace_scripts,'duplicate_items_data.R'))
 
 source(paste0(workspace_scripts,'measure_labels_data.R'))
