@@ -1,3 +1,10 @@
+require(psych)
+require(tidyr)
+
+if(!exists('match_t1_t2')){
+  source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/helper_functions/match_t1_t2.R')
+}
+
 get_retest_stats = function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 'sub_id', sample='full', sample_vec, metric = c('spearman', 'icc', 'pearson', 'var_breakdown', 'partial_eta', 'sem')){
   
   if(sample=='full'){

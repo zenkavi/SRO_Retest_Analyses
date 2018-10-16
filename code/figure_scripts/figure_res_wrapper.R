@@ -4,11 +4,11 @@ img_dpi <- as.numeric(readline(prompt="Enter img dpi: "))
 img_dpi = ifelse(is.na(img_dpi), 100, img_dpi)
 
 default_fig_path <- readline(prompt="Enter default fig path: ")
-default_fig_path = ifelse(length(default_fig_path)==1, '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures', default_fig_path)
+default_fig_path = ifelse(length(default_fig_path)==1, '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/', default_fig_path)
 
 out_device <- readline(prompt="Enter image filetype: ")
 out_device = ifelse(length(out_device)==1, 'jpeg', out_device)
 
 high_res = ifelse(img_dpi>100, T, F)
 
-fig_path = ifelse(high_res, paste0(default_fig_path, "/high_res"), default_fig_path)
+fig_path = ifelse(high_res, paste0(default_fig_path, "/high_res/"), default_fig_path)

@@ -1,4 +1,9 @@
-helper_func_path = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/helper_functions/'
+
+if(!exists('get_retest_stats')){
+  helper_func_path = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/helper_functions/'
+  
+  source(paste0(helper_func_path, 'get_retest_stats'))
+}
 
 if(!exists('get_numeric_cols')){
   source(paste0(helper_func_path, 'get_numeric_cols.R'))

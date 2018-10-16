@@ -663,44 +663,16 @@ rel_df = rel_df %>%
 
 We calculated `r as.numeric(table(rel_df$task)[1])` measures for surveys and `r as.numeric(table(rel_df$task)[2])` measures for cognitive tasks.  
 
-```{r warning=FALSE, message=FALSE}
-p1 = rel_df %>%
-  ggplot(aes(spearman, icc, col=task))+
-  geom_point()+
-  theme_bw()+
-  theme(legend.title = element_blank(),
-        legend.position = "none")+
-  geom_abline(intercept = 0, slope=1)
+```{r echo=FALSE, out.width='100%'}
+fig_name = 'Metric_Scatterplots.jpeg'
 
-p2 = rel_df %>%
-  ggplot(aes(pearson, icc, col=task))+
-  geom_point()+
-  theme_bw()+
-  theme(legend.title = element_blank(),
-        legend.position = "none")+
-  geom_abline(intercept = 0, slope=1)
-
-p3 = rel_df %>%
-  ggplot(aes(pearson, spearman, col=task))+
-  geom_point()+
-  theme_bw()+
-  theme(legend.title = element_blank(),
-        legend.position = "none")+
-  geom_abline(intercept = 0, slope=1)
-
-grid.arrange(p1, p2, p3, nrow=1)
-
-ggsave('Metric_Scatterplots.jpg', plot = grid.arrange(p1, p2, p3, nrow=1), device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 12, height = 4, units = "in", limitsize = FALSE, dpi = 300)
+knitr::include_graphics(paste0(fig_path, fig_name))
 ```
 
 As the scatter plots depict the correlations between different types reliability metrics were very high.
 
 ```{r}
 cor(rel_df[,c('spearman', 'icc', 'pearson')])
-```
-
-```{r echo=FALSE}
-rm(p1,p2,p3)
 ```
 
 Note: Some variables have <0 ICC's. This would be the case if the $MS_{error}$>$MS_{between}$. Data for these variables have no relationship between the two time points.
