@@ -694,264 +694,27 @@ boot_df %>%
   formatRound(columns=c('icc_median', 'icc_2.5', 'icc_97.5', 'spearman_median', 'spearman_2.5', 'spearman_97.5'), digits=3)
 ```
 
-```{r}
-tmp = as.character(unique(lit_review$dv)[which(unique(lit_review$dv) %in% meaningful_vars == FALSE)])
-tmp = tmp[-grep('survey', tmp)]
 
-meaningful_vars = c(meaningful_vars, tmp)
-meaningful_vars = sort(meaningful_vars)
-```
+```{r echo=FALSE, out.width='100%'}
+fig_name = 'Boot_Both_w_trialinfo.jpeg'
 
-```{r warning=FALSE, message=FALSE}
-# Df wrangling for plotting
-tmp = measure_labels %>%
-  mutate(dv = as.character(dv)) %>%
-  left_join(boot_df[,c("dv", "icc", "spearman")], by = 'dv')
-
-tmp = tmp %>%
-  separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
-  mutate(task_group = factor(task_group, levels = task_group[order(task)])) %>%
-  separate(var, c("var"), sep="\\.",remove=TRUE,extra="drop") %>%
-  mutate(task_group = gsub("_", " ", task_group),
-         var = gsub("_", " ", var)) %>%
-  arrange(task_group, var)
-
-tmp = tmp %>%
-  left_join(rel_df[,c("dv", "icc")], by = "dv") %>%
-  rename(icc = icc.x, point_est = icc.y)
-
-#Manual correction
-tmp = tmp %>%
-  mutate(task = ifelse(task_group == 'holt laury survey', "task", as.character(task))) %>%
-  mutate(task_group = gsub("survey", "", task_group),
-         task_group = gsub("task", "", task_group),
-         task_group = str_to_title(task_group)) %>%
-  mutate(task_group = ifelse(task_group == "Psychological Refractory Period Two Choices", "Psychological Refractory Period", ifelse(task_group == "Angling Risk Always Sunny", "Angling Risk", ifelse(task_group == "Two Stage", "Two Step", ifelse(task_group == "Threebytwo", "Task Switching", ifelse(task_group == "Adaptive N Back", "Adaptive N-back", ifelse(task_group == "Go Nogo", "Go/No-go",  ifelse(task_group == "Ravens", "Raven's", task_group)))))))) %>%
-  mutate(task_group = ifelse(task_group == "Bis Bas ", "BIS-BAS", ifelse(task_group == "Bis11 ", "BIS-11", ifelse(task_group == "Dospert Eb ", "DOSPERT EB", ifelse(task_group == "Dospert Rp ", "DOSPOERT RP", ifelse(task_group == "Dospert Rt ", "DOSPERT RT", ifelse(task_group == "Erq ", "ERQ", ifelse(task_group == "Upps Impulsivity ", "UPPS-P", task_group))))))))
-```
-
-Extract trial number info to add to boot plot instead of adding another table
-
-```{r}
-tmp_mngfl = tmp %>%
-  filter(dv %in% meaningful_vars)
-
-trial_num_info = tmp %>%
-  group_by(task_group, task) %>%
-  summarise(mean_num_all_trials = round(mean(num_all_trials)),
-            num_measures = length(unique(dv)))
-
-trial_num_info_mngfl = tmp_mngfl %>%
-  group_by(task_group, task) %>%
-  summarise(mean_num_all_trials = round(mean(num_all_trials)),
-            num_measures = length(unique(dv)))
-
-tmp = tmp %>%
-  left_join(trial_num_info, by=c("task_group", "task"))
-
-tmp_mngfl = tmp_mngfl %>%
-  left_join(trial_num_info_mngfl, by=c("task_group", "task"))
-```
-
-Boot plot for tasks with trial info (only using meaningful vars)
-
-```{r warning=FALSE, message=FALSE}
-p4_t <- tmp_mngfl %>%
-  filter(task == 'task') %>%
-ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) +
-  geom_violin(fill='#00BFC4')+
-  theme_bw() +
-  theme(axis.text = element_text(size=30))+
-  xlab("")+
-  ylab("")+
-  scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1), position = "right")+
-  scale_x_discrete(labels = function(x) str_wrap(x, width = 15))+
-  geom_hline(yintercept = 0, color = "red", size = 1)+
-  coord_flip()
-
-task_trial_num = trial_num_info_mngfl %>%
-  filter(task == "task") %>%
-  ungroup() %>%
-  select(-task)
-
-task_trial_num_table = task_trial_num %>%
-  mutate(y_axis = rev(ggplot_build(p4_t)$layout$panel_params[[1]]$y.major)) %>%
-  gather(key, value, -y_axis, -task_group) %>%
-  ggplot(aes(key, factor(y_axis)))+
-  geom_text(aes(label=value), size=14)+
-  xlab("")+
-  ylab("")+
-  theme(axis.ticks=element_blank(),
-        axis.text.y = element_blank(),
-        panel.grid = element_blank(),
-        panel.border = element_blank(),
-        axis.text.x = element_text(size=30))+
-  scale_x_discrete(position = "top",
-                   breaks=c("mean_num_all_trials", "num_measures"),
-                   labels=c("Mean Num Trials", "Num Measures"))
-
-boot_task_plot = arrangeGrob(p4_t, task_trial_num_table, nrow=1, widths = c(3,2))
-
-ggsave('Task_Boot_w_trialinfo.jpg', plot = boot_task_plot, device = "jpeg", path = "../output/figures/", width = 20, height = 48, units = "in", limitsize = FALSE, dpi = 100)
-
-```
-
-Boot plot for surveys with trial info (only using meaningful vars)
-
-```{r}
-p5_t <- tmp %>%
-  filter(task == 'survey') %>%
-ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) +
-  geom_violin(fill='#F8766D')+
-  theme_bw() +
-  theme(axis.text = element_text(size=30))+
-  xlab("")+
-  ylab("")+
-  scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1), position = "right")+
-  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))+
-  geom_hline(yintercept = 0, color = "red", size = 1)+
-  coord_flip()
-
-survey_trial_num = trial_num_info %>%
-  filter(task == "survey") %>%
-  ungroup() %>%
-  select(-task)
-
-survey_trial_num_table = survey_trial_num %>%
-  mutate(y_axis = rev(ggplot_build(p5_t)$layout$panel_params[[1]]$y.major)) %>%
-  gather(key, value, -y_axis, -task_group) %>%
-  ggplot(aes(key, factor(y_axis)))+
-  geom_text(aes(label=value), size=14)+
-  xlab("")+
-  ylab("")+
-  theme(axis.ticks=element_blank(),
-        axis.text.y = element_blank(),
-        panel.grid = element_blank(),
-        panel.border = element_blank(),
-        axis.text.x = element_text(size=30))+
-  scale_x_discrete(position = "top",
-                   breaks=c("mean_num_all_trials", "num_measures"),
-                   labels=c("Mean Num Trials", "Num Measures"))
-
-boot_survey_plot = arrangeGrob(p5_t, survey_trial_num_table, nrow=1, widths = c(3,2))
-
-ggsave('Survey_Boot_w_trialinfo.jpg', plot = boot_survey_plot, device = "jpeg", path = "../output/figures/", width = 20, height = 48, units = "in", limitsize = FALSE, dpi = 100)
-```
-
-Both task level boot plots with trial info together
-
-```{r}
-mycaption = textGrob(label = str_wrap("FIGURE 4: Summary of bootstrapped reliability estimates for tasks (left) and surveys (right). We sampled 150 subjects with replacement 1000 times to create a distribution of bootstrapped reliability estimate for each measure. Reliability measure depicted is ICC. Red lines indicate 0 reliability. Columns following each graph present the mean number of trials used for dependent measures in that task and the number of ‘meaningful measures,’ dependent measures used in the literature from each task.", width = 165), gp = gpar(fontfamily="Times", lineheight = 2, fontsize = 40), hjust = 0, vjust = 0.5, x = unit(0, "npc"))
-
-boot_both_w_trial = arrangeGrob(arrangeGrob(boot_task_plot, boot_survey_plot, nrow=1), mycaption, nrow=2, heights = c(10,1))
-
-ggsave('Boot_Both_w_trialinfo.tiff', plot = boot_both_w_trial, device = "tiff", path = "../output/figures/", width = 38, height = 55, units = "in", limitsize = FALSE, dpi = 200)
+knitr::include_graphics(paste0(fig_path, fig_name))
 ```
 
 Variable level summary of bootstrapped reliabilities.
 
-```{r warning=FALSE, message=FALSE}
-p4 <- tmp %>%
-  filter(task == 'task',
-         raw_fit == 'raw') %>%
-ggplot(aes(y = var, x = icc)) +
-  geom_point(color = '#00BFC4')+
-  geom_point(aes(y = var, x = point_est), color = "black")+
-  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y", labeller = label_wrap_gen(width=20)) +
-  theme(panel.spacing = unit(0.75, "lines"),
-        strip.placement = "outside",
-        strip.text.y = element_text(angle=180, size=36),
-        axis.text.y = element_text(size=20),
-        panel.background = element_rect(fill = NA),
-        panel.grid.major = element_line(colour = "grey80")) +
-  xlab("")+
-  ylab("")+
-  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
-  scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
-  geom_vline(xintercept = 0, color = "red", size = 1)
-
-p5 <- tmp %>%
-  filter(task == 'survey') %>%
-ggplot(aes(y = var, x = icc)) +
-  geom_point(color = '#F8766D')+
-  geom_point(aes(y = var, x = point_est), color = "black")+
-  facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y", labeller = label_wrap_gen(width=20)) +
-  theme(panel.spacing = unit(0.75, "lines"),
-        strip.placement = "outside",
-        strip.text.y = element_text(angle=180, size=36),
-        axis.text.y = element_text(size=20),
-        panel.background = element_rect(fill = NA),
-        panel.grid.major = element_line(colour = "grey80")) +
-  xlab("")+
-  ylab("")+
-  scale_x_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
-  scale_y_discrete(labels = function(x) str_wrap(x, width = 10))+
-  geom_vline(xintercept = 0, color = "red", size = 1)
-
-p6 <- arrangeGrob(p4, p5,nrow=1)
-
-ggsave('Bootstrap_Raw_Var_Plot.jpg', plot = p6, device = "jpeg", path = "/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/", width = 36, height = 72, units = "in", limitsize = FALSE, dpi=50)
-
-rm(p4, p5, p6)
-```
-
 ```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/Bootstrap_Raw_Var_Plot.jpg')
+fig_name = 'Bootstrap_Raw_Var_Plot.jpeg'
+
+knitr::include_graphics(paste0(fig_path, fig_name))
 ```
 
 Example of the overlaying procedure.
 
-```{r}
-p1<- tmp %>%
-  filter(grepl('selection_optimization', dv)) %>%
-ggplot(aes(x = var, y = icc)) +
-  geom_violin(fill='#F8766D')+
-  theme_bw() +
-  theme(axis.text.y = element_text(size=30))+
-  xlab("")+
-  ylab("")+
-  scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
-  scale_x_discrete(labels = function(x) str_wrap(x, width = 15))+
-  geom_hline(yintercept = 0, color = "red", size = 1)+
-  coord_flip()
-
-p2<- tmp %>%
-  filter(grepl('selection_optimization', dv)) %>%
-ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc, group=dv)) +
-  geom_violin(fill='#F8766D', position = 'identity')+
-  theme_bw() +
-  theme(axis.text.y = element_text(size=30))+
-  xlab("")+
-  ylab("")+
-  scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
-  scale_x_discrete(labels = function(x) str_wrap(x, width = 15))+
-  geom_hline(yintercept = 0, color = "red", size = 1)+
-  coord_flip()
-
-p3<- tmp %>%
-  filter(grepl('selection_optimization', dv)) %>%
-ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) +
-  geom_violin(fill='#F8766D', position = 'identity')+
-  theme_bw() +
-  theme(axis.text.y = element_text(size=30))+
-  xlab("")+
-  ylab("")+
-  scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1))+
-  scale_x_discrete(labels = function(x) str_wrap(x, width = 15))+
-  geom_hline(yintercept = 0, color = "red", size = 1)+
-  coord_flip()
-
-p4 <- arrangeGrob(p1,p2, p3,nrow=1)
-
-ggsave('Bootstrap_Example_Plot_t.jpg', plot = p4, device = "jpeg", path = "../output/figures/", width = 41, height = 5, units = "in", limitsize = FALSE, dpi = 300)
-```
-
 ```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/Bootstrap_Example_Plot_t.jpg')
-```
+fig_name = 'Bootstrap_Example_Plot_t.jpeg'
 
-```{r}
-rm(p1, p2, p3, p4)
+knitr::include_graphics(paste0(fig_path, fig_name))
 ```
 
 ## Survey vs Tasks
@@ -979,6 +742,10 @@ boot_df %>%
 
 ```{r eval=FALSE}
 summary(icc_by_task_model)
+```
+
+```{r echo=FALSE}
+rm(icc_by_task_model)
 ```
 
 ### Variance breakdown

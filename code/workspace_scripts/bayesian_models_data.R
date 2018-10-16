@@ -6,7 +6,7 @@
 
 #summary(lmerTest::lmer(icc ~  task + (1|dv), boot_df))
 # m = MCMCglmm(icc ~  task, random = ~dv, data=boot_df, nitt = 1300, burnin = 300)
-#icc_by_task_model = readRDS('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/icc_by_task_model.rds')
+icc_by_task_model = readRDS('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/icc_by_task_model.rds')
 
 # summary(lmerTest::lmer(var_subs_pct~task+(1|dv),tmp%>%select(-var_ind_pct,-var_resid_pct)))
 var_subs_pct_by_task_model = readRDS('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/var_subs_pct_by_task_model.rds')
