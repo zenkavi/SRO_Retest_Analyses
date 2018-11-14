@@ -1,4 +1,4 @@
-find_optimal_components = function(data, minc=1, maxc=50, fm="ml", verbose = FALSE){
+find_optimal_components = function(data, minc=1, maxc=50, fm="ml", verbose = FALSE, model = 'EFA'){
   
   require(tidyverse)
   require(psych)
@@ -6,9 +6,8 @@ find_optimal_components = function(data, minc=1, maxc=50, fm="ml", verbose = FAL
   steps_since_best = 0 # count steps since last best metric.
   maxc = min(maxc, dim(data)[2])
   n_components = seq(minc,maxc)
-  metrics = data.frame(comp=n_components, BIC = NA)
-  best_metric = NA
-  best_c = 0
+  metrics = data.frame(comp=n_components, metric = NA)
+  
   
   for(cur_c in n_components){
     
@@ -16,19 +15,39 @@ find_optimal_components = function(data, minc=1, maxc=50, fm="ml", verbose = FAL
       print(cur_c)
     }
     
-    out = fa(data, cur_c, rotate='oblimin', fm=fm, scores='tenBerge')
-    
-    if(is.null(out$BIC)){
-      curr_metric = NA
+    if(model == "EFA"){
+      out = fa(data, cur_c, rotate='oblimin', fm=fm, scores='tenBerge')
+      
+      if(is.null(out$BIC)){
+        curr_metric = NA
+      }
+      else{
+        curr_metric = out$BIC
+      }
     }
-    else{
-      curr_metric = out$BIC
+    
+    if(model == "PCA"){
+      out = principal(data, nfactors=cur_c, rotate="oblimin")
+      
+      if(is.null(out$fit)){
+        curr_metric = NA
+      }
+      else{
+        curr_metric = out$fit^2
+      }
     }
     
-    metrics$BIC[which(metrics$comp == cur_c)] = curr_metric
+    metrics$metric[which(metrics$comp == cur_c)] = curr_metric
+    
   }
   
-  metrics = metrics %>% arrange(BIC)
+  if(model == "EFA"){
+    metrics = metrics %>% arrange(metric)
+  }
+  
+  if(model == "PCA"){
+    metrics = metrics %>% arrange(-metric)
+  }
   
   return(metrics)
 }
