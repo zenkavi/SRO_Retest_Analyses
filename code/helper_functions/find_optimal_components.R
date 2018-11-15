@@ -33,7 +33,7 @@ find_optimal_components = function(data, minc=1, maxc=50, fm="ml", verbose = FAL
         curr_metric = NA
       }
       else{
-        curr_metric = out$fit^2
+        curr_metric = out$fit
       }
     }
     
@@ -43,10 +43,6 @@ find_optimal_components = function(data, minc=1, maxc=50, fm="ml", verbose = FAL
   
   if(model == "EFA"){
     metrics = metrics %>% arrange(metric)
-  }
-  
-  if(model == "PCA"){
-    metrics = metrics %>% arrange(-metric)
   }
   
   return(metrics)
