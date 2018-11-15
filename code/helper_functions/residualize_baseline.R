@@ -1,7 +1,6 @@
 residualize_baseline = function(df, baseline_vars = c("Age", "Sex")){
   require(tidyverse)
-  require(broom)
-  
+
   X = df %>%
     select(one_of(baseline_vars))
   

@@ -31,7 +31,9 @@ remove_correlated_task_variables = function(data, threshold=0.85){
   cat(rep('*', 40))
   cat('\n')
 
-  data = data %>% select(-one_of(columns_to_remove))
+  if(length(columns_to_remove)>0){
+    data = data %>% select(-one_of(columns_to_remove)) 
+  }
   
   return(data)
 }
