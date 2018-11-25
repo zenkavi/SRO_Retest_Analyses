@@ -14,14 +14,14 @@ render_this <- function(){rmarkdown::render('/Users/zeynepenkavi/Dropbox/Poldrac
 
 options(scipen = 1, digits = 4)
 
-helper_func_path = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/helper_functions/'
+helper_func_path = 'https://raw.githubusercontent.com/zenkavi/SRO_Retest_Analyses/master/code/helper_functions/'
 
-source(paste0(helper_func_path, 'g_legend.R'))
-source(paste0(helper_func_path, 'g_caption.R'))
-source(paste0(helper_func_path, 'sem.R'))
-source(paste0(helper_func_path, 'trim.R'))
-source(paste0(helper_func_path, 'get_numeric_cols.R'))
-source(paste0(helper_func_path, 'match_t1_t2.R'))
-source(paste0(helper_func_path, 'get_retest_stats.R'))
-source(paste0(helper_func_path, 'process_boot_df.R'))
-source(paste0(helper_func_path, 'make_rel_df.R'))
+eval(parse(text = getURL(paste0(helper_func_path,'g_legend.R'), ssl.verifypeer = FALSE)))
+eval(parse(text = getURL(paste0(helper_func_path,'g_caption.R'), ssl.verifypeer = FALSE)))
+eval(parse(text = getURL(paste0(helper_func_path,'sem.R'), ssl.verifypeer = FALSE)))
+eval(parse(text = getURL(paste0(helper_func_path,'trim.R'), ssl.verifypeer = FALSE)))
+eval(parse(text = getURL(paste0(helper_func_path,'get_numeric_cols.R'), ssl.verifypeer = FALSE)))
+eval(parse(text = getURL(paste0(helper_func_path,'match_t1_t2.R'), ssl.verifypeer = FALSE)))
+eval(parse(text = getURL(paste0(helper_func_path,'get_retest_stats.R'), ssl.verifypeer = FALSE)))
+eval(parse(text = getURL(paste0(helper_func_path,'process_boot_df.R'), ssl.verifypeer = FALSE)))
+eval(parse(text = getURL(paste0(helper_func_path,'make_rel_df.R'), ssl.verifypeer = FALSE)))
