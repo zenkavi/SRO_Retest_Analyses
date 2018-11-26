@@ -1,3 +1,4 @@
+library(RCurl)
 if(!exists('helper_func_path')){
  helper_func_path = 'https://raw.githubusercontent.com/zenkavi/SRO_Retest_Analyses/master/code/helper_functions/'
 }

@@ -1,4 +1,5 @@
 library(tidyr)
+library(RCurl)
 
 img_dpi <- as.numeric(readline(prompt="Enter img dpi: "))
 img_dpi = ifelse(is.na(img_dpi), 100, img_dpi)

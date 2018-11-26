@@ -7,6 +7,7 @@ library(plotly)
 library(DT)
 library(RecordLinkage)
 library(MCMCglmm)
+library(RCurl)
 
 theme_set(theme_bw())
 
