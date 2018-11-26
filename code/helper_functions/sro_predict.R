@@ -7,8 +7,8 @@ sro_predict = function(x_df, y_df, cv_folds = 10){
   x_s = names(x_df)[-which(names(x_df)=="sub_id")]
   y_s = names(y_df)[-which(names(y_df)=="sub_id")]
   
-  for(i in x_s){
-    for(j in y_s){
+  for(i in y_s){
+    for(j in x_s){
       
       x = x_df%>%select(j)
       y = y_df[,i]
