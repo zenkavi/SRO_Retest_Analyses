@@ -4,8 +4,19 @@ sro_predict = function(x_df, y_df, cv_folds = 10){
   
   out = data.frame(dv=NA, iv=NA, Rsquared=NA, RsquaredSD=NA)
   
-  x_s = names(x_df)[-which(names(x_df)=="sub_id")]
-  y_s = names(y_df)[-which(names(y_df)=="sub_id")]
+  if("sub_id" %in% names(x_df)){
+    x_s = names(x_df)[-which(names(x_df)=="sub_id")]
+  }
+  else{
+    x_s = names(x_df)
+  }
+  if("sub_id" %in% names(y_df)){
+    y_s = names(y_df)[-which(names(y_df)=="sub_id")]
+  }
+  else{
+    y_s = names(y_df)
+    
+  }
   
   for(i in y_s){
     for(j in x_s){
