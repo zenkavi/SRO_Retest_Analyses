@@ -35,7 +35,7 @@ get_fold_cors = function(model, shuffle=FALSE, shuffle_n = 100){
   out$all_folds_rmse = sqrt(mean((all_preds$y - all_preds$pred)^2))
   
   if(shuffle){
-    featre_out = data.frame(shuffle_r=NA, shuffle_r2=NA, shuffle_rmse = NA)
+    feature_out = data.frame(shuffle_r=NA, shuffle_r2=NA, shuffle_rmse = NA)
     for(i in 1:shuffle_n){
       shuffled_df = all_preds
       shuffled_df[,"x"] = sample(all_preds[,"x"], length(all_preds[,"x"]))
@@ -46,6 +46,7 @@ get_fold_cors = function(model, shuffle=FALSE, shuffle_n = 100){
                                shuffle_rmse = sqrt(mean((shuffle_preds - shuffled_df$y)^2)))
       feature_out = rbind(feature_out, shuffle_out)
     }
+    feature_out = feature_out[-1,]
   }
   
   if(shuffle){
@@ -113,7 +114,7 @@ sro_predict = function(x_df, y_df, cv_folds = 10, m_type = "lm", shuffle= FALSE,
         tmp_cors = tmp_cors %>% select(dv, iv, fold, R, all_folds_r, all_folds_r2, all_folds_rmse)
       }
       else{
-        tmp_cors = tmp_cors %>% select(dv, iv, fold, R, all_folds_r, all_folds_r2, all_folds_rmse, shuffle_mean_r = NA, shuffle_sem_r = NA,  shuffle_mean_r2 = NA, shuffle_sem_r2 = NA,  shuffle_mean_rmse = NA, shuffle_sem_rmse = NA)
+        tmp_cors = tmp_cors %>% select(dv, iv, fold, R, all_folds_r, all_folds_r2, all_folds_rmse, shuffle_mean_r, shuffle_sem_r,  shuffle_mean_r2, shuffle_sem_r2,  shuffle_mean_rmse, shuffle_sem_rmse)
       }
       
       fold_cors = rbind(fold_cors, tmp_cors)
