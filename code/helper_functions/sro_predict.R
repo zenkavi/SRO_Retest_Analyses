@@ -1,9 +1,35 @@
+get_fold_cors = function(model){
+  
+  out = data.frame(fold=NA, R =NA)
+  
+  x = model$trainingData[1]
+  y = model$trainingData[,2]
+  
+  for(i in 1:length(model$control$indexOut)){
+    
+    indices = model$control$indexOut[[i]]
+    train_df = data.frame(y = y[-indices], x = x[-indices,])
+    test_df = data.frame(y = y[indices], x = x[indices,])
+    m = lm(y ~ x, train_df)
+    test_df$pred = predict(m, test_df)
+    R = with(test_df,cor(pred, y))
+    
+    tmp = data.frame(fold=i, R=R)
+    
+    out = out %>% bind_rows(tmp)
+  }
+  
+  out = out[-1,]
+  return(out)
+}
+
 sro_predict = function(x_df, y_df, cv_folds = 10, m_type = "lm"){
 
   require(tidyverse)
 
-  out = data.frame(dv=NA, iv=NA, Rsquared=NA, RsquaredSD=NA)
-
+  out = data.frame(dv=NA, iv=NA, Rsquared=NA, RsquaredSD=NA, RMSE=NA, RMSESD=NA)
+  fold_cors = data.frame(dv=NA, iv=NA, fold=NA, R = NA)
+  
   if("sub_id" %in% names(x_df)){
     x_s = names(x_df)[-which(names(x_df)=="sub_id")]
   }
@@ -31,14 +57,22 @@ sro_predict = function(x_df, y_df, cv_folds = 10, m_type = "lm"){
                     trControl = trainControl(method="cv", number=cv_folds),
                     na.action = na.exclude)
 
-      tmp = data.frame(dv = i, iv = j, Rsquared = model$results$Rsquared, RsquaredSD = model$results$RsquaredSD)
+      tmp = data.frame(dv = i, iv = j, Rsquared = model$results$Rsquared, RsquaredSD = model$results$RsquaredSD, RMSE = model$results$RMSE, RMSESD = model$results$RMSESD)
 
       out = rbind(out, tmp)
+      
+      tmp_cors = get_fold_cors(model)
+      tmp_cors$dv = i
+      tmp_cors$iv = j
+      tmp_cors = tmp_cors %>% select(dv, iv, fold, R)
+      
+      fold_cors = rbind(fold_cors, tmp_cors)
 
-      print("Done with loop. Saving...")
+      print("Done with CV and fold cor's")
     }
   }
 
   out = out[-1,]
-  return(out)
+  fold_cors = fold_cors[-1,]
+  return(list(out=out, fold_cors=fold_cors))
 }
