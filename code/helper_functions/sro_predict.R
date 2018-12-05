@@ -30,6 +30,7 @@ get_fold_cors = function(model){
   
   out$all_folds_r = with(all_preds, cor(pred, y))
   out$all_folds_r2 = out$all_folds_r^2
+  out$all_folds_rmse = sqrt(mean((all_preds$y - all_preds$pred)^2))
   return(out)
 }
 
@@ -38,7 +39,7 @@ sro_predict = function(x_df, y_df, cv_folds = 10, m_type = "lm"){
   require(tidyverse)
 
   out = data.frame(dv=NA, iv=NA, Rsquared=NA, RsquaredSD=NA, RMSE=NA, RMSESD=NA)
-  fold_cors = data.frame(dv=NA, iv=NA, fold=NA, R = NA, all_folds_r = NA, all_folds_r2 = NA)
+  fold_cors = data.frame(dv=NA, iv=NA, fold=NA, R = NA, all_folds_r = NA, all_folds_r2 = NA, all_folds_rmse = NA)
   
   if("sub_id" %in% names(x_df)){
     x_s = names(x_df)[-which(names(x_df)=="sub_id")]
@@ -74,7 +75,7 @@ sro_predict = function(x_df, y_df, cv_folds = 10, m_type = "lm"){
       tmp_cors = get_fold_cors(model)
       tmp_cors$dv = i
       tmp_cors$iv = j
-      tmp_cors = tmp_cors %>% select(dv, iv, fold, R, all_folds_r, all_folds_r2)
+      tmp_cors = tmp_cors %>% select(dv, iv, fold, R, all_folds_r, all_folds_r2, all_folds_rmse)
       
       fold_cors = rbind(fold_cors, tmp_cors)
 
@@ -86,5 +87,6 @@ sro_predict = function(x_df, y_df, cv_folds = 10, m_type = "lm"){
   fold_cors = fold_cors[-1,]
   out$all_folds_r = unique(fold_cors$all_folds_r)
   out$all_folds_r2 = unique(fold_cors$all_folds_r2)
+  out$all_folds_rmse = unique(fold_cors$all_folds_rmse)
   return(list(out=out, fold_cors=fold_cors))
 }
