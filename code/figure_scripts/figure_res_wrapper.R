@@ -1,4 +1,4 @@
-library(tidyr)
+library(tidyverse)
 library(RCurl)
 
 img_dpi <- as.numeric(readline(prompt="Enter img dpi: "))
