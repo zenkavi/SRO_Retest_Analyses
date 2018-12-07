@@ -52,8 +52,12 @@ get_fold_cors = function(model, shuffle=FALSE, shuffle_n = 100){
   if(shuffle){
     out$shuffle_mean_r = mean(feature_out$shuffle_r)
     out$shuffle_sem_r = sd(feature_out$shuffle_r)/sqrt(shuffle_n)
+    out$shuffle_95p_r = as.numeric(quantile(feature_out$shuffle_r, probs = c(0.95)))
+    out$shuffle_max_r = max(feature_out$shuffle_r)
     out$shuffle_mean_r2 = mean(feature_out$shuffle_r2)
     out$shuffle_sem_r2 = sd(feature_out$shuffle_r2)/sqrt(shuffle_n)
+    out$shuffle_95p_r2 = as.numeric(quantile(feature_out$shuffle_r2, probs = c(0.95)))
+    out$shuffle_max_r2 = max(feature_out$shuffle_r2)
     out$shuffle_mean_rmse = mean(feature_out$shuffle_rmse)
     out$shuffle_sem_rmse = sd(feature_out$shuffle_rmse)/sqrt(shuffle_n)
   }
@@ -72,7 +76,7 @@ sro_predict = function(x_df, y_df, cv_folds = 10, m_type = "lm", shuffle= FALSE,
     fold_cors = data.frame(dv=NA, iv=NA, fold=NA, R = NA, all_folds_r = NA, all_folds_r2 = NA, all_folds_rmse = NA)
   }
   else{
-    fold_cors = data.frame(dv=NA, iv=NA, fold=NA, R = NA, all_folds_r = NA, all_folds_r2 = NA, all_folds_rmse = NA, shuffle_mean_r = NA, shuffle_sem_r = NA,  shuffle_mean_r2 = NA, shuffle_sem_r2 = NA,  shuffle_mean_rmse = NA, shuffle_sem_rmse = NA)
+    fold_cors = data.frame(dv=NA, iv=NA, fold=NA, R = NA, all_folds_r = NA, all_folds_r2 = NA, all_folds_rmse = NA, shuffle_mean_r = NA, shuffle_sem_r = NA,  shuffle_95p_r = NA, shuffle_max_r = NA, shuffle_mean_r2 = NA, shuffle_sem_r2 = NA, shuffle_95p_r2 = NA, shuffle_max_r2 = NA, shuffle_mean_rmse = NA, shuffle_sem_rmse = NA)
   }
   
   if("sub_id" %in% names(x_df)){
@@ -114,7 +118,7 @@ sro_predict = function(x_df, y_df, cv_folds = 10, m_type = "lm", shuffle= FALSE,
         tmp_cors = tmp_cors %>% select(dv, iv, fold, R, all_folds_r, all_folds_r2, all_folds_rmse)
       }
       else{
-        tmp_cors = tmp_cors %>% select(dv, iv, fold, R, all_folds_r, all_folds_r2, all_folds_rmse, shuffle_mean_r, shuffle_sem_r,  shuffle_mean_r2, shuffle_sem_r2,  shuffle_mean_rmse, shuffle_sem_rmse)
+        tmp_cors = tmp_cors %>% select(dv, iv, fold, R, all_folds_r, all_folds_r2, all_folds_rmse, shuffle_mean_r, shuffle_sem_r, shuffle_95p_r, shuffle_max_r, shuffle_mean_r2, shuffle_sem_r2, shuffle_95p_r2, shuffle_max_r2, shuffle_mean_rmse, shuffle_sem_rmse)
       }
       
       fold_cors = rbind(fold_cors, tmp_cors)
@@ -132,8 +136,12 @@ sro_predict = function(x_df, y_df, cv_folds = 10, m_type = "lm", shuffle= FALSE,
   if(shuffle){
     out$shuffle_mean_r = unique(fold_cors$shuffle_mean_r)
     out$shuffle_sem_r = unique(fold_cors$shuffle_sem_r)
+    out$shuffle_95p_r = unique(fold_cors$shuffle_95p_r)
+    out$shuffle_max_r = unique(fold_cors$shuffle_max_r)
     out$shuffle_mean_r2 = unique(fold_cors$shuffle_mean_r2)
     out$shuffle_sem_r2 = unique(fold_cors$shuffle_sem_r2)
+    out$shuffle_95p_r2 = unique(fold_cors$shuffle_95p_r2)
+    out$shuffle_max_r2 = unique(fold_cors$shuffle_max_r2)
     out$shuffle_mean_rmse = unique(fold_cors$shuffle_mean_rmse)
     out$shuffle_sem_rmse = unique(fold_cors$shuffle_sem_rmse)
   }
