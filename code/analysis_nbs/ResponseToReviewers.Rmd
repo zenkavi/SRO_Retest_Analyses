@@ -1,0 +1,97 @@
+---
+title: 'SRO Retest Response to Reviewers'
+output:
+github_document:
+toc: yes
+toc_float: yes
+---
+
+```{r}
+library(tidyverse)
+library(jsonlite)
+
+workspace_scripts = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/workspace_scripts/'
+
+source(paste0(workspace_scripts,'SRO_Retest_Analyses_Helper_Functions.R'))
+
+test_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_03-29-2018/'
+
+retest_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-29-2018/'
+
+fig_path = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/'
+
+source(paste0(workspace_scripts, 'battery_completion_data.R'))
+
+source(paste0(workspace_scripts,'lit_review_data.R'))
+
+source(paste0(workspace_scripts,'subject_data.R'))
+
+source(paste0(workspace_scripts,'intratrial_rel_data.R'))
+
+source(paste0(workspace_scripts,'demog_data.R'))
+
+source(paste0(workspace_scripts,'boot_rel_data.R'))
+
+source(paste0(workspace_scripts,'rel_comp_data.R'))
+
+source(paste0(workspace_scripts,'duplicate_items_data.R'))
+
+source(paste0(workspace_scripts,'measure_labels_data.R'))
+
+source(paste0(workspace_scripts,'meaningful_vars_data.R'))
+
+source(paste0(workspace_scripts,'bayesian_models_data.R'))
+```
+
+#R1
+
+##R1.5
+>If the common assumption that threshold and non-decision time do not vary between conditions in tasks with intermixed trials is true, we could interpret the contrasts between those parameters generated from the EZ diffusion model to simply be noise. If that were the case, we shouldn't expect those contrasts to be reliable. 
+
+TODO: Check if EZ contrast estimates are >0
+
+```{r}
+
+```
+
+##R1.6
+>In our paper, we report ICC(2,1)...
+
+TODO: All results with ICC using ICC(2,1) instead of ICC(3,k)  
+- recode `get_retest_stats` to report all kinds of ICCs
+- make new `rel_df` (with both types of ICC)
+- make new `boot_df` (with both types of ICC)
+- rerun MCMC models with ICC(2,1)
+
+```{r}
+
+```
+
+##R1.7
+>It is stated on pg. 9 that the ICC ranges from -1 to 1. Though statistical packages report negative ICCs, it is sometimes suggested that they should be treated as zero (e.g. Bartko, 1976), as a proportion of variance cannot theoretically be negative. I am unsure what the best approach is for the current purposes, but I note it for consideration. As there don't appear to be a large number of negative ICCs, I suspect it wouldn't affect the averages much. 
+
+TODO:
+- report how many negative ICC's there are
+- run all analyses that include ICC's with 
+  - replacing negative values with 0's 
+  - removing them
+
+```{r}
+
+```
+
+##R1.8
+>I think it is a strength of the paper overall that the authors consider the importance of trial numbers, though I'm curious why they chose the number of trials they did for their tasks (e.g. if they came from particular studies or an average)? The role of trial numbers was also something we were interested in (see our Supplementary material D: https://link.springer.com/article/10.3758/s13428-017-0935-1#SupplementaryMaterial), and is discussed by Rouder & Haaf (2018). 
+
+TODO:
+- extract trial numbers for papers that went in to the lit search and compare to ours
+- code pipeline to get reliability with k number of trials
+
+```{r}
+
+```
+
+#R2
+
+##R2.1
+>The researchers were careful in their sampling procedure to try to minimize differences between participants who completed (vs. did not complete) the retest phase of the test-retest. Some simple statistical comparisons between the completers (N = 157) and non-completers/non-responders (N = 242-157 = 85) would help characterize this subset of the sample better and provide an additional data quality check. 
