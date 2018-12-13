@@ -111,7 +111,7 @@ retest_data %>%
 
 ### Are their reliabilities >0?
 
-... Although the thresholds and non-decision times for contrasts are >0 they are still not reliable
+Although the thresholds and non-decision times for contrasts are >0 still have low reliabilities.
 
 ```{r}
 rt_ddm_vars = measure_labels %>%
@@ -156,6 +156,10 @@ rel_df %>%
 
 *Response:* We thank the reviewer for providing a potential explanation for the low reliability of the EZ threshold and non-decision time variables for contrasts. In our data the EZ thresholds and non-decision times for contrasts are systematically different than 0 suggesting that they capture a systematic difference instead of the common assumption of noise. Still these contrast measures are much less reliable than non-contrast measures. Similar to the constrasts in raw measures of response times and accuracies, which are less reliable than their non-contrast counterparts, measures do not have to be noise to be unreliable. 
 Because the assumption fails we chose not to present this possibility in the manuscript. The details of our analyses on this question can however be found [on:  https://zenkavi.github.io/SRO_Retest_Analyses/output/reports/ResponseToRevisers.nb.html#R1](https://zenkavi.github.io/SRO_Retest_Analyses/output/reports/ResponseToRevisers.nb.html#R1)
+
+```{r echo=FALSE}
+rm(list = ls())
+```
 
 ##R1.6
 >In our paper, we report ICC(2,1)...
