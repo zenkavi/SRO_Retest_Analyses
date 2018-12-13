@@ -1,20 +1,39 @@
 library(RCurl)
+
 if(!exists('helper_func_path')){
- helper_func_path = 'https://raw.githubusercontent.com/zenkavi/SRO_Retest_Analyses/master/code/helper_functions/'
+  if(from_gh){
+    helper_func_path = 'https://raw.githubusercontent.com/zenkavi/SRO_Retest_Analyses/master/code/helper_functions/'
+  }else{
+    helper_func_path = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/helper_functions/'
+  }
 }
 
 
 if(!exists('get_retest_stats')){
-  eval(parse(text = getURL(paste0(helper_func_path,'get_retest_stats.R'), ssl.verifypeer = FALSE)))
+  if(from_gh){
+    eval(parse(text = getURL(paste0(helper_func_path,'get_retest_stats.R'), ssl.verifypeer = FALSE)))
+  }else{
+    source(paste0(helper_func_path, 'get_retest_stats.R'))
+  }
 }
 
 if(!exists('get_numeric_cols')){
-  eval(parse(text = getURL(paste0(helper_func_path,'get_numeric_cols.R'), ssl.verifypeer = FALSE)))
+  if(from_gh){
+    eval(parse(text = getURL(paste0(helper_func_path,'get_numeric_cols.R'), ssl.verifypeer = FALSE)))
+  }else{
+    source(paste0(helper_func_path, 'get_numeric_cols.R'))
+  }
+
 }
 
-make_rel_df = function(t1_df, t2_df, metrics){
+make_rel_df = function(t1_df, t2_df, metrics, vars = NA){
 
-  numeric_cols = get_numeric_cols(df1 = t1_df, df2 = t2_df)
+  if(vars = NA){
+    numeric_cols = get_numeric_cols(df1 = t1_df, df2 = t2_df)
+  }else{
+      numeric_cols = vars
+    }
+  
 
   rel_df_cols = metrics
   if('var_breakdown' %in% metrics){
