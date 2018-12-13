@@ -15,24 +15,6 @@ library(jsonlite)
 cbbPalette <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 theme_set(theme_bw())
 ggplot <- function(...) ggplot2::ggplot(...) + scale_fill_manual(values=cbbPalette) + scale_color_manual(values=cbbPalette)+theme(legend.position="bottom")
-
-workspace_scripts = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/workspace_scripts/'
-
-source(paste0(workspace_scripts,'SRO_Retest_Analyses_Helper_Functions.R'))
-
-test_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_03-29-2018/'
-
-retest_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-29-2018/'
-
-fig_path = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/'
-
-source(paste0(workspace_scripts,'lit_review_data.R'))
-
-# source(paste0(workspace_scripts,'subject_data.R'))
-# 
-# source(paste0(workspace_scripts,'boot_rel_data.R'))
-# 
-# source(paste0(workspace_scripts,'measure_labels_data.R'))
 ```
 
 #R1
@@ -41,7 +23,7 @@ source(paste0(workspace_scripts,'lit_review_data.R'))
 >If the common assumption that threshold and non-decision time do not vary between conditions in tasks with intermixed trials is true, we could interpret the contrasts between those parameters generated from the EZ diffusion model to simply be noise. If that were the case, we shouldn't expect those contrasts to be reliable. 
 
 TODO: 
-### Are EZ contrast estimates are >0?
+### Are EZ threshold and non-decision time contrast estimates are >0?
 
 Yes. The assumption that thresholds and non-decision times are the same across conditions does not hold in our data as the distributions of these parameters are systematically different than 0 for both time point.
 
@@ -69,8 +51,10 @@ get_mean = function(x){
 }
 ```
 
+Means and and T values comparing the means to 0 for T1 data.
+
 ```{r}
-retest_data %>%
+test_data_522 %>%
   select(ez_contrast_vars$dv) %>%
   gather(key, value) %>%
   group_by(key) %>%
@@ -78,8 +62,10 @@ retest_data %>%
             means = get_mean(value))
 ```
 
+Means and and T values comparing the means to 0 for T2 data.
+
 ```{r}
-test_data_522 %>%
+retest_data %>%
   select(ez_contrast_vars$dv) %>%
   gather(key, value) %>%
   group_by(key) %>%
@@ -108,9 +94,36 @@ retest_data %>%
   facet_wrap(~time)
 ```
 
+```{r}
+retest_data %>%
+  select(ez_contrast_vars$dv) %>%
+  mutate(time = "Time 1") %>%
+  bind_rows(test_data %>%
+              select(ez_contrast_vars$dv) %>%
+              mutate(time = "Time 2")) %>%
+  gather(key, value, -time) %>%
+  rename(dv = key) %>%
+  left_join(measure_labels %>% select(dv, rt_acc), by = 'dv') %>%
+  group_by(rt_acc, time) %>%
+  summarise(tvals=get_tval(value),
+            means=get_mean(value))
+```
+
 ### Are their reliabilities >0?
 
 ... Although the thresholds and non-decision times for contrasts are >0 they are still not reliable
+
+```{r}
+rt_ddm_vars = measure_labels %>%
+  filter(overall_difference %in% c("non-contrast", "contrast")) %>%
+  select(dv)
+
+if(from_gh){
+  eval(parse(text = getURL('https://raw.githubusercontent.com/zenkavi/SRO_Retest_Analyses/master/code/helper_functions/make_rel_df.R', ssl.verifypeer = FALSE)))
+}else{
+  source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/helper_functions/make_rel_df.R')
+}
+```
 
 *Response:* Measures do not have to be noise to be unreliable. In our data the EZ thresholds and non-decision times for contrasts are systematically different than 0 suggesting that they capture a systematic difference instead of noise. Still these measures are not reliable si
 similar to differences in raw measures of response times and accuracies.
@@ -125,7 +138,7 @@ TODO: All results with ICC using ICC(2,1) instead of ICC(3,k)
 - rerun MCMC models with ICC(2,1)
 
 ```{r}
-'/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_DDM_Analyses/code/workspace_scripts/ddm_measure_labels.R'
+
 ```
 
 ##R1.7
