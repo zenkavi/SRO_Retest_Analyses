@@ -132,7 +132,7 @@ similar to differences in raw measures of response times and accuracies.
 >In our paper, we report ICC(2,1)...
 
 TODO: All results with ICC using ICC(2,1) instead of ICC(3,k)  
-- recode `get_retest_stats` to report all kinds of ICCs
+- [DONE] recode `get_retest_stats` to report all kinds of ICCs
 - make new `rel_df` (with both types of ICC)
 - make new `boot_df` (with both types of ICC)
 - rerun MCMC models with ICC(2,1)

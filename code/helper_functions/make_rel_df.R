@@ -8,7 +8,6 @@ if(!exists('helper_func_path')){
   }
 }
 
-
 if(!exists('get_retest_stats')){
   if(from_gh){
     eval(parse(text = getURL(paste0(helper_func_path,'get_retest_stats.R'), ssl.verifypeer = FALSE)))
@@ -23,7 +22,6 @@ if(!exists('get_numeric_cols')){
   }else{
     source(paste0(helper_func_path, 'get_numeric_cols.R'))
   }
-
 }
 
 make_rel_df = function(t1_df, t2_df, metrics, vars = NA){
@@ -33,7 +31,6 @@ make_rel_df = function(t1_df, t2_df, metrics, vars = NA){
   }else{
       numeric_cols = vars
     }
-  
 
   rel_df_cols = metrics
   if('var_breakdown' %in% metrics){

@@ -87,20 +87,20 @@ Point estimates of reliability for the demographic variabels.
 ```{r}
 demog_boot_df %>%
   group_by(dv) %>%
-  summarise(median_icc = quantile(icc, probs=0.5),
-            icc_2.5 = quantile(icc, probs = 0.025),
-            icc_97.5 = quantile(icc, probs = 0.975)) %>%
-  arrange(-median_icc)
+  summarise(median_icc3.k = quantile(icc3.k, probs=0.5),
+            icc3.k_2.5 = quantile(icc3.k, probs = 0.025),
+            icc3.k_97.5 = quantile(icc3.k, probs = 0.975)) %>%
+  arrange(-median_icc3.k)
 ```
 
 Point estimates of reliability for demog items
 
 ```{r}
-demog_rel_df = make_rel_df(test_demog, t2_df = retest_demog, metrics=c('icc'))
+demog_rel_df = make_rel_df(test_demog, t2_df = retest_demog, metrics=c('icc3.k'))
 
 demog_rel_df %>%
-  select(dv, icc) %>%
-  arrange(-icc)
+  select(dv, icc3.k) %>%
+  arrange(-icc3.k)
 ```
 
 Plotting point estimates of reliability for demographic items coloring those that have a time limit darker in the histogram.
@@ -110,9 +110,9 @@ timed_demogs <- c("DoctorVisitsLastMonth","DaysHalfLastMonth","Worthless","DaysP
 
 demog_rel_df %>%
   mutate(timed = ifelse(dv %in% timed_demogs, 1, 0)) %>%
-  ggplot(aes(icc, fill = factor(timed)))+
+  ggplot(aes(icc3.k, fill = factor(timed)))+
   geom_histogram(position = "identity", alpha = 0.7, color = NA)+
-  xlab("ICC")+
+  xlab("icc3.k")+
   ylab("Count")+
   scale_fill_manual(values = c("grey", "grey25"))+
   theme(legend.position = "none")
@@ -467,7 +467,7 @@ rel_comp %>%
         axis.text.x = element_text(size=14),
         axis.title.y = element_text(size=14))+
   xlab("")+
-  ylab("Mean ICC")+
+  ylab("Mean icc3.k")+
   ylim(-0.4,1)
 ```
 
@@ -532,10 +532,10 @@ Model comparisons building model to predict the reliabilities in the literature 
 
 sample one row per measure out of lit review
 r^2 of retest_reliability ~ sampled_reliability vs.
-r^2 of retest_reliability ~ mean_icc
+r^2 of retest_reliability ~ mean_icc3.k
 
 coef of retest_reliability ~ sampled_reliability vs.
-coef of retest_reliability ~ mean_icc
+coef of retest_reliability ~ mean_icc3.k
 
 ```{r eval=FALSE}
 comp_lit_pred <- function(df){
@@ -649,16 +649,16 @@ rm(tmp, rel_comp, mod1, mod2, mod3, i, lit_emp_cor_out, comp_lit_pred, comp_lit_
 
 ## Relationship between reliability metrics (point estimates)
 
-Though we are primarily reporting ICC's as our metric of reliability the results don't change depending on the metric chosen. Here we plot point estimates of three different reliability metrics against each other (ICC, Pearson, Spearman). The bootstrapped version is essentially the same but the plots are busier due to more datapoints.
+Though we are primarily reporting icc3.k's as our metric of reliability the results don't change depending on the metric chosen. Here we plot point estimates of three different reliability metrics against each other (icc3.k, Pearson, Spearman). The bootstrapped version is essentially the same but the plots are busier due to more datapoints.
 
 ```{r}
-rel_df = make_rel_df(t1_df = test_data, t2_df = retest_data, metrics = c('spearman', 'icc', 'pearson', 'var_breakdown', 'partial_eta', 'sem'))
+rel_df = make_rel_df(t1_df = test_data, t2_df = retest_data, metrics = c('spearman', 'icc3.k', 'pearson', 'var_breakdown', 'partial_eta', 'sem'))
 
 rel_df$task = 'task'
 rel_df[grep('survey', rel_df$dv), 'task'] = 'survey'
 rel_df[grep('holt', rel_df$dv), 'task'] = "task"
 rel_df = rel_df %>%
-  select(dv, task, spearman, icc, pearson, partial_eta, sem, var_subs, var_ind, var_resid)
+  select(dv, task, spearman, icc3.k, pearson, partial_eta, sem, var_subs, var_ind, var_resid)
 ```
 
 We calculated `r as.numeric(table(rel_df$task)[1])` measures for surveys and `r as.numeric(table(rel_df$task)[2])` measures for cognitive tasks.  
@@ -672,10 +672,10 @@ knitr::include_graphics(paste0(fig_path, fig_name))
 As the scatter plots depict the correlations between different types reliability metrics were very high.
 
 ```{r}
-cor(rel_df[,c('spearman', 'icc', 'pearson')])
+cor(rel_df[,c('spearman', 'icc3.k', 'pearson')])
 ```
 
-Note: Some variables have <0 ICC's. This would be the case if the $MS_{error}$>$MS_{between}$. Data for these variables have no relationship between the two time points.
+Note: Some variables have <0 icc3.k's. This would be the case if the $MS_{error}$>$MS_{between}$. Data for these variables have no relationship between the two time points.
 
 ## Summary of all measure reliabilities
 
@@ -684,14 +684,14 @@ Summarized bootstrapped reliabilities
 ```{r message=FALSE, warning=FALSE}
 boot_df %>%
   group_by(dv) %>%
-  summarise(icc_median = quantile(icc, probs = 0.5),
-            icc_2.5 = quantile(icc, probs = 0.025),
-            icc_97.5 = quantile(icc, probs = 0.975),
+  summarise(icc3.k_median = quantile(icc3.k, probs = 0.5),
+            icc3.k_2.5 = quantile(icc3.k, probs = 0.025),
+            icc3.k_97.5 = quantile(icc3.k, probs = 0.975),
             spearman_median = quantile(spearman, probs = 0.5),
             spearman_2.5 = quantile(spearman, probs = 0.025),
             spearman_97.5 = quantile(spearman, probs = 0.975)) %>%
   datatable() %>%
-  formatRound(columns=c('icc_median', 'icc_2.5', 'icc_97.5', 'spearman_median', 'spearman_2.5', 'spearman_97.5'), digits=3)
+  formatRound(columns=c('icc3.k_median', 'icc3.k_2.5', 'icc3.k_97.5', 'spearman_median', 'spearman_2.5', 'spearman_97.5'), digits=3)
 ```
 
 
@@ -728,29 +728,29 @@ boot_df = boot_df %>%
 
 boot_df %>%
   group_by(task) %>%
-  summarise(icc_median = quantile(icc, probs = 0.5),
-            icc_2.5 = quantile(icc, probs = 0.025),
-            icc_97.5 = quantile(icc, probs = 0.975),
+  summarise(icc3.k_median = quantile(icc3.k, probs = 0.5),
+            icc3.k_2.5 = quantile(icc3.k, probs = 0.025),
+            icc3.k_97.5 = quantile(icc3.k, probs = 0.975),
             spearman_median = quantile(spearman, probs = 0.5),
             spearman_2.5 = quantile(spearman, probs = 0.025),
             spearman_97.5 = quantile(spearman, probs = 0.975),
             num_vars = n()/1000) %>%
   datatable() %>%
-  formatRound(columns=c('icc_median', 'icc_2.5', 'icc_97.5', 'spearman_median', 'spearman_2.5', 'spearman_97.5'), digits=3)
+  formatRound(columns=c('icc3.k_median', 'icc3.k_2.5', 'icc3.k_97.5', 'spearman_median', 'spearman_2.5', 'spearman_97.5'), digits=3)
 ```
 
 
 ```{r eval=FALSE}
-summary(icc_by_task_model)
+summary(icc3.k_by_task_model)
 ```
 
 ```{r echo=FALSE}
-rm(icc_by_task_model)
+rm(icc3.k_by_task_model)
 ```
 
 ### Variance breakdown
 
-The quantiative explanation for the difference in reliability estimates between surveys and tasks, as recently detailed by Hedge et al. (2017), lies in the difference in sources of variance between these measures. Specifically, the ICC is calculated as the ratio of variance between subjects variance to all sources of variance. Thus, measures with high between subjects variance would have high test-retest reliability. Intuitively, measures with high between subjects variance are also better suited for individual difference analyses as they would capture the differences between the subjects in a sample.
+The quantiative explanation for the difference in reliability estimates between surveys and tasks, as recently detailed by Hedge et al. (2017), lies in the difference in sources of variance between these measures. Specifically, the icc3.k is calculated as the ratio of variance between subjects variance to all sources of variance. Thus, measures with high between subjects variance would have high test-retest reliability. Intuitively, measures with high between subjects variance are also better suited for individual difference analyses as they would capture the differences between the subjects in a sample.
 
 Here we first plot the percentage of variance explained by the three sources of variance for the point estimates of measure reliabilities. The plot only includes raw measures (no DDM parameters) and the measures are ranked by percentage of between subject variability for each task/survey (i.e. the best to worst individual difference measure for each task/survey). Then we compare statistically whether the percentage of variance explained by these sources differ between tasks and surveys.
 
@@ -820,46 +820,46 @@ tmp = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(task == 'task',
          dv %in% meaningful_vars) %>%
-  left_join(boot_df[,c("dv", "icc")], by = 'dv') %>%
+  left_join(boot_df[,c("dv", "icc3.k")], by = 'dv') %>%
   separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
   select(-extra_1, -extra_2) %>%
   group_by(task_name) %>%
-  summarise(median_icc = median(icc),
-            icc_2.5 = quantile(icc, probs = 0.025),
-            icc_97.5 = quantile(icc, probs = 0.975),
+  summarise(median_icc3.k = median(icc3.k),
+            icc3.k_2.5 = quantile(icc3.k, probs = 0.025),
+            icc3.k_97.5 = quantile(icc3.k, probs = 0.975),
             num_measures = n()/1000,
             mean_num_trials = round(mean(num_all_trials)))%>%
-  arrange(-median_icc)
+  arrange(-median_icc3.k)
 
 tmp %>%
   datatable() %>%
-  formatRound(columns=c('median_icc','icc_2.5','icc_97.5'), digits=3)
+  formatRound(columns=c('median_icc3.k','icc3.k_2.5','icc3.k_97.5'), digits=3)
 ```
 
 ### Number of trials
 
-Does number of items in a task have a significant effect on the average ICC of meaningful measures for all trials from a task? No.
+Does number of items in a task have a significant effect on the average icc3.k of meaningful measures for all trials from a task? No.
 
 ```{r warning=FALSE, message=FALSE}
 tmp = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(task == 'task',
          dv %in% meaningful_vars) %>%
-  left_join(boot_df[,c("dv", "icc")], by = 'dv') %>%
+  left_join(boot_df[,c("dv", "icc3.k")], by = 'dv') %>%
   separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
   select(-extra_1, -extra_2)
 
-summary(icc_by_num_trials_model)
+summary(icc3.k_by_num_trials_model)
 ```
 
 ```{r warning=FALSE, message=FALSE}
 tmp %>%
-  ggplot(aes(num_all_trials, icc))+
+  ggplot(aes(num_all_trials, icc3.k))+
   geom_point()+
   geom_smooth(method="lm")+
   theme_bw()+
   xlab("Number of trials")+
-  ylab("ICC")
+  ylab("icc3.k")
 ```
 
 #### Trial number dependence intrameasure
@@ -909,42 +909,42 @@ tmp = measure_labels %>%
   filter(ddm_task == 1,
          rt_acc != 'other') %>%
   drop_na() %>%
-  left_join(boot_df[,c("dv", "icc")], by = 'dv')
+  left_join(boot_df[,c("dv", "icc3.k")], by = 'dv')
 
 tmp_save = tmp %>%
   drop_na() %>% #try removing this in final release
   group_by(contrast, raw_fit, rt_acc) %>%
-  summarise(icc_median = quantile(icc, probs = 0.5),
-            icc_2.5 = quantile(icc, probs = 0.025),
-            icc_97.5 = quantile(icc, probs = 0.975),
+  summarise(icc3.k_median = quantile(icc3.k, probs = 0.5),
+            icc3.k_2.5 = quantile(icc3.k, probs = 0.025),
+            icc3.k_97.5 = quantile(icc3.k, probs = 0.975),
             num_vars = n()/1000)
 
 tmp_save %>%
   datatable() %>%
-  formatRound(columns=c('icc_median', 'icc_2.5', 'icc_97.5'), digits=3)
+  formatRound(columns=c('icc3.k_median', 'icc3.k_2.5', 'icc3.k_97.5'), digits=3)
 ```
 
 Comparing contrast vs non-contrast: overall has higher reliability than difference.
 
 ```{r}
-summary(lmerTest::lmer(icc ~ contrast + (1|dv) ,tmp))
-# summary(MCMCglmm(icc ~ contrast, random = ~ dv, data=tmp, verbose=FALSE))
+summary(lmerTest::lmer(icc3.k ~ contrast + (1|dv) ,tmp))
+# summary(MCMCglmm(icc3.k ~ contrast, random = ~ dv, data=tmp, verbose=FALSE))
 ```
 
 Comparing raw vs ddm in overall estimates: EZ is significantly better than HDDM and comparable to raw estimates.
 
 ```{r}
-summary(icc_by_rawfit_noncon_model)
+summary(icc3.k_by_rawfit_noncon_model)
 ```
 
 Comparing raw vs ddm in difference scores: EZ is significantly worse than HDDM and comparable to raw estimates.
 
 ```{r}
-summary(icc_by_rawfit_con_model)
+summary(icc3.k_by_rawfit_con_model)
 ```
 
 ```{r echo=FALSE}
-rm(icc_by_rawfit_con_model, icc_by_rawfit_noncon_model)
+rm(icc3.k_by_rawfit_con_model, icc3.k_by_rawfit_noncon_model)
 ```
 
 ```{r echo=FALSE, out.width='100%'}
@@ -956,8 +956,8 @@ knitr::include_graphics(paste0(fig_path, fig_name))
 ```{r}
 tmp %>%
   group_by(contrast) %>%
-  summarise(mean_icc = mean(icc),
-            sd_icc = sd(icc))
+  summarise(mean_icc3.k = mean(icc3.k),
+            sd_icc3.k = sd(icc3.k))
 ```
 
 ```{r echo=FALSE, out.width='100%'}
@@ -972,38 +972,38 @@ knitr::include_graphics(paste0(fig_path, fig_name))
 tmp = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(task == 'survey') %>%
-  left_join(boot_df[,c("dv", "icc")], by = 'dv') %>%
+  left_join(boot_df[,c("dv", "icc3.k")], by = 'dv') %>%
   separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
   select(-extra_1, -extra_2)
 
 tmp_save = tmp %>%
   group_by(task_name) %>%
-  summarise(median_icc = median(icc),
-            icc_2.5 = quantile(icc, probs = 0.025),
-            icc_97.5 = quantile(icc, probs = 0.975),
+  summarise(median_icc3.k = median(icc3.k),
+            icc3.k_2.5 = quantile(icc3.k, probs = 0.025),
+            icc3.k_97.5 = quantile(icc3.k, probs = 0.975),
             num_measures = n()/1000,
             mean_num_trials = round(mean(num_all_trials)))%>%
-  arrange(-median_icc)
+  arrange(-median_icc3.k)
 
 tmp_save %>%
   datatable() %>%
-  formatRound(columns=c('median_icc', 'icc_2.5','icc_97.5'), digits=3)
+  formatRound(columns=c('median_icc3.k', 'icc3.k_2.5','icc3.k_97.5'), digits=3)
 ```
 
 ### Number of items
 
-Does number of items in a survey have a significant effect on the average ICC of survey measures? No.
+Does number of items in a survey have a significant effect on the average icc3.k of survey measures? No.
 
 ```{r warning=FALSE, message=FALSE}
-summary(lmerTest::lmer(icc ~ num_all_trials + (1|dv), data = tmp))
+summary(lmerTest::lmer(icc3.k ~ num_all_trials + (1|dv), data = tmp))
 ```
 
 ```{r warning=FALSE, message=FALSE}
 tmp %>%
-  ggplot(aes(num_all_trials, icc))+
+  ggplot(aes(num_all_trials, icc3.k))+
   geom_point()+
   geom_smooth(method="lm")+
   theme_bw()+
   xlab("Number of trials")+
-  ylab("ICC")
+  ylab("icc3.k")
 ```
