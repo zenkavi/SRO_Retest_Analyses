@@ -127,20 +127,57 @@ if(from_gh){
 }
 ```
 
-*Response:* Measures do not have to be noise to be unreliable. In our data the EZ thresholds and non-decision times for contrasts are systematically different than 0 suggesting that they capture a systematic difference instead of noise. Still these measures are not reliable si
-similar to differences in raw measures of response times and accuracies.
+```{r}
+rel_df = make_rel_df(test_data, retest_data, metrics = c("icc3.k", 'icc2.1'), vars = rt_ddm_vars)
+
+rel_df %>%
+  left_join(measure_labels %>% select("rt_acc", "raw_fit", "dv", "overall_difference"), by = "dv") %>%
+  mutate(overall_difference = factor(overall_difference, levels = c("non-contrast", "contrast"), labels = c("Non-contrast", "Contrast")),
+         raw_fit = factor(raw_fit, levels = c("raw", "EZ", "hddm"), labels = c("Raw", "EZ", "HDDM")),
+         rt_acc = factor(rt_acc, levels = c("drift rate", "threshold", "non-decision", "rt", "accuracy"), labels = c("Drift Rate", "Threshold", "Non-decision", "RT", "Accuracy"))) %>%
+  ggplot(aes(raw_fit, icc2.1, fill=rt_acc))+
+  geom_boxplot()+
+  facet_wrap(~overall_difference)+
+  geom_hline(yintercept=0, linetype="dashed")+
+  guides(fill = guide_legend(nrow=3, byrow=FALSE))+
+  theme(legend.title = element_blank())
+```
+
+```{r}
+rel_df %>%
+  left_join(measure_labels %>% select("rt_acc", "raw_fit", "dv", "overall_difference"), by = "dv") %>%
+  mutate(overall_difference = factor(overall_difference, levels = c("non-contrast", "contrast"), labels = c("Non-contrast", "Contrast")),
+         raw_fit = factor(raw_fit, levels = c("raw", "EZ", "hddm"), labels = c("Raw", "EZ", "HDDM")),
+         rt_acc = factor(rt_acc, levels = c("drift rate", "threshold", "non-decision", "rt", "accuracy"), labels = c("Drift Rate", "Threshold", "Non-decision", "RT", "Accuracy"))) %>%
+  group_by(overall_difference, raw_fit, rt_acc) %>%
+  summarise(mean_icc2.1 = mean(icc2.1),
+            tvals_icc2.1 = get_tval(icc2.1))
+```
+
+*Response:* We thank the reviewer for providing a potential explanation for the low reliability of the EZ threshold and non-decision time variables for contrasts. In our data the EZ thresholds and non-decision times for contrasts are systematically different than 0 suggesting that they capture a systematic difference instead of the common assumption of noise. Still these contrast measures are much less reliable than non-contrast measures. Similar to the constrasts in raw measures of response times and accuracies, which are less reliable than their non-contrast counterparts, measures do not have to be noise to be unreliable. 
+Because the assumption fails we chose not to present this possibility in the manuscript. The details of our analyses on this question can however be found [on:  https://zenkavi.github.io/SRO_Retest_Analyses/output/reports/ResponseToRevisers.nb.html#R1](https://zenkavi.github.io/SRO_Retest_Analyses/output/reports/ResponseToRevisers.nb.html#R1)
 
 ##R1.6
 >In our paper, we report ICC(2,1)...
 
 TODO: All results with ICC using ICC(2,1) instead of ICC(3,k)  
 - [DONE] recode `get_retest_stats` to report all kinds of ICCs
-- make new `rel_df` (with both types of ICC)
-- make new `boot_df` (with both types of ICC)
+- make new `rel_df` (with both types of ICC for retest paper vars)
+- make new `boot_df` (with both types of ICC for retest paper vars)
 - rerun MCMC models with ICC(2,1)
 
 ```{r}
+rel_df = make_rel_df(test_data, retest_data, metrics = c("icc3.k", 'icc2.1', 'pearson'), vars = rt_ddm_vars)
 
+rel_df %>%
+  gather(key, value, -dv, -icc2.1)%>%
+  ggplot(aes(icc2.1, value))+
+  geom_point()+
+  facet_wrap(~key)+
+  geom_abline(aes(slope=1, intercept=0), linetype="dashed")+
+  xlim(-0.5, 1)+
+  ylim(-0.5, 1)+
+  ylab("")
 ```
 
 ##R1.7
