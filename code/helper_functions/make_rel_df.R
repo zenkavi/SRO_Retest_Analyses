@@ -26,7 +26,7 @@ if(!exists('get_numeric_cols')){
 
 make_rel_df = function(t1_df, t2_df, metrics, vars = NA){
 
-  if(vars = NA){
+  if(is.na(vars)){
     numeric_cols = get_numeric_cols(df1 = t1_df, df2 = t2_df)
   }else{
       numeric_cols = vars

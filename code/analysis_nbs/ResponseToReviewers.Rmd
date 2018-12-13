@@ -118,6 +118,8 @@ rt_ddm_vars = measure_labels %>%
   filter(overall_difference %in% c("non-contrast", "contrast")) %>%
   select(dv)
 
+rt_ddm_vars = rt_ddm_vars[,1]
+
 if(from_gh){
   eval(parse(text = getURL('https://raw.githubusercontent.com/zenkavi/SRO_Retest_Analyses/master/code/helper_functions/make_rel_df.R', ssl.verifypeer = FALSE)))
 }else{
