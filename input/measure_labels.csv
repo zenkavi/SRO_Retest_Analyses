@@ -10,9 +10,9 @@ adaptive_n_back.hddm_thresh,task,Hddm threshold parameter for 2 back blocks only
 adaptive_n_back.mean_load,task,Average delay/load throughout the task,overall,raw,other,1,435
 adaptive_n_back.hddm_drift_load,task,,overall,hddm,drift rate,1,435
 angling_risk_task_always_sunny.keep_adjusted_clicks,task,Average number of clicks for trials where blue fish was not caught in the condition where probability of loosing everything in the round increased with each click,condition,raw,other,0,22
-angling_risk_task_always_sunny.keep_score,task,Total score for the trials  in the condition where probability of loosing everything in the round increased with each click,condition,raw,other,0,22
+angling_risk_task_always_sunny.keep_score,task,Total score for the trials in the condition where probability of loosing everything in the round increased with each click,condition,raw,other,0,22
 angling_risk_task_always_sunny.release_adjusted_clicks,task,Average number of clicks for trials where blue fish was not caught in the condition where probability of loosing everything in the round stayed constant with each click,condition,raw,other,0,20
-angling_risk_task_always_sunny.release_score,task,Total score for the trials  in the condition where probability of loosing everything in the round stayed constant with each click,condition,raw,other,0,20
+angling_risk_task_always_sunny.release_score,task,Total score for the trials in the condition where probability of loosing everything in the round stayed constant with each click,condition,raw,other,0,20
 angling_risk_task_always_sunny.keep_coef_of_variation,task,,condition,fit,other,0,22
 angling_risk_task_always_sunny.release_coef_of_variation,task,,condition,fit,other,0,20
 attention_network_task.acc,task,Proportion of correct responses (correct/all responses; excluding no response trials) where correct response means indicating which direction the middle arrow pointed towards,overall,raw,accuracy,1,139
@@ -130,13 +130,13 @@ hierarchical_rule.score,task,Sum of number of correct responses,overall,raw,othe
 holt_laury_survey.risk_aversion,task,,overall,fit,other,0,10
 holt_laury_survey.risky_choices,task,,overall,raw,other,0,10
 holt_laury_survey.safe_choices,task,,overall,raw,other,0,10
-holt_laury_survey.beta,,,overall,fit,other,0,10
-holt_laury_survey.prob_weighting,,,overall,fit,other,0,10
+holt_laury_survey.beta,task,,overall,fit,other,0,10
+holt_laury_survey.prob_weighting,task,,overall,fit,other,0,10
 information_sampling_task.Decreasing_Win_acc,task,Proprotion of correct choices in the condition where opening each additional box decreases the points that can be earned in that round following a correct guess of the color in majority,condition,raw,accuracy,0,10
 information_sampling_task.Decreasing_Win_boxes_opened,task,,condition,raw,other,0,10
 information_sampling_task.Decreasing_Win_motivation,task,Average latency in opening each box in the condition where opening each additional box decreases the points that can be earned in that round following a correct guess of the color in majority,condition,raw,rt,0,10
 information_sampling_task.Decreasing_Win_P_correct,task,Average probability of a correct response given the number of opened boxes in the condition where opening each additional box decreases the points that can be earned in that round following a correct guess of the color in majority,condition,raw,other,0,10
-information_sampling_task.Fixed_Win_acc,task,Proprotion of correct choices  in the condition where the points that can be earned is fixed in that round following a correct guess of the color in majority,condition,raw,accuracy,0,10
+information_sampling_task.Fixed_Win_acc,task,Proprotion of correct choices in the condition where the points that can be earned is fixed in that round following a correct guess of the color in majority,condition,raw,accuracy,0,10
 information_sampling_task.Fixed_Win_boxes_opened,task,,condition,raw,other,0,10
 information_sampling_task.Fixed_Win_motivation,task,Average latency in opening each box in the condition where the points that can be earned is fixed in that round following a correct guess of the color in majority,condition,raw,rt,0,10
 information_sampling_task.Fixed_Win_P_correct,task,Average probability of a correct response given the number of opened boxes in the condition where the points that can be earned is fixed in that round following a correct guess of the color in majority,condition,raw,other,0,10

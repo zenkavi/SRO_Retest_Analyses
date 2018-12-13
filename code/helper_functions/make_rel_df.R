@@ -1,7 +1,6 @@
-library(RCurl)
-
 if(!exists('helper_func_path')){
   if(from_gh){
+    library(RCurl)
     helper_func_path = 'https://raw.githubusercontent.com/zenkavi/SRO_Retest_Analyses/master/code/helper_functions/'
   }else{
     helper_func_path = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/helper_functions/'
@@ -10,6 +9,7 @@ if(!exists('helper_func_path')){
 
 if(!exists('get_retest_stats')){
   if(from_gh){
+    library(RCurl)
     eval(parse(text = getURL(paste0(helper_func_path,'get_retest_stats.R'), ssl.verifypeer = FALSE)))
   }else{
     source(paste0(helper_func_path, 'get_retest_stats.R'))
@@ -18,6 +18,7 @@ if(!exists('get_retest_stats')){
 
 if(!exists('get_numeric_cols')){
   if(from_gh){
+    library(RCurl)
     eval(parse(text = getURL(paste0(helper_func_path,'get_numeric_cols.R'), ssl.verifypeer = FALSE)))
   }else{
     source(paste0(helper_func_path, 'get_numeric_cols.R'))

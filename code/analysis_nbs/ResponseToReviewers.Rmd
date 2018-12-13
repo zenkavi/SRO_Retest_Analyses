@@ -7,7 +7,20 @@ toc_float: yes
 ---
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-from_gh =FALSE
+from_gh=FALSE
+script_loader = function(file, path, remote=from_gh){
+  if(remote){
+    library(RCurl)
+    gh_path = paste('https://raw.githubusercontent.com/zenkavi',
+                     strsplit(path, '/')[[1]][1],
+                     'master',
+                     paste(strsplit(path, '/')[[1]][-1],'/',sep = '', collapse=""),
+                    sep="/")
+    eval(parse(text = getURL(paste0(gh_path, file), ssl.verifypeer = FALSE)))
+  }else{
+    source(paste0('/Users/zeynepenkavi/Dropbox/PoldrackLab/',path, file))
+  }
+}
 
 library(tidyverse)
 library(jsonlite)
@@ -15,6 +28,8 @@ library(jsonlite)
 cbbPalette <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 theme_set(theme_bw())
 ggplot <- function(...) ggplot2::ggplot(...) + scale_fill_manual(values=cbbPalette) + scale_color_manual(values=cbbPalette)+theme(legend.position="bottom")
+
+to_keep = c('from_gh',"script_loader", "cbbPalette", "ggplot")
 ```
 
 #R1
@@ -28,11 +43,7 @@ TODO:
 Yes. The assumption that thresholds and non-decision times are the same across conditions does not hold in our data as the distributions of these parameters are systematically different than 0 for both time point.
 
 ```{r}
-if(from_gh){
-  eval(parse(text = getURL('https://raw.githubusercontent.com/zenkavi/SRO_DDM_Analyses/master/code/workspace_scripts/g_legend.R', ssl.verifypeer = FALSE)))
-}else{
-  source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_DDM_Analyses/code/workspace_scripts/ddm_subject_data.R')
-}
+script_loader(file='ddm_subject_data.R', path='SRO_DDM_Analyses/code/workspace_scripts/')
 ```
 
 ```{r}
@@ -120,14 +131,10 @@ rt_ddm_vars = measure_labels %>%
 
 rt_ddm_vars = rt_ddm_vars[,1]
 
-if(from_gh){
-  eval(parse(text = getURL('https://raw.githubusercontent.com/zenkavi/SRO_Retest_Analyses/master/code/helper_functions/make_rel_df.R', ssl.verifypeer = FALSE)))
-}else{
-  source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/helper_functions/make_rel_df.R')
-}
+script_loader(file="make_rel_df.R", path="SRO_Retest_Analyses/code/helper_functions/")
 ```
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 rel_df = make_rel_df(test_data, retest_data, metrics = c("icc3.k", 'icc2.1'), vars = rt_ddm_vars)
 
 rel_df %>%
@@ -158,7 +165,7 @@ rel_df %>%
 Because the assumption fails we chose not to present this possibility in the manuscript. The details of our analyses on this question can however be found [on:  https://zenkavi.github.io/SRO_Retest_Analyses/output/reports/ResponseToRevisers.nb.html#R1](https://zenkavi.github.io/SRO_Retest_Analyses/output/reports/ResponseToRevisers.nb.html#R1)
 
 ```{r echo=FALSE}
-rm(list = ls())
+rm(list=setdiff(ls(), to_keep))
 ```
 
 ##R1.6
@@ -170,18 +177,35 @@ TODO: All results with ICC using ICC(2,1) instead of ICC(3,k)
 - make new `boot_df` (with both types of ICC for retest paper vars)
 - rerun MCMC models with ICC(2,1)
 
-```{r}
-rel_df = make_rel_df(test_data, retest_data, metrics = c("icc3.k", 'icc2.1', 'pearson'), vars = rt_ddm_vars)
+```{r message=FALSE}
+script_loader(file='subject_data.R', path="SRO_Retest_Analyses/code/workspace_scripts/")
 
+script_loader(file='make_rel_df.R', path="SRO_Retest_Analyses/code/helper_functions/")
+
+script_loader(file='measure_labels_data.R', path="SRO_Retest_Analyses/code/workspace_scripts/")
+```
+
+
+```{r}
+rel_df = make_rel_df(test_data, retest_data, metrics = c("icc3.k", 'icc2.1', 'pearson', 'spearman'))
+```
+
+```{r}
 rel_df %>%
   gather(key, value, -dv, -icc2.1)%>%
+  left_join(measure_labels %>% select(dv, task),by="dv") %>%
   ggplot(aes(icc2.1, value))+
-  geom_point()+
+  geom_point(aes(col=task))+
   facet_wrap(~key)+
   geom_abline(aes(slope=1, intercept=0), linetype="dashed")+
   xlim(-0.5, 1)+
   ylim(-0.5, 1)+
-  ylab("")
+  ylab("")+
+  theme(legend.title = element_blank(),
+        aspect.ratio = 1)
+  
+measure_labels %>%
+  arrange(task)
 ```
 
 ##R1.7
