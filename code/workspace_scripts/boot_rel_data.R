@@ -10,7 +10,7 @@ if(!exists('process_boot_df')){
   source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/helper_functions/process_boot_df.R')
 }
 
-if(!retest_report_vars){
+if(!exists('retest_report_vars')){
   tmp1 <- read.csv(paste0(test_data_path,'meaningful_variables.csv'))
   tmp2 <- read.csv(paste0(test_data_path,'meaningful_variables_noDDM.csv'))
   tmp3 <- read.csv(paste0(test_data_path,'meaningful_variables_EZ.csv'))
