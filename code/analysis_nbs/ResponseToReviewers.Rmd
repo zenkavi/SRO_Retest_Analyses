@@ -173,7 +173,7 @@ rm(list=setdiff(ls(), to_keep))
 
 TODO: All results with ICC using ICC(2,1) instead of ICC(3,k)  
 - [DONE] recode `get_retest_stats` to report all kinds of ICCs
-- make new `rel_df` (with both types of ICC for retest paper vars)
+- [DONE] make new `rel_df` (with both types of ICC for retest paper vars)
 - make new `boot_df` (with both types of ICC for retest paper vars)
 - rerun MCMC models with ICC(2,1)
 
@@ -185,12 +185,11 @@ script_loader(file='make_rel_df.R', path="SRO_Retest_Analyses/code/helper_functi
 script_loader(file='measure_labels_data.R', path="SRO_Retest_Analyses/code/workspace_scripts/")
 ```
 
-
 ```{r}
 rel_df = make_rel_df(test_data, retest_data, metrics = c("icc3.k", 'icc2.1', 'pearson', 'spearman'))
 ```
 
-```{r}
+```{r message=FALSE}
 rel_df %>%
   gather(key, value, -dv, -icc2.1)%>%
   left_join(measure_labels %>% select(dv, task),by="dv") %>%
@@ -203,9 +202,6 @@ rel_df %>%
   ylab("")+
   theme(legend.title = element_blank(),
         aspect.ratio = 1)
-  
-measure_labels %>%
-  arrange(task)
 ```
 
 ##R1.7
