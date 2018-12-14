@@ -6,12 +6,13 @@ if(from_gh){
   require(RCurl)
   lit_review <- read.csv('https://raw.githubusercontent.com/zenkavi/SRO_Retest_Analyses/master/input/lit_review_figure.csv')
 }else {
-  lit_review <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/lit_review_figure.csv')}
+  lit_review <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/lit_review_figure.csv')
+  }
 
 require(tidyverse)
 lit_review = lit_review %>%
   separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
-  mutate(task_group = factor(task_group, levels = task_group[order(task)]),
+  mutate(task_group = factor(task_group, levels = unique(task_group[order(task)])),
          type = as.character(type)) %>%
   mutate(task_group = gsub("_", " ", task_group),
          var = gsub("_", " ", var)) %>%
