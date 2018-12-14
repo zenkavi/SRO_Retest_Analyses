@@ -1,12 +1,12 @@
 require(tidyverse)
 
-match_t1_t2 <- function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 'sub_id', format = "long", sample = 'full'){
+match_t1_t2 <- function(dv_var, t1_df, t2_df, merge_var = 'sub_id', format = "long", sample = 'full'){
   
   if(sample == 'full'){
     df = merge(t1_df[,c(merge_var, dv_var)], t2_df[,c(merge_var, dv_var)], by = merge_var) 
   }
   else{
-    df = cbind(t1_df, t2_df[,-c(which(names(t2_df) == merge_var))])
+    df = cbind(t1_df[,c(merge_var, dv_var)], t2_df[,c(dv_var)])
     names(df) = c(merge_var, paste0(dv_var,'.x'), paste0(dv_var, '.y'))
   }
   
