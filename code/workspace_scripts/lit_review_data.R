@@ -2,7 +2,10 @@
 ## Literature review data ####
 #########################
 
-lit_review <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/lit_review_figure.csv')
+if(from_gh){
+  list_review <- read.csv('https://raw.githubusercontent.com/zenkavi/SRO_Retest_Analyses/master/input/lit_review_figure.csv')
+}else {
+  lit_review <- read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/lit_review_figure.csv')}
 
 lit_review = lit_review %>%
   separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
