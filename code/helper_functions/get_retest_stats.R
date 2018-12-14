@@ -40,7 +40,7 @@ get_retest_stats = function(dv_var, t1_df = test_data, t2_df = retest_data, merg
   }
   
   if(sum(c('icc', 'var_breakdown','icc1.1','icc1.k','icc2.1', 'icc2.k','icc3.1','icc3.k') %in% metric) > 0){
-    icc = ICC(df %>% select(-dv, -sub_id))
+    icc = ICC(df %>% select(-dv, -sub_id), lmer=FALSE)
     
     if('icc1.1' %in% metric){
       out$icc1.1 = icc$results['Single_raters_absolute', 'ICC']
