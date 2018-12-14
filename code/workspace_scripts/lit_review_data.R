@@ -10,6 +10,7 @@ if(from_gh){
   }
 
 require(tidyverse)
+require(stringr)
 lit_review = lit_review %>%
   separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
   mutate(task_group = factor(task_group, levels = unique(task_group[order(task)])),
