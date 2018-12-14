@@ -25,7 +25,7 @@ if(!exists('get_numeric_cols')){
   }
 }
 
-make_rel_df = function(t1_df, t2_df, metrics, vars = NA){
+make_rel_df = function(t1_df, t2_df, metrics, vars = NA, sample="full"){
 
   if(is.na(vars)){
     numeric_cols = get_numeric_cols(df1 = t1_df, df2 = t2_df)
@@ -48,7 +48,7 @@ make_rel_df = function(t1_df, t2_df, metrics, vars = NA){
 
     cur_dv = numeric_cols[i]
 
-    tmp = get_retest_stats(cur_dv, metric = metrics, t1_df = t1_df, t2_df = t2_df)
+    tmp = get_retest_stats(cur_dv, metric = metrics, t1_df = t1_df, t2_df = t2_df, sample=sample)
 
     if(nrow(tmp) == 0){
       tmp[1,]=NA

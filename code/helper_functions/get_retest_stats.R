@@ -10,13 +10,13 @@ if(!exists('match_t1_t2')){
   }
 }
 
-get_retest_stats = function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 'sub_id', sample='full', sample_vec, metric = c('spearman', 'pearson', 'var_breakdown', 'partial_eta', 'sem', 'icc1.1','icc1.k','icc2.1', 'icc2.k','icc3.1','icc3.k')){
+get_retest_stats = function(dv_var, t1_df = test_data, t2_df = retest_data, merge_var = 'sub_id', sample='full', metric = c('spearman', 'pearson', 'var_breakdown', 'partial_eta', 'sem', 'icc1.1','icc1.k','icc2.1', 'icc2.k','icc3.1','icc3.k')){
   
   if(sample=='full'){
     df = match_t1_t2(dv_var, t1_df = t1_df, t2_df = t2_df, merge_var = merge_var, format='wide')
   }
   else if(sample=='bootstrap'){
-    df = match_t1_t2(dv_var, t1_df = t1_df, t2_df = t2_df, merge_var = merge_var, format='wide', sample='bootstrap', sample_vec = sample_vec)
+    df = match_t1_t2(dv_var, t1_df = t1_df, t2_df = t2_df, merge_var = merge_var, format='wide', sample='bootstrap')
   }
   
   out_cols = length(metric)
