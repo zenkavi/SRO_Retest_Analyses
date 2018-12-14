@@ -16,7 +16,7 @@ if(!exists('retest_data_path')){
 
 if(!exists('lit_review')){
   if(from_gh){
-    eval(parse(text = getURL('https://raw.githubusercontent.com/zenkavi/SRO_Retest_Analyses/master/code/workspace_scripts/lit_review_data.R'), ssl.verifypeer = FALSE))
+    eval(parse(text = getURL('https://raw.githubusercontent.com/zenkavi/SRO_Retest_Analyses/master/code/workspace_scripts/lit_review_data.R', ssl.verifypeer = FALSE)))
   } else{
     source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/workspace_scripts/lit_review_data.R') 
   }
