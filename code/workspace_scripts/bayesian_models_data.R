@@ -1,3 +1,10 @@
+if(from_gh){
+  require(RCurl)
+  input_path = 'https://raw.githubusercontent.com/zenkavi/SRO_Retest_Analyses/master/input/'
+}else{
+  input_path = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/'
+}
+
 #########################
 ## Bayesian models ####
 #########################
@@ -6,16 +13,16 @@
 
 #summary(lmerTest::lmer(icc ~  task + (1|dv), boot_df))
 # m = MCMCglmm(icc ~  task, random = ~dv, data=boot_df, nitt = 1300, burnin = 300)
-icc_by_task_model = readRDS('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/icc_by_task_model.rds')
+icc_by_task_model = readRDS(paste0(input_path,'icc_by_task_model.rds'))
 
 # summary(lmerTest::lmer(var_subs_pct~task+(1|dv),tmp%>%select(-var_ind_pct,-var_resid_pct)))
-var_subs_pct_by_task_model = readRDS('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/var_subs_pct_by_task_model.rds')
+var_subs_pct_by_task_model = readRDS(paste0(input_path,'var_subs_pct_by_task_model.rds'))
 
 # summary(lmerTest::lmer(var_ind_pct~task+(1|dv),tmp%>%select(-var_subs_pct,-var_resid_pct)))
-var_ind_pct_by_task_model = readRDS('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/var_ind_pct_by_task_model.rds')
+var_ind_pct_by_task_model = readRDS(paste0(input_path,'var_ind_pct_by_task_model.rds'))
 
 # summary(lmerTest::lmer(var_resid_pct~task+(1|dv),tmp%>%select(-var_subs_pct,-var_ind_pct)))
-var_resid_pct_by_task_model = readRDS('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/var_resid_pct_by_task_model.rds')
+var_resid_pct_by_task_model = readRDS(paste0(input_path,'var_resid_pct_by_task_model.rds'))
 
 # tmp = measure_labels %>%
 #   mutate(dv = as.character(dv)) %>%
