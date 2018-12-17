@@ -85,8 +85,6 @@ if(from_gh){
   refit_boot_df <- read.csv(gzfile(paste0(retest_data_path,'refits_bootstrap_merged.csv.gz')))
 }
 
-refit_boot_df = read.csv(gzfile(paste0(retest_data_path,'refits_bootstrap_merged.csv.gz')))
-
 refit_boot_df = process_boot_df(refit_boot_df)
 
 fullfit_boot_df = boot_df[as.character(boot_df$dv) %in% unique(as.character(refit_boot_df$dv)),]
