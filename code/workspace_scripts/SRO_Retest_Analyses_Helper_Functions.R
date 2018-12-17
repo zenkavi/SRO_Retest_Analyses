@@ -15,16 +15,16 @@ options(scipen = 1, digits = 4)
 file_names = c('g_legend.R', 'g_caption.R', 'sem.R', 'trim.R', 'get_numeric_cols.R', 'match_t1_t2.R', 'get_retest_stats.R', 'process_boot_df.R', 'make_rel_df.R')
 
 if(from_gh){
-  library(RCurl)
+  require(RCurl)
   helper_func_path = 'https://raw.githubusercontent.com/zenkavi/SRO_Retest_Analyses/master/code/helper_functions/'
   for(file_name in file_names){
-    eval(parse(text = getURL(paste0(workspace_scripts,file_name), ssl.verifypeer = FALSE)))
+    eval(parse(text = getURL(paste0(helper_func_path,file_name), ssl.verifypeer = FALSE)))
   }
   
 } else{
   helper_func_path = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/helper_functions/' 
   for(file_name in file_names){
-    source(paste0(workspace_scripts,file_name))
+    source(paste0(helper_func_path,file_name))
   }
 }
 
