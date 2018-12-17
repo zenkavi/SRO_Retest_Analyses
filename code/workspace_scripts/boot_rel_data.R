@@ -31,7 +31,7 @@ if(!exists('retest_report_vars')){
   tmp3 <- read.csv(paste0(test_data_path,'meaningful_variables_EZ.csv'))
   retest_report_vars = c(names(tmp1), names(tmp2), names(tmp3))
   retest_report_vars = unique(retest_report_vars)
-  if(!lit_review){
+  if(!exists('lit_review')){
     source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/workspace_scripts/lit_review_data.R')
   }
   lit_rev_vars = as.character(unique(lit_review$dv)[which(unique(lit_review$dv) %in% retest_report_vars == FALSE)])
@@ -43,15 +43,31 @@ if(!exists('retest_report_vars')){
 ## Bootstrapped reliability data ####
 #########################
 
+grabRemoteGz <- function(path, file_name) {
+  temp <- tempfile()
+  download.file(paste0(path, file_name), temp)
+  aap.file <- read.csv(gzfile(temp), as.is = TRUE)
+  unlink(temp)
+  return(aap.file)
+}
+
 ### Demographics
 
-demog_boot_df <- read.csv(gzfile(paste0(retest_data_path,'demog_boot_merged.csv.gz')))
+if(from_gh){
+  demog_boot_df = grabRemoteGz(retest_data_path, 'demog_boot_merged.csv.gz')
+} else{
+  demog_boot_df <- read.csv(gzfile(paste0(retest_data_path,'demog_boot_merged.csv.gz')))
+}
 
 demog_boot_df = process_boot_df(demog_boot_df)
 
 ### Task and survey measures
 
-boot_df <- read.csv(gzfile(paste0(retest_data_path,'bootstrap_merged.csv.gz')))
+if(from_gh){
+  boot_df = grabRemoteGz(retest_data_path, 'bootstrap_merged.csv.gz')
+} else{
+  boot_df <- read.csv(gzfile(paste0(retest_data_path,'bootstrap_merged.csv.gz')))
+}
 
 boot_df = process_boot_df(boot_df)
 
@@ -62,6 +78,12 @@ boot_df = boot_df[boot_df$dv %in% retest_report_vars,]
 
 # Boot df contains hddm parameters fit on the full sample in the t1 data
 # refits_bootstrap_merged.csv.gz contains bootstrapped reliabilities
+
+if(from_gh){
+  refit_boot_df = grabRemoteGz(retest_data_path, 'refits_bootstrap_merged.csv.gz')
+} else{
+  refit_boot_df <- read.csv(gzfile(paste0(retest_data_path,'refits_bootstrap_merged.csv.gz')))
+}
 
 refit_boot_df = read.csv(gzfile(paste0(retest_data_path,'refits_bootstrap_merged.csv.gz')))
 
