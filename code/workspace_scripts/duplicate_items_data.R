@@ -23,7 +23,7 @@ if(!exists('retest_data_path')){
 #########################
 
 if(from_gh){
-  demog_boot_df = grabRemoteGz(retest_data_path, 'items.csv.gz')
+  tmp = grabRemoteGz(retest_data_path, 'items.csv.gz')
 } else{
   tmp = read.csv(gzfile(paste0(retest_data_path, 'items.csv.gz')))
 }
