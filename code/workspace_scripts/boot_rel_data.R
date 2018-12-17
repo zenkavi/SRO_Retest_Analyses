@@ -25,6 +25,13 @@ if(!exists('process_boot_df')){
   source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/helper_functions/process_boot_df.R')
 }
 
+if(!exists('grabRemoteGz')){
+  if(from_gh){
+    eval(parse(text = getURL('https://raw.githubusercontent.com/zenkavi/SRO_Retest_Analyses/master/code/helper_functions/grabRemoteGz.R', ssl.verifypeer = FALSE)))
+  }
+  source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/helper_functions/grabRemoteGz.R')
+}
+
 if(!exists('retest_report_vars')){
   tmp1 <- read.csv(paste0(test_data_path,'meaningful_variables.csv'))
   tmp2 <- read.csv(paste0(test_data_path,'meaningful_variables_noDDM.csv'))
@@ -42,14 +49,6 @@ if(!exists('retest_report_vars')){
 #########################
 ## Bootstrapped reliability data ####
 #########################
-
-grabRemoteGz <- function(path, file_name) {
-  temp <- tempfile()
-  download.file(paste0(path, file_name), temp)
-  aap.file <- read.csv(gzfile(temp), as.is = TRUE)
-  unlink(temp)
-  return(aap.file)
-}
 
 ### Demographics
 

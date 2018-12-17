@@ -18,6 +18,13 @@ if(!exists('retest_data_path')){
   }
 }
 
+if(!exists('grabRemoteGz')){
+  if(from_gh){
+    eval(parse(text = getURL('https://raw.githubusercontent.com/zenkavi/SRO_Retest_Analyses/master/code/helper_functions/grabRemoteGz.R', ssl.verifypeer = FALSE)))
+  }
+  source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/helper_functions/grabRemoteGz.R')
+}
+
 #########################
 ## Duplicate items ####
 #########################
