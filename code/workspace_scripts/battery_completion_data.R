@@ -1,3 +1,7 @@
+if(from_gh){
+  require(RCurl)
+}
+
 if(!exists('test_data_path')){
   if(from_gh){
     test_data_path = 'https://raw.githubusercontent.com/zenkavi/Self_Regulation_Ontology/master/Data/Complete_03-29-2018/'
@@ -18,7 +22,7 @@ if(!exists('retest_data_path')){
 ## Battery completion data ####
 #########################
 
-workers = read.csv(paste0(retest_data_path,'Local/User_717570_workers.csv'))
+workers = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-29-2018/Local/User_717570_workers.csv')
 workers = workers %>%
   group_by(Worker.ID) %>%
   mutate(Retest_worker=ifelse(sum(CURRENT.RetestWorker,CURRENT.RetestWorkerB2,CURRENT.RetestWorkerB3,CURRENT.RetestWorkerB4,CURRENT.RetestWorkerB5,na.rm=T)>0,1,0)) %>%
