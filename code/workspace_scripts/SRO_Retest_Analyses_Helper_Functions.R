@@ -3,10 +3,9 @@ library(lme4)
 library(GGally)
 library(rmarkdown)
 library(stringr)
-library(plotly)
 library(DT)
 library(RecordLinkage)
-# library(MCMCglmm)
+library(MCMCglmm)
 
 render_this <- function(){rmarkdown::render('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/SRO_Retest_Analyses.Rmd', output_dir = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/reports', html_notebook(toc = T, toc_float = T, toc_depth = 2, code_folding = 'hide'))}
 

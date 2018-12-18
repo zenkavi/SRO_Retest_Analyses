@@ -14,19 +14,19 @@ tmp = measure_labels %>%
   filter(ddm_task == 1,
          rt_acc != 'other') %>%
   drop_na() %>%
-  left_join(boot_df[,c("dv", "icc")], by = 'dv')
+  left_join(boot_df[,c("dv", "icc2.1")], by = 'dv')
 
 ddm_boot_plot = tmp %>%
   group_by(dv) %>%
-  summarise(mean_icc = mean(icc),
+  summarise(mean_icc2.1 = mean(icc2.1),
             raw_fit = unique(raw_fit),
             contrast = unique(contrast),
             rt_acc = unique(rt_acc)) %>%
-  ggplot(aes(factor(raw_fit, levels = c("raw", "EZ", "hddm"), labels=c("Raw", "EZ-diffusion", "Hierarchical diffusion")), mean_icc, fill=factor(rt_acc, levels = c("rt","accuracy", "drift rate", "threshold", "non-decision"), labels=c("Response Time", "Accuracy","Drift Rate", "Threshold", "Non-decision"))))+
+  ggplot(aes(factor(raw_fit, levels = c("raw", "EZ", "hddm"), labels=c("Raw", "EZ-diffusion", "Hierarchical diffusion")), mean_icc2.1, fill=factor(rt_acc, levels = c("rt","accuracy", "drift rate", "threshold", "non-decision"), labels=c("Response Time", "Accuracy","Drift Rate", "Threshold", "Non-decision"))))+
   geom_boxplot()+
   facet_wrap(~factor(contrast, levels=c("non-contrast", "contrast"), labels=c("Non-contrast", "Contrast")))+
   theme_bw()+
-  ylab("ICC")+
+  ylab("icc2.1")+
   xlab("")+
   theme(legend.title = element_blank(),
         legend.position = 'bottom',

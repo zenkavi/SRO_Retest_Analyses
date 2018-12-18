@@ -17,7 +17,7 @@ tmp = tmp[-grep('survey', tmp)]
 
 tmp = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
-  left_join(boot_df[,c("dv", "icc", "spearman")], by = 'dv')
+  left_join(boot_df[,c("dv", "icc2.1", "spearman")], by = 'dv')
 
 tmp = tmp %>%
   separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
@@ -28,8 +28,8 @@ tmp = tmp %>%
   arrange(task_group, var)
 
 tmp = tmp %>%
-  left_join(rel_df[,c("dv", "icc")], by = "dv") %>%
-  rename(icc = icc.x, point_est = icc.y)
+  left_join(rel_df[,c("dv", "icc2.1")], by = "dv") %>%
+  rename(icc2.1 = icc2.1.x, point_est = icc2.1.y)
 
 #Manual correction
 tmp = tmp %>%
@@ -42,7 +42,7 @@ tmp = tmp %>%
 
 p1<- tmp %>%
   filter(grepl('selection_optimization', dv)) %>%
-  ggplot(aes(x = var, y = icc)) +
+  ggplot(aes(x = var, y = icc2.1)) +
   geom_violin(fill='#F8766D')+
   theme_bw() +
   theme(axis.text.y = element_text(size=30))+
@@ -55,7 +55,7 @@ p1<- tmp %>%
 
 p2<- tmp %>%
   filter(grepl('selection_optimization', dv)) %>%
-  ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc, group=dv)) +
+  ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc2.1, group=dv)) +
   geom_violin(fill='#F8766D', position = 'identity')+
   theme_bw() +
   theme(axis.text.y = element_text(size=30))+
@@ -68,7 +68,7 @@ p2<- tmp %>%
 
 p3<- tmp %>%
   filter(grepl('selection_optimization', dv)) %>%
-  ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc)) +
+  ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc2.1)) +
   geom_violin(fill='#F8766D', position = 'identity')+
   theme_bw() +
   theme(axis.text.y = element_text(size=30))+

@@ -8,12 +8,12 @@ toc_float: yes
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 from_gh=FALSE
-script_loader = function(file, path, remote=from_gh){
+script_loader = function(file, path, remote=from_gh, branch="master"){
   if(remote){
     library(RCurl)
     gh_path = paste('https://raw.githubusercontent.com/zenkavi',
                      strsplit(path, '/')[[1]][1],
-                     'master',
+                     branch,
                      paste(strsplit(path, '/')[[1]][-1],'/',sep = '', collapse=""),
                     sep="/")
     eval(parse(text = getURL(paste0(gh_path, file), ssl.verifypeer = FALSE)))

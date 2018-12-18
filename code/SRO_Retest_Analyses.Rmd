@@ -88,20 +88,20 @@ Point estimates of reliability for the demographic variabels.
 ```{r}
 demog_boot_df %>%
   group_by(dv) %>%
-  summarise(median_icc3.k = quantile(icc3.k, probs=0.5),
-            icc3.k_2.5 = quantile(icc3.k, probs = 0.025),
-            icc3.k_97.5 = quantile(icc3.k, probs = 0.975)) %>%
-  arrange(-median_icc3.k)
+  summarise(median_icc2.1 = quantile(icc2.1, probs=0.5),
+            icc2.1_2.5 = quantile(icc2.1, probs = 0.025),
+            icc2.1_97.5 = quantile(icc2.1, probs = 0.975)) %>%
+  arrange(-median_icc2.1)
 ```
 
 Point estimates of reliability for demog items
 
 ```{r}
-demog_rel_df = make_rel_df(test_demog, t2_df = retest_demog, metrics=c('icc3.k'))
+demog_rel_df = make_rel_df(test_demog, t2_df = retest_demog, metrics=c('icc2.1'))
 
 demog_rel_df %>%
-  select(dv, icc3.k) %>%
-  arrange(-icc3.k)
+  select(dv, icc2.1) %>%
+  arrange(-icc2.1)
 ```
 
 Plotting point estimates of reliability for demographic items coloring those that have a time limit darker in the histogram.
@@ -111,9 +111,9 @@ timed_demogs <- c("DoctorVisitsLastMonth","DaysHalfLastMonth","Worthless","DaysP
 
 demog_rel_df %>%
   mutate(timed = ifelse(dv %in% timed_demogs, 1, 0)) %>%
-  ggplot(aes(icc3.k, fill = factor(timed)))+
+  ggplot(aes(icc2.1, fill = factor(timed)))+
   geom_histogram(position = "identity", alpha = 0.7, color = NA)+
-  xlab("icc3.k")+
+  xlab("icc2.1")+
   ylab("Count")+
   scale_fill_manual(values = c("grey", "grey25"))+
   theme(legend.position = "none")
@@ -137,7 +137,7 @@ numeric_cols = get_numeric_cols(test_data)
 t1_2_difference = data.frame()
 
 for(i in 1:length(numeric_cols)){
-  tmp = match_t1_t2(numeric_cols[i],format='wide')
+  tmp = match_t1_t2(numeric_cols[i],t1_df=test_data ,t2_df=retest_data,format='wide')
   tmp = tmp %>%
   mutate(difference = scale(`2` - `1`))
   t1_2_difference = rbind(t1_2_difference, tmp)
@@ -320,7 +320,7 @@ summary(duplicate_items$t2_t2_polycor)
 # summary(duplicate_items$t2_t1_polycor)
 ```
 
-```{r}
+```{r message=FALSE}
 tmp = duplicate_items %>%
   select(similarity, t1_t1_polycor, t2_t2_polycor) %>%
   gather(key, value, -similarity)
@@ -342,7 +342,7 @@ summary(lm(value~key*scale(similarity),tmp))
 ```
 
 ```{r eval=FALSE, echo=FALSE}
-summary(MCMCglmm(value ~ key*scale(similarity), data=tmp, nitt = 50000))
+# summary(MCMCglmm(value ~ key*scale(similarity), data=tmp, nitt = 50000))
 ```
 
 ```{r echo=FALSE}
@@ -377,7 +377,9 @@ rel_comp %>%
 ```{r}
 summary(rel_comp$sample_size[rel_comp$task == "survey"])
 summary(rel_comp$sample_size[rel_comp$task == "task"])
+```
 
+```{r}
 rel_comp %>%
   group_by(task) %>%
   summarise(mean_sample_size = mean(sample_size),
@@ -468,7 +470,7 @@ rel_comp %>%
         axis.text.x = element_text(size=14),
         axis.title.y = element_text(size=14))+
   xlab("")+
-  ylab("Mean icc3.k")+
+  ylab("Mean icc2.1")+
   ylim(-0.4,1)
 ```
 
@@ -515,9 +517,9 @@ lit_emp_cor = function(){
   return(out)
 }
 
-lit_emp_cor_out = plyr::rdply(100, lit_emp_cor)
+# lit_emp_cor_out = plyr::rdply(100, lit_emp_cor)
 
-write.csv(lit_emp_cor_out,'/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/lit_emp_cor_out.csv')
+# write.csv(lit_emp_cor_out,'/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/lit_emp_cor_out.csv')
 ```
 
 
@@ -533,10 +535,10 @@ Model comparisons building model to predict the reliabilities in the literature 
 
 sample one row per measure out of lit review
 r^2 of retest_reliability ~ sampled_reliability vs.
-r^2 of retest_reliability ~ mean_icc3.k
+r^2 of retest_reliability ~ mean_icc2.1
 
 coef of retest_reliability ~ sampled_reliability vs.
-coef of retest_reliability ~ mean_icc3.k
+coef of retest_reliability ~ mean_icc2.1
 
 ```{r eval=FALSE}
 comp_lit_pred <- function(df){
@@ -574,9 +576,9 @@ comp_lit_pred <- function(df){
   return(out)
 }
 
-comp_lit_pred_out = plyr::rdply(1000, comp_lit_pred(rel_comp))
+# comp_lit_pred_out = plyr::rdply(1000, comp_lit_pred(rel_comp))
 
-write.csv(comp_lit_pred_out,'/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/comp_lit_pred_out.csv')
+# write.csv(comp_lit_pred_out,'/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/comp_lit_pred_out.csv')
 ```
 
 
@@ -650,16 +652,16 @@ rm(tmp, rel_comp, mod1, mod2, mod3, i, lit_emp_cor_out, comp_lit_pred, comp_lit_
 
 ## Relationship between reliability metrics (point estimates)
 
-Though we are primarily reporting icc3.k's as our metric of reliability the results don't change depending on the metric chosen. Here we plot point estimates of three different reliability metrics against each other (icc3.k, Pearson, Spearman). The bootstrapped version is essentially the same but the plots are busier due to more datapoints.
+Though we are primarily reporting icc2.1's as our metric of reliability the results don't change depending on the metric chosen. Here we plot point estimates of three different reliability metrics against each other (icc2.1, Pearson, Spearman). The bootstrapped version is essentially the same but the plots are busier due to more datapoints.
 
 ```{r}
-rel_df = make_rel_df(t1_df = test_data, t2_df = retest_data, metrics = c('spearman', 'icc3.k', 'pearson', 'var_breakdown', 'partial_eta', 'sem'))
+rel_df = make_rel_df(t1_df = test_data, t2_df = retest_data, metrics = c('spearman', 'icc2.1','icc3.k', 'pearson', 'var_breakdown', 'partial_eta', 'sem'))
 
 rel_df$task = 'task'
 rel_df[grep('survey', rel_df$dv), 'task'] = 'survey'
 rel_df[grep('holt', rel_df$dv), 'task'] = "task"
 rel_df = rel_df %>%
-  select(dv, task, spearman, icc3.k, pearson, partial_eta, sem, var_subs, var_ind, var_resid)
+  select(dv, task, spearman, icc2.1,icc3.k, pearson, partial_eta, sem, var_subs, var_ind, var_resid)
 ```
 
 We calculated `r as.numeric(table(rel_df$task)[1])` measures for surveys and `r as.numeric(table(rel_df$task)[2])` measures for cognitive tasks.  
@@ -673,10 +675,10 @@ knitr::include_graphics(paste0(fig_path, fig_name))
 As the scatter plots depict the correlations between different types reliability metrics were very high.
 
 ```{r}
-cor(rel_df[,c('spearman', 'icc3.k', 'pearson')])
+cor(rel_df[,c('spearman', 'icc2.1', 'icc3.k', 'pearson')])
 ```
 
-Note: Some variables have <0 icc3.k's. This would be the case if the $MS_{error}$>$MS_{between}$. Data for these variables have no relationship between the two time points.
+Note: Some variables have <0 icc2.1's. This would be the case if the $MS_{error}$>$MS_{between}$. Data for these variables have no relationship between the two time points.
 
 ## Summary of all measure reliabilities
 
@@ -685,14 +687,14 @@ Summarized bootstrapped reliabilities
 ```{r message=FALSE, warning=FALSE}
 boot_df %>%
   group_by(dv) %>%
-  summarise(icc3.k_median = quantile(icc3.k, probs = 0.5),
-            icc3.k_2.5 = quantile(icc3.k, probs = 0.025),
-            icc3.k_97.5 = quantile(icc3.k, probs = 0.975),
+  summarise(icc2.1_median = quantile(icc2.1, probs = 0.5),
+            icc2.1_2.5 = quantile(icc2.1, probs = 0.025),
+            icc2.1_97.5 = quantile(icc2.1, probs = 0.975),
             spearman_median = quantile(spearman, probs = 0.5),
             spearman_2.5 = quantile(spearman, probs = 0.025),
             spearman_97.5 = quantile(spearman, probs = 0.975)) %>%
   datatable() %>%
-  formatRound(columns=c('icc3.k_median', 'icc3.k_2.5', 'icc3.k_97.5', 'spearman_median', 'spearman_2.5', 'spearman_97.5'), digits=3)
+  formatRound(columns=c('icc2.1_median', 'icc2.1_2.5', 'icc2.1_97.5', 'spearman_median', 'spearman_2.5', 'spearman_97.5'), digits=3)
 ```
 
 
@@ -729,29 +731,33 @@ boot_df = boot_df %>%
 
 boot_df %>%
   group_by(task) %>%
-  summarise(icc3.k_median = quantile(icc3.k, probs = 0.5),
-            icc3.k_2.5 = quantile(icc3.k, probs = 0.025),
-            icc3.k_97.5 = quantile(icc3.k, probs = 0.975),
+  summarise(icc2.1_median = quantile(icc2.1, probs = 0.5),
+            icc2.1_2.5 = quantile(icc2.1, probs = 0.025),
+            icc2.1_97.5 = quantile(icc2.1, probs = 0.975),
             spearman_median = quantile(spearman, probs = 0.5),
             spearman_2.5 = quantile(spearman, probs = 0.025),
             spearman_97.5 = quantile(spearman, probs = 0.975),
             num_vars = n()/1000) %>%
   datatable() %>%
-  formatRound(columns=c('icc3.k_median', 'icc3.k_2.5', 'icc3.k_97.5', 'spearman_median', 'spearman_2.5', 'spearman_97.5'), digits=3)
+  formatRound(columns=c('icc2.1_median', 'icc2.1_2.5', 'icc2.1_97.5', 'spearman_median', 'spearman_2.5', 'spearman_97.5'), digits=3)
 ```
 
 
 ```{r eval=FALSE}
-summary(icc3.k_by_task_model)
+summary(icc2.1_by_task_model)
 ```
 
 ```{r echo=FALSE}
-rm(icc3.k_by_task_model)
+rm(icc_by_task_model)
+```
+
+```{r}
+summary(MCMCglmm(icc2.1 ~ task, data=rel_df, verbose=F))
 ```
 
 ### Variance breakdown
 
-The quantiative explanation for the difference in reliability estimates between surveys and tasks, as recently detailed by Hedge et al. (2017), lies in the difference in sources of variance between these measures. Specifically, the icc3.k is calculated as the ratio of variance between subjects variance to all sources of variance. Thus, measures with high between subjects variance would have high test-retest reliability. Intuitively, measures with high between subjects variance are also better suited for individual difference analyses as they would capture the differences between the subjects in a sample.
+The quantiative explanation for the difference in reliability estimates between surveys and tasks, as recently detailed by Hedge et al. (2017), lies in the difference in sources of variance between these measures. Specifically, the icc2.1 is calculated as the ratio of variance between subjects variance to all sources of variance. Thus, measures with high between subjects variance would have high test-retest reliability. Intuitively, measures with high between subjects variance are also better suited for individual difference analyses as they would capture the differences between the subjects in a sample.
 
 Here we first plot the percentage of variance explained by the three sources of variance for the point estimates of measure reliabilities. The plot only includes raw measures (no DDM parameters) and the measures are ranked by percentage of between subject variability for each task/survey (i.e. the best to worst individual difference measure for each task/survey). Then we compare statistically whether the percentage of variance explained by these sources differ between tasks and surveys.
 
@@ -773,17 +779,28 @@ First we find that task measures have a smaller percentage of their overall vari
 tmp = boot_df %>%
   select(dv, task, var_subs_pct, var_ind_pct, var_resid_pct)
 
-summary(var_subs_pct_by_task_model)
+# summary(var_subs_pct_by_task_model)
+
+rel_df = rel_df %>% 
+  mutate(var_subs_pct = var_subs/(var_subs+var_ind+var_resid)*100,
+                             var_ind_pct = var_ind/(var_subs+var_ind+var_resid)*100,
+                             var_resid_pct = var_resid/(var_subs+var_ind+var_resid)*100)
+
+summary(MCMCglmm(var_subs_pct ~ task, data=rel_df, verbose=F))
 ```
 
 We also find that a significantly larger percentage of their variance is explained by between session variability. Larger between session variability suggests systematic differences between the two sessions. Such systematic effects can be due to e.g. learning effects as explored later.
 
 ```{r}
-summary(var_ind_pct_by_task_model)
+# summary(var_ind_pct_by_task_model)
+
+summary(MCMCglmm(var_ind_pct ~ task, data=rel_df, verbose=F))
 ```
 
 ```{r}
-summary(var_resid_pct_by_task_model)
+# summary(var_resid_pct_by_task_model)
+
+summary(MCMCglmm(var_resid_pct ~ task, data=rel_df, verbose=F))
 ```
 
 ```{r}
@@ -810,6 +827,7 @@ fig_name = 'Variance_Breakdown_DotPlot.jpeg'
 
 knitr::include_graphics(paste0(fig_path, fig_name))
 ```
+
 ## Task Reliabilities
 
 Here we summarize the results on a task level to make it more digestable and easier to make contact with the literature.  
@@ -821,46 +839,48 @@ tmp = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(task == 'task',
          dv %in% meaningful_vars) %>%
-  left_join(boot_df[,c("dv", "icc3.k")], by = 'dv') %>%
+  left_join(boot_df[,c("dv", "icc2.1")], by = 'dv') %>%
   separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
   select(-extra_1, -extra_2) %>%
   group_by(task_name) %>%
-  summarise(median_icc3.k = median(icc3.k),
-            icc3.k_2.5 = quantile(icc3.k, probs = 0.025),
-            icc3.k_97.5 = quantile(icc3.k, probs = 0.975),
+  summarise(median_icc2.1 = median(icc2.1),
+            icc2.1_2.5 = quantile(icc2.1, probs = 0.025),
+            icc2.1_97.5 = quantile(icc2.1, probs = 0.975),
             num_measures = n()/1000,
             mean_num_trials = round(mean(num_all_trials)))%>%
-  arrange(-median_icc3.k)
+  arrange(-median_icc2.1)
 
 tmp %>%
   datatable() %>%
-  formatRound(columns=c('median_icc3.k','icc3.k_2.5','icc3.k_97.5'), digits=3)
+  formatRound(columns=c('median_icc2.1','icc2.1_2.5','icc2.1_97.5'), digits=3)
 ```
 
 ### Number of trials
 
-Does number of items in a task have a significant effect on the average icc3.k of meaningful measures for all trials from a task? No.
+Does number of items in a task have a significant effect on the average icc2.1 of meaningful measures for all trials from a task? No.
 
 ```{r warning=FALSE, message=FALSE}
 tmp = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(task == 'task',
          dv %in% meaningful_vars) %>%
-  left_join(boot_df[,c("dv", "icc3.k")], by = 'dv') %>%
+  # left_join(boot_df[,c("dv", "icc2.1")], by = 'dv') %>%
+  left_join(rel_df[,c("dv", "icc2.1")], by = 'dv') %>%
   separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
   select(-extra_1, -extra_2)
 
-summary(icc3.k_by_num_trials_model)
+#summary(icc2.1_by_num_trials_model)
+summary(MCMCglmm(icc2.1 ~ num_all_trials, data=tmp, verbose=F))
 ```
 
 ```{r warning=FALSE, message=FALSE}
 tmp %>%
-  ggplot(aes(num_all_trials, icc3.k))+
+  ggplot(aes(num_all_trials, icc2.1))+
   geom_point()+
   geom_smooth(method="lm")+
   theme_bw()+
   xlab("Number of trials")+
-  ylab("icc3.k")
+  ylab("icc2.1")
 ```
 
 #### Trial number dependence intrameasure
@@ -910,42 +930,46 @@ tmp = measure_labels %>%
   filter(ddm_task == 1,
          rt_acc != 'other') %>%
   drop_na() %>%
-  left_join(boot_df[,c("dv", "icc3.k")], by = 'dv')
+  # left_join(boot_df[,c("dv", "icc2.1")], by = 'dv')
+  left_join(rel_df[,c("dv", "icc2.1")], by = 'dv')
 
 tmp_save = tmp %>%
   drop_na() %>% #try removing this in final release
   group_by(contrast, raw_fit, rt_acc) %>%
-  summarise(icc3.k_median = quantile(icc3.k, probs = 0.5),
-            icc3.k_2.5 = quantile(icc3.k, probs = 0.025),
-            icc3.k_97.5 = quantile(icc3.k, probs = 0.975),
+  summarise(icc2.1_median = quantile(icc2.1, probs = 0.5),
+            icc2.1_2.5 = quantile(icc2.1, probs = 0.025),
+            icc2.1_97.5 = quantile(icc2.1, probs = 0.975),
             num_vars = n()/1000)
 
 tmp_save %>%
   datatable() %>%
-  formatRound(columns=c('icc3.k_median', 'icc3.k_2.5', 'icc3.k_97.5'), digits=3)
+  formatRound(columns=c('icc2.1_median', 'icc2.1_2.5', 'icc2.1_97.5'), digits=3)
 ```
 
 Comparing contrast vs non-contrast: overall has higher reliability than difference.
 
 ```{r}
-summary(lmerTest::lmer(icc3.k ~ contrast + (1|dv) ,tmp))
-# summary(MCMCglmm(icc3.k ~ contrast, random = ~ dv, data=tmp, verbose=FALSE))
+# summary(lmerTest::lmer(icc2.1 ~ contrast + (1|dv) ,tmp))
+# summary(MCMCglmm(icc2.1 ~ contrast, random = ~ dv, data=tmp, verbose=FALSE))
+summary(MCMCglmm(icc2.1 ~ contrast, data=tmp, verbose=FALSE))
 ```
 
 Comparing raw vs ddm in overall estimates: EZ is significantly better than HDDM and comparable to raw estimates.
 
 ```{r}
-summary(icc3.k_by_rawfit_noncon_model)
+# summary(icc2.1_by_rawfit_noncon_model)
+summary(MCMCglmm(icc2.1 ~ raw_fit, data=tmp %>% filter(contrast == "non-contrast"), verbose=FALSE))
 ```
 
 Comparing raw vs ddm in difference scores: EZ is significantly worse than HDDM and comparable to raw estimates.
 
 ```{r}
-summary(icc3.k_by_rawfit_con_model)
+# summary(icc2.1_by_rawfit_con_model)
+summary(MCMCglmm(icc2.1 ~ raw_fit, data=tmp %>% filter(contrast == "contrast"), verbose=FALSE))
 ```
 
 ```{r echo=FALSE}
-rm(icc3.k_by_rawfit_con_model, icc3.k_by_rawfit_noncon_model)
+rm(icc_by_rawfit_con_model, icc_by_rawfit_noncon_model)
 ```
 
 ```{r echo=FALSE, out.width='100%'}
@@ -957,8 +981,8 @@ knitr::include_graphics(paste0(fig_path, fig_name))
 ```{r}
 tmp %>%
   group_by(contrast) %>%
-  summarise(mean_icc3.k = mean(icc3.k),
-            sd_icc3.k = sd(icc3.k))
+  summarise(mean_icc2.1 = mean(icc2.1),
+            sd_icc2.1 = sd(icc2.1))
 ```
 
 ```{r echo=FALSE, out.width='100%'}
@@ -973,38 +997,40 @@ knitr::include_graphics(paste0(fig_path, fig_name))
 tmp = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(task == 'survey') %>%
-  left_join(boot_df[,c("dv", "icc3.k")], by = 'dv') %>%
+  # left_join(boot_df[,c("dv", "icc2.1")], by = 'dv') %>%
+  left_join(rel_df[,c("dv", "icc2.1")], by = 'dv') %>%
   separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
   select(-extra_1, -extra_2)
 
 tmp_save = tmp %>%
   group_by(task_name) %>%
-  summarise(median_icc3.k = median(icc3.k),
-            icc3.k_2.5 = quantile(icc3.k, probs = 0.025),
-            icc3.k_97.5 = quantile(icc3.k, probs = 0.975),
+  summarise(median_icc2.1 = median(icc2.1),
+            icc2.1_2.5 = quantile(icc2.1, probs = 0.025),
+            icc2.1_97.5 = quantile(icc2.1, probs = 0.975),
             num_measures = n()/1000,
             mean_num_trials = round(mean(num_all_trials)))%>%
-  arrange(-median_icc3.k)
+  arrange(-median_icc2.1)
 
 tmp_save %>%
   datatable() %>%
-  formatRound(columns=c('median_icc3.k', 'icc3.k_2.5','icc3.k_97.5'), digits=3)
+  formatRound(columns=c('median_icc2.1', 'icc2.1_2.5','icc2.1_97.5'), digits=3)
 ```
 
 ### Number of items
 
-Does number of items in a survey have a significant effect on the average icc3.k of survey measures? No.
+Does number of items in a survey have a significant effect on the average icc2.1 of survey measures? No.
 
 ```{r warning=FALSE, message=FALSE}
-summary(lmerTest::lmer(icc3.k ~ num_all_trials + (1|dv), data = tmp))
+# summary(lmerTest::lmer(icc2.1 ~ num_all_trials + (1|dv), data = tmp))
+summary(MCMCglmm(icc2.1 ~ num_all_trials, data=tmp, verbose=FALSE))
 ```
 
 ```{r warning=FALSE, message=FALSE}
 tmp %>%
-  ggplot(aes(num_all_trials, icc3.k))+
+  ggplot(aes(num_all_trials, icc2.1))+
   geom_point()+
   geom_smooth(method="lm")+
   theme_bw()+
   xlab("Number of trials")+
-  ylab("icc3.k")
+  ylab("icc2.1")
 ```

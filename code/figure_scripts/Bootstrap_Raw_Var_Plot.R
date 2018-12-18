@@ -17,7 +17,7 @@ tmp = tmp[-grep('survey', tmp)]
 
 tmp = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
-  left_join(boot_df[,c("dv", "icc", "spearman")], by = 'dv')
+  left_join(boot_df[,c("dv", "icc2.1", "spearman")], by = 'dv')
 
 tmp = tmp %>%
   separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
@@ -28,8 +28,8 @@ tmp = tmp %>%
   arrange(task_group, var)
 
 tmp = tmp %>%
-  left_join(rel_df[,c("dv", "icc")], by = "dv") %>%
-  rename(icc = icc.x, point_est = icc.y)
+  left_join(rel_df[,c("dv", "icc2.1")], by = "dv") %>%
+  rename(icc2.1 = icc2.1.x, point_est = icc2.1.y)
 
 #Manual correction
 tmp = tmp %>%
@@ -43,7 +43,7 @@ tmp = tmp %>%
 p4 <- tmp %>%
   filter(task == 'task',
          raw_fit == 'raw') %>%
-  ggplot(aes(y = var, x = icc)) +
+  ggplot(aes(y = var, x = icc2.1)) +
   geom_point(color = '#00BFC4')+
   geom_point(aes(y = var, x = point_est), color = "black")+
   facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y", labeller = label_wrap_gen(width=20)) +
@@ -61,7 +61,7 @@ p4 <- tmp %>%
 
 p5 <- tmp %>%
   filter(task == 'survey') %>%
-  ggplot(aes(y = var, x = icc)) +
+  ggplot(aes(y = var, x = icc2.1)) +
   geom_point(color = '#F8766D')+
   geom_point(aes(y = var, x = point_est), color = "black")+
   facet_grid(task_group~., switch = "y", scales = "free_y", space = "free_y", labeller = label_wrap_gen(width=20)) +

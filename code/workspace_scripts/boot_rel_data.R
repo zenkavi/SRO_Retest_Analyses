@@ -97,10 +97,11 @@ rm(refit_boot_df)
 boot_df = boot_df %>% mutate(var_subs_pct = var_subs/(var_subs+var_ind+var_resid)*100,
                              var_ind_pct = var_ind/(var_subs+var_ind+var_resid)*100,
                              var_resid_pct = var_resid/(var_subs+var_ind+var_resid)*100)
-# 
+
 # var_boot_df = boot_df %>%
 #   group_by(dv) %>%
-#   summarise(mean_icc = mean(icc),
+#   summarise(mean_icc2.1 = mean(icc2.1),
+#             mean_icc3.k = mean(icc3.k),
 #             mean_pearson = mean(pearson))
 # 
 # rel_comp = lit_review %>%

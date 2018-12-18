@@ -1,14 +1,31 @@
+if(from_gh){
+  require(RCurl)
+}
+
 source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/figure_scripts/figure_res_wrapper.R')
 
 if(!exists('g_legend')){
-  source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/helper_functions/g_legend.R')
+  if(from_gh){
+    eval(parse(text = getURL('https://raw.githubusercontent.com/zenkavi/SRO_Retest_Analyses/master/code/helper_functions/g_legend.R', ssl.verifypeer = FALSE)))
+  }else{
+    source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/helper_functions/g_legend.R')
+  }
+  
 }
 
 if(!exists('g_caption')){
-  source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/helper_functions/g_caption.R')
+  if(from_gh){
+    eval(parse(text = getURL('https://raw.githubusercontent.com/zenkavi/SRO_Retest_Analyses/master/code/helper_functions/g_caption.R', ssl.verifypeer = FALSE)))
+  }else{
+    source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/helper_functions/g_caption.R')
+  }
 }
 
-comp_lit_pred_out = read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/comp_lit_pred_out.csv')
+if(!exists('comp_lit_pred_out')){
+  comp_lit_pred_out = read.csv('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/tables/comp_lit_pred_out.csv')
+  
+}
+
 
 tmp = comp_lit_pred_out %>%
   select(-.n, -m_lit, -m_boot, -X) %>%
