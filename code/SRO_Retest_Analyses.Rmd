@@ -7,6 +7,7 @@ toc_float: yes
 ---
 
 ```{r, message=FALSE, warning=FALSE, include=FALSE}
+set.seed(10394839)
 from_gh = TRUE
 source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/workspace_scripts/SRO_Retest_Analyses_Workspace.R')
 ```
@@ -938,8 +939,8 @@ tmp_save = tmp %>%
   group_by(contrast, raw_fit, rt_acc) %>%
   summarise(icc2.1_median = quantile(icc2.1, probs = 0.5),
             icc2.1_2.5 = quantile(icc2.1, probs = 0.025),
-            icc2.1_97.5 = quantile(icc2.1, probs = 0.975),
-            num_vars = n()/1000)
+            icc2.1_97.5 = quantile(icc2.1, probs = 0.975))
+            # num_vars = n()/1000)
 
 tmp_save %>%
   datatable() %>%

@@ -174,8 +174,11 @@ rm(list=setdiff(ls(), to_keep))
 TODO: All results with ICC using ICC(2,1) instead of ICC(3,k)  
 - [DONE] recode `get_retest_stats` to report all kinds of ICCs
 - [DONE] make new `rel_df` (with both types of ICC for retest paper vars)
-- make new `boot_df` (with both types of ICC for retest paper vars)
-- rerun MCMC models with ICC(2,1)
+- [DONE] make new `boot_df` (with both types of ICC for retest paper vars)
+- [DONE] rerun MCMC models with ICC(2,1)
+- [DONE] run SRO_Retest_Analyses.Rmd with ICC(2,1) and confirm results don't change
+- [DONE] replace fig S3 with new metric scatterplot including icc(2,1)
+- [DONE] replace all ICC(3,k)'s in main text 
 
 ```{r message=FALSE}
 script_loader(file='subject_data.R', path="SRO_Retest_Analyses/code/workspace_scripts/")
