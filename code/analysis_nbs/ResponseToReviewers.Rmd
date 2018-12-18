@@ -363,3 +363,24 @@ tmp2 %>%
 
 ##R2.1
 >The researchers were careful in their sampling procedure to try to minimize differences between participants who completed (vs. did not complete) the retest phase of the test-retest. Some simple statistical comparisons between the completers (N = 157) and non-completers/non-responders (N = 242-157 = 85) would help characterize this subset of the sample better and provide an additional data quality check. 
+
+TODO: Compare invited but not completing
+
+```{r warning=FALSE, message=FALSE}
+mturk_worker_data = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/Local/User_717570_workers.csv')
+
+worker_lookup = read_json('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/Local/worker_lookup.json')
+
+worker_lookup = data.frame(worker_lookup) %>%
+  gather(sub_id, worker_id)
+
+retest_workers = mturk_worker_data %>%
+  select(Worker.ID, CURRENT.RetestWorker, CURRENT.RetestWorkerB2, CURRENT.RetestWorkerB3, CURRENT.RetestWorkerB4, CURRENT.RetestWorkerB5) %>%
+  replace(., is.na(.), 0) %>%
+  mutate(retest_worker = ifelse(CURRENT.RetestWorker+ CURRENT.RetestWorkerB2+CURRENT.RetestWorkerB3+CURRENT.RetestWorkerB4+ CURRENT.RetestWorkerB5>0,1,0)) %>%
+  filter(retest_worker==1) %>%
+  select(Worker.ID) %>%
+  rename(worker_id = Worker.ID) %>%
+  left_join(worker_lookup, by = "worker_id") %>%
+  select(-worker_id)
+```
