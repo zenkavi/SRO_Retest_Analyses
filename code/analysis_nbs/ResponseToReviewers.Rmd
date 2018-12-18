@@ -84,7 +84,7 @@ retest_data %>%
             means = get_mean(value))
 ```
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 retest_data %>%
   select(ez_contrast_vars$dv) %>%
   mutate(time = "Time 1") %>%
@@ -124,7 +124,7 @@ retest_data %>%
 
 Although the thresholds and non-decision times for contrasts are >0 still have low reliabilities.
 
-```{r}
+```{r  message=FALSE, warning=FALSE}
 rt_ddm_vars = measure_labels %>%
   filter(overall_difference %in% c("non-contrast", "contrast")) %>%
   select(dv)
@@ -216,19 +216,147 @@ TODO:
   - replacing negative values with 0's 
   - removing them
 
-```{r}
+There are 21 variables with negative point estimate ICC's. This is less than 5% of the measures.
 
+```{r}
+rel_df %>%
+  mutate(neg_icc = ifelse(icc2.1<0,1,0)) %>%
+  summarise(sum_neg = sum(neg_icc))
+```
+
+### Replacing negative ICC's with 0's
+
+```{r}
+rel_df_rep=rel_df %>%
+  select(dv, task, icc2.1) %>%
+  mutate(icc2.1=ifelse(icc2.1<0,0,icc2.1))
+```
+
+Reliability by task vs survey
+```{r}
+summary(MCMCglmm(icc2.1 ~ task, data=rel_df_rep, verbose=F))
+```
+
+Reliability depending on number of trials
+```{r warning=FALSE, message=FALSE}
+tmp = measure_labels %>%
+  mutate(dv = as.character(dv)) %>%
+  filter(task == 'task',
+         dv %in% meaningful_vars) %>%
+  left_join(rel_df_rep[,c("dv", "icc2.1")], by = 'dv') %>%
+  separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
+  select(-extra_1, -extra_2)
+
+summary(MCMCglmm(icc2.1 ~ num_all_trials, data=tmp, verbose=F))
+```
+
+```{r warning=FALSE, message=FALSE}
+tmp = measure_labels %>%
+  mutate(dv = as.character(dv),
+         contrast = ifelse(overall_difference == "difference", "contrast", "non-contrast")) %>%
+  filter(ddm_task == 1,
+         rt_acc != 'other') %>%
+  drop_na() %>%
+  left_join(rel_df_rep[,c("dv", "icc2.1")], by = 'dv')
+```
+
+Comparing contrast vs non-contrast: overall has higher reliability than difference.
+
+```{r}
+summary(MCMCglmm(icc2.1 ~ contrast, data=tmp, verbose=FALSE))
+```
+
+Comparing raw vs ddm in overall estimates
+
+```{r message=FALSE, warning=FALSE}
+summary(MCMCglmm(icc2.1 ~ raw_fit, data=tmp %>% filter(contrast == "non-contrast"), verbose=FALSE))
+```
+
+Comparing raw vs ddm in difference scores
+
+```{r message=FALSE, warning=FALSE}
+summary(MCMCglmm(icc2.1 ~ raw_fit, data=tmp %>% filter(contrast == "contrast"), verbose=FALSE))
+```
+
+### Removing negative ICC's
+
+```{r}
+rel_df_ex = rel_df %>%
+  select(dv, task, icc2.1) %>%
+  filter(icc2.1>0)
+```
+
+Reliability by task vs survey
+```{r}
+summary(MCMCglmm(icc2.1 ~ task, data=rel_df_ex, verbose=F))
+```
+
+Reliability depending on number of trials
+```{r warning=FALSE, message=FALSE}
+tmp = measure_labels %>%
+  mutate(dv = as.character(dv)) %>%
+  filter(task == 'task',
+         dv %in% meaningful_vars) %>%
+  left_join(rel_df_ex[,c("dv", "icc2.1")], by = 'dv') %>%
+  separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
+  select(-extra_1, -extra_2)
+
+summary(MCMCglmm(icc2.1 ~ num_all_trials, data=tmp, verbose=F))
+```
+
+```{r warning=FALSE, message=FALSE}
+tmp = measure_labels %>%
+  mutate(dv = as.character(dv),
+         contrast = ifelse(overall_difference == "difference", "contrast", "non-contrast")) %>%
+  filter(ddm_task == 1,
+         rt_acc != 'other') %>%
+  drop_na() %>%
+  left_join(rel_df_ex[,c("dv", "icc2.1")], by = 'dv')
+```
+
+Comparing contrast vs non-contrast: overall has higher reliability than difference.
+
+```{r}
+summary(MCMCglmm(icc2.1 ~ contrast, data=tmp, verbose=FALSE))
+```
+
+Comparing raw vs ddm in overall estimates
+
+```{r}
+summary(MCMCglmm(icc2.1 ~ raw_fit, data=tmp %>% filter(contrast == "non-contrast"), verbose=FALSE))
+```
+
+Comparing raw vs ddm in difference scores
+
+```{r}
+summary(MCMCglmm(icc2.1 ~ raw_fit, data=tmp %>% filter(contrast == "contrast"), verbose=FALSE))
 ```
 
 ##R1.8
 >I think it is a strength of the paper overall that the authors consider the importance of trial numbers, though I'm curious why they chose the number of trials they did for their tasks (e.g. if they came from particular studies or an average)? The role of trial numbers was also something we were interested in (see our Supplementary material D: https://link.springer.com/article/10.3758/s13428-017-0935-1#SupplementaryMaterial), and is discussed by Rouder & Haaf (2018). 
 
 TODO:
-- extract trial numbers for papers that went in to the lit search and compare to ours
+- [DONE] extract trial numbers for papers that went in to the lit search and compare to ours
 - code pipeline to get reliability with k number of trials
 
-```{r}
+```{r warning=FALSE, message=FALSE}
+tmp1 = lit_review %>%
+  filter(task == "task") %>%
+  select(dv, total_trial_numbers) %>%
+  separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.') %>%
+  select(-extra_1, -extra_2) %>%
+  group_by(task_name) %>%
+  summarise(mean_num_trials_lit = mean(total_trial_numbers, na.rm=T))
 
+tmp2 = measure_labels %>%
+  filter(task == "task") %>%
+  separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.') %>%
+  select(-extra_1, -extra_2) %>%
+  group_by(task_name) %>%
+  summarise(mean_num_trials_emp = mean(num_all_trials))
+
+tmp2 %>%
+  left_join(tmp1, by="task_name")
 ```
 
 #R2
