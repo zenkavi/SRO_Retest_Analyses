@@ -364,7 +364,7 @@ tmp2 %>%
 ##R2.1
 >The researchers were careful in their sampling procedure to try to minimize differences between participants who completed (vs. did not complete) the retest phase of the test-retest. Some simple statistical comparisons between the completers (N = 157) and non-completers/non-responders (N = 242-157 = 85) would help characterize this subset of the sample better and provide an additional data quality check. 
 
-TODO: Compare invited but not completing
+TODO: How many variables are significantly different than each other between the subjects who have been invited and completed the retest battery and those who have not after FDR correcting for multiple comparisons?
 
 ```{r warning=FALSE, message=FALSE}
 mturk_worker_data = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/Local/User_717570_workers.csv')
@@ -383,4 +383,40 @@ retest_workers = mturk_worker_data %>%
   rename(worker_id = Worker.ID) %>%
   left_join(worker_lookup, by = "worker_id") %>%
   select(-worker_id)
+
+test_data_522 = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_03-29-2018/variables_exhaustive.csv')
+
+test_data_522 = test_data_522 %>%
+  rename(sub_id = X)
+
+test_data_522_subs = test_data_522$sub_id
+
+test_data_522 <- test_data_522[,names(test_data_522) %in% retest_report_vars]
+
+test_data_522$sub_id = test_data_522_subs
+
+non_completers = retest_workers %>%
+  filter(sub_id %in% retest_data$sub_id==FALSE)
+
+completers = retest_data %>%
+  select(sub_id)
+
+non_completer_data = test_data_522 %>%
+  filter(sub_id %in% non_completers$sub_id)
+
+completer_data = test_data_522 %>%
+  filter(sub_id %in% completers$sub_id)
+
+out_df = data.frame(dv=NA, p_val=NA)
+
+for(i in retest_report_vars[-1]){
+  x = non_completer_data %>% select(i)
+  y = completer_data %>% select(i)
+  tmp = data.frame(dv = i, p_val = t.test(x,y)$p.value)
+  out_df = rbind(out_df, tmp)
+}
+out_df = out_df[-1,]
+
+sum(p.adjust(out_df$p_val, method = "fdr") < 0.05)
 ```
+
