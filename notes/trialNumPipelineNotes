@@ -9,11 +9,11 @@ lookup functions from jspsych_processing
 TODO:
 - [DONE] convert get_exp_DVs to get_exp_DVs_proptrials by adding a function to cut the [extract_experiment - uses Results object. bypass since you can use Individual Measures directories. BUT IS THE INDIV MEASURES CLEANED/POST PROCESSED? Yes. Based on selfregulation.utils.data_preparation_utils.save_task_data] output by a given proportion of trials for each subject
 
-- write new calculate_exp_DVs.py [calculate_exp_DVs_proptrials.py] WITH INPUT ARGUMENT PROPTRIALS AND RAND and PROPTRIALS AND RAND ADDED TO THE OUTPUT FILE NAME STRING
+- [DONE] write new calculate_exp_DVs.py [calculate_exp_DVs_proptrials.py] WITH INPUT ARGUMENT PROPTRIALS AND RAND and PROPTRIALS AND RAND ADDED TO THE OUTPUT FILE NAME STRING
 
-- write new calculate_exp_DVs.batch [calculate_exp_DVs_proptrials.batch] calling calculate_exp_DVs_proptrials.py WITH PROPTRIALS AND RAND IN ARGUMENT SET
+- [DONE] write new calculate_exp_DVs.batch [calculate_exp_DVs_proptrials.batch] calling calculate_exp_DVs_proptrials.py WITH PROPTRIALS AND RAND IN ARGUMENT SET
 
-- write new shell scripts to run 3 jobs per task (0,25, 0,5, 0.75)
+- [DONE] write new shell scripts to run 3 jobs per task (0,25, 0,5, 0.75)
 
 - write new DV concatenation for each task-by-proptrial DV output
 
