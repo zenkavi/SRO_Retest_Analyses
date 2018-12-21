@@ -15,8 +15,8 @@ TODO:
 
 - [DONE] write new shell scripts to run 3 jobs per task (0,25, 0,5, 0.75)
 
-- write new DV concatenation for each task-by-proptrial DV output
+- [DONE] write new DV concatenation for each task-by-proptrial DV output
 
-- save concatenated DV output as variables_exhaustive_{proptrials}.csv
+- [DONE] save concatenated DV output as variables_exhaustive_{proptrials}.csv
 
 - make_rel_df for each subsetted variabled_exhaustive_{proptrials}.csv for t1 and t2

@@ -337,7 +337,7 @@ summary(MCMCglmm(icc2.1 ~ raw_fit, data=tmp %>% filter(contrast == "contrast"), 
 
 TODO:
 - [DONE] extract trial numbers for papers that went in to the lit search and compare to ours
-- code pipeline to get reliability with k number of trials
+- [PARTIALLY DONE] code pipeline to get reliability with k number of trials
 
 ```{r warning=FALSE, message=FALSE}
 tmp1 = lit_review %>%
@@ -357,6 +357,69 @@ tmp2 = measure_labels %>%
 
 tmp2 %>%
   left_join(tmp1, by="task_name")
+```
+
+```{r}
+script_loader(file='make_rel_df.R', path='SRO_Retest_Analyses/code/helper_functions/')
+
+input_path = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/trial_num/ordered/'
+
+for(i in c(0.25, 0.5, 0.75)){
+  df1 = read.csv(paste0(input_path, 'complete_', as.character(i) ,'_variables_exhaustive.csv'))
+  df1 = df1 %>% rename(sub_id = X)  
+  
+  df2 = read.csv(paste0(input_path, 'retest_', as.character(i) ,'_variables_exhaustive.csv'))
+  df2 = df2 %>% rename(sub_id = X) %>% 
+    filter(sub_id %in% df1$sub_id) 
+  
+  numeric_cols = get_numeric_cols(df1, df2)
+  
+  subs = df1$sub_id
+  
+  df1 = df1[,numeric_cols]
+  df2 = df2[,numeric_cols]
+  
+  df1 = df1 %>%
+    select_if(function(col) !is.na(sd(col))) %>%
+    select_if(function(col) sd(col) != 0)
+  
+  df2 = df2 %>%
+    select_if(function(col) !is.na(sd(col))) %>%
+    select_if(function(col) sd(col) != 0)
+  
+  df1$sub_id = subs
+  df2$sub_id = subs
+  
+  cur_rel_df = make_rel_df(t1_df=df1, t2_df=df2, metrics = c("icc2.1", "icc3.k", "var_breakdown"))
+  cur_rel_df$proptrials = i
+  if(!exists('rel_df')){
+    rel_df = cur_rel_df
+  } else{
+    rel_df = rbind(rel_df, cur_rel_df)
+  }
+}
+rm(cur_rel_df)
+```
+
+```{r message=FALSE, warning=FALSE}
+rel_df %>% 
+  separate(dv, c('task_name', 'extra_1', 'extra_2'), sep = '\\.',remove=FALSE) %>%
+  filter(task_name != "columbia_card_task_cold") %>%
+  mutate(task_name = factor(task_name, levels = c("columbia_card_task_hot","go_nogo", "hierarchical_rule", "keep_track","kirby", "ravens"),
+                            labels = c("Columbia Card Task (24)","Go/No-go (200)","Hierarchical Rule (300)", "Keep Track (9)","Kirby (27)", "Ravens (18)"))) %>%
+  ggplot(aes(factor(proptrials), icc2.1, col=task_name, shape=task_name))+
+  geom_point(aes(group=dv))+
+  geom_line(aes(group=dv))+
+  xlab("Proportion of trials")+
+  ylab("ICC 2.1")+
+  theme(legend.title=element_blank(),
+        panel.grid=element_blank())+
+  guides(color = guide_legend(nrow=2))+
+  scale_color_manual(values=c('#762a83','#af8dc3','#e7d4e8','#d9f0d3','#7fbf7b','#1b7837'))
+```
+
+```{r}
+summary(MCMCglmm(icc2.1 ~ factor(proptrials), random=~dv, data = rel_df, verbose=FALSE))
 ```
 
 #R2
