@@ -24,6 +24,7 @@ script_loader = function(file, path, remote=from_gh, branch="master"){
 
 library(tidyverse)
 library(jsonlite)
+library(MCMCglmm)
 
 cbbPalette <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 theme_set(theme_bw())
@@ -228,6 +229,7 @@ rel_df %>%
 
 ```{r}
 rel_df_rep=rel_df %>%
+  left_join(measure_labels %>% select(dv, task), by="dv") %>%
   select(dv, task, icc2.1) %>%
   mutate(icc2.1=ifelse(icc2.1<0,0,icc2.1))
 ```
@@ -239,6 +241,8 @@ summary(MCMCglmm(icc2.1 ~ task, data=rel_df_rep, verbose=F))
 
 Reliability depending on number of trials
 ```{r warning=FALSE, message=FALSE}
+script_loader('meaningful_vars_data.R', path="SRO_Retest_Analyses/code/workspace_scripts/")
+
 tmp = measure_labels %>%
   mutate(dv = as.character(dv)) %>%
   filter(task == 'task',
@@ -282,6 +286,7 @@ summary(MCMCglmm(icc2.1 ~ raw_fit, data=tmp %>% filter(contrast == "contrast"), 
 
 ```{r}
 rel_df_ex = rel_df %>%
+  left_join(measure_labels %>% select(dv, task), by="dv") %>%
   select(dv, task, icc2.1) %>%
   filter(icc2.1>0)
 ```
@@ -360,6 +365,8 @@ tmp2 %>%
 ```
 
 ```{r}
+rm(rel_df)
+
 script_loader(file='make_rel_df.R', path='SRO_Retest_Analyses/code/helper_functions/')
 
 input_path = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/trial_num/ordered/'
@@ -383,9 +390,11 @@ for(i in c(0.25, 0.5, 0.75)){
     select_if(function(col) !is.na(sd(col))) %>%
     select_if(function(col) sd(col) != 0)
   
-  df2 = df2 %>%
-    select_if(function(col) !is.na(sd(col))) %>%
-    select_if(function(col) sd(col) != 0)
+  # df2 = df2 %>%
+  #   select_if(function(col) !is.na(sd(col))) %>%
+  #   select_if(function(col) sd(col) != 0)
+  
+  df2 = df2[,c(names(df1))]
   
   df1$sub_id = subs
   df2$sub_id = subs
@@ -427,7 +436,9 @@ summary(MCMCglmm(icc2.1 ~ factor(proptrials), random=~dv, data = rel_df, verbose
 ##R2.1
 >The researchers were careful in their sampling procedure to try to minimize differences between participants who completed (vs. did not complete) the retest phase of the test-retest. Some simple statistical comparisons between the completers (N = 157) and non-completers/non-responders (N = 242-157 = 85) would help characterize this subset of the sample better and provide an additional data quality check. 
 
-TODO: How many variables are significantly different than each other between the subjects who have been invited and completed the retest battery and those who have not after FDR correcting for multiple comparisons?
+TODO: How many variables are significantly different than each other between the subjects who have been invited and completed the retest battery and those who have not after FDR correcting for multiple comparisons?  
+
+Answer: None.
 
 ```{r warning=FALSE, message=FALSE}
 mturk_worker_data = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_11-27-2017/Local/User_717570_workers.csv')
