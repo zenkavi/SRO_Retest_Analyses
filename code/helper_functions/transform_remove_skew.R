@@ -37,7 +37,10 @@ asin_count <- function(column, tpc){
   return(asin(column))
 }
 
-#transforms to add: sqrt, angular, power, user-defined
+#transform: "log", "sqrt", "asin", "custom"
+#if transform is custom: 
+#mandatory argument "func" containing function to be applied must be provided
+#optional argument "suffix" containing string to be added to transformed cols can be provided; else default string is .customTr
 
 transform_remove_skew = function(data, columns=get_numeric_cols(df1=data, df2=data), threshold = 1, drop=FALSE, transform='log', ...){
   
@@ -72,6 +75,15 @@ transform_remove_skew = function(data, columns=get_numeric_cols(df1=data, df2=da
     if(transform == "asin"){
       suffix = '.asinTr'
       positive_subset = as.data.frame(apply(positive_subset, 2, asin_count, tpc=list(...)$tpc))
+    }
+    
+    if(transform == "custom"){
+      if(!is.null(list(...)$suffix)){
+        suffix = list(...)$suffix
+      } else {
+        suffix = '.customTr'
+      }
+      positive_subset = as.data.frame(apply(positive_subset, 2, list(...)$func))
     }
     
     successful_transforms = as.data.frame(apply(positive_subset, 2, skew))
@@ -139,6 +151,15 @@ transform_remove_skew = function(data, columns=get_numeric_cols(df1=data, df2=da
       suffix = '.asinTr'
       negative_subset = as.data.frame(apply(negative_subset, 2, asin_count, tpc=list(...)$tpc))
     }
+    if(transform == "custom"){
+      if(!is.null(list(...)$suffix)){
+        suffix = list(...)$suffix
+      } else {
+        suffix = '.customTr'
+      }
+      negative_subset = as.data.frame(apply(negative_subset, 2, list(...)$func))
+    }
+    
     
     successful_transforms = as.data.frame(apply(negative_subset, 2, skew))
     names(successful_transforms) = c('skew')
