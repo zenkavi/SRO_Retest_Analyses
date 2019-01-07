@@ -20,7 +20,7 @@ neg_log <- function(column){
 }
 
 sqrt_const <- function(column, const){
-  if(missing(const)){
+  if(missing(const)|is.null(const)){
     col_min = min(column, na.rm=T)
     const = 1-col_min
   }
@@ -28,9 +28,18 @@ sqrt_const <- function(column, const){
   return(sqrt(column))
 }
 
+asin_count <- function(column, tpc){
+  #tpc = total possible counts
+  if(missing(tpc)|is.null(tpc)){
+    tpc = max(column, na.rm=T)
+  }
+  column = sqrt(column/tpc)
+  return(asin(column))
+}
+
 #transforms to add: sqrt, angular, power, user-defined
 
-transform_remove_skew = function(data, columns=get_numeric_cols(df1=data, df2=data), threshold = 1, drop=FALSE, transform='log'){
+transform_remove_skew = function(data, columns=get_numeric_cols(df1=data, df2=data), threshold = 1, drop=FALSE, transform='log', ...){
   
   tmp = as.data.frame(apply(data[,columns],2,skew))
   names(tmp) = c("skew")
@@ -57,9 +66,13 @@ transform_remove_skew = function(data, columns=get_numeric_cols(df1=data, df2=da
     
     if(transform == "sqrt"){
       suffix = '.sqrtTr'
-      positive_subset = as.data.frame(apply(positive_subset, 2, sqrt_const))
+      positive_subset = as.data.frame(apply(positive_subset, 2, sqrt_const, const=list(...)$const))
     }
     
+    if(transform == "asin"){
+      suffix = '.asinTr'
+      positive_subset = as.data.frame(apply(positive_subset, 2, asin_count, tpc=list(...)$tpc))
+    }
     
     successful_transforms = as.data.frame(apply(positive_subset, 2, skew))
     names(successful_transforms) = c('skew')
@@ -119,7 +132,12 @@ transform_remove_skew = function(data, columns=get_numeric_cols(df1=data, df2=da
     
     if(transform == "sqrt"){
       suffix = '.sqrtTr'
-      negative_subset = as.data.frame(apply(negative_subset, 2, sqrt_const))
+      negative_subset = as.data.frame(apply(negative_subset, 2, sqrt_const, const=list(...)$const))
+    }
+    
+    if(transform == "asin"){
+      suffix = '.asinTr'
+      negative_subset = as.data.frame(apply(negative_subset, 2, asin_count, tpc=list(...)$tpc))
     }
     
     successful_transforms = as.data.frame(apply(negative_subset, 2, skew))
