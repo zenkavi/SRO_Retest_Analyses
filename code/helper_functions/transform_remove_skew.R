@@ -1,4 +1,5 @@
 require(psych)
+require(tidyverse)
 
 "%w/o%" <- function(x, y) x[!x %in% y]
 
@@ -15,7 +16,9 @@ neg_log <- function(column){
   return(log(column))
 }
 
-transform_remove_skew = function(data, columns, threshold = 1, drop=FALSE){
+#transforms to add: sqrt, angular, power, user-defined
+
+transform_remove_skew = function(data, columns=names(data), threshold = 1, drop=FALSE, transform='log'){
   
   tmp = as.data.frame(apply(data[,columns],2,skew))
   names(tmp) = c("skew")
@@ -28,7 +31,8 @@ transform_remove_skew = function(data, columns, threshold = 1, drop=FALSE){
   positive_subset = data[,tmp$dv[tmp$skew>0]]
   negative_subset = data[,tmp$dv[tmp$skew<0]]
   
-  if(dim(positive_subset)[2]>1){
+  if(!is.null(dim(positive_subset)) & dim(positive_subset)[2]>0){
+  # if(dim(positive_subset)[2]>1){
     # transform variables
     # log transform for positive skew
     # positive_subset = log(positive_subset)
@@ -63,8 +67,7 @@ transform_remove_skew = function(data, columns, threshold = 1, drop=FALSE){
       cat(rep('*', 40))
       cat('\n')
       data = cbind(data, successful_transforms)
-    }
-    else{
+    } else{
       names(positive_subset) = paste0(names(positive_subset), '.logTr')
       cat(rep('*', 40))
       cat('\n')
@@ -75,10 +78,16 @@ transform_remove_skew = function(data, columns, threshold = 1, drop=FALSE){
       cat('\n')
       data = cbind(data, positive_subset)
     }
+  } else{
+    cat(rep('*', 40))
+    cat('\n')
+    cat('No positively skewed variables found.')
+    cat(rep('*', 40))
+    cat('\n')
   }
   
   
-  if(dim(negative_subset)[2]>1){
+  if(!is.null(dim(negative_subset)) & dim(negative_subset)[2]>0){
     # reflected log transform for negative skew      
     negative_subset = as.data.frame(apply(negative_subset, 2, neg_log))
     successful_transforms = as.data.frame(apply(negative_subset, 2, skew))
@@ -109,8 +118,7 @@ transform_remove_skew = function(data, columns, threshold = 1, drop=FALSE){
       cat(rep('*', 40))
       cat('\n')
       data = cbind(data, successful_transforms)
-    }
-    else{
+    } else{
       names(negative_subset) = paste0(names(negative_subset), '.ReflogTr')
       cat(rep('*', 40))
       cat('\n')
@@ -121,6 +129,12 @@ transform_remove_skew = function(data, columns, threshold = 1, drop=FALSE){
       cat('\n')
       data = cbind(data, negative_subset)
     } 
+  } else{
+    cat(rep('*', 40))
+    cat('\n')
+    cat('No negatively skewed variables found.')
+    cat(rep('*', 40))
+    cat('\n')
   }
   
   return(data)
