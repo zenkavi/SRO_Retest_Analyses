@@ -16,6 +16,15 @@ neg_log <- function(column){
   return(log(column))
 }
 
+sqrt_const <- function(column, const = 0.5){
+  if(is.null(const)){
+    col_min = min(column, na.rm=T)
+    const = 1-col_min
+  }
+  column = column+const
+  return(sqrt(column))
+}
+
 #transforms to add: sqrt, angular, power, user-defined
 
 transform_remove_skew = function(data, columns=names(data), threshold = 1, drop=FALSE, transform='log'){
@@ -31,13 +40,24 @@ transform_remove_skew = function(data, columns=names(data), threshold = 1, drop=
   positive_subset = data[,tmp$dv[tmp$skew>0]]
   negative_subset = data[,tmp$dv[tmp$skew<0]]
   
+  cat(rep('*', 40))
+  cat('\n')
+  cat(paste0('Using transformation:', transform))
+  cat('\n')
+
   if(!is.null(dim(positive_subset)) & dim(positive_subset)[2]>0){
-  # if(dim(positive_subset)[2]>1){
-    # transform variables
-    # log transform for positive skew
-    # positive_subset = log(positive_subset)
-    # positive_subset = pos_log(positive_subset) #slight divergence from original code
-    positive_subset = as.data.frame(apply(positive_subset, 2, pos_log))
+    
+    if(transform == "log"){
+      suffix = '.logTr'
+      positive_subset = as.data.frame(apply(positive_subset, 2, pos_log))
+    }
+    
+    if(transform == "sqrt"){
+      suffix = '.sqrtTr'
+      positive_subset = as.data.frame(apply(positive_subset, 2, sqrt_const))
+    }
+    
+    
     successful_transforms = as.data.frame(apply(positive_subset, 2, skew))
     names(successful_transforms) = c('skew')
     successful_transforms$dv = row.names(successful_transforms)
@@ -58,7 +78,7 @@ transform_remove_skew = function(data, columns=names(data), threshold = 1, drop=
     data = data[,-c(which(names(data) %in% names(positive_subset)))]
     
     if(drop == TRUE){
-      names(successful_transforms) = paste0(names(successful_transforms), '.logTr')
+      names(successful_transforms) = paste0(names(successful_transforms), suffix)
       cat(rep('*', 40))
       cat('\n')
       cat(paste0('Dropping ', length(dropped_vars) ,' positively skewed data that could not be transformed successfully:'))
@@ -68,7 +88,7 @@ transform_remove_skew = function(data, columns=names(data), threshold = 1, drop=
       cat('\n')
       data = cbind(data, successful_transforms)
     } else{
-      names(positive_subset) = paste0(names(positive_subset), '.logTr')
+      names(positive_subset) = paste0(names(positive_subset), suffix)
       cat(rep('*', 40))
       cat('\n')
       cat(paste0(length(dropped_vars) ,' positively skewed data could not be transformed successfully:'))
@@ -88,8 +108,17 @@ transform_remove_skew = function(data, columns=names(data), threshold = 1, drop=
   
   
   if(!is.null(dim(negative_subset)) & dim(negative_subset)[2]>0){
-    # reflected log transform for negative skew      
-    negative_subset = as.data.frame(apply(negative_subset, 2, neg_log))
+    
+    if(transform == "log"){
+      suffix = '.ReflogTr'
+      negative_subset = as.data.frame(apply(negative_subset, 2, neg_log))
+    }
+    
+    if(transform == "sqrt"){
+      suffix = '.sqrtTr'
+      negative_subset = as.data.frame(apply(negative_subset, 2, sqrt_const))
+    }
+    
     successful_transforms = as.data.frame(apply(negative_subset, 2, skew))
     names(successful_transforms) = c('skew')
     successful_transforms$dv = row.names(successful_transforms)
@@ -109,7 +138,7 @@ transform_remove_skew = function(data, columns=names(data), threshold = 1, drop=
     # replace transformed variables
     data = data[,-c(which(names(data) %in% names(negative_subset)))]
     if(drop == TRUE){
-      names(successful_transforms) = paste0(names(successful_transforms), '.ReflogTr')
+      names(successful_transforms) = paste0(names(successful_transforms), suffix)
       cat(rep('*', 40))
       cat('\n')
       cat(paste0('Dropping ', length(dropped_vars) ,' negatively skewed data that could not be transformed successfully:'))
@@ -119,7 +148,7 @@ transform_remove_skew = function(data, columns=names(data), threshold = 1, drop=
       cat('\n')
       data = cbind(data, successful_transforms)
     } else{
-      names(negative_subset) = paste0(names(negative_subset), '.ReflogTr')
+      names(negative_subset) = paste0(names(negative_subset), suffix)
       cat(rep('*', 40))
       cat('\n')
       cat(paste0(length(dropped_vars) ,' negatively skewed data could not be transformed successfully:'))
