@@ -1,5 +1,8 @@
 require(psych)
 require(tidyverse)
+require(RCurl)
+helper_func_path = 'https://raw.githubusercontent.com/zenkavi/SRO_Retest_Analyses/master/code/helper_functions/'
+eval(parse(text = getURL(paste0(helper_func_path,'get_numeric_cols.R'), ssl.verifypeer = FALSE)))
 
 "%w/o%" <- function(x, y) x[!x %in% y]
 
@@ -27,7 +30,7 @@ sqrt_const <- function(column, const = 0.5){
 
 #transforms to add: sqrt, angular, power, user-defined
 
-transform_remove_skew = function(data, columns=names(data), threshold = 1, drop=FALSE, transform='log'){
+transform_remove_skew = function(data, columns=get_numeric_cols(data), threshold = 1, drop=FALSE, transform='log'){
   
   tmp = as.data.frame(apply(data[,columns],2,skew))
   names(tmp) = c("skew")
