@@ -19,8 +19,8 @@ neg_log <- function(column){
   return(log(column))
 }
 
-sqrt_const <- function(column, const = 0.5){
-  if(is.null(const)){
+sqrt_const <- function(column, const){
+  if(missing(const)){
     col_min = min(column, na.rm=T)
     const = 1-col_min
   }
@@ -30,7 +30,7 @@ sqrt_const <- function(column, const = 0.5){
 
 #transforms to add: sqrt, angular, power, user-defined
 
-transform_remove_skew = function(data, columns=get_numeric_cols(data), threshold = 1, drop=FALSE, transform='log'){
+transform_remove_skew = function(data, columns=get_numeric_cols(df1=data, df2=data), threshold = 1, drop=FALSE, transform='log'){
   
   tmp = as.data.frame(apply(data[,columns],2,skew))
   names(tmp) = c("skew")
