@@ -52,81 +52,90 @@ transform_remove_skew = function(data, columns=get_numeric_cols(df1=data, df2=da
   
   skewed_variables = tmp$dv
   skew_subset = data[, skewed_variables]
-  positive_subset = data[,tmp$dv[tmp$skew>0]]
-  negative_subset = data[,tmp$dv[tmp$skew<0]]
+  
+  if(length(tmp$dv[tmp$skew>0])>0){
+    positive_subset = data.frame(data[,tmp$dv[tmp$skew>0]])
+    names(positive_subset) = tmp$dv[tmp$skew>0]
+  }
+  if(length(tmp$dv[tmp$skew<0]>0)){
+    negative_subset = data.frame(data[,tmp$dv[tmp$skew<0]])
+    names(negative_subset) = tmp$dv[tmp$skew<0]
+  }
   
   cat(rep('*', 40))
   cat('\n')
   cat(paste0('Using transformation:', transform))
   cat('\n')
-
-  if(!is.null(dim(positive_subset)) & dim(positive_subset)[2]>0){
-    
-    if(transform == "log"){
-      suffix = '.logTr'
-      positive_subset = as.data.frame(apply(positive_subset, 2, pos_log))
-    }
-    
-    if(transform == "sqrt"){
-      suffix = '.sqrtTr'
-      positive_subset = as.data.frame(apply(positive_subset, 2, sqrt_const, const=list(...)$const))
-    }
-    
-    if(transform == "asin"){
-      suffix = '.asinTr'
-      positive_subset = as.data.frame(apply(positive_subset, 2, asin_count, tpc=list(...)$tpc))
-    }
-    
-    if(transform == "custom"){
-      if(!is.null(list(...)$suffix)){
-        suffix = list(...)$suffix
-      } else {
-        suffix = '.customTr'
+  
+  if(exists('positive_subset')){ 
+    if(!is.null(ncol(positive_subset)) & ncol(positive_subset)>0){
+      
+      if(transform == "log"){
+        suffix = '.logTr'
+        positive_subset = as.data.frame(apply(positive_subset, 2, pos_log))
       }
-      positive_subset = as.data.frame(apply(positive_subset, 2, list(...)$func))
-    }
-    
-    successful_transforms = as.data.frame(apply(positive_subset, 2, skew))
-    names(successful_transforms) = c('skew')
-    successful_transforms$dv = row.names(successful_transforms)
-    successful_transforms = successful_transforms %>% filter(abs(skew)<threshold)
-    successful_transforms = successful_transforms$dv
-    successful_transforms = positive_subset[,successful_transforms]
-    dropped_vars = names(positive_subset) %w/o% names(successful_transforms)
-    
-    cat(rep('*', 40))
-    cat('\n')
-    cat(paste0(length(names(positive_subset)) ,' data positively skewed data were transformed:'))
-    cat('\n')
-    cat(names(positive_subset), sep = '\n')
-    cat(rep('*', 40))
-    cat('\n')
-    
-    # replace transformed variables
-    data = data[,-c(which(names(data) %in% names(positive_subset)))]
-    
-    if(drop == TRUE){
-      names(successful_transforms) = paste0(names(successful_transforms), suffix)
+      
+      if(transform == "sqrt"){
+        suffix = '.sqrtTr'
+        positive_subset = as.data.frame(apply(positive_subset, 2, sqrt_const, const=list(...)$const))
+      }
+      
+      if(transform == "asin"){
+        suffix = '.asinTr'
+        positive_subset = as.data.frame(apply(positive_subset, 2, asin_count, tpc=list(...)$tpc))
+      }
+      
+      if(transform == "custom"){
+        if(!is.null(list(...)$suffix)){
+          suffix = list(...)$suffix
+        } else {
+          suffix = '.customTr'
+        }
+        positive_subset = as.data.frame(apply(positive_subset, 2, list(...)$func))
+      }
+      
+      successful_transforms = as.data.frame(apply(positive_subset, 2, skew))
+      names(successful_transforms) = c('skew')
+      successful_transforms$dv = row.names(successful_transforms)
+      successful_transforms = successful_transforms %>% filter(abs(skew)<threshold)
+      successful_transforms = successful_transforms$dv
+      successful_transforms = positive_subset[,successful_transforms]
+      dropped_vars = names(positive_subset) %w/o% names(successful_transforms)
+      
       cat(rep('*', 40))
       cat('\n')
-      cat(paste0('Dropping ', length(dropped_vars) ,' positively skewed data that could not be transformed successfully:'))
+      cat(paste0(length(names(positive_subset)) ,' data positively skewed data were transformed:'))
       cat('\n')
-      cat(dropped_vars, sep = '\n')
+      cat(names(positive_subset), sep = '\n')
       cat(rep('*', 40))
       cat('\n')
-      data = cbind(data, successful_transforms)
-    } else{
-      names(positive_subset) = paste0(names(positive_subset), suffix)
-      cat(rep('*', 40))
-      cat('\n')
-      cat(paste0(length(dropped_vars) ,' positively skewed data could not be transformed successfully:'))
-      cat('\n')
-      cat(dropped_vars, sep = '\n')
-      cat(rep('*', 40))
-      cat('\n')
-      data = cbind(data, positive_subset)
-    }
-  } else{
+      
+      # replace transformed variables
+      data = data[,-c(which(names(data) %in% names(positive_subset)))]
+      
+      if(drop == TRUE){
+        names(successful_transforms) = paste0(names(successful_transforms), suffix)
+        cat(rep('*', 40))
+        cat('\n')
+        cat(paste0('Dropping ', length(dropped_vars) ,' positively skewed data that could not be transformed successfully:'))
+        cat('\n')
+        cat(dropped_vars, sep = '\n')
+        cat(rep('*', 40))
+        cat('\n')
+        data = cbind(data, successful_transforms)
+      } else{
+        names(positive_subset) = paste0(names(positive_subset), suffix)
+        cat(rep('*', 40))
+        cat('\n')
+        cat(paste0(length(dropped_vars) ,' positively skewed data could not be transformed successfully:'))
+        cat('\n')
+        cat(dropped_vars, sep = '\n')
+        cat(rep('*', 40))
+        cat('\n')
+        data = cbind(data, positive_subset)
+      }
+    } 
+  }else{
     cat(rep('*', 40))
     cat('\n')
     cat('No positively skewed variables found.')
@@ -135,70 +144,71 @@ transform_remove_skew = function(data, columns=get_numeric_cols(df1=data, df2=da
   }
   
   
-  if(!is.null(dim(negative_subset)) & dim(negative_subset)[2]>0){
-    
-    if(transform == "log"){
-      suffix = '.ReflogTr'
-      negative_subset = as.data.frame(apply(negative_subset, 2, neg_log))
-    }
-    
-    if(transform == "sqrt"){
-      suffix = '.sqrtTr'
-      negative_subset = as.data.frame(apply(negative_subset, 2, sqrt_const, const=list(...)$const))
-    }
-    
-    if(transform == "asin"){
-      suffix = '.asinTr'
-      negative_subset = as.data.frame(apply(negative_subset, 2, asin_count, tpc=list(...)$tpc))
-    }
-    if(transform == "custom"){
-      if(!is.null(list(...)$suffix)){
-        suffix = list(...)$suffix
-      } else {
-        suffix = '.customTr'
+  if(exists('negative_subset')){
+    if(!is.null(ncol(negative_subset)) & ncol(negative_subset)>0){
+      
+      if(transform == "log"){
+        suffix = '.ReflogTr'
+        negative_subset = as.data.frame(apply(negative_subset, 2, neg_log))
       }
-      negative_subset = as.data.frame(apply(negative_subset, 2, list(...)$func))
-    }
-    
-    
-    successful_transforms = as.data.frame(apply(negative_subset, 2, skew))
-    names(successful_transforms) = c('skew')
-    successful_transforms$dv = row.names(successful_transforms)
-    successful_transforms = successful_transforms %>% filter(abs(skew)<1)
-    successful_transforms = successful_transforms$dv
-    successful_transforms = negative_subset[,successful_transforms]
-    dropped_vars = names(negative_subset) %w/o% names(successful_transforms)
-    
-    cat(rep('*', 40))
-    cat('\n')
-    cat(paste0(length(names(negative_subset)) ,' data negatively skewed data were transformed:'))
-    cat('\n')
-    cat(names(negative_subset), sep = '\n')
-    cat(rep('*', 40))
-    cat('\n')
-    
-    # replace transformed variables
-    data = data[,-c(which(names(data) %in% names(negative_subset)))]
-    if(drop == TRUE){
-      names(successful_transforms) = paste0(names(successful_transforms), suffix)
+      
+      if(transform == "sqrt"){
+        suffix = '.sqrtTr'
+        negative_subset = as.data.frame(apply(negative_subset, 2, sqrt_const, const=list(...)$const))
+      }
+      
+      if(transform == "asin"){
+        suffix = '.asinTr'
+        negative_subset = as.data.frame(apply(negative_subset, 2, asin_count, tpc=list(...)$tpc))
+      }
+      if(transform == "custom"){
+        if(!is.null(list(...)$suffix)){
+          suffix = list(...)$suffix
+        } else {
+          suffix = '.customTr'
+        }
+        negative_subset = as.data.frame(apply(negative_subset, 2, list(...)$func))
+      }
+      
+      successful_transforms = as.data.frame(apply(negative_subset, 2, skew))
+      names(successful_transforms) = c('skew')
+      successful_transforms$dv = row.names(successful_transforms)
+      successful_transforms = successful_transforms %>% filter(abs(skew)<1)
+      successful_transforms = successful_transforms$dv
+      successful_transforms = negative_subset[,successful_transforms]
+      dropped_vars = names(negative_subset) %w/o% names(successful_transforms)
+      
       cat(rep('*', 40))
       cat('\n')
-      cat(paste0('Dropping ', length(dropped_vars) ,' negatively skewed data that could not be transformed successfully:'))
+      cat(paste0(length(names(negative_subset)) ,' data negatively skewed data were transformed:'))
       cat('\n')
-      cat(dropped_vars, sep = '\n')
+      cat(names(negative_subset), sep = '\n')
       cat(rep('*', 40))
       cat('\n')
-      data = cbind(data, successful_transforms)
-    } else{
-      names(negative_subset) = paste0(names(negative_subset), suffix)
-      cat(rep('*', 40))
-      cat('\n')
-      cat(paste0(length(dropped_vars) ,' negatively skewed data could not be transformed successfully:'))
-      cat('\n')
-      cat(dropped_vars, sep = '\n')
-      cat(rep('*', 40))
-      cat('\n')
-      data = cbind(data, negative_subset)
+      
+      # replace transformed variables
+      data = data[,-c(which(names(data) %in% names(negative_subset)))]
+      if(drop == TRUE){
+        names(successful_transforms) = paste0(names(successful_transforms), suffix)
+        cat(rep('*', 40))
+        cat('\n')
+        cat(paste0('Dropping ', length(dropped_vars) ,' negatively skewed data that could not be transformed successfully:'))
+        cat('\n')
+        cat(dropped_vars, sep = '\n')
+        cat(rep('*', 40))
+        cat('\n')
+        data = cbind(data, successful_transforms)
+      } else{
+        names(negative_subset) = paste0(names(negative_subset), suffix)
+        cat(rep('*', 40))
+        cat('\n')
+        cat(paste0(length(dropped_vars) ,' negatively skewed data could not be transformed successfully:'))
+        cat('\n')
+        cat(dropped_vars, sep = '\n')
+        cat(rep('*', 40))
+        cat('\n')
+        data = cbind(data, negative_subset)
+      } 
     } 
   } else{
     cat(rep('*', 40))
