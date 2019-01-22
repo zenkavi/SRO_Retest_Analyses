@@ -8,7 +8,7 @@ toc_float: yes
 
 ```{r, message=FALSE, warning=FALSE, include=FALSE}
 set.seed(10394839)
-from_gh = TRUE
+from_gh = FALSE
 source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/workspace_scripts/SRO_Retest_Analyses_Workspace.R')
 ```
 
