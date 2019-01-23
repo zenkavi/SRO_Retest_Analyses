@@ -643,8 +643,7 @@ rel_comp %>%
   xlab("Average Empirical Reliability Estimate")+
   theme(legend.title = element_blank(),
         legend.position = 'bottom',
-        plot.caption = element_text(family = "Times", lineheight = 2, hjust = 0))+
-  labs(caption = str_wrap("FIGURE 2: Correlation between mean reliability estimates for each measure found in the literature with the mean reliability from our data.", width = 120))
+        plot.caption = element_text(family = "Times", lineheight = 2, hjust = 0))
 ```
 
 ```{r echo=FALSE}
