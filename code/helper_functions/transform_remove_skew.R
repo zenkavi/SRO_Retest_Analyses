@@ -2,7 +2,12 @@ require(psych)
 require(tidyverse)
 require(RCurl)
 helper_func_path = 'https://raw.githubusercontent.com/zenkavi/SRO_Retest_Analyses/master/code/helper_functions/'
-eval(parse(text = getURL(paste0(helper_func_path,'get_numeric_cols.R'), ssl.verifypeer = FALSE)))
+if(from_gh){
+  eval(parse(text = getURL(paste0(helper_func_path,'get_numeric_cols.R'), ssl.verifypeer = FALSE))) 
+} else{
+  source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/helper_functions/get_numeric_cols.R')
+}
+
 
 "%w/o%" <- function(x, y) x[!x %in% y]
 
