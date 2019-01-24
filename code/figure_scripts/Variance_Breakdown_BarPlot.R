@@ -1,6 +1,4 @@
-if(!exists('fig_path')){
-  fig_path = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/'
-}
+fig_path = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/'
 
 if(!exists('from_gh')){
   from_gh=FALSE
