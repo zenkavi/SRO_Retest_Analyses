@@ -1,3 +1,15 @@
+if(!exists('fig_path')){
+  fig_path = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/'
+}
+
+if(!exists('from_gh')){
+  from_gh=FALSE
+}
+
+if(from_gh){
+  require(RCurl)
+}
+
 source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/figure_scripts/figure_res_wrapper.R')
 
 if(!exists('measure_labels')){
@@ -27,51 +39,32 @@ tmp2 = measure_labels %>%
   drop_na() %>%
   left_join(rel_df[,c("dv", "icc2.1")], by = 'dv')
 
-ddm_point_plot = tmp2 %>%
-  ggplot(aes(factor(raw_fit, levels = c("raw", "EZ", "hddm"), labels=c("Raw", "EZ-diffusion", "Hierarchical diffusion")), icc2.1, fill=factor(rt_acc, levels = c("rt","accuracy", "drift rate", "threshold", "non-decision"), labels=c("Response Time", "Accuracy","Drift Rate", "Threshold", "Non-decision"))))+
-  geom_boxplot()+
+tmp2 %>%
+  group_by(contrast, rt_acc, raw_fit) %>%
+  summarise(mean_icc = mean(icc2.1),
+            sd_icc = sd(icc2.1, na.rm=T),
+            n = n()) %>%
+  mutate(cvl = qt(0.025, n-1),
+         cvu = qt(0.975, n-1),
+         cil = mean_icc+(sd_icc*cvl)/sqrt(n),
+         ciu = mean_icc+(sd_icc*cvu)/sqrt(n),
+         sem_icc = sd_icc/sqrt(n)) %>%
+  ggplot(aes(factor(raw_fit, levels = c("raw", "EZ", "hddm"), labels=c("Raw", "EZ-diffusion", "Hierarchical diffusion")), mean_icc, fill=factor(rt_acc, levels = c("drift rate", "threshold", "non-decision","rt","accuracy"), labels=c("Drift Rate", "Threshold", "Non-decision","Response Time", "Accuracy"))))+
+    geom_bar(stat="identity", position = position_dodge(width = 0.9), col="black")+
+    geom_errorbar(aes(ymin=cil, ymax=ciu), position=position_dodge(width=0.9), width=0)+
   facet_wrap(~factor(contrast, levels=c("non-contrast", "contrast"), labels=c("Non-contrast", "Contrast")))+
   theme_bw()+
-  ylab("icc2.1")+
+  ylab("Mean ICC")+
   xlab("")+
   theme(legend.title = element_blank(),
         legend.position = 'bottom',
-        legend.text = element_text(size=16),
-        strip.text = element_text(size=16),
-        axis.text = element_text(size = 16),
-        text = element_text(size=16))+
+        legend.text = element_text(size=8),
+        strip.text = element_text(size=8),
+        axis.text = element_text(size = 8),
+        text = element_text(size=8),
+        legend.box.margin=margin(-15,-10,-10,-10),
+        legend.key.size = unit(0.25,"cm"))+
   guides(fill = guide_legend(ncol = 2))+
-  scale_fill_brewer(palette="Greys",
-                    breaks=c( "Response Time", "Accuracy","Drift Rate", "Threshold", "Non-decision"))+
-  ylim(-0.4, 1)
+  scale_fill_brewer(palette="Greys")
 
-mylegend<-g_legend(ddm_point_plot)
-
-grob_name <- names(mylegend$grobs)[1]
-
-#manually fix the legend
-#move non-decision down
-#key
-mylegend$grobs[grob_name][[1]]$layout[11,c(1:4)] <- c(4,8,4,8)
-mylegend$grobs[grob_name][[1]]$layout[12,c(1:4)] <- c(4,8,4,8)
-#text
-mylegend$grobs[grob_name][[1]]$layout[17,c(1:4)] <- c(4,10,4,10)
-#move threshold down
-#key
-mylegend$grobs[grob_name][[1]]$layout[9,c(1:4)] <- c(3,8,3,8)
-mylegend$grobs[grob_name][[1]]$layout[10,c(1:4)] <- c(3,8,3,8)
-#text
-mylegend$grobs[grob_name][[1]]$layout[16,c(1:4)] <- c(3,10,3,10)
-#move drift rate right and up
-#key
-mylegend$grobs[grob_name][[1]]$layout[7,c(1:4)] <- c(2,8,2,8)
-mylegend$grobs[grob_name][[1]]$layout[8,c(1:4)] <- c(2,8,2,8)
-#text
-mylegend$grobs[grob_name][[1]]$layout[15,c(1:4)] <- c(2,10,2,10)
-
-ddm_point_legend = arrangeGrob(ddm_point_plot +theme(legend.position="none"),
-                               mylegend, nrow=2, heights=c(10, 1))
-
-ggsave(paste0('PointEst_DDM_Comp.', out_device), plot=ddm_point_legend, device = out_device, path = fig_path, width = 15, height = 7, units = "in", limitsize = FALSE)
-
-rm(ddm_point_legend, ddm_point_plot, mylegend, grob_name, tmp2)
+ggsave(paste0('PointEst_DDM_Comp.', out_device), device = out_device, path = fig_path, width = 7, height = 3.5, units = "in", limitsize = FALSE)
