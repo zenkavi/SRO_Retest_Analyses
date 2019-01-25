@@ -99,7 +99,7 @@ p4_t <- tmp_mngfl %>%
   filter(task == 'task') %>%
   ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc2.1)) +
   geom_violin()+
-  geom_point(data = lit_review %>% filter(task == 'task'), aes(x = factor(task_group, levels=rev(unique(task_group))), y = retest_reliability), color="#E69F00", size=2) +
+  geom_point(data = lit_review %>% filter(task == 'task'), aes(x = factor(task_group, levels=rev(unique(task_group))), y = retest_reliability), color="#E69F00", fill="#E69F00", size=2, shape=23) +
   theme(axis.text = element_text(size=6),
         plot.margin = unit(c(0,0,0,-0.25), "cm"),
         panel.background = element_blank(),
@@ -144,7 +144,7 @@ p5_t <- tmp %>%
   filter(task == 'survey') %>%
   ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc2.1)) +
   geom_violin()+
-  geom_point(data = lit_review %>% filter(task == 'survey'), aes(x = factor(task_group, levels=rev(unique(task_group))), y = retest_reliability), color="#56B4E9", size=2) +
+  geom_point(data = lit_review %>% filter(task == 'survey'), aes(x = factor(task_group, levels=rev(unique(task_group))), y = retest_reliability), color="#56B4E9",fill="#56B4E9", size=2, shape=23) +
   theme(axis.text = element_text(size=6),
         plot.margin = unit(c(0,0,0,-0.25), "cm"),
         panel.background = element_blank(),
