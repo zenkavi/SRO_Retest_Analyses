@@ -623,24 +623,24 @@ character vector</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoic3VtbWFyeShNQ01DZ2xtbShpY2MyLjEgfiB0YXNrLCBkYXRhPXJlbF9kZl9yZXAsIHZlcmJvc2U9RikpIn0= -->
 <pre class="r"><code>summary(MCMCglmm(icc2.1 ~ task, data=rel_df_rep, verbose=F))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG4gSXRlcmF0aW9ucyA9IDMwMDE6MTI5OTFcbiBUaGlubmluZyBpbnRlcnZhbCAgPSAxMFxuIFNhbXBsZSBzaXplICA9IDEwMDAgXG5cbiBESUM6IC0yMDkuMTE5IFxuXG4gUi1zdHJ1Y3R1cmU6ICB+dW5pdHNcblxuICAgICAgcG9zdC5tZWFuIGwtOTUlIENJIHUtOTUlIENJIGVmZi5zYW1wXG51bml0cyAgIDAuMDM2NDEgIDAuMDMyMTQgIDAuMDQxNTEgICAgIDEwMDBcblxuIExvY2F0aW9uIGVmZmVjdHM6IGljYzIuMSB+IHRhc2sgXG5cbiAgICAgICAgICAgIHBvc3QubWVhbiBsLTk1JSBDSSB1LTk1JSBDSSBlZmYuc2FtcCAgcE1DTUMgICAgXG4oSW50ZXJjZXB0KSAgICAwLjc4MzUgICAwLjc0MDggICAwLjgyNzYgICAgIDEwMDAgPDAuMDAxICoqKlxudGFza3Rhc2sgICAgICAtMC40MzAxICAtMC40Nzk3ICAtMC4zODM2ICAgICAxMDAwIDwwLjAwMSAqKipcbi0tLVxuU2lnbmlmLiBjb2RlczogIDAgJyoqKicgMC4wMDEgJyoqJyAwLjAxICcqJyAwLjA1ICcuJyAwLjEgJyAnIDFcbiJ9 -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG4gSXRlcmF0aW9ucyA9IDMwMDE6MTI5OTFcbiBUaGlubmluZyBpbnRlcnZhbCAgPSAxMFxuIFNhbXBsZSBzaXplICA9IDEwMDAgXG5cbiBESUM6IC0yMDkuMjI5NiBcblxuIFItc3RydWN0dXJlOiAgfnVuaXRzXG5cbiAgICAgIHBvc3QubWVhbiBsLTk1JSBDSSB1LTk1JSBDSSBlZmYuc2FtcFxudW5pdHMgICAwLjAzNjQ4ICAwLjAzMTk2ICAwLjA0MTQ2ICAgICAxMDAwXG5cbiBMb2NhdGlvbiBlZmZlY3RzOiBpY2MyLjEgfiB0YXNrIFxuXG4gICAgICAgICAgICBwb3N0Lm1lYW4gbC05NSUgQ0kgdS05NSUgQ0kgZWZmLnNhbXAgIHBNQ01DICAgIFxuKEludGVyY2VwdCkgICAgMC43ODI2ICAgMC43MzQwICAgMC44MjM4ICAgICAxMDAwIDwwLjAwMSAqKipcbnRhc2t0YXNrICAgICAgLTAuNDI5MyAgLTAuNDc2OCAgLTAuMzgwMSAgICAgMTAwMCA8MC4wMDEgKioqXG4tLS1cblNpZ25pZi4gY29kZXM6ICAwICcqKionIDAuMDAxICcqKicgMC4wMSAnKicgMC4wNSAnLicgMC4xICcgJyAxXG4ifQ== -->
 <pre><code>
  Iterations = 3001:12991
  Thinning interval  = 10
  Sample size  = 1000 
 
- DIC: -209.119 
+ DIC: -209.2296 
 
  R-structure:  ~units
 
       post.mean l-95% CI u-95% CI eff.samp
-units   0.03641  0.03214  0.04151     1000
+units   0.03648  0.03196  0.04146     1000
 
  Location effects: icc2.1 ~ task 
 
             post.mean l-95% CI u-95% CI eff.samp  pMCMC    
-(Intercept)    0.7835   0.7408   0.8276     1000 &lt;0.001 ***
-tasktask      -0.4301  -0.4797  -0.3836     1000 &lt;0.001 ***
+(Intercept)    0.7826   0.7340   0.8238     1000 &lt;0.001 ***
+tasktask      -0.4293  -0.4768  -0.3801     1000 &lt;0.001 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <!-- rnb-output-end -->
@@ -662,24 +662,24 @@ tmp = measure_labels %&gt;%
 
 summary(MCMCglmm(icc2.1 ~ num_all_trials, data=tmp, verbose=F))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG4gSXRlcmF0aW9ucyA9IDMwMDE6MTI5OTFcbiBUaGlubmluZyBpbnRlcnZhbCAgPSAxMFxuIFNhbXBsZSBzaXplICA9IDEwMDAgXG5cbiBESUM6IC0xNS42NjU0MSBcblxuIFItc3RydWN0dXJlOiAgfnVuaXRzXG5cbiAgICAgIHBvc3QubWVhbiBsLTk1JSBDSSB1LTk1JSBDSSBlZmYuc2FtcFxudW5pdHMgICAgIDAuMDQ3ICAgMC4wMzQxICAwLjA2MTU1ICAgICAxMDAwXG5cbiBMb2NhdGlvbiBlZmZlY3RzOiBpY2MyLjEgfiBudW1fYWxsX3RyaWFscyBcblxuICAgICAgICAgICAgICAgIHBvc3QubWVhbiAgIGwtOTUlIENJICAgdS05NSUgQ0kgZWZmLnNhbXAgIHBNQ01DICAgIFxuKEludGVyY2VwdCkgICAgIDAuMzA4Mzc2OSAgMC4yNDQ4OTM1ICAwLjM1OTk4MzYgICAgIDEwMDAgPDAuMDAxICoqKlxubnVtX2FsbF90cmlhbHMgIDAuMDAwMTcyMiAtMC4wMDAxOTgxICAwLjAwMDUzMDEgICAgIDEwMDAgIDAuMzU4ICAgIFxuLS0tXG5TaWduaWYuIGNvZGVzOiAgMCAnKioqJyAwLjAwMSAnKionIDAuMDEgJyonIDAuMDUgJy4nIDAuMSAnICcgMVxuIn0= -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG4gSXRlcmF0aW9ucyA9IDMwMDE6MTI5OTFcbiBUaGlubmluZyBpbnRlcnZhbCAgPSAxMFxuIFNhbXBsZSBzaXplICA9IDEwMDAgXG5cbiBESUM6IC0xNS43NzI1NSBcblxuIFItc3RydWN0dXJlOiAgfnVuaXRzXG5cbiAgICAgIHBvc3QubWVhbiBsLTk1JSBDSSB1LTk1JSBDSSBlZmYuc2FtcFxudW5pdHMgICAgMC4wNDcxICAwLjAzMzQ0ICAwLjA2Mjk4ICAgICAxMDAwXG5cbiBMb2NhdGlvbiBlZmZlY3RzOiBpY2MyLjEgfiBudW1fYWxsX3RyaWFscyBcblxuICAgICAgICAgICAgICAgIHBvc3QubWVhbiAgIGwtOTUlIENJICAgdS05NSUgQ0kgZWZmLnNhbXAgIHBNQ01DICAgIFxuKEludGVyY2VwdCkgICAgIDAuMzA5MTc0OSAgMC4yNDkyNDI1ICAwLjM2OTk3MDQgICAgIDEwNjggPDAuMDAxICoqKlxubnVtX2FsbF90cmlhbHMgIDAuMDAwMTcyOCAtMC4wMDAyMjQ3ICAwLjAwMDUwNTMgICAgIDEwMDAgIDAuMzU2ICAgIFxuLS0tXG5TaWduaWYuIGNvZGVzOiAgMCAnKioqJyAwLjAwMSAnKionIDAuMDEgJyonIDAuMDUgJy4nIDAuMSAnICcgMVxuIn0= -->
 <pre><code>
  Iterations = 3001:12991
  Thinning interval  = 10
  Sample size  = 1000 
 
- DIC: -15.66541 
+ DIC: -15.77255 
 
  R-structure:  ~units
 
       post.mean l-95% CI u-95% CI eff.samp
-units     0.047   0.0341  0.06155     1000
+units    0.0471  0.03344  0.06298     1000
 
  Location effects: icc2.1 ~ num_all_trials 
 
                 post.mean   l-95% CI   u-95% CI eff.samp  pMCMC    
-(Intercept)     0.3083769  0.2448935  0.3599836     1000 &lt;0.001 ***
-num_all_trials  0.0001722 -0.0001981  0.0005301     1000  0.358    
+(Intercept)     0.3091749  0.2492425  0.3699704     1068 &lt;0.001 ***
+num_all_trials  0.0001728 -0.0002247  0.0005053     1000  0.356    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <!-- rnb-output-end -->
@@ -704,24 +704,24 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoic3VtbWFyeShNQ01DZ2xtbShpY2MyLjEgfiBjb250cmFzdCwgZGF0YT10bXAsIHZlcmJvc2U9RkFMU0UpKSJ9 -->
 <pre class="r"><code>summary(MCMCglmm(icc2.1 ~ contrast, data=tmp, verbose=FALSE))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG4gSXRlcmF0aW9ucyA9IDMwMDE6MTI5OTFcbiBUaGlubmluZyBpbnRlcnZhbCAgPSAxMFxuIFNhbXBsZSBzaXplICA9IDEwMDAgXG5cbiBESUM6IC0yODMuODk0MyBcblxuIFItc3RydWN0dXJlOiAgfnVuaXRzXG5cbiAgICAgIHBvc3QubWVhbiBsLTk1JSBDSSB1LTk1JSBDSSBlZmYuc2FtcFxudW5pdHMgICAwLjAyMDA4ICAwLjAxNjU0ICAwLjAyMzMxICAgICAxMDAwXG5cbiBMb2NhdGlvbiBlZmZlY3RzOiBpY2MyLjEgfiBjb250cmFzdCBcblxuICAgICAgICAgICAgICAgICAgICAgcG9zdC5tZWFuIGwtOTUlIENJIHUtOTUlIENJIGVmZi5zYW1wICBwTUNNQyAgICBcbihJbnRlcmNlcHQpICAgICAgICAgICAgIDAuMTYwOCAgIDAuMTMzNCAgIDAuMTg1MyAgICAgMTEwMiA8MC4wMDEgKioqXG5jb250cmFzdG5vbi1jb250cmFzdCAgICAwLjI4MjAgICAwLjI0NjEgICAwLjMxNDkgICAgIDEwMDAgPDAuMDAxICoqKlxuLS0tXG5TaWduaWYuIGNvZGVzOiAgMCAnKioqJyAwLjAwMSAnKionIDAuMDEgJyonIDAuMDUgJy4nIDAuMSAnICcgMVxuIn0= -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG4gSXRlcmF0aW9ucyA9IDMwMDE6MTI5OTFcbiBUaGlubmluZyBpbnRlcnZhbCAgPSAxMFxuIFNhbXBsZSBzaXplICA9IDEwMDAgXG5cbiBESUM6IC0yODMuNzY1NyBcblxuIFItc3RydWN0dXJlOiAgfnVuaXRzXG5cbiAgICAgIHBvc3QubWVhbiBsLTk1JSBDSSB1LTk1JSBDSSBlZmYuc2FtcFxudW5pdHMgICAwLjAyMDAzICAwLjAxNzAzICAwLjAyMzYzICAgICAxMDAwXG5cbiBMb2NhdGlvbiBlZmZlY3RzOiBpY2MyLjEgfiBjb250cmFzdCBcblxuICAgICAgICAgICAgICAgICAgICAgcG9zdC5tZWFuIGwtOTUlIENJIHUtOTUlIENJIGVmZi5zYW1wICBwTUNNQyAgICBcbihJbnRlcmNlcHQpICAgICAgICAgICAgIDAuMTYwMyAgIDAuMTM0NCAgIDAuMTg3MCAgICAgMTAwMCA8MC4wMDEgKioqXG5jb250cmFzdG5vbi1jb250cmFzdCAgICAwLjI4MjQgICAwLjI0OTkgICAwLjMxNzMgICAgIDEyMTMgPDAuMDAxICoqKlxuLS0tXG5TaWduaWYuIGNvZGVzOiAgMCAnKioqJyAwLjAwMSAnKionIDAuMDEgJyonIDAuMDUgJy4nIDAuMSAnICcgMVxuIn0= -->
 <pre><code>
  Iterations = 3001:12991
  Thinning interval  = 10
  Sample size  = 1000 
 
- DIC: -283.8943 
+ DIC: -283.7657 
 
  R-structure:  ~units
 
       post.mean l-95% CI u-95% CI eff.samp
-units   0.02008  0.01654  0.02331     1000
+units   0.02003  0.01703  0.02363     1000
 
  Location effects: icc2.1 ~ contrast 
 
                      post.mean l-95% CI u-95% CI eff.samp  pMCMC    
-(Intercept)             0.1608   0.1334   0.1853     1102 &lt;0.001 ***
-contrastnon-contrast    0.2820   0.2461   0.3149     1000 &lt;0.001 ***
+(Intercept)             0.1603   0.1344   0.1870     1000 &lt;0.001 ***
+contrastnon-contrast    0.2824   0.2499   0.3173     1213 &lt;0.001 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <!-- rnb-output-end -->
@@ -733,25 +733,25 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoic3VtbWFyeShNQ01DZ2xtbShpY2MyLjEgfiByYXdfZml0LCBkYXRhPXRtcCAlPiUgZmlsdGVyKGNvbnRyYXN0ID09IFwibm9uLWNvbnRyYXN0XCIpLCB2ZXJib3NlPUZBTFNFKSkifQ== -->
 <pre class="r"><code>summary(MCMCglmm(icc2.1 ~ raw_fit, data=tmp %&gt;% filter(contrast == &quot;non-contrast&quot;), verbose=FALSE))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG4gSXRlcmF0aW9ucyA9IDMwMDE6MTI5OTFcbiBUaGlubmluZyBpbnRlcnZhbCAgPSAxMFxuIFNhbXBsZSBzaXplICA9IDEwMDAgXG5cbiBESUM6IC0xNTkuNzA0MSBcblxuIFItc3RydWN0dXJlOiAgfnVuaXRzXG5cbiAgICAgIHBvc3QubWVhbiBsLTk1JSBDSSB1LTk1JSBDSSBlZmYuc2FtcFxudW5pdHMgICAwLjAyMTA3ICAgMC4wMTY3ICAwLjAyNTkxICAgICAxMDAwXG5cbiBMb2NhdGlvbiBlZmZlY3RzOiBpY2MyLjEgfiByYXdfZml0IFxuXG4gICAgICAgICAgICBwb3N0Lm1lYW4gbC05NSUgQ0kgdS05NSUgQ0kgZWZmLnNhbXAgIHBNQ01DICAgIFxuKEludGVyY2VwdCkgICAwLjQ4MTE5ICAwLjQ0MzcxICAwLjUyNjA4ICAgICAxMDAwIDwwLjAwMSAqKipcbnJhd19maXRoZGRtICAtMC4wOTY3NCAtMC4xNTc0NiAtMC4wMzE5NSAgICAgMTAwMCAgMC4wMDQgKiogXG5yYXdfZml0cmF3ICAgLTAuMDI1NTUgLTAuMDc3MTEgIDAuMDMwNjEgICAgIDEwOTcgIDAuMzg2ICAgIFxuLS0tXG5TaWduaWYuIGNvZGVzOiAgMCAnKioqJyAwLjAwMSAnKionIDAuMDEgJyonIDAuMDUgJy4nIDAuMSAnICcgMVxuIn0= -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG4gSXRlcmF0aW9ucyA9IDMwMDE6MTI5OTFcbiBUaGlubmluZyBpbnRlcnZhbCAgPSAxMFxuIFNhbXBsZSBzaXplICA9IDEwMDAgXG5cbiBESUM6IC0xNTkuODU3OSBcblxuIFItc3RydWN0dXJlOiAgfnVuaXRzXG5cbiAgICAgIHBvc3QubWVhbiBsLTk1JSBDSSB1LTk1JSBDSSBlZmYuc2FtcFxudW5pdHMgICAwLjAyMTAxICAwLjAxNjA4ICAgMC4wMjU3ICAgICAxMDAwXG5cbiBMb2NhdGlvbiBlZmZlY3RzOiBpY2MyLjEgfiByYXdfZml0IFxuXG4gICAgICAgICAgICBwb3N0Lm1lYW4gbC05NSUgQ0kgdS05NSUgQ0kgZWZmLnNhbXAgIHBNQ01DICAgIFxuKEludGVyY2VwdCkgICAwLjQ4MzE1ICAwLjQ0MDEwICAwLjUyNDQ5ICAgMTAwMC4wIDwwLjAwMSAqKipcbnJhd19maXRoZGRtICAtMC4wOTc1OSAtMC4xNTUyMyAtMC4wMzQwNyAgICA4OTMuOCAgMC4wMDIgKiogXG5yYXdfZml0cmF3ICAgLTAuMDI4MDQgLTAuMDc4NDUgIDAuMDI2MzkgICAxMDAwLjAgIDAuMjc2ICAgIFxuLS0tXG5TaWduaWYuIGNvZGVzOiAgMCAnKioqJyAwLjAwMSAnKionIDAuMDEgJyonIDAuMDUgJy4nIDAuMSAnICcgMVxuIn0= -->
 <pre><code>
  Iterations = 3001:12991
  Thinning interval  = 10
  Sample size  = 1000 
 
- DIC: -159.7041 
+ DIC: -159.8579 
 
  R-structure:  ~units
 
       post.mean l-95% CI u-95% CI eff.samp
-units   0.02107   0.0167  0.02591     1000
+units   0.02101  0.01608   0.0257     1000
 
  Location effects: icc2.1 ~ raw_fit 
 
             post.mean l-95% CI u-95% CI eff.samp  pMCMC    
-(Intercept)   0.48119  0.44371  0.52608     1000 &lt;0.001 ***
-raw_fithddm  -0.09674 -0.15746 -0.03195     1000  0.004 ** 
-raw_fitraw   -0.02555 -0.07711  0.03061     1097  0.386    
+(Intercept)   0.48315  0.44010  0.52449   1000.0 &lt;0.001 ***
+raw_fithddm  -0.09759 -0.15523 -0.03407    893.8  0.002 ** 
+raw_fitraw   -0.02804 -0.07845  0.02639   1000.0  0.276    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <!-- rnb-output-end -->
@@ -763,25 +763,25 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoic3VtbWFyeShNQ01DZ2xtbShpY2MyLjEgfiByYXdfZml0LCBkYXRhPXRtcCAlPiUgZmlsdGVyKGNvbnRyYXN0ID09IFwiY29udHJhc3RcIiksIHZlcmJvc2U9RkFMU0UpKSJ9 -->
 <pre class="r"><code>summary(MCMCglmm(icc2.1 ~ raw_fit, data=tmp %&gt;% filter(contrast == &quot;contrast&quot;), verbose=FALSE))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG4gSXRlcmF0aW9ucyA9IDMwMDE6MTI5OTFcbiBUaGlubmluZyBpbnRlcnZhbCAgPSAxMFxuIFNhbXBsZSBzaXplICA9IDEwMDAgXG5cbiBESUM6IC0xMzUuMTc1MyBcblxuIFItc3RydWN0dXJlOiAgfnVuaXRzXG5cbiAgICAgIHBvc3QubWVhbiBsLTk1JSBDSSB1LTk1JSBDSSBlZmYuc2FtcFxudW5pdHMgICAwLjAxNjE5ICAwLjAxMjE4ICAwLjAyMDc0ICAgICAxMDAwXG5cbiBMb2NhdGlvbiBlZmZlY3RzOiBpY2MyLjEgfiByYXdfZml0IFxuXG4gICAgICAgICAgICBwb3N0Lm1lYW4gIGwtOTUlIENJICB1LTk1JSBDSSBlZmYuc2FtcCAgcE1DTUMgICAgXG4oSW50ZXJjZXB0KSAgMC4xMjcwMjggIDAuMDg5NzIyICAwLjE1NzU2MyAgICAgMTAwMCA8MC4wMDEgKioqXG5yYXdfZml0aGRkbSAgMC4wOTY2NzQgIDAuMDI5NzYxICAwLjE2MDA5OSAgICAgMTAwMCAgMC4wMDIgKiogXG5yYXdfZml0cmF3ICAgMC4wNDg1OTEgLTAuMDAyNzE2ICAwLjEwNTE1NSAgICAgMTExMiAgMC4wODggLiAgXG4tLS1cblNpZ25pZi4gY29kZXM6ICAwICcqKionIDAuMDAxICcqKicgMC4wMSAnKicgMC4wNSAnLicgMC4xICcgJyAxXG4ifQ== -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG4gSXRlcmF0aW9ucyA9IDMwMDE6MTI5OTFcbiBUaGlubmluZyBpbnRlcnZhbCAgPSAxMFxuIFNhbXBsZSBzaXplICA9IDEwMDAgXG5cbiBESUM6IC0xMzUuMTc0OCBcblxuIFItc3RydWN0dXJlOiAgfnVuaXRzXG5cbiAgICAgIHBvc3QubWVhbiBsLTk1JSBDSSB1LTk1JSBDSSBlZmYuc2FtcFxudW5pdHMgICAwLjAxNjI4ICAwLjAxMjIzICAgMC4wMjA3ICAgICAxMDAwXG5cbiBMb2NhdGlvbiBlZmZlY3RzOiBpY2MyLjEgfiByYXdfZml0IFxuXG4gICAgICAgICAgICBwb3N0Lm1lYW4gIGwtOTUlIENJICB1LTk1JSBDSSBlZmYuc2FtcCAgcE1DTUMgICAgXG4oSW50ZXJjZXB0KSAgMC4xMjY0NzQgIDAuMDkwNTE2ICAwLjE2MjY3NiAgICAgMTAwMCA8MC4wMDEgKioqXG5yYXdfZml0aGRkbSAgMC4wOTYwMjggIDAuMDIyMTAzICAwLjE1NzI3NSAgICAgMTAwMCAgMC4wMTIgKiAgXG5yYXdfZml0cmF3ICAgMC4wNDc5NzUgLTAuMDAyMjQ1ICAwLjEwMzc0MyAgICAgMTAwMCAgMC4wODIgLiAgXG4tLS1cblNpZ25pZi4gY29kZXM6ICAwICcqKionIDAuMDAxICcqKicgMC4wMSAnKicgMC4wNSAnLicgMC4xICcgJyAxXG4ifQ== -->
 <pre><code>
  Iterations = 3001:12991
  Thinning interval  = 10
  Sample size  = 1000 
 
- DIC: -135.1753 
+ DIC: -135.1748 
 
  R-structure:  ~units
 
       post.mean l-95% CI u-95% CI eff.samp
-units   0.01619  0.01218  0.02074     1000
+units   0.01628  0.01223   0.0207     1000
 
  Location effects: icc2.1 ~ raw_fit 
 
             post.mean  l-95% CI  u-95% CI eff.samp  pMCMC    
-(Intercept)  0.127028  0.089722  0.157563     1000 &lt;0.001 ***
-raw_fithddm  0.096674  0.029761  0.160099     1000  0.002 ** 
-raw_fitraw   0.048591 -0.002716  0.105155     1112  0.088 .  
+(Intercept)  0.126474  0.090516  0.162676     1000 &lt;0.001 ***
+raw_fithddm  0.096028  0.022103  0.157275     1000  0.012 *  
+raw_fitraw   0.047975 -0.002245  0.103743     1000  0.082 .  
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <!-- rnb-output-end -->
@@ -810,24 +810,24 @@ character vector</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoic3VtbWFyeShNQ01DZ2xtbShpY2MyLjEgfiB0YXNrLCBkYXRhPXJlbF9kZl9leCwgdmVyYm9zZT1GKSkifQ== -->
 <pre class="r"><code>summary(MCMCglmm(icc2.1 ~ task, data=rel_df_ex, verbose=F))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG4gSXRlcmF0aW9ucyA9IDMwMDE6MTI5OTFcbiBUaGlubmluZyBpbnRlcnZhbCAgPSAxMFxuIFNhbXBsZSBzaXplICA9IDEwMDAgXG5cbiBESUM6IC0yNTguOTcwNiBcblxuIFItc3RydWN0dXJlOiAgfnVuaXRzXG5cbiAgICAgIHBvc3QubWVhbiBsLTk1JSBDSSB1LTk1JSBDSSBlZmYuc2FtcFxudW5pdHMgICAwLjAzMTcxICAwLjAyNzkxICAwLjAzNjQzICAgICAxMTEzXG5cbiBMb2NhdGlvbiBlZmZlY3RzOiBpY2MyLjEgfiB0YXNrIFxuXG4gICAgICAgICAgICBwb3N0Lm1lYW4gbC05NSUgQ0kgdS05NSUgQ0kgZWZmLnNhbXAgIHBNQ01DICAgIFxuKEludGVyY2VwdCkgICAgMC43ODMwICAgMC43NDA1ICAgMC44MjI2ICAgICAxMDAwIDwwLjAwMSAqKipcbnRhc2t0YXNrICAgICAgLTAuNDA3OSAgLTAuNDUwMiAgLTAuMzU5OCAgICAgMTAwMCA8MC4wMDEgKioqXG4tLS1cblNpZ25pZi4gY29kZXM6ICAwICcqKionIDAuMDAxICcqKicgMC4wMSAnKicgMC4wNSAnLicgMC4xICcgJyAxXG4ifQ== -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG4gSXRlcmF0aW9ucyA9IDMwMDE6MTI5OTFcbiBUaGlubmluZyBpbnRlcnZhbCAgPSAxMFxuIFNhbXBsZSBzaXplICA9IDEwMDAgXG5cbiBESUM6IC0yNTkuMDc5MyBcblxuIFItc3RydWN0dXJlOiAgfnVuaXRzXG5cbiAgICAgIHBvc3QubWVhbiBsLTk1JSBDSSB1LTk1JSBDSSBlZmYuc2FtcFxudW5pdHMgICAwLjAzMTc0ICAwLjAyNzkyICAwLjAzNjIyICAgICAxMDAwXG5cbiBMb2NhdGlvbiBlZmZlY3RzOiBpY2MyLjEgfiB0YXNrIFxuXG4gICAgICAgICAgICBwb3N0Lm1lYW4gbC05NSUgQ0kgdS05NSUgQ0kgZWZmLnNhbXAgIHBNQ01DICAgIFxuKEludGVyY2VwdCkgICAgMC43ODM1ICAgMC43NDMwICAgMC44MjQ1ICAgICAxMDAwIDwwLjAwMSAqKipcbnRhc2t0YXNrICAgICAgLTAuNDA4NiAgLTAuNDUxNiAgLTAuMzY0MSAgICAgMTAwMCA8MC4wMDEgKioqXG4tLS1cblNpZ25pZi4gY29kZXM6ICAwICcqKionIDAuMDAxICcqKicgMC4wMSAnKicgMC4wNSAnLicgMC4xICcgJyAxXG4ifQ== -->
 <pre><code>
  Iterations = 3001:12991
  Thinning interval  = 10
  Sample size  = 1000 
 
- DIC: -258.9706 
+ DIC: -259.0793 
 
  R-structure:  ~units
 
       post.mean l-95% CI u-95% CI eff.samp
-units   0.03171  0.02791  0.03643     1113
+units   0.03174  0.02792  0.03622     1000
 
  Location effects: icc2.1 ~ task 
 
             post.mean l-95% CI u-95% CI eff.samp  pMCMC    
-(Intercept)    0.7830   0.7405   0.8226     1000 &lt;0.001 ***
-tasktask      -0.4079  -0.4502  -0.3598     1000 &lt;0.001 ***
+(Intercept)    0.7835   0.7430   0.8245     1000 &lt;0.001 ***
+tasktask      -0.4086  -0.4516  -0.3641     1000 &lt;0.001 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <!-- rnb-output-end -->
@@ -847,24 +847,24 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 
 summary(MCMCglmm(icc2.1 ~ num_all_trials, data=tmp, verbose=F))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG4gSXRlcmF0aW9ucyA9IDMwMDE6MTI5OTFcbiBUaGlubmluZyBpbnRlcnZhbCAgPSAxMFxuIFNhbXBsZSBzaXplICA9IDEwMDAgXG5cbiBESUM6IC0yNC45ODg0OCBcblxuIFItc3RydWN0dXJlOiAgfnVuaXRzXG5cbiAgICAgIHBvc3QubWVhbiBsLTk1JSBDSSB1LTk1JSBDSSBlZmYuc2FtcFxudW5pdHMgICAgIDAuMDQxICAwLjAyOTgxICAwLjA1NTM4ICAgICAxMDAwXG5cbiBMb2NhdGlvbiBlZmZlY3RzOiBpY2MyLjEgfiBudW1fYWxsX3RyaWFscyBcblxuICAgICAgICAgICAgICAgIHBvc3QubWVhbiAgIGwtOTUlIENJICAgdS05NSUgQ0kgZWZmLnNhbXAgIHBNQ01DICAgIFxuKEludGVyY2VwdCkgICAgIDMuNDg0ZS0wMSAgMi45MDdlLTAxICA0LjEwNmUtMDEgICAgIDEwMDAgPDAuMDAxICoqKlxubnVtX2FsbF90cmlhbHMgIDguMDQ1ZS0wNSAtMy4wNTZlLTA0ICA0LjQxOGUtMDQgICAgIDE0MzMgIDAuNjY0ICAgIFxuLS0tXG5TaWduaWYuIGNvZGVzOiAgMCAnKioqJyAwLjAwMSAnKionIDAuMDEgJyonIDAuMDUgJy4nIDAuMSAnICcgMVxuIn0= -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG4gSXRlcmF0aW9ucyA9IDMwMDE6MTI5OTFcbiBUaGlubmluZyBpbnRlcnZhbCAgPSAxMFxuIFNhbXBsZSBzaXplICA9IDEwMDAgXG5cbiBESUM6IC0yNC45NzQ5OSBcblxuIFItc3RydWN0dXJlOiAgfnVuaXRzXG5cbiAgICAgIHBvc3QubWVhbiBsLTk1JSBDSSB1LTk1JSBDSSBlZmYuc2FtcFxudW5pdHMgICAwLjA0MTA0ICAwLjAyNzY4ICAwLjA1NDM4ICAgIDg1Ni42XG5cbiBMb2NhdGlvbiBlZmZlY3RzOiBpY2MyLjEgfiBudW1fYWxsX3RyaWFscyBcblxuICAgICAgICAgICAgICAgIHBvc3QubWVhbiAgIGwtOTUlIENJICAgdS05NSUgQ0kgZWZmLnNhbXAgIHBNQ01DICAgIFxuKEludGVyY2VwdCkgICAgIDMuNDgwZS0wMSAgMi45ODJlLTAxICA0LjA4MGUtMDEgICAgOTc5LjQgPDAuMDAxICoqKlxubnVtX2FsbF90cmlhbHMgIDcuMjk0ZS0wNSAtMi43OThlLTA0ICA0LjA3NmUtMDQgICAxMDAwLjAgIDAuNjY0ICAgIFxuLS0tXG5TaWduaWYuIGNvZGVzOiAgMCAnKioqJyAwLjAwMSAnKionIDAuMDEgJyonIDAuMDUgJy4nIDAuMSAnICcgMVxuIn0= -->
 <pre><code>
  Iterations = 3001:12991
  Thinning interval  = 10
  Sample size  = 1000 
 
- DIC: -24.98848 
+ DIC: -24.97499 
 
  R-structure:  ~units
 
       post.mean l-95% CI u-95% CI eff.samp
-units     0.041  0.02981  0.05538     1000
+units   0.04104  0.02768  0.05438    856.6
 
  Location effects: icc2.1 ~ num_all_trials 
 
                 post.mean   l-95% CI   u-95% CI eff.samp  pMCMC    
-(Intercept)     3.484e-01  2.907e-01  4.106e-01     1000 &lt;0.001 ***
-num_all_trials  8.045e-05 -3.056e-04  4.418e-04     1433  0.664    
+(Intercept)     3.480e-01  2.982e-01  4.080e-01    979.4 &lt;0.001 ***
+num_all_trials  7.294e-05 -2.798e-04  4.076e-04   1000.0  0.664    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <!-- rnb-output-end -->
@@ -889,24 +889,24 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoic3VtbWFyeShNQ01DZ2xtbShpY2MyLjEgfiBjb250cmFzdCwgZGF0YT10bXAsIHZlcmJvc2U9RkFMU0UpKSJ9 -->
 <pre class="r"><code>summary(MCMCglmm(icc2.1 ~ contrast, data=tmp, verbose=FALSE))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG4gSXRlcmF0aW9ucyA9IDMwMDE6MTI5OTFcbiBUaGlubmluZyBpbnRlcnZhbCAgPSAxMFxuIFNhbXBsZSBzaXplICA9IDEwMDAgXG5cbiBESUM6IC0yOTIuNTY1MyBcblxuIFItc3RydWN0dXJlOiAgfnVuaXRzXG5cbiAgICAgIHBvc3QubWVhbiBsLTk1JSBDSSB1LTk1JSBDSSBlZmYuc2FtcFxudW5pdHMgICAwLjAxODAzICAwLjAxNDg1ICAwLjAyMTIzICAgICAxMDAwXG5cbiBMb2NhdGlvbiBlZmZlY3RzOiBpY2MyLjEgfiBjb250cmFzdCBcblxuICAgICAgICAgICAgICAgICAgICAgcG9zdC5tZWFuIGwtOTUlIENJIHUtOTUlIENJIGVmZi5zYW1wICBwTUNNQyAgICBcbihJbnRlcmNlcHQpICAgICAgICAgICAgIDAuMTg2MCAgIDAuMTU3NiAgIDAuMjE2MCAgICAgMTA0NSA8MC4wMDEgKioqXG5jb250cmFzdG5vbi1jb250cmFzdCAgICAwLjI2MjggICAwLjIyODEgICAwLjI5NzEgICAgIDEyOTIgPDAuMDAxICoqKlxuLS0tXG5TaWduaWYuIGNvZGVzOiAgMCAnKioqJyAwLjAwMSAnKionIDAuMDEgJyonIDAuMDUgJy4nIDAuMSAnICcgMVxuIn0= -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG4gSXRlcmF0aW9ucyA9IDMwMDE6MTI5OTFcbiBUaGlubmluZyBpbnRlcnZhbCAgPSAxMFxuIFNhbXBsZSBzaXplICA9IDEwMDAgXG5cbiBESUM6IC0yOTIuNTU4OSBcblxuIFItc3RydWN0dXJlOiAgfnVuaXRzXG5cbiAgICAgIHBvc3QubWVhbiBsLTk1JSBDSSB1LTk1JSBDSSBlZmYuc2FtcFxudW5pdHMgICAwLjAxNzk1ICAgMC4wMTQ5ICAwLjAyMDg3ICAgICAxMDAwXG5cbiBMb2NhdGlvbiBlZmZlY3RzOiBpY2MyLjEgfiBjb250cmFzdCBcblxuICAgICAgICAgICAgICAgICAgICAgcG9zdC5tZWFuIGwtOTUlIENJIHUtOTUlIENJIGVmZi5zYW1wICBwTUNNQyAgICBcbihJbnRlcmNlcHQpICAgICAgICAgICAgIDAuMTg2MiAgIDAuMTU5NyAgIDAuMjEzMiAgICAgMTAwMCA8MC4wMDEgKioqXG5jb250cmFzdG5vbi1jb250cmFzdCAgICAwLjI2MjIgICAwLjIyODQgICAwLjI5NDYgICAgIDEwMDAgPDAuMDAxICoqKlxuLS0tXG5TaWduaWYuIGNvZGVzOiAgMCAnKioqJyAwLjAwMSAnKionIDAuMDEgJyonIDAuMDUgJy4nIDAuMSAnICcgMVxuIn0= -->
 <pre><code>
  Iterations = 3001:12991
  Thinning interval  = 10
  Sample size  = 1000 
 
- DIC: -292.5653 
+ DIC: -292.5589 
 
  R-structure:  ~units
 
       post.mean l-95% CI u-95% CI eff.samp
-units   0.01803  0.01485  0.02123     1000
+units   0.01795   0.0149  0.02087     1000
 
  Location effects: icc2.1 ~ contrast 
 
                      post.mean l-95% CI u-95% CI eff.samp  pMCMC    
-(Intercept)             0.1860   0.1576   0.2160     1045 &lt;0.001 ***
-contrastnon-contrast    0.2628   0.2281   0.2971     1292 &lt;0.001 ***
+(Intercept)             0.1862   0.1597   0.2132     1000 &lt;0.001 ***
+contrastnon-contrast    0.2622   0.2284   0.2946     1000 &lt;0.001 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <!-- rnb-output-end -->
@@ -923,25 +923,25 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 == : some fixed effects are not estimable and have been removed. Use
 singular.ok=TRUE to sample these effects, but use an informative prior!</code></pre>
 <!-- rnb-warning-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG4gSXRlcmF0aW9ucyA9IDMwMDE6MTI5OTFcbiBUaGlubmluZyBpbnRlcnZhbCAgPSAxMFxuIFNhbXBsZSBzaXplICA9IDEwMDAgXG5cbiBESUM6IC0xNzcuODE5MSBcblxuIFItc3RydWN0dXJlOiAgfnVuaXRzXG5cbiAgICAgIHBvc3QubWVhbiBsLTk1JSBDSSB1LTk1JSBDSSBlZmYuc2FtcFxudW5pdHMgICAwLjAxODQ0ICAwLjAxNDc3ICAwLjAyMjQ1ICAgICAxMDAwXG5cbiBMb2NhdGlvbiBlZmZlY3RzOiBpY2MyLjEgfiByYXdfZml0IFxuXG4gICAgICAgICAgICBwb3N0Lm1lYW4gbC05NSUgQ0kgdS05NSUgQ0kgZWZmLnNhbXAgIHBNQ01DICAgIFxuKEludGVyY2VwdCkgICAwLjQ4MTM3ICAwLjQ0MzM1ICAwLjUyNDg2ICAgICAxMDAwIDwwLjAwMSAqKipcbnJhd19maXRoZGRtICAtMC4wOTQ0OSAtMC4xNTAxMCAtMC4wNDA3MyAgICAgMTAwMCA8MC4wMDEgKioqXG5yYXdfZml0cmF3ICAgLTAuMDEzMjQgLTAuMDY1MDYgIDAuMDM3MjAgICAgIDEwMDAgIDAuNTg2ICAgIFxuLS0tXG5TaWduaWYuIGNvZGVzOiAgMCAnKioqJyAwLjAwMSAnKionIDAuMDEgJyonIDAuMDUgJy4nIDAuMSAnICcgMVxuIn0= -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG4gSXRlcmF0aW9ucyA9IDMwMDE6MTI5OTFcbiBUaGlubmluZyBpbnRlcnZhbCAgPSAxMFxuIFNhbXBsZSBzaXplICA9IDEwMDAgXG5cbiBESUM6IC0xNzcuODIyNSBcblxuIFItc3RydWN0dXJlOiAgfnVuaXRzXG5cbiAgICAgIHBvc3QubWVhbiBsLTk1JSBDSSB1LTk1JSBDSSBlZmYuc2FtcFxudW5pdHMgICAwLjAxODU2ICAwLjAxNDQ1ICAwLjAyMzEzICAgICAxMDAwXG5cbiBMb2NhdGlvbiBlZmZlY3RzOiBpY2MyLjEgfiByYXdfZml0IFxuXG4gICAgICAgICAgICBwb3N0Lm1lYW4gbC05NSUgQ0kgdS05NSUgQ0kgZWZmLnNhbXAgIHBNQ01DICAgIFxuKEludGVyY2VwdCkgICAwLjQ4MTk5ICAwLjQ0MDc3ICAwLjUyMTg0ICAgICAxMTI0IDwwLjAwMSAqKipcbnJhd19maXRoZGRtICAtMC4wOTY4NiAtMC4xNTkyMyAtMC4wNDEzMyAgICAgMTE0NCAgMC4wMDIgKiogXG5yYXdfZml0cmF3ICAgLTAuMDEzOTQgLTAuMDU5NTkgIDAuMDQyNDcgICAgIDEwMDAgIDAuNjIwICAgIFxuLS0tXG5TaWduaWYuIGNvZGVzOiAgMCAnKioqJyAwLjAwMSAnKionIDAuMDEgJyonIDAuMDUgJy4nIDAuMSAnICcgMVxuIn0= -->
 <pre><code>
  Iterations = 3001:12991
  Thinning interval  = 10
  Sample size  = 1000 
 
- DIC: -177.8191 
+ DIC: -177.8225 
 
  R-structure:  ~units
 
       post.mean l-95% CI u-95% CI eff.samp
-units   0.01844  0.01477  0.02245     1000
+units   0.01856  0.01445  0.02313     1000
 
  Location effects: icc2.1 ~ raw_fit 
 
             post.mean l-95% CI u-95% CI eff.samp  pMCMC    
-(Intercept)   0.48137  0.44335  0.52486     1000 &lt;0.001 ***
-raw_fithddm  -0.09449 -0.15010 -0.04073     1000 &lt;0.001 ***
-raw_fitraw   -0.01324 -0.06506  0.03720     1000  0.586    
+(Intercept)   0.48199  0.44077  0.52184     1124 &lt;0.001 ***
+raw_fithddm  -0.09686 -0.15923 -0.04133     1144  0.002 ** 
+raw_fitraw   -0.01394 -0.05959  0.04247     1000  0.620    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <!-- rnb-output-end -->
@@ -958,25 +958,25 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 == : some fixed effects are not estimable and have been removed. Use
 singular.ok=TRUE to sample these effects, but use an informative prior!</code></pre>
 <!-- rnb-warning-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG4gSXRlcmF0aW9ucyA9IDMwMDE6MTI5OTFcbiBUaGlubmluZyBpbnRlcnZhbCAgPSAxMFxuIFNhbXBsZSBzaXplICA9IDEwMDAgXG5cbiBESUM6IC0xMjkuNTE2MyBcblxuIFItc3RydWN0dXJlOiAgfnVuaXRzXG5cbiAgICAgIHBvc3QubWVhbiBsLTk1JSBDSSB1LTk1JSBDSSBlZmYuc2FtcFxudW5pdHMgICAwLjAxNDExICAwLjAxMDMyICAwLjAxODE1ICAgICAxMDAwXG5cbiBMb2NhdGlvbiBlZmZlY3RzOiBpY2MyLjEgfiByYXdfZml0IFxuXG4gICAgICAgICAgICBwb3N0Lm1lYW4gIGwtOTUlIENJICB1LTk1JSBDSSBlZmYuc2FtcCAgcE1DTUMgICAgXG4oSW50ZXJjZXB0KSAgMC4xNDk2MDggIDAuMTE1MjEwICAwLjE4NTY0MyAgICAgMTAwMCA8MC4wMDEgKioqXG5yYXdfZml0aGRkbSAgMC4wOTkzMTUgIDAuMDM1ODAxICAwLjE2Mjc3NCAgICAgMTAwMCAgMC4wMDQgKiogXG5yYXdfZml0cmF3ICAgMC4wNTMwMjAgLTAuMDAyNTA3ICAwLjEwMzMwMCAgICAgMTEwMiAgMC4wNjAgLiAgXG4tLS1cblNpZ25pZi4gY29kZXM6ICAwICcqKionIDAuMDAxICcqKicgMC4wMSAnKicgMC4wNSAnLicgMC4xICcgJyAxXG4ifQ== -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG4gSXRlcmF0aW9ucyA9IDMwMDE6MTI5OTFcbiBUaGlubmluZyBpbnRlcnZhbCAgPSAxMFxuIFNhbXBsZSBzaXplICA9IDEwMDAgXG5cbiBESUM6IC0xMjkuNDM3OCBcblxuIFItc3RydWN0dXJlOiAgfnVuaXRzXG5cbiAgICAgIHBvc3QubWVhbiBsLTk1JSBDSSB1LTk1JSBDSSBlZmYuc2FtcFxudW5pdHMgICAwLjAxMzkzICAwLjAxMDI3ICAwLjAxODAxICAgIDg5Ny41XG5cbiBMb2NhdGlvbiBlZmZlY3RzOiBpY2MyLjEgfiByYXdfZml0IFxuXG4gICAgICAgICAgICBwb3N0Lm1lYW4gIGwtOTUlIENJICB1LTk1JSBDSSBlZmYuc2FtcCAgcE1DTUMgICAgXG4oSW50ZXJjZXB0KSAgMC4xNDk0MDAgIDAuMTExODM3ICAwLjE4MTAwOSAgICA4ODAuMiA8MC4wMDEgKioqXG5yYXdfZml0aGRkbSAgMC4wOTkxODYgIDAuMDM2ODk1ICAwLjE3MTYzNSAgIDEwMDAuMCAgMC4wMDIgKiogXG5yYXdfZml0cmF3ICAgMC4wNTE3MDYgLTAuMDAxMDM3ICAwLjEwNjc5MCAgIDEwMDAuMCAgMC4wNTQgLiAgXG4tLS1cblNpZ25pZi4gY29kZXM6ICAwICcqKionIDAuMDAxICcqKicgMC4wMSAnKicgMC4wNSAnLicgMC4xICcgJyAxXG4ifQ== -->
 <pre><code>
  Iterations = 3001:12991
  Thinning interval  = 10
  Sample size  = 1000 
 
- DIC: -129.5163 
+ DIC: -129.4378 
 
  R-structure:  ~units
 
       post.mean l-95% CI u-95% CI eff.samp
-units   0.01411  0.01032  0.01815     1000
+units   0.01393  0.01027  0.01801    897.5
 
  Location effects: icc2.1 ~ raw_fit 
 
             post.mean  l-95% CI  u-95% CI eff.samp  pMCMC    
-(Intercept)  0.149608  0.115210  0.185643     1000 &lt;0.001 ***
-raw_fithddm  0.099315  0.035801  0.162774     1000  0.004 ** 
-raw_fitraw   0.053020 -0.002507  0.103300     1102  0.060 .  
+(Intercept)  0.149400  0.111837  0.181009    880.2 &lt;0.001 ***
+raw_fithddm  0.099186  0.036895  0.171635   1000.0  0.002 ** 
+raw_fitraw   0.051706 -0.001037  0.106790   1000.0  0.054 .  
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <!-- rnb-output-end -->
@@ -1095,30 +1095,30 @@ rm(cur_rel_df)</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoic3VtbWFyeShNQ01DZ2xtbShpY2MyLjEgfiBmYWN0b3IocHJvcHRyaWFscyksIHJhbmRvbT1+ZHYsIGRhdGEgPSByZWxfZGYsIHZlcmJvc2U9RkFMU0UpKSJ9 -->
 <pre class="r"><code>summary(MCMCglmm(icc2.1 ~ factor(proptrials), random=~dv, data = rel_df, verbose=FALSE))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG4gSXRlcmF0aW9ucyA9IDMwMDE6MTI5OTFcbiBUaGlubmluZyBpbnRlcnZhbCAgPSAxMFxuIFNhbXBsZSBzaXplICA9IDEwMDAgXG5cbiBESUM6IC0yNDEuMTgzNiBcblxuIEctc3RydWN0dXJlOiAgfmR2XG5cbiAgIHBvc3QubWVhbiBsLTk1JSBDSSB1LTk1JSBDSSBlZmYuc2FtcFxuZHYgICAwLjAzOTgzICAwLjAyNDMzICAgMC4wNTcxICAgICAxMDAwXG5cbiBSLXN0cnVjdHVyZTogIH51bml0c1xuXG4gICAgICBwb3N0Lm1lYW4gbC05NSUgQ0kgdS05NSUgQ0kgZWZmLnNhbXBcbnVuaXRzICAwLjAwOTQ1OCAwLjAwNzE0NCAgMC4wMTI0NiAgICAgMTAwMFxuXG4gTG9jYXRpb24gZWZmZWN0czogaWNjMi4xIH4gZmFjdG9yKHByb3B0cmlhbHMpIFxuXG4gICAgICAgICAgICAgICAgICAgICAgIHBvc3QubWVhbiBsLTk1JSBDSSB1LTk1JSBDSSBlZmYuc2FtcCAgcE1DTUMgICAgXG4oSW50ZXJjZXB0KSAgICAgICAgICAgICAgMC4yNzk2NCAgMC4yMjA2MSAgMC4zMzk3NyAgICAgMTE4NiA8MC4wMDEgKioqXG5mYWN0b3IocHJvcHRyaWFscykwLjUgICAgMC4xMDc4OSAgMC4wNjk2OSAgMC4xNDEzNSAgICAgMTAwMCA8MC4wMDEgKioqXG5mYWN0b3IocHJvcHRyaWFscykwLjc1ICAgMC4xNDc3MCAgMC4xMDkzNCAgMC4xODYwMiAgICAgMTAwMCA8MC4wMDEgKioqXG4tLS1cblNpZ25pZi4gY29kZXM6ICAwICcqKionIDAuMDAxICcqKicgMC4wMSAnKicgMC4wNSAnLicgMC4xICcgJyAxXG4ifQ== -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG4gSXRlcmF0aW9ucyA9IDMwMDE6MTI5OTFcbiBUaGlubmluZyBpbnRlcnZhbCAgPSAxMFxuIFNhbXBsZSBzaXplICA9IDEwMDAgXG5cbiBESUM6IC0yNDAuNTc0NyBcblxuIEctc3RydWN0dXJlOiAgfmR2XG5cbiAgIHBvc3QubWVhbiBsLTk1JSBDSSB1LTk1JSBDSSBlZmYuc2FtcFxuZHYgICAgMC4wNDAxICAwLjAyNDM5ICAgMC4wNTgxICAgICAxMTA0XG5cbiBSLXN0cnVjdHVyZTogIH51bml0c1xuXG4gICAgICBwb3N0Lm1lYW4gbC05NSUgQ0kgdS05NSUgQ0kgZWZmLnNhbXBcbnVuaXRzICAwLjAwOTQ2NiAwLjAwNzA1MSAgMC4wMTIxOSAgICAgMTAwMFxuXG4gTG9jYXRpb24gZWZmZWN0czogaWNjMi4xIH4gZmFjdG9yKHByb3B0cmlhbHMpIFxuXG4gICAgICAgICAgICAgICAgICAgICAgIHBvc3QubWVhbiBsLTk1JSBDSSB1LTk1JSBDSSBlZmYuc2FtcCAgcE1DTUMgICAgXG4oSW50ZXJjZXB0KSAgICAgICAgICAgICAgMC4yNzk0NCAgMC4yMjI3OSAgMC4zMzI4NyAgICAgMTAwMCA8MC4wMDEgKioqXG5mYWN0b3IocHJvcHRyaWFscykwLjUgICAgMC4xMDc4MyAgMC4wNzI5NyAgMC4xNDM4NSAgICAgMTE2NyA8MC4wMDEgKioqXG5mYWN0b3IocHJvcHRyaWFscykwLjc1ICAgMC4xNDcxMCAgMC4xMTE1NyAgMC4xODQwMiAgICAgMTAwMCA8MC4wMDEgKioqXG4tLS1cblNpZ25pZi4gY29kZXM6ICAwICcqKionIDAuMDAxICcqKicgMC4wMSAnKicgMC4wNSAnLicgMC4xICcgJyAxXG4ifQ== -->
 <pre><code>
  Iterations = 3001:12991
  Thinning interval  = 10
  Sample size  = 1000 
 
- DIC: -241.1836 
+ DIC: -240.5747 
 
  G-structure:  ~dv
 
    post.mean l-95% CI u-95% CI eff.samp
-dv   0.03983  0.02433   0.0571     1000
+dv    0.0401  0.02439   0.0581     1104
 
  R-structure:  ~units
 
       post.mean l-95% CI u-95% CI eff.samp
-units  0.009458 0.007144  0.01246     1000
+units  0.009466 0.007051  0.01219     1000
 
  Location effects: icc2.1 ~ factor(proptrials) 
 
                        post.mean l-95% CI u-95% CI eff.samp  pMCMC    
-(Intercept)              0.27964  0.22061  0.33977     1186 &lt;0.001 ***
-factor(proptrials)0.5    0.10789  0.06969  0.14135     1000 &lt;0.001 ***
-factor(proptrials)0.75   0.14770  0.10934  0.18602     1000 &lt;0.001 ***
+(Intercept)              0.27944  0.22279  0.33287     1000 &lt;0.001 ***
+factor(proptrials)0.5    0.10783  0.07297  0.14385     1167 &lt;0.001 ***
+factor(proptrials)0.75   0.14710  0.11157  0.18402     1000 &lt;0.001 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <!-- rnb-output-end -->
