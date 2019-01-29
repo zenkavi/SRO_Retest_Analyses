@@ -30,8 +30,13 @@ tmp %>%
   xlab('Proportion of Variance\nin Literature Explained')+
   ylab('Density')+
   xlim(0,1)+
-  theme(legend.position = "bottom",
+  theme(legend.position = "right",
     legend.box.margin=margin(-10,-10,-10,-10),
-    legend.key.size = unit(0.25,"cm"))
+    legend.key.size = unit(0.25,"cm"),
+    legend.text = element_text(size=6),
+    axis.text = element_text(size=6),
+    axis.title = element_text(size=6),
+    legend.title = element_text(size=6),
+    panel.grid.major = element_blank())
 
-ggsave(paste0('LitAndBoot_Noise_Ceiling.',out_device), device = out_device, path = fig_path, width = 3.4, height = 3, units = "in", dpi=img_dpi)
+ggsave(paste0('LitAndBoot_Noise_Ceiling.',out_device), device = out_device, path = fig_path, width = 3.4, height = 1.5, units = "in", dpi=img_dpi)

@@ -48,7 +48,7 @@ p1 = tmp %>%
   ylab('Percent of total variance')+
   theme(legend.title = element_blank(),
         legend.text = element_text(size=6),
-        legend.position = 'bottom',
+        legend.position = 'right',
         axis.text = element_text(size=6),
         axis.title.y = element_text(size=6),
         legend.box.margin=margin(-25,-10,-10,-10),
@@ -57,4 +57,4 @@ p1 = tmp %>%
   # guides(fill = guide_legend(override.aes = list(size = 3)))+
   ylim(0,100)
 
-ggsave(paste0('Variance_Breakdown_BarPlot.', out_device), plot = p1, device = out_device, path = fig_path, width = 3.4, height = 2, units = "in", dpi = img_dpi)
+ggsave(paste0('Variance_Breakdown_BarPlot.', out_device), plot = p1, device = out_device, path = fig_path, width = 3.4, height = 1.7, units = "in", dpi = img_dpi)

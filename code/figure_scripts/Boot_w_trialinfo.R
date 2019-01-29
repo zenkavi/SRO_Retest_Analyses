@@ -107,7 +107,7 @@ p4_t <- tmp_mngfl %>%
         axis.line = element_blank())+
   xlab("")+
   ylab("")+
-  scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1), position = "right")+
+  scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1), labels= c("", "0", "", "0.5", "", "1"), position = "right")+
   scale_x_discrete(labels = function(x) str_wrap(x, width = 15))+
   geom_hline(yintercept = 0, color = "red", size = 1)+
   coord_flip()
@@ -120,6 +120,7 @@ task_trial_num = trial_num_info_mngfl %>%
 task_trial_num_table = task_trial_num %>%
   mutate(y_axis = rev(ggplot_build(p4_t)$layout$panel_params[[1]]$y.major)) %>%
   gather(key, value, -y_axis, -task_group) %>%
+  filter(key == "mean_num_all_trials") %>%
   ggplot(aes(key, factor(y_axis)))+
   geom_text(aes(label=value), size=2)+
   xlab("")+
@@ -130,11 +131,14 @@ task_trial_num_table = task_trial_num %>%
         panel.border = element_blank(),
         axis.text.x = element_text(size=6),
         plot.margin = unit(c(0,-0.25,0,-0.65), "cm"))+
+  # scale_x_discrete(position = "top",
+  #                  breaks=c("mean_num_all_trials", "num_measures"),
+  #                  labels=c("Trials", "Measures"))
   scale_x_discrete(position = "top",
-                   breaks=c("mean_num_all_trials", "num_measures"),
-                   labels=c("Mean Tri", "Num Meas"))
+                   breaks=c("mean_num_all_trials"),
+                   labels=c("Trials"))
 
-boot_task_plot = arrangeGrob(p4_t, task_trial_num_table, nrow=1, widths = c(4,1.5), padding = unit(0, "line"))
+boot_task_plot = arrangeGrob(p4_t, task_trial_num_table, nrow=1, widths = c(4,1), padding = unit(0, "line"))
 
 ggsave(paste0('Task_Boot_w_trialinfo.', out_device), plot = boot_task_plot, device = out_device, path = fig_path, width = 3.5, height = 8.5, units = "in", limitsize = FALSE, dpi = img_dpi)
 
@@ -151,7 +155,7 @@ p5_t <- tmp %>%
         panel.border = element_blank())+
   xlab("")+
   ylab("")+
-  scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1), position = "right")+
+  scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1), labels= c("", "0", "", "0.5", "", "1"), position = "right")+
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10))+
   geom_hline(yintercept = 0, color = "red", size = 1)+
   coord_flip()
@@ -164,6 +168,7 @@ survey_trial_num = trial_num_info %>%
 survey_trial_num_table = survey_trial_num %>%
   mutate(y_axis = rev(ggplot_build(p5_t)$layout$panel_params[[1]]$y.major)) %>%
   gather(key, value, -y_axis, -task_group) %>%
+  filter(key == "mean_num_all_trials") %>%
   ggplot(aes(key, factor(y_axis)))+
   geom_text(aes(label=value), size=2)+
   xlab("")+
@@ -174,11 +179,14 @@ survey_trial_num_table = survey_trial_num %>%
         panel.border = element_blank(),
         axis.text.x = element_text(size=6),
         plot.margin = unit(c(0,-0.25,0,-0.65), "cm"))+
-  scale_x_discrete(position = "top",
-                   breaks=c("mean_num_all_trials", "num_measures"),
-                   labels=c("Mean Tri", "Num Mes"))
+  # scale_x_discrete(position = "top",
+  #                  breaks=c("mean_num_all_trials", "num_measures"),
+  #                  labels=c("Trials", "Measures"))
+    scale_x_discrete(position = "top",
+                     breaks=c("mean_num_all_trials"),
+                     labels=c("Trials"))
 
-boot_survey_plot = arrangeGrob(p5_t, survey_trial_num_table, nrow=1, widths = c(4,1.5), padding = unit(0, "line"))
+boot_survey_plot = arrangeGrob(p5_t, survey_trial_num_table, nrow=1, widths = c(4,1), padding = unit(0, "line"))
 
 ggsave(paste0('Survey_Boot_w_trialinfo.', out_device), plot = boot_survey_plot, device = out_device, path = fig_path, width = 3.5, height = 8.5, units = "in", limitsize = FALSE, dpi = img_dpi)
 
@@ -186,6 +194,6 @@ ggsave(paste0('Survey_Boot_w_trialinfo.', out_device), plot = boot_survey_plot, 
 
 boot_both_w_trial = arrangeGrob(boot_task_plot, boot_survey_plot, nrow=1, padding = unit(0, "line"))
 
-ggsave(paste0('Boot_Both_w_trialinfo.', out_device), plot = boot_both_w_trial, device = out_device, path = fig_path, width = 7, height = 8.5, units = "in", limitsize = FALSE, dpi = img_dpi)
+ggsave(paste0('Boot_Both_w_trialinfo.', out_device), plot = boot_both_w_trial, device = out_device, path = fig_path, width = 4.5, height = 8.25, units = "in", limitsize = FALSE, dpi = img_dpi)
 
 rm(tmp, tmp_mngfl, boot_survey_plot, boot_task_plot, boot_both_w_trial, task_trial_num_table, task_trial_num, survey_trial_num_table, survey_trial_num)

@@ -23,8 +23,11 @@ rel_comp %>%
   ylab("Average Literature\nReliability Estimate")+
   xlab("Average Empirical Reliability Estimate")+
   theme(legend.title = element_blank(),
-        legend.position = 'bottom',
+        legend.position = 'right',
         legend.box.margin=margin(-10,-10,-10,-10),
-        legend.key.size = unit(0.25,"cm"))
+        legend.key.size = unit(0.25,"cm"),
+        legend.text = element_text(size=6),
+        axis.text = element_text(size=6),
+        axis.title = element_text(size=6))
 
-ggsave(paste0('LitAndEmpAveCorr_Plot.', out_device), device = out_device, path = fig_path, width = 3.4, height = 2, units = "in", dpi = img_dpi)
+ggsave(paste0('LitAndEmpAveCorr_Plot.', out_device), device = out_device, path = fig_path, width = 3.4, height = 1.7, units = "in", dpi = img_dpi)
