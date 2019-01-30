@@ -38,23 +38,23 @@ p1 = tmp %>%
          ciu = mean_pct+(sd_pct*cvu)/sqrt(n),
          sem_pct = sd_pct/sqrt(n)) %>%
   ggplot(aes(factor(key, levels = c("var_subs_pct", "var_ind_pct", "var_resid_pct"),
-                    labels = c("Between subject variance",
-                               "Within subject variance",
+                    labels = c("Between subject",
+                               "Within subject",
                                "Error variance")), mean_pct))+
   geom_bar(position=position_dodge(width = 0.5), width=0.5, aes(fill=task), stat='identity', alpha=0.5)+
   geom_errorbar(aes(ymin=cil, ymax=ciu, col=task), position=position_dodge(width = 0.5), width=0, size=2)+
   theme_bw()+
   xlab('')+
-  ylab('Percent of total variance')+
+  ylab('% of total variance')+
   theme(legend.title = element_blank(),
-        legend.text = element_text(size=6),
-        legend.position = 'right',
-        axis.text = element_text(size=6),
-        axis.title.y = element_text(size=6),
-        legend.box.margin=margin(-25,-10,-10,-10),
-        legend.key.size = unit(0.25,"cm"))+
+        legend.text = element_text(size=8),
+        legend.position = c(.87, .8),
+        axis.text = element_text(size=8),
+        axis.title.y = element_text(size=8),
+        legend.key.size = unit(0.25,"cm"),
+        panel.grid = element_blank(),
+        plot.margin = margin(.25,.25,-.5,.25, "cm"))+
   scale_x_discrete(labels = function(x) str_wrap(x, width = 15))+
-  # guides(fill = guide_legend(override.aes = list(size = 3)))+
-  ylim(0,100)
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 100.3))
 
-ggsave(paste0('Variance_Breakdown_BarPlot.', out_device), plot = p1, device = out_device, path = fig_path, width = 3.4, height = 1.7, units = "in", dpi = img_dpi)
+ggsave(paste0('Variance_Breakdown_BarPlot.', out_device), plot = p1, device = out_device, path = fig_path, width = 3.4, height = 1.5, units = "in", dpi = img_dpi)
