@@ -21,22 +21,22 @@ tmp = comp_lit_pred_out %>%
   separate(key, c("stat", "sample"), sep = "_")
 
 tmp %>%  
-  ggplot(aes(value, fill=sample))+
+  ggplot(aes(value*100, fill=sample))+
   geom_density(alpha = 0.5, position='identity', color=NA)+
   scale_fill_manual(breaks=c("boot","lit"),
                     labels=c("Empirical", "Literature"),
                     name="Predictor",
                     values = c("gray15", "gray75"))+
-  xlab('Proportion of Variance\nin Literature Explained')+
+  xlab('% of Variance in Literature Explained')+
   ylab('Density')+
-  xlim(0,1)+
-  theme(legend.position = "right",
-    legend.box.margin=margin(-10,-10,-10,-10),
-    legend.key.size = unit(0.25,"cm"),
-    legend.text = element_text(size=6),
-    axis.text = element_text(size=6),
-    axis.title = element_text(size=6),
-    legend.title = element_text(size=6),
-    panel.grid.major = element_blank())
+  xlim(0,100)+
+  theme(legend.position = c(.8, .4),
+        legend.key.size = unit(0.25,"cm"),
+        legend.text = element_text(size=8),
+        legend.title = element_text(size=8),
+        axis.text = element_text(size=8),
+        axis.title = element_text(size=8),
+        plot.margin = margin(.25,.25,0,.25, "cm"),
+        panel.grid = element_blank())
 
 ggsave(paste0('LitAndBoot_Noise_Ceiling.',out_device), device = out_device, path = fig_path, width = 3.4, height = 1.5, units = "in", dpi=img_dpi)
