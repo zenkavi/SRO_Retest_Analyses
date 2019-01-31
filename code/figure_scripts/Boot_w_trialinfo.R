@@ -50,8 +50,8 @@ tmp = tmp %>%
          task_group = gsub("task", "", task_group),
          task_group = str_to_title(task_group),
          task_group = gsub(" $","", task_group, perl=T)) %>%
-  mutate(task_group = ifelse(task_group == "Psychological Refractory Period Two Choices", "PRP", ifelse(task_group == "Angling Risk  Always Sunny", "Angling Risk", ifelse(task_group == "Two Stage", "Two Step", ifelse(task_group == "Threebytwo", "Task Switching", ifelse(task_group == "Adaptive N Back", "Adaptive N-back", ifelse(task_group == "Go Nogo", "Go/No-go",  ifelse(task_group == "Ravens", "Raven's", ifelse(task_group == "Columbia Card  Hot", "CCT Hot", ifelse(task_group == "Columbia Card  Cold", "CCT Cold" ,task_group)))))))))) %>%
-  mutate(task_group = ifelse(task_group == "Bis Bas", "BIS-BAS", ifelse(task_group == "Bis11", "BIS-11", ifelse(task_group == "Dospert Eb", "DOSPERT EB", ifelse(task_group == "Dospert Rp", "DOSPERT RP", ifelse(task_group == "Dospert Rt", "DOSPERT RT", ifelse(task_group == "Erq", "ERQ", ifelse(task_group == "Upps Impulsivity", "UPPS-P", ifelse(task_group == "Mindful Attention Awareness", "MAAS",ifelse(task_group == "Mpq Control", "MPQ Control",task_group))))))))))
+  mutate(task_group = ifelse(task_group == "Psychological Refractory Period Two Choices", "PRP", ifelse(task_group == "Angling Risk  Always Sunny", "Angling Risk", ifelse(task_group == "Two Stage", "Two Step", ifelse(task_group == "Threebytwo", "Task Switching", ifelse(task_group == "Adaptive N Back", "Adaptive N-back", ifelse(task_group == "Go Nogo", "Go/No-go",  ifelse(task_group == "Ravens", "Raven's", ifelse(task_group == "Columbia Card  Hot", "CCT Hot", ifelse(task_group == "Columbia Card  Cold", "CCT Cold", ifelse(task_group == "Probabilistic Selection", "Prob Selection" ,ifelse(task_group == "Choice Reaction Time", "Choice RT", ifelse(task_group == "Simple Reaction Time", "Simple RT",ifelse(task_group == "Local Global Letter", "Local Global" ,ifelse(task_group == "Attention Network", "ANT",ifelse(task_group == "Dot Pattern Expectancy", "DPX",ifelse(task_group == "Motor Selective Stop Signal", "Motor SSS",ifelse(task_group == "Stim Selective Stop Signal", "Stim SSS",ifelse(task_group == "Cognitive Reflection", "CRT",ifelse(task_group == "Discount Titrate", "Discounting", ifelse(task_group == "Two Stage Decision", "Two Step",ifelse(task_group == "Dietary Decision", "Dietary", task_group)))))))))))))))))))))) %>%
+  mutate(task_group = ifelse(task_group == "Bis Bas", "BIS-BAS", ifelse(task_group == "Bis11", "BIS-11", ifelse(task_group == "Dospert Eb", "DOSPERT EB", ifelse(task_group == "Dospert Rp", "DOSPERT RP", ifelse(task_group == "Dospert Rt", "DOSPERT RT", ifelse(task_group == "Erq", "ERQ", ifelse(task_group == "Upps Impulsivity", "UPPS-P", ifelse(task_group == "Mindful Attention Awareness", "MAAS",ifelse(task_group == "Mpq Control", "MPQ Control",ifelse(task_group == "Ten Item Personality", "TIPI",ifelse(task_group == "Impulsive Venture", "I-7",ifelse(task_group == "Leisure Time Activity", "L-CAT",ifelse(task_group == "Selection Optimization Compensation", "SOC",ifelse(task_group == "Future Time Perspective", "FTP",task_group)))))))))))))))
 
 tmp_mngfl = tmp %>%
   filter(dv %in% meaningful_vars)
@@ -79,15 +79,16 @@ tmp_mngfl = tmp_mngfl %>%
 p4_t <- tmp_mngfl %>%
   ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc2.1)) +
   geom_violin()+
-  geom_point(data = lit_review %>% filter(task == 'task'), aes(x = factor(task_group, levels=rev(unique(task_group))), y = retest_reliability), color="#E69F00", fill="#E69F00", size=2, shape=23) +
+  geom_point(data = lit_review %>% filter(task == 'task'), aes(x = factor(task_group, levels=rev(unique(task_group))), y = retest_reliability), color="#E69F00", fill="#E69F00", size=1.5, shape=23) +
   theme(axis.text = element_text(size=8),
-        plot.margin = unit(c(0,0,0,-0.25), "cm"),
+        plot.margin = unit(c(-.5,0,0,0), "cm"),
+        panel.grid.minor = element_blank(),
         panel.border = element_blank(),
         axis.line = element_blank())+
   xlab("")+
   ylab("")+
   scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1), labels= c("", "0", "", "0.5", "", "1"), position = "right")+
-  scale_x_discrete(labels = function(x) str_wrap(x, width = 15))+
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 20))+
   geom_hline(yintercept = 0, color = "red", size = 1)+
   coord_flip()
 
@@ -110,12 +111,12 @@ task_trial_num_table = task_trial_num %>%
         panel.background = element_blank(),
         panel.border = element_blank(),
         axis.text.x = element_text(size=8),
-        plot.margin = unit(c(0,-0.25,0,-0.65), "cm"))+
+        plot.margin = unit(c(-.5,-0.25,0,-0.65), "cm"))+
   scale_x_discrete(position = "top",
                    breaks=c("mean_num_all_trials"),
                    labels=c("Trials"))
 
-boot_task_plot = arrangeGrob(p4_t, task_trial_num_table, nrow=1, widths = c(4,1), padding = unit(0, "line"))
+boot_task_plot = arrangeGrob(p4_t, task_trial_num_table, nrow=1, widths = c(6,1), padding = unit(0, "line"))
 
 #Boot plot for surveys with trial info (only using meaningful vars)
 
@@ -123,15 +124,15 @@ p5_t <- tmp %>%
   filter(task == 'survey') %>%
   ggplot(aes(x = factor(task_group, levels=rev(unique(task_group))), y = icc2.1)) +
   geom_violin()+
-  geom_point(data = lit_review %>% filter(task == 'survey'), aes(x = factor(task_group, levels=rev(unique(task_group))), y = retest_reliability), color="#56B4E9",fill="#56B4E9", size=2, shape=23) +
+  geom_point(data = lit_review %>% filter(task == 'survey'), aes(x = factor(task_group, levels=rev(unique(task_group))), y = retest_reliability), color="#56B4E9",fill="#56B4E9", size=1.5, shape=23) +
   theme(axis.text = element_text(size=8),
-        plot.margin = unit(c(0,0,0,-0.25), "cm"),
-        #panel.background = element_blank(),
+        plot.margin = unit(c(-.5,0,0,0), "cm"),
+        panel.grid.minor = element_blank(),
         panel.border = element_blank())+
   xlab("")+
   ylab("")+
   scale_y_continuous(limits = c(-0.25,1), breaks=c(-0.25, 0, 0.25, 0.5, 0.75, 1), labels= c("", "0", "", "0.5", "", "1"), position = "right")+
-  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))+
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 15))+
   geom_hline(yintercept = 0, color = "red", size = 1)+
   coord_flip()
 
@@ -154,17 +155,17 @@ survey_trial_num_table = survey_trial_num %>%
         panel.background = element_blank(),
         panel.border = element_blank(),
         axis.text.x = element_text(size=8),
-        plot.margin = unit(c(0,-0.25,0,-0.65), "cm"))+
+        plot.margin = unit(c(-.5,-0.25,0,-0.65), "cm"))+
     scale_x_discrete(position = "top",
                      breaks=c("mean_num_all_trials"),
                      labels=c("Trials"))
 
-boot_survey_plot = arrangeGrob(p5_t, survey_trial_num_table, nrow=1, widths = c(4,1), padding = unit(0, "line"))
+boot_survey_plot = arrangeGrob(p5_t, survey_trial_num_table, nrow=1, widths = c(6,1), padding = unit(0, "line"))
 
 #Both task level boot plots with trial info together
 
 boot_both_w_trial = arrangeGrob(boot_task_plot, boot_survey_plot, nrow=1, padding = unit(0, "line"))
 
-ggsave(paste0('Boot_Both_w_trialinfo.', out_device), plot = boot_both_w_trial, device = out_device, path = fig_path, width = 7, height = 9, units = "in", limitsize = FALSE, dpi = img_dpi)
+ggsave(paste0('Boot_Both_w_trialinfo.', out_device), plot = boot_both_w_trial, device = out_device, path = fig_path, width = 4.5, height = 5.4, units = "in", limitsize = FALSE, dpi = img_dpi)
 
 #rm(tmp, tmp_mngfl, boot_survey_plot, boot_task_plot, boot_both_w_trial, task_trial_num_table, task_trial_num, survey_trial_num_table, survey_trial_num)

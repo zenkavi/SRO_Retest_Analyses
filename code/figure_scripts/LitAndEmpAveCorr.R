@@ -23,14 +23,17 @@ rel_comp %>%
   ylab("Reliability in Literature")+
   xlab("Reliability in New Data")+
   theme(legend.title = element_blank(), 
-        legend.position = c(.85, .15),
+        # legend.position = c(.8, .25),
+        legend.position = "right",
+        legend.box.margin=margin(0,10,0,10),
         legend.key.size = unit(0.25,"cm"),
-        legend.text = element_text(size=8),
-        axis.text = element_text(size=8),
-        axis.title = element_text(size=8),
+        legend.text = element_text(size=6),
+        axis.text = element_text(size=6),
+        axis.title = element_text(size=6),
+        axis.title.y = element_text(margin=margin(100,0,0,0)),
         plot.margin = margin(.25,.25,.25,.25, "cm"),
         panel.grid = element_blank(),
-        aspect.ratio = 0.7)+
+        aspect.ratio = .85)+
   geom_abline(aes(slope=1, intercept=0), linetype="dashed")
 
-ggsave(paste0('LitAndEmpAveCorr_Plot.', out_device), device = out_device, path = fig_path, width = 3.4, height = 2, units = "in", dpi = img_dpi)
+ggsave(paste0('LitAndEmpAveCorr_Plot.', out_device), device = out_device, path = fig_path, width = 3.4, height = 1.5, units = "in", dpi = img_dpi)

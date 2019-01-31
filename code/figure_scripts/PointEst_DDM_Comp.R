@@ -47,7 +47,7 @@ tmp2 %>%
          cil = mean_icc+(sd_icc*cvl)/sqrt(n),
          ciu = mean_icc+(sd_icc*cvu)/sqrt(n),
          sem_icc = sd_icc/sqrt(n)) %>%
-  ggplot(aes(factor(raw_fit, levels = c("raw", "EZ", "hddm"), labels=c("Raw", "EZ-diffusion", "Hierarchical diffusion")), mean_icc, fill=factor(rt_acc, levels = c("drift rate", "threshold", "non-decision","rt","accuracy"), labels=c("Drift Rate", "Threshold", "Non-decision","Response Time", "Accuracy"))))+
+  ggplot(aes(factor(raw_fit, levels = c("raw", "EZ", "hddm"), labels=c("Raw", "EZ", "HDDM")), mean_icc, fill=factor(rt_acc, levels = c("drift rate", "threshold", "non-decision","rt","accuracy"), labels=c("Drift Rate", "Threshold", "Non-decision","Response Time", "Accuracy"))))+
     geom_bar(stat="identity", position = position_dodge(width = 0.9), col="black")+
     geom_errorbar(aes(ymin=cil, ymax=ciu), position=position_dodge(width=0.9), width=0)+
   facet_wrap(~factor(contrast, levels=c("non-contrast", "contrast"), labels=c("Non-contrast", "Contrast")))+
@@ -60,9 +60,10 @@ tmp2 %>%
         strip.text = element_text(size=8),
         axis.text = element_text(size = 8),
         text = element_text(size=8),
-        legend.box.margin=margin(-15,-10,-10,-10),
-        legend.key.size = unit(0.25,"cm"))+
+        legend.box.margin=margin(-20,-10,-5,-10),
+        legend.key.size = unit(0.25,"cm"),
+        panel.grid=element_blank())+
   guides(fill = guide_legend(ncol = 2))+
   scale_fill_brewer(palette="Greys")
 
-ggsave(paste0('PointEst_DDM_Comp.', out_device), device = out_device, path = fig_path, width = 7, height = 3.5, units = "in", limitsize = FALSE)
+ggsave(paste0('PointEst_DDM_Comp.', out_device), device = out_device, path = fig_path, width = 3.4, height = 3, units = "in", limitsize = FALSE)
