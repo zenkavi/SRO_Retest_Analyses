@@ -22,6 +22,8 @@ if(!exists('retest_data_path')){
 ## Battery completion data ####
 #########################
 
+require(jsonlite)
+
 workers = read.csv('/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Retest_03-29-2018/Local/User_717570_workers.csv')
 workers = workers %>%
   group_by(Worker.ID) %>%

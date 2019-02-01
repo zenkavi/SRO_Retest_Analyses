@@ -1,3 +1,9 @@
+fig_path = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/'
+
+if(!exists('from_gh')){
+  from_gh=FALSE
+}
+
 source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/figure_scripts/figure_res_wrapper.R')
 
 if(!exists('rel_df')){
@@ -11,15 +17,19 @@ if(!exists('rel_df')){
   rel_df[grep('survey', rel_df$dv), 'task'] = 'survey'
   rel_df[grep('holt', rel_df$dv), 'task'] = "task"
   rel_df = rel_df %>%
-    select(dv, task, spearman, icc, pearson, partial_eta, sem, var_subs, var_ind, var_resid)
+    select(dv, task, spearman, icc2.1, pearson, partial_eta, sem, var_subs, var_ind, var_resid)
 }
+
+require(gridExtra)
 
 p1 = rel_df %>%
   ggplot(aes(spearman, icc2.1, col=task))+
   geom_point()+
   theme_bw()+
   theme(legend.title = element_blank(),
-        legend.position = "none")+
+        legend.position = "none",
+        axis.text = element_text(size=12),
+        axis.title = element_text(size=12))+
   geom_abline(intercept = 0, slope=1)
 
 p2 = rel_df %>%
@@ -27,7 +37,9 @@ p2 = rel_df %>%
   geom_point()+
   theme_bw()+
   theme(legend.title = element_blank(),
-        legend.position = "none")+
+        legend.position = "none",
+        axis.text = element_text(size=12),
+        axis.title = element_text(size=12))+
   geom_abline(intercept = 0, slope=1)
 
 p3 = rel_df %>%
@@ -35,7 +47,9 @@ p3 = rel_df %>%
   geom_point()+
   theme_bw()+
   theme(legend.title = element_blank(),
-        legend.position = "none")+
+        legend.position = "none",
+        axis.text = element_text(size=12),
+        axis.title = element_text(size=12))+
   geom_abline(intercept = 0, slope=1)
 
 p4 = rel_df %>%
@@ -43,7 +57,9 @@ p4 = rel_df %>%
   geom_point()+
   theme_bw()+
   theme(legend.title = element_blank(),
-        legend.position = "none")+
+        legend.position = "none",
+        axis.text = element_text(size=12),
+        axis.title = element_text(size=12))+
   geom_abline(intercept = 0, slope=1)
 
 p5 = rel_df %>%
@@ -51,7 +67,9 @@ p5 = rel_df %>%
   geom_point()+
   theme_bw()+
   theme(legend.title = element_blank(),
-        legend.position = "none")+
+        legend.position = "none",
+        axis.text = element_text(size=12),
+        axis.title = element_text(size=12))+
   geom_abline(intercept = 0, slope=1)
 
 p6 = rel_df %>%
@@ -59,7 +77,9 @@ p6 = rel_df %>%
   geom_point()+
   theme_bw()+
   theme(legend.title = element_blank(),
-        legend.position = "none")+
+        legend.position = "none",
+        axis.text = element_text(size=12),
+        axis.title = element_text(size=12))+
   geom_abline(intercept = 0, slope=1)
 
 ggsave(paste0('Metric_Scatterplots.',out_device), plot = grid.arrange(p1, p2, p3, p4, p5, p6, nrow=2), device = out_device, path = fig_path, width = 12, height = 8, units = "in", dpi=img_dpi)

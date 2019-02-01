@@ -29,6 +29,8 @@ if(!exists('grabRemoteGz')){
 ## Duplicate items ####
 #########################
 
+require(RecordLinkage)
+
 if(from_gh){
   tmp = grabRemoteGz(retest_data_path, 'items.csv.gz')
 } else{
