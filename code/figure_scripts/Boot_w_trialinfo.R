@@ -166,6 +166,6 @@ boot_survey_plot = arrangeGrob(p5_t, survey_trial_num_table, nrow=1, widths = c(
 
 boot_both_w_trial = arrangeGrob(boot_task_plot, boot_survey_plot, nrow=1, padding = unit(0, "line"))
 
-ggsave(paste0('Boot_Both_w_trialinfo.', out_device), plot = boot_both_w_trial, device = out_device, path = fig_path, width = 4.5, height = 5.4, units = "in", limitsize = FALSE, dpi = img_dpi)
+ggsave(paste0('Boot_Both_w_trialinfo.', out_device), plot = boot_both_w_trial, device = out_device, path = fig_path, width = 6.8, height = 5.4, units = "in", limitsize = FALSE, dpi = img_dpi)
 
 #rm(tmp, tmp_mngfl, boot_survey_plot, boot_task_plot, boot_both_w_trial, task_trial_num_table, task_trial_num, survey_trial_num_table, survey_trial_num)
