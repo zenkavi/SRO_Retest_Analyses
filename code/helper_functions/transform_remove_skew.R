@@ -149,7 +149,7 @@ transform_remove_skew = function(data, columns=get_numeric_cols(df1=data, df2=da
       }
     } 
   }else{
-   if(versbose){
+   if(verbose){
      cat(rep('*', 40))
      cat('\n')
      cat('No positively skewed variables found.')
