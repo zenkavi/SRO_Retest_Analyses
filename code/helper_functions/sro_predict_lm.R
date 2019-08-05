@@ -69,6 +69,8 @@ get_fold_cors = function(model, shuffle=FALSE, shuffle_n = 100){
 sro_predict = function(x_df, y_df, cv_folds = 10, m_type = "lm", shuffle= FALSE, shuffle_n = 100){
 
   require(tidyverse)
+  require(caret)
+  library(rlang)
 
   out = data.frame(dv=NA, iv=NA, Rsquared=NA, RsquaredSD=NA, RMSE=NA, RMSESD=NA)
   
