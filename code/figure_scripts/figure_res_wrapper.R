@@ -17,4 +17,4 @@ ggplot <- function(...) ggplot2::ggplot(...) + scale_fill_manual(values=cbbPalet
 
 high_res = ifelse(img_dpi>100, T, F)
 
-fig_path = ifelse(high_res, paste0(default_fig_path, "/high_res/"), default_fig_path)
+fig_path = ifelse(high_res, paste0(default_fig_path, "/high_res"), default_fig_path)
