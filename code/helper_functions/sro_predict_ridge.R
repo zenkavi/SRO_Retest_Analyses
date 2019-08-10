@@ -27,9 +27,16 @@ sro_predict = function(x_df, x_var, y_df, y_var, shuffle_n =100){
 
     cur_fold_cors =  cur_fold_cors%>%
       group_by(fold_ids) %>%
-      summarise(pred_cor = cor(act_ys, pre_vals)) %>%
+      summarise(pred_cor = cor(act_ys, pre_vals),
+                rss = sum((act_ys - pre_vals)^2),
+                tss = sum((act_ys - mean(act_ys))^2),
+                r2 = 1 - (rss/tss)) %>%
       mutate(dv = cur_y_var,
              iv = x_var)
+    
+    #R^2 is defined as (1 - u/v), 
+    #u is the residual sum of squares ((y_true - y_pred) ** 2).sum() 
+    #v is the total sum of squares ((y_true - y_true.mean()) ** 2).sum().
     
     shuffle_cors = NA
     for(j in 1:shuffle_n){
@@ -39,6 +46,7 @@ sro_predict = function(x_df, x_var, y_df, y_var, shuffle_n =100){
     shuffle_cors = shuffle_cors[!is.na(shuffle_cors)]
     
     cur_fold_cors$shuffle_95 = as.numeric(quantile(shuffle_cors, probs = c(0.95)))
+    cur_fold_cors$shuffle_mean = as.numeric(quantile(shuffle_cors, probs = c(0.5)))
     
     cur_betas = data.frame(t(as.matrix(coef(cv_fit,  s="lambda.1se"))))
     cur_cvm = cv_fit$cvm[which(lambdas == cv_fit$lambda.1se)]
