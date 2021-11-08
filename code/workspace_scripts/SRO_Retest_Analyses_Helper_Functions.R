@@ -21,7 +21,7 @@ if(from_gh){
   }
   
 } else{
-  helper_func_path = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/helper_functions/' 
+  helper_func_path = here('code/helper_functions/') 
   for(file_name in file_names){
     source(paste0(helper_func_path,file_name))
   }

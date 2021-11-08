@@ -2,8 +2,9 @@
 
 library(tidyverse)
 library(jsonlite)
+library(here)
 
-fig_path = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/output/figures/'
+fig_path = here('output/figures')
 
 cbbPalette <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 theme_set(theme_bw())
@@ -24,7 +25,7 @@ if(from_gh){
     eval(parse(text = getURL(paste0(workspace_scripts,file_name), ssl.verifypeer = FALSE)))
   }
 } else{
-  workspace_scripts = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/workspace_scripts/'
+  workspace_scripts = here('code/workspace_scripts/')
   
   test_data_path = '/Users/zeynepenkavi/Documents/PoldrackLabLocal/Self_Regulation_Ontology/Data/Complete_12-19-2018/'
   

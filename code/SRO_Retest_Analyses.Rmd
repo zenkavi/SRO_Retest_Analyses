@@ -9,7 +9,9 @@ toc_float: yes
 ```{r, message=FALSE, warning=FALSE, include=FALSE}
 set.seed(10394839)
 from_gh = FALSE
-source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/workspace_scripts/SRO_Retest_Analyses_Workspace.R')
+library(here)
+workspace_scripts = here('code/workspace_scripts/')
+source(paste0(workspace_scripts,'SRO_Retest_Analyses_Workspace.R'))
 ```
 
 In total `r sum(workers$Retest_worker)` participants were invited, `r nrow(worker_counts)` began the battery, `r sum(worker_counts$task_count >= 62)` completed the battery and 150 provided data that passed qc for both time points. Our target sample size was determined in advance of data collection and data collection continued until this number of participants with data that survived qc was reached.

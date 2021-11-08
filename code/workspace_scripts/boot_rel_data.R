@@ -29,7 +29,7 @@ if(!exists('grabRemoteGz')){
   if(from_gh){
     eval(parse(text = getURL('https://raw.githubusercontent.com/zenkavi/SRO_Retest_Analyses/master/code/helper_functions/grabRemoteGz.R', ssl.verifypeer = FALSE)))
   }
-  source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/helper_functions/grabRemoteGz.R')
+  source(here('code/helper_functions/grabRemoteGz.R'))
 }
 
 if(!exists('retest_report_vars')){
@@ -39,7 +39,7 @@ if(!exists('retest_report_vars')){
   retest_report_vars = c(names(tmp1), names(tmp2), names(tmp3))
   retest_report_vars = unique(retest_report_vars)
   if(!exists('lit_review')){
-    source('/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/code/workspace_scripts/lit_review_data.R')
+    source(here('code/workspace_scripts/lit_review_data.R'))
   }
   lit_rev_vars = as.character(unique(lit_review$dv)[which(unique(lit_review$dv) %in% retest_report_vars == FALSE)])
   retest_report_vars = c(retest_report_vars, lit_rev_vars)

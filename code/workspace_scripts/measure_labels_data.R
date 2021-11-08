@@ -2,7 +2,7 @@ if(from_gh){
   require(RCurl)
   input_path = 'https://raw.githubusercontent.com/zenkavi/SRO_Retest_Analyses/master/input/'
 }else{
-  input_path = '/Users/zeynepenkavi/Dropbox/PoldrackLab/SRO_Retest_Analyses/input/'
+  input_path = here('input/')
 }
 
 #########################
