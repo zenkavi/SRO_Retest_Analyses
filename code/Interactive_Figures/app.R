@@ -18,10 +18,10 @@ lit_data <- read.csv('../../input/lit_review_figure.csv')
 
 lit_data = lit_data %>%
   separate(dv, c("task_group", "var"), sep="\\.",remove=FALSE,extra="merge") %>%
-  mutate(task_group = factor(task_group, levels = task_group[order(task)]),
+  mutate(task_group = factor(task_group, levels = unique(task_group[order(task)])),
          raw1_fit0 = grepl('raw', raw_fit),
          type = as.character(type),
-         dv = factor(dv, levels = dv[order(task)]),
+         dv = factor(dv, levels = unique(dv[order(task)])),
          days_cutoff = ifelse(days < 60, days, 120),
          days = paste(days, '\n reference:', reference))
 
